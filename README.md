@@ -38,3 +38,5 @@ credits go to Steve Yegge). To run it, use the following command line:
 
     java -classpath dist/jython.jar org.python.indexer.demos.HtmlDemo /usr/lib/python2.7 /usr/lib/python2.7
 
+You should find some interactive HTML files inside the _html_ directory
+generated after this process.
