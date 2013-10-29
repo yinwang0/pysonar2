@@ -7,6 +7,11 @@ To understand it, please refer to my blog post:
 
 ### How to build
 
+PySonar 1.0 was part of Jython, and PySonar2 still depend on Jython's parser
+(the situation may change soon). So you need to download Jython's source code
+and compile PySonar2 with it.
+
+
 1. Download Jython
 
         hg clone http://hg.python.org/jython
