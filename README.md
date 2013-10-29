@@ -9,18 +9,18 @@ To understand it, please refer to my blog post:
 
 1. Download Jython
 
-hg clone http://hg.python.org/jython
+        hg clone http://hg.python.org/jython
 
 2. Checkout this repo, replace everything inside _src/org/python/indexer_ with
    the content of this repo
 
 3. Delete the tests for the old indexer
 
-    rm -rf tests/java/org/python/indexer
+        rm -rf tests/java/org/python/indexer
 
 4. Build Jython
 
-    ant jar-complete
+        ant jar-complete
 
 5. Finished. PySonar2 is now inside _dist/jython.jar_.
 
