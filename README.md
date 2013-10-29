@@ -47,9 +47,10 @@ Python 2.5 standard lib). This is due to the highlighting I added without using
 more sophisticated ways of doing it. The situation may change soon.
 
 
-* Copyright (BSD-style)
+### Copyright (BSD-style)
 
 Copyright (c) 2013 Yin Wang
+
 Copyright (c) 2009 Google Inc.
 
 Redistribution and use in source and binary forms, with or without
