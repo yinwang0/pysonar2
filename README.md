@@ -16,8 +16,8 @@ and compile PySonar2 with it.
 
         hg clone http://hg.python.org/jython
 
-2. Checkout this repo, replace everything inside _src/org/python/indexer_ with
-   the content of this repo
+2. Checkout this repo, replace everything inside _src/org/python/indexer_ (which
+   is PySonar 1.0) with the content of this repo
 
 3. Delete the tests for the old indexer
 
