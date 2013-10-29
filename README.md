@@ -1,8 +1,9 @@
 ## PySonar2 - an advanced static analyzer for Python
 
-To understand it, please refer to my blog post:
+To understand it, please refer to my blog posts:
 
     http://yinwang0.wordpress.com/2010/09/12/pysonar
+    http://yinwang0.wordpress.com/2013/06/21/pysonar-slides
 
 
 ### How to build
