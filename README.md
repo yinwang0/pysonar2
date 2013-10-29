@@ -40,3 +40,7 @@ credits go to Steve Yegge). To run it, use the following command line:
 
 You should find some interactive HTML files inside the _html_ directory
 generated after this process.
+
+Note: at current stage, for generating the HTML, you may need a lot of memory
+(4GB for Python 2.5 standard lib). The situation may change soon.
+
