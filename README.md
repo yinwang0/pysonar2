@@ -41,6 +41,7 @@ credits go to Steve Yegge). To run it, use the following command line:
 You should find some interactive HTML files inside the _html_ directory
 generated after this process.
 
-Note: at current stage, for generating the HTML, you may need a lot of memory
-(4GB for Python 2.5 standard lib). The situation may change soon.
-
+Note: PySonar2 doesn't need much memory to do analysis (1GB is probably enough),
+but for generating the HTML files, you may need a lot of memory (~4GB for
+Python 2.5 standard lib). This is due to the highlighting I added without using
+more sophisticated ways of doing it. The situation may change soon.
