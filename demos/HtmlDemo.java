@@ -40,10 +40,10 @@ public class HtmlDemo {
             new File(new File("html").getAbsolutePath());
 
     private static final String CSS =
-            "a {text-decoration: none; color: maroon}\n" +
+            "a {text-decoration: none; color: #2e8b57}\n" +
                     "table, th, td { border: 1px solid lightgrey; padding: 5px; corner: rounded; }\n" +
                     ".builtin {color: #5b4eaf;}\n" +
-                    ".comment, .block-comment {color: #005000; font-style: italic;}\n" +
+                    ".comment, .block-comment {color: grey; font-style: italic;}\n" +
                     ".constant {color: #888888;}\n" +
                     ".decorator {color: #778899;}\n" +
                     ".doc-string {color: #005000;}\n" +
@@ -76,7 +76,7 @@ public class HtmlDemo {
                     "    for (var i = 0; i < arguments.length; i++) {\n" +
                     "        var elm = document.getElementById(arguments[i]);\n" +
                     "        if (elm != null) {\n" +
-                    "            elm.style.backgroundColor='lightblue';\n" +
+                    "            elm.style.backgroundColor='gold';\n" +
                     "        }\n" +
                     "        highlighted.push(arguments[i]);\n" +
                     "    }\n" +
