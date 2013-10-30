@@ -40,7 +40,7 @@ public class HtmlDemo {
             new File(new File("html").getAbsolutePath());
 
     private static final String CSS =
-            "a {text-decoration: none; color: red}\n" +
+            "a {text-decoration: none; color: maroon}\n" +
                     "table, th, td { border: 1px solid lightgrey; padding: 5px; corner: rounded; }\n" +
                     ".builtin {color: #5b4eaf;}\n" +
                     ".comment, .block-comment {color: #005000; font-style: italic;}\n" +

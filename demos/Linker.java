@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
  */
 class Linker {
 
+    private static boolean reportProblems = false;
+
     private static final Pattern CONSTANT = Pattern.compile("[A-Z_][A-Z0-9_]*");
 
     // Map of file-path to semantic styles & links for that path.
@@ -52,9 +54,11 @@ class Linker {
             processRef(e.getKey(), e.getValue());
         }
 
-        for (List<Diagnostic> ld: indexer.problems.values()) {
-            for (Diagnostic d: ld) {
-                processDiagnostic(d);
+        if (reportProblems) {
+            for (List<Diagnostic> ld : indexer.problems.values()) {
+                for (Diagnostic d : ld) {
+                    processDiagnostic(d);
+                }
             }
         }
 
