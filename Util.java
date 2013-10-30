@@ -102,10 +102,9 @@ public class Util {
     }
 
     public static File joinPath(String dir, String file) {
-        if (dir.endsWith("/")) {
-            return new File(dir + file);
-        }
-        return new File(dir + "/" + file);
+        File file1 = new File(dir);
+        File file2 = new File(file1, file);
+        return file2;
     }
 
     public static void writeFile(String path, String contents) throws Exception {
