@@ -186,7 +186,10 @@ public class Util {
         path = f.getAbsolutePath();
         if (f.isDirectory() && !path.endsWith("/")) {
             return path + "/";
+        } else if (f.isDirectory() && !path.endsWith("\\")) {
+            return path + "\\";
         }
+
         return path;
     }
 
