@@ -12,12 +12,18 @@ PySonar 1.0 was part of Jython, and PySonar2 still depend on Jython's parser
 (the situation may change soon). So you need to download Jython's source code
 and compile PySonar2 with it.
 
-In install it just run
+#### The Automatic Way (read only if you fail the easy way)
 
-    ./installer.sh
+To make this process easier, I made a shell script. So you can just run
 
-It should tell you what's going on what to do. If it doesn't work, look at the rest of the steps, otherwise you are done.
+    ./build.sh
 
+It will automatically download Jython and do all the set up for you. It should
+tell you what's going on what to do next. If it doesn't work, look at the rest
+of the this section for manual steps, otherwise you are done.
+
+
+#### Manual Steps (read only if you fail the easy way)
 
 1. Download Jython
 
