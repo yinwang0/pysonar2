@@ -2,8 +2,8 @@
 
 To understand it, please refer to my blog posts:
 
-    http://yinwang0.wordpress.com/2010/09/12/pysonar
-    http://yinwang0.wordpress.com/2013/06/21/pysonar-slides
+- http://yinwang0.wordpress.com/2010/09/12/pysonar
+- http://yinwang0.wordpress.com/2013/06/21/pysonar-slides
 
 
 ### How to build
