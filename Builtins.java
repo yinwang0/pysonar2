@@ -135,6 +135,9 @@ public class Builtins {
     }
 
     FunType newFunc(org.python.indexer.types.Type type) {
+        if (type == null) {
+            type = Indexer.idx.builtins.unknown;
+        }
         FunType t = new FunType(Indexer.idx.builtins.unknown, type);
         nativeTypes.add(t);
         return t;
@@ -521,7 +524,7 @@ public class Builtins {
                 "__rlshift__", "__rmod__", "__rmul__", "__ror__", "__rpow__",
                 "__rrshift__", "__rshift__", "__rsub__", "__rtruediv__",
                 "__rxor__", "__setattr__", "__str__", "__sub__", "__truediv__",
-                "__xor__"    
+                "__xor__"
         };
         for (String m : num_methods_num) {
             bnt.update(m, numUrl(), newFunc(BaseNum), METHOD);
