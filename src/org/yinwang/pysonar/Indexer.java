@@ -885,7 +885,7 @@ public class Indexer {
         sb.append("Summary: \n")
                 .append("- modules loaded:\t").append(loadedFiles)
                 .append("\n- unresolved modules:\t").append(unresolvedModules.size())
-                .append("\n- semantics problems:\t").append(nprob)
+                .append("\n- semantic problems:\t").append(nprob)
                 .append("\n- parsing problems:\t").append(nparsing);
 
 //        for (String s : unresolvedModules.keySet()) {
