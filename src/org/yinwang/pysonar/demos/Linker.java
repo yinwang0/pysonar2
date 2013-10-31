@@ -52,11 +52,12 @@ class Linker {
             processRef(e.getKey(), e.getValue());
         }
 
-        for (List<Diagnostic> ld: indexer.problems.values()) {
-            for (Diagnostic d: ld) {
-                processDiagnostic(d);
-            }
-        }
+//// disable for now, turn on when false positive rate is low enough
+//        for (List<Diagnostic> ld: indexer.problems.values()) {
+//            for (Diagnostic d: ld) {
+//                processDiagnostic(d);
+//            }
+//        }
 
         for (List<Diagnostic> ld: indexer.parseErrs.values()) {
             for (Diagnostic d: ld) {
@@ -124,16 +125,16 @@ class Linker {
         }
     }
 
-    private void processDef(Def def, Binding nb) {
-        if (def == null || def.isURL()) {
+    private void processDef(Def def, Binding binding) {
+        if (def == null || def.isURL() || def.getStart() < 0) {
             return;
         }
         StyleRun style = new StyleRun(StyleRun.Type.ANCHOR, def.getStart(), def.getLength());
-        style.message = nb.getQname() + " :: " + nb.getType();
-        style.url = nb.getQname();
+        style.message = binding.getQname() + " :: " + binding.getType();
+        style.url = binding.getQname();
         style.id = "" + Math.abs(def.hashCode());
 
-        Set<Ref> refs = nb.getRefs();
+        Set<Ref> refs = binding.getRefs();
         style.highlight = new ArrayList<String>();
         for (Ref r : refs) {
             style.highlight.add(Integer.toString(Math.abs(r.hashCode())));

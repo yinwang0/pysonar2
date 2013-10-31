@@ -1,9 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.yinwang.pysonar.Scope;
-import org.yinwang.pysonar.Util;
 import org.yinwang.pysonar.types.DictType;
-import org.yinwang.pysonar.types.ListType;
 import org.yinwang.pysonar.types.Type;
 
 import java.util.List;

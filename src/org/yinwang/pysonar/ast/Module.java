@@ -19,10 +19,6 @@ public class Module extends Node {
     private String md5;   // input source file md5
 
 
-    public Module(String name) {
-        this.name = name;
-    }
-
     public Module(Block body, int start, int end) {
         super(start, end);
         this.body = body;

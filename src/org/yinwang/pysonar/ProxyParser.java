@@ -4,7 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.yinwang.pysonar.ast.*;
 
-import java.io.*;
+import java.io.File;
+import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 import java.net.URL;
 import java.security.SecureRandom;
@@ -151,7 +152,7 @@ public class ProxyParser {
 
         if (type.equals("Module")) {
             Block b = convertBlock(map.get("body"));
-            Module m = new Module(b, start, end);
+            Module m = new Module(b, -1, -1);
             try {
                 m.setFile((String) map.get("filename"));
             } catch (Exception e) {

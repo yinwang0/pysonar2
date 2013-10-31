@@ -13,7 +13,7 @@ public abstract class Node implements java.io.Serializable {
     static final long serialVersionUID = 3682719481356964898L;
 
     public int start = -1;
-    public int end = 0;
+    public int end = -1;
 
     protected Node parent = null;
 

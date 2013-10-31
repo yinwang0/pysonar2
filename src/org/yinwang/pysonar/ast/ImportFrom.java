@@ -72,9 +72,6 @@ public class ImportFrom extends Node {
     public int level;  // ".", ".", ".", "a", "b", "c"
     public List<Alias> names;  // "x", "foo" [as] "bar", "y"
 
-    public ImportFrom(String module, List<Alias> names, int level) {
-        this(module, names, level, 0, 1);
-    }
 
     public ImportFrom(String module, List<Alias> names, int level, int start, int end) {
         super(start, end);

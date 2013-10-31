@@ -10,8 +10,8 @@ import org.yinwang.pysonar.ast.Url;
 public class Def {
 
     // Being frugal with fields here is good for memory usage.
-    private int start;
-    private int end;
+    private int start = -1;
+    private int end = -1;
     private Binding binding;
     private String fileOrUrl;
     private String name;
@@ -22,36 +22,30 @@ public class Def {
     }
 
     public Def(Node node, Binding b) {
-        if (node == null) {
-            throw new IllegalArgumentException("null 'node' param");
-        }
         this.node = node;
         binding = b;
+
         if (node instanceof Url) {
-            String url = ((Url)node).getURL();
+            String url = ((Url) node).getURL();
             if (url.startsWith("file://")) {
                 fileOrUrl = url.substring("file://".length());
             } else {
                 fileOrUrl = url;
             }
-            return;
-        }
-
-        // start/end offsets are invalid/bogus for NUrls
-        start = node.start;
-        end = node.end;
-        fileOrUrl = node.getFile();
-        if (fileOrUrl == null) {
-            throw new IllegalArgumentException("Non-URL nodes must have a non-null file");
-        }
-        if (node instanceof Name) {
-            name = node.asName().getId();
+        } else {
+            start = node.start;
+            end = node.end;
+            fileOrUrl = node.getFile();
+            if (node instanceof Name) {
+                name = node.asName().getId();
+            }
         }
     }
 
     /**
      * Returns the name of the node.  Only applies if the definition coincides
      * with a {@link org.yinwang.pysonar.ast.Name} node.
+     *
      * @return the name, or null
      */
     public String getName() {
@@ -113,7 +107,7 @@ public class Def {
     public Binding getBinding() {
         return binding;
     }
-    
+
     public Node getNode() {
         return node;
     }
@@ -133,11 +127,11 @@ public class Def {
         if (!(obj instanceof Def)) {
             return false;
         } else {
-            Def def = (Def)obj;
-            return (start == def.start 
-                 && end   == def.end
-                 && (fileOrUrl == null && def.fileOrUrl == null
-                  || fileOrUrl == def.fileOrUrl));
+            Def def = (Def) obj;
+            return (start == def.start
+                    && end == def.end
+                    && (fileOrUrl == null && def.fileOrUrl == null
+                    || fileOrUrl == def.fileOrUrl));
         }
     }
 

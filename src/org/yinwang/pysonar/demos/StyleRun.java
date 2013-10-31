@@ -1,7 +1,6 @@
 package org.yinwang.pysonar.demos;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Represents a simple style run for purposes of source highlighting.
@@ -48,13 +47,6 @@ public class StyleRun implements Comparable<StyleRun> {
         this.length = length;
     }
 
-    public StyleRun(Type type, int offset, int length, String msg, String url) {
-        this.type = type;
-        this.offset = offset;
-        this.length = length;
-        this.message = msg;
-        this.url = url;
-    }
 
     public int start() {
         return offset;

@@ -13,9 +13,6 @@ public class GeneratorExp extends Node {
     public Node elt;
     public List<Comprehension> generators;
 
-    public GeneratorExp(Node elt, List<Comprehension> generators) {
-        this(elt, generators, 0, 1);
-    }
 
     public GeneratorExp(Node elt, List<Comprehension> generators, int start, int end) {
         super(start, end);
