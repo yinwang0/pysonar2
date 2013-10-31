@@ -184,9 +184,9 @@ class Linker {
         // Currently jump to the first binding only. Should change to have a
         // hover menu or something later.
         String path = ref.getFile();
-        for (Binding nb : bindings) {
+        for (Binding b : bindings) {
             if (link.url == null) {
-                link.url = toURL(nb, path);
+                link.url = toURL(b, path);
             }
 
             if (link.url != null) {
@@ -199,24 +199,24 @@ class Linker {
     
     /**
      * Generate a URL for a reference to a binding.
-     * @param nb the referenced binding
+     * @param binding the referenced binding
      * @param path the path containing the reference, or null if there was an error
      */
-    private String toURL(Binding nb, String path) {
-        Def def = nb.getSignatureNode();
+    private String toURL(Binding binding, String path) {
+        Def def = binding.getSignatureNode();
         if (def == null) {
             return null;
         }
-        if (nb.isBuiltin()) {
+        if (binding.isBuiltin()) {
             return def.getURL();
         }
 
-        if (nb.getKind() == Binding.Kind.MODULE) {
-            return toModuleUrl(nb);
+        if (binding.getKind() == Binding.Kind.MODULE) {
+            return toModuleUrl(binding);
         }
 
-        String anchor = "#" + nb.getQname();
-        if (nb.getFirstFile().equals(path)) {
+        String anchor = "#" + binding.getQname();
+        if (binding.getFirstFile().equals(path)) {
             return anchor;
         }
 
@@ -226,7 +226,7 @@ class Linker {
             relpath = destPath.substring(rootPath.length());
             return Util.joinPath(outDir.getAbsolutePath(), relpath) + ".html" + anchor;
         } else {
-            System.err.println("dest path length is shorter than root path:  dest=" 
+            System.err.println("dest path length is shorter than root path:  dest="
                                 + destPath + ", root=" + rootPath);
             return null;
         }
