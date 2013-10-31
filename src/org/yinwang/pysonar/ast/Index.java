@@ -9,9 +9,6 @@ public class Index extends Node {
 
     public Node value;
 
-    public Index(Node n) {
-        this(n, 0, 1);
-    }
 
     public Index(Node n, int start, int end) {
         super(start, end);

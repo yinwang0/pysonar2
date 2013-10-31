@@ -22,10 +22,6 @@ public class Call extends Node {
     public Node kwargs;
     public Node starargs;
 
-    public Call(Node func, List<Node> args, List<Keyword> keywords,
-                Node kwargs, Node starargs) {
-        this(func, args, keywords, kwargs, starargs, 0, 1);
-    }
 
     public Call(Node func, List<Node> args, List<Keyword> keywords,
                 Node kwargs, Node starargs, int start, int end) {

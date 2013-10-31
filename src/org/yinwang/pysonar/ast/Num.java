@@ -10,9 +10,6 @@ public class Num extends Node {
 
     public Object n;
 
-    public Num(Object n) {
-        this.n = n;
-    }
 
     public Num(Object n, int start, int end) {
         super(start, end);

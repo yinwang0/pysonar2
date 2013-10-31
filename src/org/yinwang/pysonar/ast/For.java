@@ -15,9 +15,6 @@ public class For extends Node {
     public Block body;
     public Block orelse;
 
-    public For(Node target, Node iter, Block body, Block orelse) {
-        this(target, iter, body, orelse, 0, 1);
-    }
 
     public For(Node target, Node iter, Block body, Block orelse,
                int start, int end) {

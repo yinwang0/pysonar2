@@ -12,9 +12,6 @@ public class Slice extends Node {
     public Node step;
     public Node upper;
 
-    public Slice(Node lower, Node step, Node upper) {
-        this(lower, step, upper, 0, 1);
-    }
 
     public Slice(Node lower, Node step, Node upper, int start, int end) {
         super(start, end);

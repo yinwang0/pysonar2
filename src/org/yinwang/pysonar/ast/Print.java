@@ -13,9 +13,6 @@ public class Print extends Node {
     public Node dest;
     public List<Node> values;
 
-    public Print(Node dest, List<Node> elts) {
-        this(dest, elts, 0, 1);
-    }
 
     public Print(Node dest, List<Node> elts, int start, int end) {
         super(start, end);

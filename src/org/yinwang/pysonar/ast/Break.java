@@ -8,9 +8,6 @@ public class Break extends Node {
 
     static final long serialVersionUID = 2114759731430768793L;
 
-    public Break() {
-    }
-
     public Break(int start, int end) {
         super(start, end);
     }

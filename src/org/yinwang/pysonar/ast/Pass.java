@@ -8,8 +8,6 @@ public class Pass extends Node {
 
     static final long serialVersionUID = 3668786487029793620L;
 
-    public Pass() {
-    }
 
     public Pass(int start, int end) {
         super(start, end);

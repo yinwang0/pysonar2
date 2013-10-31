@@ -10,9 +10,6 @@ public class Tuple extends Sequence {
 
     static final long serialVersionUID = -7647425038559142921L;
 
-    public Tuple(List<Node> elts) {
-        this(elts, 0, 1);
-    }
 
     public Tuple(List<Node> elts, int start, int end) {
         super(elts, start, end);

@@ -410,7 +410,7 @@ public class ProxyParser {
             Node exceptionType = deJson(map.get("type"));
             Node inst = deJson(map.get("inst"));
             Node tback = deJson(map.get("tback"));
-            return new Raise(exceptionType, inst, tback);
+            return new Raise(exceptionType, inst, tback, start, end);
         }
 
         if (type.equals("Repr")) {
@@ -438,7 +438,7 @@ public class ProxyParser {
             Node lower = deJson(map.get("lower"));
             Node step = deJson(map.get("step"));
             Node upper = deJson(map.get("upper"));
-            return new Slice(lower, step, upper);
+            return new Slice(lower, step, upper, start, end);
         }
 
         if (type.equals("Str")) {
@@ -487,7 +487,7 @@ public class ProxyParser {
             Node optional_vars = deJson(map.get("optional_vars"));
             Node context_expr = deJson(map.get("context_expr"));
             Block body = convertBlock(map.get("body"));
-            return new With(optional_vars, context_expr, body);
+            return new With(optional_vars, context_expr, body, start, end);
         }
 
         if (type.equals("Yield")) {
@@ -515,7 +515,6 @@ public class ProxyParser {
             builder.redirectErrorStream(true);
             return builder.start();
         } catch (Exception e) {
-            Util.msg("Failed to start Python: " + pythonExe);
             return null;
         }
     }

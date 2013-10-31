@@ -12,9 +12,6 @@ public class Raise extends Node {
     public Node inst;
     public Node traceback;
 
-    public Raise(Node exceptionType, Node inst, Node traceback) {
-        this(exceptionType, inst, traceback, 0, 1);
-    }
 
     public Raise(Node exceptionType, Node inst, Node traceback, int start, int end) {
         super(start, end);

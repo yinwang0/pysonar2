@@ -18,10 +18,6 @@ public class Attribute extends Node {
     public Node target;
     public Name attr;
 
-    public Attribute(Node target, Name attr) {
-        this(target, attr, 0, 1);
-    }
-
     public Attribute(Node target, Name attr, int start, int end) {
         super(start, end);
         this.target = target;

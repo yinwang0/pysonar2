@@ -15,9 +15,6 @@ public class TryExcept extends Node {
     public Block body;
     public Block orelse;
 
-    public TryExcept(List<ExceptHandler> handlers, Block body, Block orelse) {
-        this(handlers, body, orelse, 0, 1);
-    }
 
     public TryExcept(List<ExceptHandler> handlers, Block body, Block orelse,
                      int start, int end) {

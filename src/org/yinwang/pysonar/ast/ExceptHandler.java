@@ -12,9 +12,6 @@ public class ExceptHandler extends Node {
     public Node exceptionType;
     public Block body;
 
-    public ExceptHandler(Node name, Node exceptionType, Block body) {
-        this(name, exceptionType, body, 0, 1);
-    }
 
     public ExceptHandler(Node name, Node exceptionType, Block body, int start, int end) {
         super(start, end);

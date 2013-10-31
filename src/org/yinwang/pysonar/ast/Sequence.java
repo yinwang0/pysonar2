@@ -9,9 +9,6 @@ public abstract class Sequence extends Node {
 
     public List<Node> elts;
 
-    public Sequence(List<Node> elts) {
-        this(elts, 0, 1);
-    }
 
     public Sequence(List<Node> elts, int start, int end) {
         super(start, end);

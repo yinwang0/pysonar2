@@ -11,9 +11,6 @@ public class TryFinally extends Node {
     public Block body;
     public Block finalbody;
 
-    public TryFinally(Block body, Block orelse) {
-        this(body, orelse, 0, 1);
-    }
 
     public TryFinally(Block body, Block orelse, int start, int end) {
         super(start, end);

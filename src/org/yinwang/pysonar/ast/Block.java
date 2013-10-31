@@ -15,10 +15,6 @@ public class Block extends Node {
 
     public List<Node> seq;
 
-    public Block(List<Node> seq) {
-        this(seq, 0, 1);
-    }
-
     public Block(List<Node> seq, int start, int end) {
         super(start, end);
         if (seq == null) {

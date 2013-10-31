@@ -12,10 +12,6 @@ public class AugAssign extends Node {
     public Node value;
     public Name op;
 
-    public AugAssign(Node target, Node value, Name op) {
-        this(target, value, op, 0, 1);
-    }
-
     public AugAssign(Node target, Node value, Name op, int start, int end) {
         super(start, end);
         this.target = target;

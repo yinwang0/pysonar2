@@ -13,9 +13,6 @@ public class Subscript extends Node {
     public Node value;
     public Node slice;  // an NIndex or NSlice
 
-    public Subscript(Node value, Node slice) {
-        this(value, slice, 0, 1);
-    }
 
     public Subscript(Node value, Node slice, int start, int end) {
         super(start, end);

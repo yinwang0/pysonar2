@@ -11,10 +11,6 @@ public class Assert extends Node {
     public Node test;
     public Node msg;
 
-    public Assert(Node test, Node msg) {
-        this(test, msg, 0, 1);
-    }
-
     public Assert(Node test, Node msg, int start, int end) {
         super(start, end);
         this.test = test;

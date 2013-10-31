@@ -43,7 +43,7 @@ public class HtmlDemo {
             "a {text-decoration: none; color: #2e8b57}\n" +
                     "table, th, td { border: 1px solid lightgrey; padding: 5px; corner: rounded; }\n" +
                     ".builtin {color: #5b4eaf;}\n" +
-                    ".comment, .block-comment {color: grey; font-style: italic;}\n" +
+                    ".comment, .block-comment {color: #aaaaaa; font-style: italic;}\n" +
                     ".constant {color: #888888;}\n" +
                     ".decorator {color: #778899;}\n" +
                     ".doc-string {color: #005000;}\n" +

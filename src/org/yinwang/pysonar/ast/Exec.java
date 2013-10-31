@@ -12,9 +12,6 @@ public class Exec extends Node {
     public Node globals;
     public Node locals;
 
-    public Exec(Node body, Node globals, Node locals) {
-        this(body, globals, locals, 0, 1);
-    }
 
     public Exec(Node body, Node globals, Node locals, int start, int end) {
         super(start, end);

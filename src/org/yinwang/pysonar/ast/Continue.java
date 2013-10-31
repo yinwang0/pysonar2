@@ -8,8 +8,6 @@ public class Continue extends Node {
 
     static final long serialVersionUID = 1646681898280823606L;
 
-    public Continue() {
-    }
 
     public Continue(int start, int end) {
         super(start, end);

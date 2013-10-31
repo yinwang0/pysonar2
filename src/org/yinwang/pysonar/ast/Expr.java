@@ -13,9 +13,6 @@ public class Expr extends Node {
 
     public Node value;
 
-    public Expr(Node n) {
-        this(n, 0, 1);
-    }
 
     public Expr(Node n, int start, int end) {
         super(start, end);

@@ -12,7 +12,7 @@ public class Name extends Node {
     public final String id;  // identifier
 
     public Name(String id) {
-        this(id, 0, 1);
+        this(id, -1, 0);
     }
 
     public Name(String id, int start, int end) {

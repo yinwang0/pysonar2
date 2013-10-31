@@ -13,9 +13,6 @@ public class If extends Node {
     public Block body;
     public Block orelse;
 
-    public If(Node test, Block body, Block orelse) {
-        this(test, body, orelse, 0, 1);
-    }
 
     public If(Node test, Block body, Block orelse, int start, int end) {
         super(start, end);

@@ -13,9 +13,6 @@ public class While extends Node {
     public Block body;
     public Block orelse;
 
-    public While(Node test, Block body, Block orelse) {
-        this(test, body, orelse, 0, 1);
-    }
 
     public While(Node test, Block body, Block orelse, int start, int end) {
         super(start, end);

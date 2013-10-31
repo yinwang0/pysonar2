@@ -14,10 +14,6 @@ public class Compare extends Node {
     public List<Node> ops;
     public List<Node> comparators;
 
-    public Compare(Node left, List<Node> ops, List<Node> comparators) {
-        this(left, ops, comparators, 0, 1);
-    }
-
     public Compare(Node left, List<Node> ops, List<Node> comparators, int start, int end) {
         super(start, end);
         this.left = left;

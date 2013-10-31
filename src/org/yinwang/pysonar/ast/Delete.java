@@ -12,9 +12,6 @@ public class Delete extends Node {
 
     public List<Node> targets;
 
-    public Delete(List<Node> elts) {
-        this(elts, 0, 1);
-    }
 
     public Delete(List<Node> elts, int start, int end) {
         super(start, end);

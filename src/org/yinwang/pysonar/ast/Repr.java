@@ -10,9 +10,6 @@ public class Repr extends Node {
 
     public Node value;
 
-    public Repr(Node n) {
-        this(n, 0, 1);
-    }
 
     public Repr(Node n, int start, int end) {
         super(start, end);

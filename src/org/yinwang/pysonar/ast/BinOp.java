@@ -13,9 +13,6 @@ public class BinOp extends Node {
     public Node right;
     public Node op;
 
-    public BinOp(Node target, Node value, Node op) {
-        this(target, value, op, 0, 1);
-    }
 
     public BinOp(Node left, Node right, Node op, int start, int end) {
         super(start, end);

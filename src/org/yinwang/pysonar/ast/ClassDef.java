@@ -20,9 +20,6 @@ public class ClassDef extends Node {
     public List<Node> bases;
     public Block body;
 
-    public ClassDef(Name name, List<Node> bases, Block body) {
-        this(name, bases, body, 0, 1);
-    }
 
     public ClassDef(Name name, List<Node> bases, Block body, int start, int end) {
         super(start, end);

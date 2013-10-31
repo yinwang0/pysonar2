@@ -18,8 +18,6 @@ public class Module extends Node {
     private String file;  // input source file path
     private String md5;   // input source file md5
 
-    public Module() {
-    }
 
     public Module(String name) {
         this.name = name;

@@ -12,10 +12,6 @@ public class Lambda extends FunctionDef {
 
     static final long serialVersionUID = 7737836525970653522L;
 
-    public Lambda(List<Node> args, Node body, List<Node> defaults,
-                  Name varargs, Name kwargs) {
-        this(args, body, defaults, varargs, kwargs, 0, 1);
-    }
 
     public Lambda(List<Node> args, Node body, List<Node> defaults,
                   Name varargs, Name kwargs, int start, int end) {

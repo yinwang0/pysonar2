@@ -13,9 +13,6 @@ public class IfExp extends Node {
     public Node body;
     public Node orelse;
 
-    public IfExp(Node test, Node body, Node orelse) {
-        this(test, body, orelse, 0, 1);
-    }
 
     public IfExp(Node test, Node body, Node orelse, int start, int end) {
         super(start, end);

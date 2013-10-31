@@ -13,10 +13,6 @@ public class Alias extends Node {
     public Node name;
     public Name asname;
 
-    public Alias(Node name, String asname) {
-        this(name, asname, 0, 1);
-    }
-
     public Alias(Node name, String asname, int start, int end) {
         super(start, end);
         this.name = name;

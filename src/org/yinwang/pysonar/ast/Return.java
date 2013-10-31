@@ -10,9 +10,6 @@ public class Return extends Node {
 
     public Node value;
 
-    public Return(Node n) {
-        this(n, 0, 1);
-    }
 
     public Return(Node n, int start, int end) {
         super(start, end);

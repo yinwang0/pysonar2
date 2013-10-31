@@ -11,9 +11,6 @@ public class With extends Node {
     public Node context_expr;
     public Block body;
 
-    public With(Node optional_vars, Node context_expr, Block body) {
-        this(optional_vars, context_expr, body, 0, 1);
-    }
 
     public With(Node optional_vars, Node context_expr, Block body, int start, int end) {
         super(start, end);

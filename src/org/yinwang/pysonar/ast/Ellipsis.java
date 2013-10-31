@@ -8,8 +8,6 @@ public class Ellipsis extends Node {
 
     static final long serialVersionUID = 4148534089952252511L;
 
-    public Ellipsis() {
-    }
 
     public Ellipsis(int start, int end) {
         super(start, end);

@@ -13,9 +13,6 @@ public class Keyword extends Node {
     public String arg;
     public Node value;
 
-    public Keyword(String arg, Node value) {
-        this(arg, value, 0, 1);
-    }
 
     public Keyword(String arg, Node value, int start, int end) {
         super(start, end);

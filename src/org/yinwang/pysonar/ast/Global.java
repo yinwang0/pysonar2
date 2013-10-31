@@ -12,9 +12,6 @@ public class Global extends Node {
 
     private List<Name> names;
 
-    public Global(List<Name> names) {
-        this(names, 0, 1);
-    }
 
     public Global(List<Name> names, int start, int end) {
         super(start, end);

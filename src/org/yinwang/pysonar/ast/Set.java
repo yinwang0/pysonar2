@@ -10,9 +10,6 @@ public class Set extends Sequence {
 
     static final long serialVersionUID = 6623743056841822992L;
 
-    public Set(List<Node> elts) {
-        this(elts, 0, 1);
-    }
 
     public Set(List<Node> elts, int start, int end) {
         super(elts, start, end);

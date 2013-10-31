@@ -10,9 +10,6 @@ public class NList extends Sequence {
 
     static final long serialVersionUID = 6623743056841822992L;
 
-    public NList(List<Node> elts) {
-        this(elts, 0, 1);
-    }
 
     public NList(List<Node> elts, int start, int end) {
         super(elts, start, end);

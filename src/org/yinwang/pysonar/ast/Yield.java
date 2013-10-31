@@ -11,9 +11,6 @@ public class Yield extends Node {
 
     public Node value;
 
-    public Yield(Node n) {
-        this(n, 0, 1);
-    }
 
     public Yield(Node n, int start, int end) {
         super(start, end);

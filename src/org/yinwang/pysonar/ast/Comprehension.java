@@ -14,9 +14,6 @@ public class Comprehension extends Node {
     public Node iter;
     public List<Node> ifs;
 
-    public Comprehension(Node target, Node iter, List<Node> ifs) {
-        this(target, iter, ifs, 0, 1);
-    }
 
     public Comprehension(Node target, Node iter, List<Node> ifs, int start, int end) {
         super(start, end);

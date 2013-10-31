@@ -23,17 +23,13 @@ public class FunctionDef extends Node {
     public Node body;
     private List<Node> decoratorList;
 
-    public FunctionDef(Name name, List<Node> args, Block body, List<Node> defaults,
-                       Name vararg, Name kwarg) {
-        this(name, args, body, defaults, kwarg, vararg, 0, 1);
-    }
 
     public FunctionDef(Name name, List<Node> args, Block body, List<Node> defaults,
                        Name vararg, Name kwarg, int start, int end) {
         super(start, end);
         this.name = name;
         this.args = args;
-        this.body = body != null ? body : new Block(null);
+        this.body = body;
         this.defaults = defaults;
         this.vararg = vararg;
         this.kwarg = kwarg;

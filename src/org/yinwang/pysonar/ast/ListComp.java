@@ -13,9 +13,6 @@ public class ListComp extends Node {
     public Node elt;
     public List<Comprehension> generators;
 
-    public ListComp(Node elt, List<Comprehension> generators) {
-        this(elt, generators, 0, 1);
-    }
 
     public ListComp(Node elt, List<Comprehension> generators, int start, int end) {
         super(start, end);

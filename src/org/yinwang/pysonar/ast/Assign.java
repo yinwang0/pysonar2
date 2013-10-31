@@ -13,10 +13,6 @@ public class Assign extends Node {
     public List<Node> targets;
     public Node rvalue;
 
-    public Assign(List<Node> targets, Node rvalue) {
-        this(targets, rvalue, 0, 1);
-    }
-
     public Assign(List<Node> targets, Node rvalue, int start, int end) {
         super(start, end);
         this.targets = targets;

@@ -13,9 +13,6 @@ public class Dict extends Node {
     public List<Node> keys;
     public List<Node> values;
 
-    public Dict(List<Node> keys, List<Node> values) {
-        this(keys, values, 0, 1);
-    }
 
     public Dict(List<Node> keys, List<Node> values, int start, int end) {
         super(start, end);

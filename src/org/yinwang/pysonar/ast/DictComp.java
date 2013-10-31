@@ -16,9 +16,6 @@ public class DictComp extends Node {
     public Node value;
     public List<Comprehension> generators;
 
-    public DictComp(Node key, Node value, List<Comprehension> generators) {
-        this(key, value, generators, 0, 1);
-    }
 
     public DictComp(Node key, Node value, List<Comprehension> generators, int start, int end) {
         super(start, end);

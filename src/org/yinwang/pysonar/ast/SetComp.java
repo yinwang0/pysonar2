@@ -13,9 +13,6 @@ public class SetComp extends Node {
     public Node elt;
     public List<Comprehension> generators;
 
-    public SetComp(Node elt, List<Comprehension> generators) {
-        this(elt, generators, 0, 1);
-    }
 
     public SetComp(Node elt, List<Comprehension> generators, int start, int end) {
         super(start, end);

@@ -59,7 +59,7 @@ class StyleApplier {
                 case ANCHOR:
                     buffer.append("<a name='" + style.url + "'");
                     buffer.append(", id ='" + style.id + "'");
-                    if (style.highlight != null) {
+                    if (style.highlight != null && !style.highlight.isEmpty()) {
                         String ids = Util.joinWithSep(style.highlight, "\",\"", "\"", "\"");
                         buffer.append(", onmouseover='highlight(").append(ids).append(")'");
                     }
@@ -67,7 +67,7 @@ class StyleApplier {
                 case LINK:
                     buffer.append("<a href='" + style.url + "'");
                     buffer.append(", id ='" + style.id + "'");
-                    if (style.highlight != null) {
+                    if (style.highlight != null && !style.highlight.isEmpty()) {
                         String ids = Util.joinWithSep(style.highlight, "\",\"", "\"", "\"");
                         buffer.append(", onmouseover='highlight(").append(ids).append(")'");
                     }

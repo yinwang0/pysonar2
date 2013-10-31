@@ -16,10 +16,6 @@ public class BoolOp extends Node {
     public List<Node> values;
     public Name op;
 
-    public BoolOp(Name op, List<Node> values) {
-        this(op, values, 0, 1);
-    }
-
     public BoolOp(Name op, List<Node> values, int start, int end) {
         super(start, end);
         this.op = op;

@@ -10,13 +10,6 @@ public class Str extends Node {
 
     private String value;
 
-    public Str() {
-        this("");
-    }
-
-    public Str(Object value) {
-        this(value, 0, 1);
-    }
 
     public Str(Object value, int start, int end) {
         super(start, end);

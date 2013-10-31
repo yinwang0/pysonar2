@@ -10,9 +10,6 @@ public class UnaryOp extends Node {
     public Node op;
     public Node operand;
 
-    public UnaryOp(Node op, Node n) {
-        this(op, n, 0, 1);
-    }
 
     public UnaryOp(Node op, Node n, int start, int end) {
         super(start, end);
