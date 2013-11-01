@@ -53,11 +53,11 @@ class Linker {
         }
 
 //// disable for now, turn on when false positive rate is low enough
-//        for (List<Diagnostic> ld: indexer.semanticErrors.values()) {
-//            for (Diagnostic d: ld) {
-//                processDiagnostic(d);
-//            }
-//        }
+        for (List<Diagnostic> ld: indexer.semanticErrors.values()) {
+            for (Diagnostic d: ld) {
+                processDiagnostic(d);
+            }
+        }
 
         for (List<Diagnostic> ld: indexer.parseErrors.values()) {
             for (Diagnostic d: ld) {

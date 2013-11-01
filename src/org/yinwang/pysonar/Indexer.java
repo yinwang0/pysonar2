@@ -265,15 +265,6 @@ public class Indexer {
         return references;
     }
 
-    public List<Binding> lookupReference(Ref r) {
-        return references.get(r);
-    }
-
-    public void removeBinding(Binding b) {
-        for (List<Binding> bs: allBindings.values()) {
-            bs.remove(b);
-        }
-    }
 
     /*
      * Multiple bindings can exist for the same qname, but they should appear at
@@ -312,22 +303,25 @@ public class Indexer {
         return null;
     }
 
+
     public void putProblem(Node loc, String msg) {
-        String file;
-        if (loc != null && ((file = loc.getFile()) != null)) {
+        String file = loc.getFile();
+        if (file != null) {
             addFileErr(file, loc.start, loc.end, msg);
         }
     }
 
-    public void putProblem(String file, int beg, int end, String msg) {
+
+    // for situations without a Node
+    public void putProblem(String file, int begin, int end, String msg) {
         if (file != null) {
-            addFileErr(file, beg, end, msg);
+            addFileErr(file, begin, end, msg);
         }
     }
 
-    void addFileErr(String file, int beg, int end, String msg) {
-        List<Diagnostic> msgs = getFileErrs(file, semanticErrors);
-        msgs.add(new Diagnostic(file, Diagnostic.Type.ERROR, beg, end, msg));
+    void addFileErr(String file, int begin, int end, String msg) {
+        Diagnostic d = new Diagnostic(file, Diagnostic.Category.ERROR, begin, end, msg);
+        getFileErrs(file, semanticErrors).add(d);
     }
 
     List<Diagnostic> getParseErrs(String file) {

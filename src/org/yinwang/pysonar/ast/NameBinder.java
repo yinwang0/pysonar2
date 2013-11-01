@@ -31,7 +31,7 @@ public class NameBinder {
                 ListType t = (ListType)valueType;
                 t.setElementType(UnionType.union(t.getElementType(), rvalue));
             }
-        } else {
+        } else if (target != null) {
             Indexer.idx.putProblem(target, "invalid location for assignment");
         }
     }
