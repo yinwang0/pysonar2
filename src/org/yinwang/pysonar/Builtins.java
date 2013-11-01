@@ -76,8 +76,6 @@ public class Builtins {
     public ClassType Datetime_tzinfo;
     public ClassType Time_struct_time;
 
-    Scope globaltable;
-    Scope moduleTable;
 
     String[] builtin_exception_types = {
         "ArithmeticError", "AssertionError", "AttributeError",
@@ -96,7 +94,7 @@ public class Builtins {
         "ZeroDivisionError"
     };
 
-    Set<org.yinwang.pysonar.types.Type> nativeTypes = new HashSet<org.yinwang.pysonar.types.Type>();
+    Set<Type> nativeTypes = new HashSet<Type>();
 
     ClassType newClass(String name, Scope table) {
         return newClass(name, table, null);
@@ -113,7 +111,7 @@ public class Builtins {
     }
 
     ModuleType newModule(String name) {
-        ModuleType mt = new ModuleType(name, null, globaltable);
+        ModuleType mt = new ModuleType(name, null, Indexer.idx.globaltable);
         nativeTypes.add(mt);
         return mt;
     }
@@ -134,7 +132,10 @@ public class Builtins {
         return t;
     }
 
-    FunType newFunc(org.yinwang.pysonar.types.Type type) {
+    FunType newFunc(Type type) {
+        if (type == null) {
+            type = Indexer.idx.builtins.unknown;
+        }
         FunType t = new FunType(Indexer.idx.builtins.unknown, type);
         nativeTypes.add(t);
         return t;
@@ -144,25 +145,25 @@ public class Builtins {
         return newList(unknown());
     }
 
-    ListType newList(org.yinwang.pysonar.types.Type type) {
+    ListType newList(Type type) {
         ListType t = new ListType(type);
         nativeTypes.add(t);
         return t;
     }
 
-    DictType newDict(org.yinwang.pysonar.types.Type ktype, org.yinwang.pysonar.types.Type vtype) {
+    DictType newDict(Type ktype, Type vtype) {
         DictType t = new DictType(ktype, vtype);
         nativeTypes.add(t);
         return t;
     }
 
-    TupleType newTuple(org.yinwang.pysonar.types.Type... types) {
+    TupleType newTuple(Type... types) {
         TupleType t = new TupleType(types);
         nativeTypes.add(t);
         return t;
     }
 
-    UnionType newUnion(org.yinwang.pysonar.types.Type... types) {
+    UnionType newUnion(Type... types) {
         UnionType t = new UnionType(types);
         nativeTypes.add(t);
         return t;
@@ -198,28 +199,28 @@ public class Builtins {
             if (module == null) {
                 module = newModule(name);
                 table = module.getTable();
-                moduleTable.put(name, liburl(), module, MODULE, 0);
+                Indexer.idx.moduleTable.put(name, liburl(), module, MODULE, 0);
             }
         }
 
-        protected Binding update(String name, Url url, org.yinwang.pysonar.types.Type type, Binding.Kind kind) {
+        protected Binding update(String name, Url url, Type type, Binding.Kind kind) {
             return table.update(name, url, type, kind);
         }
 
-        protected Binding addClass(String name, Url url, org.yinwang.pysonar.types.Type type) {
+        protected Binding addClass(String name, Url url, Type type) {
             return table.update(name, url, type, CLASS);
         }
 
-        protected Binding addMethod(String name, Url url, org.yinwang.pysonar.types.Type type) {
+        protected Binding addMethod(String name, Url url, Type type) {
             return table.update(name, url, type, METHOD);
         }
 
-        protected Binding addFunction(String name, Url url, org.yinwang.pysonar.types.Type type) {
+        protected Binding addFunction(String name, Url url, Type type) {
             return table.update(name, url, newFunc(type), FUNCTION);
         }
 
         // don't use this unless you're sure it's OK to share the type object
-        protected void addFunctions_beCareful(org.yinwang.pysonar.types.Type type, String... names) {
+        protected void addFunctions_beCareful(Type type, String... names) {
             for (String name : names) {
                 addFunction(name, liburl(), type);
             }
@@ -243,12 +244,12 @@ public class Builtins {
             }
         }
 
-        protected Binding addAttr(String name, Url url, org.yinwang.pysonar.types.Type type) {
+        protected Binding addAttr(String name, Url url, Type type) {
             return table.update(name, url, type, ATTRIBUTE);
         }
 
         // don't use this unless you're sure it's OK to share the type object
-        protected void addAttributes_beCareful(org.yinwang.pysonar.types.Type type, String... names) {
+        protected void addAttributes_beCareful(Type type, String... names) {
             for (String name : names) {
                 addAttr(name, liburl(), type);
             }
@@ -289,9 +290,7 @@ public class Builtins {
      */
     private Map<String, NativeModule> modules = new HashMap<String, NativeModule>();
 
-    public Builtins(Scope globals, Scope modules) {
-        globaltable = globals;
-        moduleTable = modules;
+    public Builtins() {
         buildTypes();
     }
 
@@ -391,12 +390,12 @@ public class Builtins {
     	if (name.startsWith(".")) {
     		return null;
     	}
-        if (name.indexOf(".") == -1) {  // unqualified
+        if (!name.contains(".")) {  // unqualified
             return getModule(name);
         }
 
         String[] mods = name.split("\\.");
-        org.yinwang.pysonar.types.Type type = getModule(mods[0]);
+        Type type = getModule(mods[0]);
         if (type == null) {
             return null;
         }
@@ -414,7 +413,7 @@ public class Builtins {
         return wrap == null ? null : wrap.getModule();
     }
 
-    public boolean isNative(org.yinwang.pysonar.types.Type type) {
+    public boolean isNative(Type type) {
         return nativeTypes.contains(type);
     }
 
@@ -521,7 +520,7 @@ public class Builtins {
                 "__rlshift__", "__rmod__", "__rmul__", "__ror__", "__rpow__",
                 "__rrshift__", "__rshift__", "__rsub__", "__rtruediv__",
                 "__rxor__", "__setattr__", "__str__", "__sub__", "__truediv__",
-                "__xor__"    
+                "__xor__"
         };
         for (String m : num_methods_num) {
             bnt.update(m, numUrl(), newFunc(BaseNum), METHOD);
@@ -665,7 +664,7 @@ public class Builtins {
         table.update("newlines", newLibUrl(url), newUnion(BaseStr, newTuple(BaseStr)), ATTRIBUTE);
     }
 
-    private Binding synthetic(Scope table, String n, Url url, org.yinwang.pysonar.types.Type type, Binding.Kind k) {
+    private Binding synthetic(Scope table, String n, Url url, Type type, Binding.Kind k) {
         Binding b = table.update(n, url, type, k);
         b.markSynthetic();
         return b;
@@ -715,7 +714,7 @@ public class Builtins {
         }
         @Override
         public void initBindings() {
-            moduleTable.put(name, liburl(), module, MODULE, 0);
+            Indexer.idx.moduleTable.put(name, liburl(), module, MODULE, 0);
             table.addSuper(BaseModule.getTable());
 
             addClass("None", newLibUrl("constants"), None);
@@ -774,7 +773,8 @@ public class Builtins {
             }
 
             for (String f : builtin_exception_types) {
-                addClass(f, newDataModelUrl("org/yinwang/pysonar/types"), newClass(f, globaltable, Object));
+                addClass(f, newDataModelUrl("org/yinwang/pysonar/types"),
+                        newClass(f, Indexer.idx.globaltable, Object));
             }
             BaseException = (ClassType)table.lookup("BaseException").getType();
 
@@ -786,8 +786,8 @@ public class Builtins {
 
             addFunction("__import__", newLibUrl("functions"), newModule("<?>"));
 
-            globaltable.put("__builtins__", liburl(), module, ATTRIBUTE, 0);
-            globaltable.merge(table);
+            Indexer.idx.globaltable.put("__builtins__", liburl(), module, ATTRIBUTE, 0);
+            Indexer.idx.globaltable.merge(table);
         }
     }
 

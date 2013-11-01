@@ -67,8 +67,7 @@ public class Indexer {
     public Map<String, List<Diagnostic>> problems = new HashMap<String, List<Diagnostic>>();
     public Map<String, List<Diagnostic>> parseErrs = new HashMap<String, List<Diagnostic>>();
 
-    public String currentFile = null;
-    public String projDir = null;
+    public String cwd = null;
 
     public List<String> path = new ArrayList<String>();
     private Set<FunType> uncalled = new HashSet<FunType>();
@@ -111,8 +110,6 @@ public class Indexer {
      */
     public Builtins builtins;
 
-    private boolean aggressiveAssertions;
-
     private int nprob = 0;
     private int nparsing = 0;
     private int loadedFiles = 0;
@@ -124,106 +121,28 @@ public class Indexer {
     	progress = new Progress(10, 100);
     	logger = Logger.getLogger(Indexer.class.getCanonicalName());
         idx = this;
-        builtins = new Builtins(globaltable, moduleTable);
+        builtins = new Builtins();
         builtins.init();
     }
 
-    public void setLogger(Logger logger) {
-        if (logger == null) {
-            throw new IllegalArgumentException("null logger param");
-        }
-    }
 
-    public Logger getLogger() {
-        return logger;
-    }
-
-    public void setProjectDir(String cd) throws IOException {
-        projDir = Util.canonicalize(cd);
+    public void setCWD(String cd) throws IOException {
+        cwd = Util.canonicalize(cd);
     }
 
 
-    /**
-     * Configures whether the indexer should abort with an exception when it
-     * encounters an internal error or unexpected program state.  Normally the
-     * indexer attempts to continue indexing, on the assumption that having an
-     * index with mostly good data is better than having no index at all.
-     * Enabling aggressive assertions is useful for debugging the indexer.
-     */
-    public void enableAggressiveAssertions(boolean enable) {
-        aggressiveAssertions = enable;
-    }
-
-    public boolean aggressiveAssertionsEnabled() {
-        return aggressiveAssertions;
-    }
-
-    /**
-     * If aggressive assertions are enabled, propages the passed
-     * {@link Throwable}, wrapped in an {@link IndexerException}.
-     * @param msg descriptive message; ok to be {@code null}
-     * @throws IndexerException
-     */
-    public void handleException(String msg, Throwable cause) {
-        // Stack overflows are still fairly common due to cyclic
-        // types, and they take up an awful lot of log space, so we
-        // don't log the whole trace by default.
-        if (cause instanceof StackOverflowError) {
-            logger.log(Level.WARNING, msg, cause);
-            return;
-        }
-
-        if (aggressiveAssertionsEnabled()) {
-            if (msg != null) {
-                throw new IndexerException(msg, cause);
-            }
-            throw new IndexerException(cause);
-        }
-        if (msg == null)
-            msg = "<null msg>";
-        if (cause == null)
-            cause = new Exception();
-        logger.log(Level.WARNING, msg, cause);
-    }
-
-    /**
-     * Signals a failed assertion about the state of the indexer or index.
-     * If aggressive assertions are enabled, throws an {@code IndexingException}.
-     * Otherwise the message is logged as a warning, and indexing continues.
-     * @param msg a descriptive message about the problem
-     * @see enableAggressiveAssertions
-     * @throws IndexerException
-     */
-    public void reportFailedAssertion(String msg) {
-        if (aggressiveAssertionsEnabled()) {
-            throw new IndexerException(msg, new Exception());  // capture stack
-        }
-        // Need more configuration control here.
-        // Currently getting a hillion jillion of these in large clients.
-        if (false) {
-            logger.log(Level.WARNING, msg);
-        }
-    }
-
-    /**
-     * Adds the specified absolute paths to the module search path.
-     */
     public void addPaths(List<String> p) throws IOException {
         for (String s : p) {
             addPath(s);
         }
     }
 
-    /**
-     * Adds the specified absolute path to the module search path.
-     */
+
     public void addPath(String p) throws IOException {
         path.add(Util.canonicalize(p));
     }
 
-    /**
-     * Sets the module search path to the specified list of absolute paths.
-     */
+
     public void setPath(List<String> path) throws IOException {
         this.path = new ArrayList<String>(path.size());
         addPaths(path);
@@ -236,25 +155,11 @@ public class Indexer {
      */
     public List<String> getLoadPath() {
         List<String> loadPath = new ArrayList<String>();
-        if (projDir != null) {
-            loadPath.add(projDir);
+        if (cwd != null) {
+            loadPath.add(cwd);
         }
         loadPath.addAll(path);
         return loadPath;
-    }
-
-    public boolean isLibFile(String file) {
-        if (file.startsWith("/")) {
-            return true;
-        }
-        if (path != null) {
-            for (String p : path) {
-                if (file.startsWith(p)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public boolean inStack(Object f) {
@@ -287,42 +192,6 @@ public class Indexer {
         }
     }
 
-    /**
-     * Return the binding for {@code qname}, or {@code null} if not known.
-     */
-    public Binding lookupFirstBinding(String qname) {
-        List<Binding> lb = allBindings.get(qname);
-        if (lb != null && lb.size() > 0) {
-            return lb.get(0);
-        } else {
-            return null;
-        }
-    }
-
-    public Binding lookupBindingAtOffset(String qname, int offset) {
-        List<Binding> lb = allBindings.get(qname);
-        for (Binding b : lb) {
-            for (Def d : b.getDefs()) {
-                if (d.getStart() == offset) {
-                    return b;
-                }
-            }
-        }
-        return null;
-    }
-
-
-    /**
-     * Return the type for {@code qname}, or {@code null} if not known.
-     * @throws IllegalStateException if {@link #ready} has not been called.
-     */
-    public Type lookupFirstBindingType(String qname) {
-        Binding b = lookupFirstBinding(qname);
-        if (b != null) {
-            return b.getType();
-        }
-        return null;
-    }
 
     ModuleType getCachedModule(String file) {
         Type t = moduleTable.lookupType(file);
@@ -487,14 +356,6 @@ public class Indexer {
     }
 
     /**
-     * Loads a file and all its ancestor packages.
-     * @see #loadFile(String,boolean)
-     */
-    public ModuleType loadFile(String path) throws Exception {
-        return loadFile(path, false);
-    }
-
-    /**
      * Loads a module from a string containing the module contents.
      * Idempotent:  looks in the module cache first. Used for simple unit tests.
      * @param path a path for reporting/caching purposes.  The filename
@@ -517,11 +378,9 @@ public class Indexer {
      *        If it is a directory, it is suffixed with "__init__.py", and
      *        only that file is loaded from the directory.
      *
-     * @param noparents {@code true} to skip loading ancestor packages
-     *
      * @return {@code null} if {@code path} could not be loaded
      */
-    public ModuleType loadFile(String path, boolean skipChain) throws Exception {
+    public ModuleType loadFile(String path) throws Exception {
         File f = new File(path);
         if (f.isDirectory()) {
             finer("\n    loading init file from directory: " + path);
@@ -540,15 +399,8 @@ public class Indexer {
             return module;
         }
 
-        if (!skipChain) {
-            loadParentPackage(path);
-        }
-        try {
-            return parseAndResolve(path);
-        } catch (StackOverflowError soe) {
-            handleException("Error loading " + path, soe);
-            return null;
-        }
+        loadParentPackage(path);
+        return parseAndResolve(path);
     }
 
     /**
@@ -736,13 +588,13 @@ public class Indexer {
     public void loadFileRecursive(String fullname) throws Exception {
         File file_or_dir = new File(fullname);
         if (file_or_dir.isDirectory()) {
-            setProjectDir(fullname);
+            setCWD(fullname);
             for (File file : file_or_dir.listFiles()) {
                 loadFileRecursive(file.getAbsolutePath());
             }
         } else {
             if (file_or_dir.getAbsolutePath().endsWith(".py")) {
-                setProjectDir(file_or_dir.getParent());
+                setCWD(file_or_dir.getParent());
                 loadFile(file_or_dir.getAbsolutePath());
             }
         }
@@ -811,10 +663,6 @@ public class Indexer {
         }
     }
 
-    public Set<FunType> getUncalled() {
-      return uncalled;
-    }
-
     public void removeUncalled(FunType f) {
         uncalled.remove(f);
         if (f.getFunc() != null) {
@@ -822,11 +670,7 @@ public class Indexer {
         }
     }
 
-    /*
-     * Process functions that are not called anywhere. New uncalled functions
-     * may be created during this process, so two lists are used for this
-     * purpose.
-     */
+
     public void applyUncalled() throws Exception {
         Progress progress = new Progress(100, 100);
         while (!uncalled.isEmpty()) {
@@ -841,33 +685,7 @@ public class Indexer {
         System.out.println();
     }
 
-    /**
-     * Clears the AST cache (to free up memory).  Subsequent calls to
-     * {@link #getAstForFile} will either fetch the serialized AST from a
-     * disk cache or re-parse the file from scratch.
-     */
-    public void clearAstCache() {
-        if (astCache != null) {
-            astCache.clear();
-        }
-    }
 
-    /**
-     * Clears the module table, discarding all resolved ASTs (modules)
-     * and their scope information.
-     */
-    public void clearModuleTable() {
-        moduleTable.clear();
-        moduleTable = new Scope(null, Scope.ScopeType.GLOBAL);
-        clearAstCache();
-    }
-
-
-    /**
-     * Reports a failed module or submodule resolution.
-     * @param qname module qname, e.g. "org.foo.bar"
-     * @param file the file where the unresolved import occurred
-     */
     public void recordUnresolvedModule(String qname, String file) {
         Set<String> importers = unresolvedModules.get(qname);
         if (importers == null) {
@@ -877,9 +695,7 @@ public class Indexer {
         importers.add(file);
     }
 
-    /**
-     * Report resolution rate and other statistics data.
-     */
+
     public String getStatusReport() {
         StringBuilder sb = new StringBuilder();
         sb.append("Summary: \n")
@@ -888,32 +704,23 @@ public class Indexer {
                 .append("\n- semantic problems:\t").append(nprob)
                 .append("\n- parsing problems:\t").append(nparsing);
 
-//        for (String s : unresolvedModules.keySet()) {
-//            sb.append(s).append(": ");
-//            Set<String> importers = unresolvedModules.get(s);
-//            if (importers.size() > 5) {
-//                sb.append(importers.iterator().next());
-//                sb.append(" and " );
-//                sb.append(importers.size());
-//                sb.append(" more");
-//            } else {
-//                String files = importers.toString();
-//                sb.append(files.substring(1, files.length() - 1));
-//            }
-//            sb.append("\n");
-//        }
+        for (String s : unresolvedModules.keySet()) {
+            sb.append(s).append(": ");
+            Set<String> importers = unresolvedModules.get(s);
+            if (importers.size() > 5) {
+                sb.append(importers.iterator().next());
+                sb.append(" and " );
+                sb.append(importers.size());
+                sb.append(" more");
+            } else {
+                String files = importers.toString();
+                sb.append(files.substring(1, files.length() - 1));
+            }
+            sb.append("\n");
+        }
         return sb.toString();
     }
 
-    private String percent(int num, int total) {
-        double pct = (num * 1.0) / total;
-        pct = Math.round(pct * 10000) / 100.0;
-        return num + "/" + total + " = " + pct + "%";
-    }
-
-    public int numFilesLoaded() {
-        return loadedFiles;
-    }
 
     public List<String> getLoadedFiles() {
         List<String> files = new ArrayList<String>();
@@ -949,35 +756,6 @@ public class Indexer {
 
     public void finer(String msg) {
         log(Level.FINER, msg);
-    }
-
-    /**
-     * Releases all resources for the current indexer.
-     */
-    public void release() {
-        // Null things out to catch anyone who might still be referencing them.
-        moduleTable = globaltable = null;
-        clearAstCache();
-        astCache = null;
-        locations = null;
-        problems.clear();
-        problems = null;
-        parseErrs.clear();
-        parseErrs = null;
-        path.clear();
-        path = null;
-        failedModules.clear();
-        failedModules = null;
-        unresolvedModules.clear();
-        unresolvedModules = null;
-        builtins = null;
-        allBindings.clear();
-        allBindings = null;
-        uncalled.clear();
-        called.clear();
-
-        // Technically this is all that's needed for the garbage collector.
-        idx = null;
     }
 
     @Override

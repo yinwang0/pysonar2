@@ -270,4 +270,11 @@ public class Util {
     }
 
 
+    private static String percent(int num, int total) {
+        double pct = (num * 1.0) / total;
+        pct = Math.round(pct * 10000) / 100.0;
+        return num + "/" + total + " = " + pct + "%";
+    }
+
+
 }

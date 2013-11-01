@@ -175,10 +175,6 @@ public class Scope {
         // Attributes are always part of a qualified name.  If there is no qname
         // on the target type, it's a bug (we forgot to set the path somewhere.)
         if ("".equals(path)) {
-            Indexer.idx.reportFailedAssertion(
-                    "Attempting to set attr '" + id + "' at location " + loc
-                            + (loc != null ? loc.getFile() : "")
-                            + " in scope with no path (qname) set: " + toShortString());
             return null;
         } else {
             Binding b = lookupAttr(id);
@@ -423,7 +419,6 @@ public class Scope {
     public Scope getGlobalTable() {
         Scope result = getSymtabOfType(ScopeType.MODULE);
         if (result == null) {
-            Indexer.idx.reportFailedAssertion("No module table found for " + this);
             result = this;
         }
         return result;
