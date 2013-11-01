@@ -21,6 +21,7 @@ if [ "$(uname)" == "Darwin" ]; then
         brew install ant;
         if [ $? -ne 0 ]; then 
             echo "Please install brew manually, see http://brew.sh";
+            exit 1;
         fi 
     else
         echo "ant is installed";
