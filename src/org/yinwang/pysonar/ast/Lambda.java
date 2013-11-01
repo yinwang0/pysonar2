@@ -24,13 +24,20 @@ public class Lambda extends FunctionDef {
     public boolean isLambda() {
         return true;
     }
-    
+
+
+    private static int lambdaCounter = 0;
+    public static String genLambdaName() {
+        lambdaCounter = lambdaCounter + 1;
+        return "lambda%" + lambdaCounter;
+    }
+
     @Override
     public Name getName() {
         if (name != null) {
             return name;
         } else {
-            String fn = Indexer.idx.genLambdaName();
+            String fn = genLambdaName();
             name = new Name(fn, start, start + "lambda".length());
             addChildren(name);
             return name;

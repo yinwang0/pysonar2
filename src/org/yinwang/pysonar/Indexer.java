@@ -68,17 +68,11 @@ public class Indexer {
     public Map<String, List<Diagnostic>> parseErrs = new HashMap<String, List<Diagnostic>>();
 
     public String cwd = null;
+    public int nCalled = 0;
 
     public List<String> path = new ArrayList<String>();
     private Set<FunType> uncalled = new HashSet<FunType>();
-    private Set<FunctionDef> called = new HashSet<FunctionDef>();
     private Set<Object> callStack = new HashSet<Object>();
-
-    private int lambdaCounter = 0;
-    public String genLambdaName() {
-        lambdaCounter = lambdaCounter + 1;
-        return "lambda%" + lambdaCounter;
-    }
 
     private int threadCounter = 0;
     public int newThread() {
@@ -87,7 +81,7 @@ public class Indexer {
     }
 
     /**
-     * Manages a store of serialized ASTs.  ANTLR parsing is one of the slower and
+     * Manages a store of serialized ASTs. Parsing is one of the slower and
      * more expensive phases of indexing; reusing parse trees can help with resource
      * utilization when indexing several projects (or re-indexing one project).
      */
@@ -98,11 +92,6 @@ public class Indexer {
      * This set keeps track of modules we attempted but didn't find.
      */
     public Set<String> failedModules = new HashSet<String>();
-
-    /**
-     * This set tracks module imports that could not be resolved.
-     */
-    private Map<String, Set<String>> unresolvedModules = new TreeMap<String, Set<String>>();
 
     /**
      * Manages the built-in modules -- that is, modules from the standard Python
@@ -608,7 +597,7 @@ public class Indexer {
      */
     public void finish() throws Exception {
         progress.end();
-        Util.msg("Finished loading files. " + called.size() + " functions were called.");
+        Util.msg("Finished loading files. " + nCalled + " functions were called.");
         Util.msg("Analyzing uncalled functions, count: " + uncalled.size());
         applyUncalled();
 
@@ -658,16 +647,14 @@ public class Indexer {
     }
 
     public void addUncalled(FunType cl) {
-        if (!called.contains(cl.getFunc())) {
+        if (!cl.func.called) {
             uncalled.add(cl);
         }
     }
 
+
     public void removeUncalled(FunType f) {
         uncalled.remove(f);
-        if (f.getFunc() != null) {
-            called.add(f.getFunc());
-        }
     }
 
 
@@ -681,18 +668,6 @@ public class Indexer {
             }
         }
         progress.end();
-        called.clear();
-        System.out.println();
-    }
-
-
-    public void recordUnresolvedModule(String qname, String file) {
-        Set<String> importers = unresolvedModules.get(qname);
-        if (importers == null) {
-            importers = new TreeSet<String>();
-            unresolvedModules.put(qname, importers);
-        }
-        importers.add(file);
     }
 
 
@@ -700,24 +675,10 @@ public class Indexer {
         StringBuilder sb = new StringBuilder();
         sb.append("Summary: \n")
                 .append("- modules loaded:\t").append(loadedFiles)
-                .append("\n- unresolved modules:\t").append(unresolvedModules.size())
+                .append("\n- unresolved modules:\t").append(failedModules.size())
                 .append("\n- semantic problems:\t").append(nprob)
                 .append("\n- parsing problems:\t").append(nparsing);
 
-        for (String s : unresolvedModules.keySet()) {
-            sb.append(s).append(": ");
-            Set<String> importers = unresolvedModules.get(s);
-            if (importers.size() > 5) {
-                sb.append(importers.iterator().next());
-                sb.append(" and " );
-                sb.append(importers.size());
-                sb.append(" more");
-            } else {
-                String files = importers.toString();
-                sb.append(files.substring(1, files.length() - 1));
-            }
-            sb.append("\n");
-        }
         return sb.toString();
     }
 

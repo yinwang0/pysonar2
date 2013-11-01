@@ -87,6 +87,11 @@ public class Call extends Node {
 
         Indexer.idx.removeUncalled(func);
 
+        if (func.func != null && !func.func.called) {
+            Indexer.idx.nCalled++;
+            func.func.called = true;
+        }
+
         if (func.getFunc() == null) {           // func without definition (possibly builtins)
             return Indexer.idx.builtins.unknown;
         } else if (call != null && Indexer.idx.inStack(call)) {

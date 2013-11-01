@@ -22,6 +22,7 @@ public class FunctionDef extends Node {
     public Name kwarg;   // **kwarg
     public Node body;
     private List<Node> decoratorList;
+    public boolean called = false;
 
 
     public FunctionDef(Name name, List<Node> args, Block body, List<Node> defaults,
