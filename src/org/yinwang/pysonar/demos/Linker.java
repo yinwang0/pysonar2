@@ -48,18 +48,18 @@ class Linker {
         }
 
         // highlight definitions
-        for (Entry<Ref,List<Binding>> e : indexer.getLocations().entrySet()) {
+        for (Entry<Ref,List<Binding>> e : indexer.getReferences().entrySet()) {
             processRef(e.getKey(), e.getValue());
         }
 
 //// disable for now, turn on when false positive rate is low enough
-//        for (List<Diagnostic> ld: indexer.problems.values()) {
+//        for (List<Diagnostic> ld: indexer.semanticErrors.values()) {
 //            for (Diagnostic d: ld) {
 //                processDiagnostic(d);
 //            }
 //        }
 
-        for (List<Diagnostic> ld: indexer.parseErrs.values()) {
+        for (List<Diagnostic> ld: indexer.parseErrors.values()) {
             for (Diagnostic d: ld) {
                 processDiagnostic(d);
 

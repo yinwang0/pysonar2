@@ -59,13 +59,13 @@ public class Indexer {
      *   var.foo()  # foo here refers to both A.foo and B.foo
      * <pre>
      */
-    private Map<Ref, List<Binding>> locations = new HashMap<Ref, List<Binding>>();
+    private Map<Ref, List<Binding>> references = new HashMap<Ref, List<Binding>>();
 
     /**
-     * Diagnostics.
+     * Diagnostics: map from file names to Diagnostics
      */
-    public Map<String, List<Diagnostic>> problems = new HashMap<String, List<Diagnostic>>();
-    public Map<String, List<Diagnostic>> parseErrs = new HashMap<String, List<Diagnostic>>();
+    public Map<String, List<Diagnostic>> semanticErrors = new HashMap<String, List<Diagnostic>>();
+    public Map<String, List<Diagnostic>> parseErrors = new HashMap<String, List<Diagnostic>>();
 
     public String cwd = null;
     public int nCalled = 0;
@@ -92,6 +92,7 @@ public class Indexer {
      * This set keeps track of modules we attempted but didn't find.
      */
     public Set<String> failedModules = new HashSet<String>();
+    public Set<String> failedToParse = new HashSet<String>();
 
     /**
      * Manages the built-in modules -- that is, modules from the standard Python
@@ -99,9 +100,7 @@ public class Indexer {
      */
     public Builtins builtins;
 
-    private int nprob = 0;
-    private int nparsing = 0;
-    private int loadedFiles = 0;
+    public int nLoadedFiles = 0;
 
     private Logger logger;
     private Progress progress;
@@ -220,7 +219,7 @@ public class Indexer {
      * errors and warnings generated in the file.
      */
     public List<Diagnostic> getDiagnosticsForFile(String file) {
-        List<Diagnostic> errs = problems.get(file);
+        List<Diagnostic> errs = semanticErrors.get(file);
         if (errs != null) {
             return errs;
         }
@@ -247,14 +246,14 @@ public class Indexer {
             return;
         }
         Ref ref = new Ref(node);
-        List<Binding> bindings = locations.get(ref);
+        List<Binding> bindings = references.get(ref);
         if (bindings == null) {
             // The indexer is heavily memory-constrained, so we need small overhead.
             // Empirically using a capacity-1 ArrayList for the binding set
             // uses about 1/2 the memory of a LinkedList, and 1/4 the memory
             // of a default HashSet.
             bindings = new ArrayList<Binding>(1);
-            locations.put(ref, bindings);
+            references.put(ref, bindings);
         }
         if (!bindings.contains(b)) {
             bindings.add(b);
@@ -262,12 +261,12 @@ public class Indexer {
         b.addRef(ref);
     }
 
-    public Map<Ref, List<Binding>> getLocations() {
-        return locations;
+    public Map<Ref, List<Binding>> getReferences() {
+        return references;
     }
 
-    public List<Binding> getLocation(Ref r) {
-        return locations.get(r);
+    public List<Binding> lookupReference(Ref r) {
+        return references.get(r);
     }
 
     public void removeBinding(Binding b) {
@@ -327,12 +326,12 @@ public class Indexer {
     }
 
     void addFileErr(String file, int beg, int end, String msg) {
-        List<Diagnostic> msgs = getFileErrs(file, problems);
+        List<Diagnostic> msgs = getFileErrs(file, semanticErrors);
         msgs.add(new Diagnostic(file, Diagnostic.Type.ERROR, beg, end, msg));
     }
 
     List<Diagnostic> getParseErrs(String file) {
-        return getFileErrs(file, parseErrs);
+        return getFileErrs(file, parseErrors);
     }
 
     List<Diagnostic> getFileErrs(String file, Map<String, List<Diagnostic>> map) {
@@ -455,12 +454,13 @@ public class Indexer {
                 ast = getAstForFile(file);
             }
             if (ast == null) {
+                failedModules.add(file);
                 return null;
             } else {
                 finer("resolving: " + file);
                 ModuleType mod = (ModuleType)ast.resolve(moduleTable, 0);
                 finer("[success]");
-                loadedFiles++;
+                nLoadedFiles++;
                 return mod;
             }
         } catch (OutOfMemoryError e) {
@@ -614,12 +614,9 @@ public class Indexer {
             }
         }
 
-        for (Entry<Ref, List<Binding>> ent : locations.entrySet()) {
+        for (Entry<Ref, List<Binding>> ent : references.entrySet()) {
             convertCallToNew(ent.getKey(), ent.getValue());
         }
-
-        nprob = problems.size();
-        nparsing = parseErrs.size();
     }
 
     private void convertCallToNew(Ref ref, List<Binding> bindings) {
@@ -659,7 +656,7 @@ public class Indexer {
 
 
     public void applyUncalled() throws Exception {
-        Progress progress = new Progress(100, 100);
+        Progress progress = new Progress(100, 50);
         while (!uncalled.isEmpty()) {
             List<FunType> uncalledDup = new ArrayList<FunType>(uncalled);
             for (FunType cl : uncalledDup) {
@@ -674,10 +671,10 @@ public class Indexer {
     public String getStatusReport() {
         StringBuilder sb = new StringBuilder();
         sb.append("Summary: \n")
-                .append("- modules loaded:\t").append(loadedFiles)
+                .append("- modules loaded:\t").append(nLoadedFiles)
                 .append("\n- unresolved modules:\t").append(failedModules.size())
-                .append("\n- semantic problems:\t").append(nprob)
-                .append("\n- parsing problems:\t").append(nparsing);
+                .append("\n- semantic problems:\t").append(semanticErrors.size())
+                .append("\n- failed to parse:\t").append(failedToParse.size());
 
         return sb.toString();
     }
@@ -721,7 +718,7 @@ public class Indexer {
 
     @Override
     public String toString() {
-        return "<Indexer:locs=" + locations.size() + ":probs="
-                + problems.size() + ":files=" + loadedFiles + ">";
+        return "<Indexer:locs=" + references.size() + ":probs="
+                + semanticErrors.size() + ":files=" + nLoadedFiles + ">";
     }
 }

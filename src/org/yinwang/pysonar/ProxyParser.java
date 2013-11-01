@@ -567,6 +567,8 @@ public class ProxyParser {
                 exchange.delete();
                 marker.delete();
                 return parseFileInner(filename, python3Process);
+            } else {
+                Indexer.idx.failedToParse.add(filename);
             }
         }
 
