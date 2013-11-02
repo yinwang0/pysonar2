@@ -1,4 +1,4 @@
-# !/bin/bash
+#!/bin/bash
 
 echo Downloading Jython...
 hg clone http://hg.python.org/jython
@@ -27,12 +27,8 @@ if [ "$(uname)" == "Darwin" ]; then
         echo "ant is installed";
     fi
 fi
-ant jar-complete
 
+ant jar-complete
 echo Please find PySonar2 inside 'dist/jython.jar'
 echo To run demo:
 echo java -classpath dist/jython.jar org.python.indexer.demos.HtmlDemo /usr/lib/python2.7 /usr/lib/python2.7
-
-
-
-
