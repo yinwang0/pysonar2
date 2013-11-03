@@ -88,23 +88,23 @@ public class HtmlDemo {
     private String rootPath;
     private Linker linker;
 
-    private void makeOutputDir() throws Exception {
+    private void makeOutputDir() {
         if (!OUTPUT_DIR.exists()) {
             OUTPUT_DIR.mkdirs();
-            info("Created directory: " + OUTPUT_DIR.getAbsolutePath());
+            Util.msg("Created directory: " + OUTPUT_DIR.getAbsolutePath());
         }
     }
 
-    private void start(@NotNull File stdlib, @NotNull File fileOrDir) throws Exception {
+    private void start(@NotNull File stdlib, @NotNull File fileOrDir) {
         long start = System.currentTimeMillis();
 
         File rootDir = fileOrDir.isFile() ? fileOrDir.getParentFile() : fileOrDir;
-        rootPath = rootDir.getCanonicalPath();
+        rootPath = rootDir.getPath();
 
         indexer = new Indexer();
-        indexer.addPath(stdlib.getCanonicalPath());
+        indexer.addPath(stdlib.getPath());
         Util.msg("Building index");
-        indexer.loadFileRecursive(fileOrDir.getCanonicalPath());
+        indexer.loadFileRecursive(fileOrDir.getPath());
         indexer.finish();
 
         Util.msg(indexer.getStatusReport());
@@ -118,7 +118,7 @@ public class HtmlDemo {
         Util.msg("Finished generating HTML in: " + Util.timeString(end - start));
     }
 
-    private void generateHtml() throws Exception {
+    private void generateHtml() {
         Util.msg("\nGenerating HTML");
         makeOutputDir();
 
@@ -135,7 +135,11 @@ public class HtmlDemo {
                 destFile.getParentFile().mkdirs();
                 String destPath = destFile.getAbsolutePath() + ".html";
                 String html = markup(path);
-                Util.writeFile(destPath, html);
+                try {
+                    Util.writeFile(destPath, html);
+                } catch (Exception e) {
+                    Util.msg("Failed to write: " + html);
+                }
             }
         }
         progress.end();
@@ -143,8 +147,15 @@ public class HtmlDemo {
     }
 
     @NotNull
-    private String markup(String path) throws Exception {
-        String source = Util.readFile(path);
+    private String markup(String path) {
+        String source;
+
+        try {
+            source = Util.readFile(path);
+        } catch (Exception e) {
+            Util.die("Failed to read file: " + path);
+            return "";
+        }
 
         List<StyleRun> styles = new Styler(indexer, linker).addStyles(path, source);
         styles.addAll(linker.getStyles(path));
@@ -179,21 +190,13 @@ public class HtmlDemo {
         return result.toString();
     }
 
-    private static void abort(String msg) {
-        System.err.println(msg);
-        System.exit(1);
-    }
-
-    private static void info(Object msg) {
-        System.out.println(msg);
-    }
 
     private static void usage() {
-        info("Usage:  java org.yinwang.pysonar.HtmlDemo <python-stdlib> <file-or-dir>");
-        info("  first arg specifies the root of the python standard library");
-        info("  second arg specifies file or directory for which to generate the index");
-        info("Example that generates an index for just the email libraries:");
-        info(" java org.yinwang.pysonar.HtmlDemo ./CPythonLib ./CPythonLib/email");
+        Util.msg("Usage:  java org.yinwang.pysonar.HtmlDemo <python-stdlib> <file-or-dir>");
+        Util.msg("  first arg specifies the root of the python standard library");
+        Util.msg("  second arg specifies file or directory for which to generate the index");
+        Util.msg("Example that generates an index for just the email libraries:");
+        Util.msg(" java org.yinwang.pysonar.HtmlDemo ./CPythonLib ./CPythonLib/email");
         System.exit(0);
     }
 
@@ -201,12 +204,12 @@ public class HtmlDemo {
     private static File checkFile(String path) {
         File f = new File(path);
         if (!f.canRead()) {
-            abort("Path not found or not readable: " + path);
+            Util.die("Path not found or not readable: " + path);
         }
         return f;
     }
 
-    public static void main(@NotNull String[] args) throws Exception {
+    public static void main(@NotNull String[] args) {
         if (args.length < 2 || args.length > 3) {
             usage();
         }
@@ -215,7 +218,7 @@ public class HtmlDemo {
         File stdlib = checkFile(args[0]);
 
         if (!stdlib.isDirectory()) {
-            abort("Not a directory: " + stdlib);
+            Util.die("Not a directory: " + stdlib);
         }
 
         new HtmlDemo().start(stdlib, fileOrDir);

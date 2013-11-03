@@ -20,7 +20,7 @@ public class Index extends Node {
 
     @Nullable
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         return resolveExpr(value, s, tag);
     }
 

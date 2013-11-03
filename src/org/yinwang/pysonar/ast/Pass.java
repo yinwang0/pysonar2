@@ -15,7 +15,7 @@ public class Pass extends Node {
     }
     
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         return Indexer.idx.builtins.Cont;
     }
 

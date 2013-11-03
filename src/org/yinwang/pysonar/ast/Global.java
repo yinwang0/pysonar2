@@ -21,7 +21,7 @@ public class Global extends Node {
     }
 
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         // Do nothing here because global names are processed by NBlock
         return Indexer.idx.builtins.Cont;
     }

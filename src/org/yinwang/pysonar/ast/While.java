@@ -26,7 +26,7 @@ public class While extends Node {
 
     @Nullable
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         resolveExpr(test, s, tag);
         Type t = Indexer.idx.builtins.unknown;
 

@@ -37,7 +37,7 @@ public class Scope {
     private String path = "";
 
 
-    public Scope(@NotNull Scope parent, ScopeType type) {
+    public Scope(Scope parent, ScopeType type) {
         this.parent = parent;
         this.scopeType = type;
 
@@ -131,7 +131,7 @@ public class Scope {
      * or it is otherwise undesirable to create a reference, the
      * {@link putLocation} call is omitted.
      */
-    public void put(String id, Binding b) {
+    public void put(String id, @NotNull Binding b) {
         getInternalTable().put(id, b);
     }
 

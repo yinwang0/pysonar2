@@ -128,10 +128,7 @@ public class Binding implements Comparable<Object> {
      * {@link Scope}.  If {@code node} is an {@link org.yinwang.pysonar.ast.Url}, and this is the
      * binding's only definition, it will be marked as a builtin.
      */
-    public void addDef(@Nullable Def def) {
-        if (def == null) {
-            return;
-        }
+    public void addDef(@NotNull Def def) {
         Set<Def> defs = getDefs();
         if (!defs.contains(def)) {
             defs.add(def);

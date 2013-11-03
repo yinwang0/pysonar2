@@ -47,13 +47,12 @@ class Styler extends DefaultNodeVisitor {
      * @param src file contents
      */
     @NotNull
-    public List<StyleRun> addStyles(String path, String src) throws Exception {
+    public List<StyleRun> addStyles(String path, String src) {
         this.path = path;
         source = src;
         Module m = indexer.getAstForFile(path);
         if (m != null) {
             m.visit(this);
-//            highlightLexicalTokens();
         }
         return styles;
     }

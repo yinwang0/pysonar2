@@ -48,7 +48,7 @@ public class Lambda extends FunctionDef {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope outer, int tag) throws Exception {
+    public Type resolve(@NotNull Scope outer, int tag) {
         this.defaultTypes = resolveAndConstructList(defaults, outer, tag);
         FunType cl = new FunType(this, outer.getForwarding());
         cl.getTable().setParent(outer);

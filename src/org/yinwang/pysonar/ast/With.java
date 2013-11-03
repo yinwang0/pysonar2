@@ -24,7 +24,7 @@ public class With extends Node {
 
     @Nullable
     @Override
-    public Type resolve(@NotNull Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) {
         Type val = resolveExpr(context_expr, s, tag);
         NameBinder.bind(s, optional_vars, val, tag);
         return resolveExpr(body, s, tag);

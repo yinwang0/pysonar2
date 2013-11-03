@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class NameBinder {
 
-    public static void bind(@NotNull Scope s, Node target, @NotNull Type rvalue, Binding.Kind kind, int tag) throws Exception {
+    public static void bind(@NotNull Scope s, Node target, @NotNull Type rvalue, Binding.Kind kind, int tag) {
         if (target instanceof Name) {
             bindName(s, (Name)target, rvalue, kind, tag);
         } else if (target instanceof Tuple) {
@@ -43,7 +43,7 @@ public class NameBinder {
      * Without specifying a kind, bind determines the kind according to the type
      * of the scope.
      */
-    public static void bind(@NotNull Scope s, Node target, @NotNull Type rvalue, int tag) throws Exception {
+    public static void bind(@NotNull Scope s, Node target, @NotNull Type rvalue, int tag) {
         Binding.Kind kind;
         if (s.getScopeType() == Scope.ScopeType.FUNCTION) {
             kind = Binding.Kind.VARIABLE;
@@ -54,7 +54,7 @@ public class NameBinder {
     }
 
 
-    public static void bind(@NotNull Scope s, @NotNull List<Node> xs, @NotNull Type rvalue, Binding.Kind kind, int tag) throws Exception {
+    public static void bind(@NotNull Scope s, @NotNull List<Node> xs, @NotNull Type rvalue, Binding.Kind kind, int tag) {
         if (rvalue.isTupleType()) {
             List<Type> vs = rvalue.asTupleType().getElementTypes();
             if (xs.size() != vs.size()) {
@@ -83,7 +83,7 @@ public class NameBinder {
 
     @Nullable
     public static Binding bindName(@NotNull Scope s, @NotNull Name name, @NotNull Type rvalue,
-                                    Binding.Kind kind, int tag) throws Exception {
+                                    Binding.Kind kind, int tag) {
         Binding b;
 
         if (s.isGlobalName(name.getId())) {
@@ -111,7 +111,7 @@ public class NameBinder {
     }
 
 
-    public static void bindIter(@NotNull Scope s, Node target, @NotNull Node iter, Binding.Kind kind, int tag) throws Exception {
+    public static void bindIter(@NotNull Scope s, Node target, @NotNull Node iter, Binding.Kind kind, int tag) {
         Type iterType = Node.resolveExpr(iter, s, tag);
 
         if (iterType.isListType()) {

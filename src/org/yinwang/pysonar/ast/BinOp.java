@@ -24,7 +24,7 @@ public class BinOp extends Node {
     }
 
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         Type ltype = null, rtype = null;
         if (left != null) {
             ltype = resolveExpr(left, s, tag);

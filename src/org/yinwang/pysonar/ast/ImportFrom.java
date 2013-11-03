@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
-import org.yinwang.pysonar.Util;
 import org.yinwang.pysonar.types.ListType;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
@@ -90,7 +89,7 @@ public class ImportFrom extends Node {
     }
 
     @Override
-    public Type resolve(@NotNull Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) {
         if (module == null) {
             return Indexer.idx.builtins.Cont;
         }
@@ -103,13 +102,15 @@ public class ImportFrom extends Node {
             importStar(s, mod, tag);
         } else {
             for (Alias a : names) {
-                Type t = mod.table.lookupType(a.name.get(0).id);
-                Binding b = mod.table.lookup(a.name.get(0).id);
+                Type t = mod.getTable().lookupType(a.name.get(0).id);
 
                 if (a.asname != null) {
                     s.put(a.asname.id, a.asname, t, Binding.Kind.MODULE, tag);
                 } else {
-                    s.put(a.name.get(0).id, b);
+                    Binding b = mod.table.lookup(a.name.get(0).id);
+                    if (b != null) {
+                        s.put(a.name.get(0).id, b);
+                    }
                 }
             }
         }
@@ -123,7 +124,7 @@ public class ImportFrom extends Node {
     }
 
 
-    private void importStar(@NotNull Scope s, @Nullable ModuleType mt, int tag) throws Exception {
+    private void importStar(@NotNull Scope s, @Nullable ModuleType mt, int tag) {
         if (mt == null || mt.getFile() == null) {
             return;
         }

@@ -22,7 +22,7 @@ public class Yield extends Node {
 
     @Nullable
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         if (value != null) {
             return new ListType(resolveExpr(value, s, tag));
         } else {

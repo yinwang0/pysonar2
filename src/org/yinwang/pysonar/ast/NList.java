@@ -18,7 +18,7 @@ public class NList extends Sequence {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         if (elts.size() == 0) {
             return new ListType();  // list<unknown>
         }

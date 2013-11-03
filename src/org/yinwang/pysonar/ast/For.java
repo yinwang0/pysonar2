@@ -33,7 +33,7 @@ public class For extends Node {
     }
 
     @Override
-    public Type resolve(@NotNull Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) {
         NameBinder.bindIter(s, target, iter, Binding.Kind.SCOPE, tag);
 
         Type ret;

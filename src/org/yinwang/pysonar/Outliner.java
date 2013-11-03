@@ -195,7 +195,7 @@ public class Outliner {
      *         Returns an empty list if the indexer hasn't indexed that path.
      */
     @NotNull
-    public List<Entry> generate(@NotNull Indexer idx, @NotNull String abspath) throws Exception {
+    public List<Entry> generate(@NotNull Indexer idx, @NotNull String abspath) {
         ModuleType mt = idx.getModuleForFile(abspath);
         if (mt == null) {
             return new ArrayList<Entry>();
@@ -215,12 +215,12 @@ public class Outliner {
         List<Entry> result = new ArrayList<Entry>();
 
         Set<Binding> entries = new TreeSet<Binding>();
-        for (Binding nb : scope.values()) {
-            if (!nb.isSynthetic()
-                    && !nb.isBuiltin()
-                    && !nb.getDefs().isEmpty()
-                    && path.equals(nb.getFirstNode().getFile())) {
-                entries.add(nb);
+        for (Binding b : scope.values()) {
+            if (!b.isSynthetic()
+                    && !b.isBuiltin()
+                    && !b.getDefs().isEmpty()
+                    && path.equals(b.getFirstNode().getFile())) {
+                entries.add(b);
             }
         }
 

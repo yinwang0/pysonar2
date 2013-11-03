@@ -44,7 +44,7 @@ public class Call extends Node {
      * a NCall node for those dummy calls.
      */
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
 
         Type opType = resolveExpr(func, s, tag);
         List<Type> aTypes = resolveAndConstructList(args, s, tag);
@@ -72,7 +72,7 @@ public class Call extends Node {
 
 
     @Nullable
-    private Type resolveCall(@NotNull Type rator, List<Type> aTypes, Map<String, Type> kwTypes, Type kwargsType, Type starargsType, int tag) throws Exception {
+    private Type resolveCall(@NotNull Type rator, List<Type> aTypes, Map<String, Type> kwTypes, Type kwargsType, Type starargsType, int tag) {
         if (rator.isFuncType()) {
             FunType ft = rator.asFuncType();
             return apply(ft, aTypes, kwTypes, kwargsType, starargsType, this, tag);
@@ -86,8 +86,7 @@ public class Call extends Node {
 
 
     @Nullable
-    public static Type apply(@NotNull FunType func, @Nullable List<Type> aTypes, Map<String, Type> kTypes, Type kwargsType, Type starargsType, @Nullable Node call, int tag)
-            throws Exception {
+    public static Type apply(@NotNull FunType func, @Nullable List<Type> aTypes, Map<String, Type> kTypes, Type kwargsType, Type starargsType, @Nullable Node call, int tag) {
 
         Indexer.idx.removeUncalled(func);
 
@@ -156,7 +155,7 @@ public class Call extends Node {
     @NotNull
     static private Type bindParams(@Nullable Node call, @NotNull Scope funcTable, @NotNull List<Node> args, Name fvarargs, Name fkwargs,
                                    @Nullable List<Type> aTypes, @Nullable List<Type> dTypes, @Nullable Map<String, Type> kwTypes,
-                                   Type kwargsType, @Nullable Type starargsType, int tag) throws Exception {
+                                   Type kwargsType, @Nullable Type starargsType, int tag) {
 
         TupleType fromType = new TupleType();
         int aSize = aTypes == null ? 0 : aTypes.size();
@@ -211,7 +210,7 @@ public class Call extends Node {
     }
 
 
-    static void bindMethodAttrs(@NotNull FunType cl, int tag) throws Exception {
+    static void bindMethodAttrs(@NotNull FunType cl, int tag) {
         if (cl.getTable().getParent() != null) {
             Type cls = cl.getTable().getParent().getType();
             if (cls != null && cls.isClassType()) {

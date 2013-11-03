@@ -31,7 +31,7 @@ public class ListComp extends Node {
      */
     @Nullable
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         resolveList(generators, s, tag);
         return new ListType(resolveExpr(elt, s, tag));
     }

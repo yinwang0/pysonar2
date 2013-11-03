@@ -27,7 +27,7 @@ public class BoolOp extends Node {
 
     @Nullable
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         if (op.id.equals("and")) {
             Type last = null;
             for (Node e : values) {

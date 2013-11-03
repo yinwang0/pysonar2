@@ -24,7 +24,7 @@ public class Subscript extends Node {
     }
 
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         Type vt = resolveExpr(value, s, tag);
         Type st = slice == null? null : resolveExpr(slice, s, tag);
 
@@ -41,7 +41,7 @@ public class Subscript extends Node {
 
 
     @Nullable
-    private Type getSubscript(@NotNull Type vt, @Nullable Type st, Scope s, int tag) throws Exception {
+    private Type getSubscript(@NotNull Type vt, @Nullable Type st, Scope s, int tag) {
         if (vt.isUnknownType()) {
             return Indexer.idx.builtins.unknown;
         } else if (vt.isListType()) {
@@ -64,7 +64,7 @@ public class Subscript extends Node {
     }
 
     @Nullable
-    private Type getListSubscript(@NotNull Type vt, @NotNull Type st, Scope s, int tag) throws Exception {
+    private Type getListSubscript(@NotNull Type vt, @NotNull Type st, Scope s, int tag) {
         if (vt.isListType()) {
             if (st.isListType()) {
                 return vt;

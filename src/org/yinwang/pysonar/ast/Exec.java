@@ -23,7 +23,7 @@ public class Exec extends Node {
     }
 
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         if (body != null) resolveExpr(body, s, tag);
         if (globals != null) resolveExpr(globals, s, tag);
         if (locals != null) resolveExpr(locals, s, tag);

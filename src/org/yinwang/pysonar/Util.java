@@ -141,8 +141,9 @@ public class Util {
         return new String(getBytesFromFile(path), UTF_8);
     }
 
+
     @NotNull
-    public static byte[] getBytesFromFile(@NotNull File file) throws IOException {
+    public static byte[] getBytesFromFile(@NotNull File file) {
         InputStream is = null;
 
         try {
@@ -163,9 +164,14 @@ public class Util {
                 throw new IOException("Failed to read whole file " + file);
             }
             return bytes;
+        } catch (Exception e) {
+            return null;
         } finally {
             if (is != null) {
-                is.close();
+                try {
+                    is.close();
+                } catch (Exception e) {
+                }
             }
         }
     }
@@ -185,22 +191,37 @@ public class Util {
 
 
     @NotNull
-    public static String getMD5(@NotNull File path) throws Exception {
+    public static String getMD5(@NotNull File path) {
         byte[] bytes = getBytesFromFile(path);
-        return getMD5(bytes);
+        if (bytes == null) {
+            Util.msg("getMD5: failed to read from file: " + path);
+            System.exit(2);
+            return "";
+        } else {
+            return getMD5(bytes);
+        }
     }
 
+
     @NotNull
-    public static String getMD5(byte[] fileContents) throws Exception {
-	MessageDigest algorithm = MessageDigest.getInstance("MD5");
-	algorithm.reset();
-	algorithm.update(fileContents);
-	byte messageDigest[] = algorithm.digest();
-	StringBuilder sb = new StringBuilder();
-	for (int i = 0; i < messageDigest.length; i++) {
+    public static String getMD5(byte[] fileContents) {
+        MessageDigest algorithm;
+
+        try {
+             algorithm = MessageDigest.getInstance("MD5");
+        } catch (Exception e) {
+            Util.die("getMD5: failed to get MD5, shouldn't happen");
+            return "";
+        }
+
+        algorithm.reset();
+        algorithm.update(fileContents);
+        byte messageDigest[] = algorithm.digest();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < messageDigest.length; i++) {
             sb.append(String.format("%02x", 0xFF & messageDigest[i]));
-	}
-	return sb.toString();
+        }
+        return sb.toString();
     }
 
     /**
@@ -296,5 +317,11 @@ public class Util {
         return num + "/" + total + " = " + pct + "%";
     }
 
+
+    public static void die(String msg) {
+        System.err.println(msg);
+        Thread.dumpStack();
+        System.exit(2);
+    }
 
 }

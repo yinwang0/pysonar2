@@ -33,7 +33,7 @@ public class Comprehension extends Node {
 
     @Nullable
     @Override
-    public Type resolve(@NotNull Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) {
         NameBinder.bindIter(s, target, iter, Binding.Kind.SCOPE, tag);
         resolveList(ifs, s, tag);
         return resolveExpr(target, s, tag);

@@ -46,7 +46,7 @@ public class ClassDef extends Node {
     }
 
     @Override
-    public Type resolve(@NotNull Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) {
         ClassType classType = new ClassType(getName().getId(), s);
         List<Type> baseTypes = new ArrayList<Type>();
         for (Node base : bases) {

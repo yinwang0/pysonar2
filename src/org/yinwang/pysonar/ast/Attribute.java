@@ -34,14 +34,8 @@ public class Attribute extends Node {
         return attr.getId();
     }
 
-    /**
-     * Sets the attribute node.  Used when constructing the AST.
-     * @throws IllegalArgumentException if the param is null
-     */
-    public void setAttr(@Nullable Name attr) {
-        if (attr == null) {
-            throw new IllegalArgumentException("param cannot be null");
-        }
+
+    public void setAttr(@NotNull Name attr) {
         this.attr = attr;
     }
 
@@ -50,11 +44,8 @@ public class Attribute extends Node {
         return attr;
     }
 
-    /**
-     * Sets the target node.  Used when constructing the AST.
-     * @throws IllegalArgumentException if the param is null
-     */
-    public void setTarget(@Nullable Node target) {
+
+    public void setTarget(@NotNull Node target) {
         if (target == null) {
             throw new IllegalArgumentException("param cannot be null");
         }
@@ -66,12 +57,8 @@ public class Attribute extends Node {
         return target;
     }
 
-    /**
-     * Assign some definite value to the attribute.  Used during the name
-     * resolution pass.  This method is called when this node is in the lvalue of
-     * an assignment, in which case it is called in lieu of {@link #resolve}.<p>
-     */
-    public void setAttr(Scope s, @NotNull Type v, int tag) throws Exception {
+
+    public void setAttr(Scope s, @NotNull Type v, int tag) {
         Type targetType = resolveExpr(target, s, tag);
         if (targetType.isUnionType()) {
             Set<Type> types = targetType.asUnionType().getTypes();
@@ -92,7 +79,7 @@ public class Attribute extends Node {
     }
 
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         if (target == null) {
             Util.msg("target is null!");
         }

@@ -28,14 +28,14 @@ public class AstCache {
     @NotNull
     private static ProxyParser parser = new ProxyParser();
 
-    private AstCache() throws Exception {
+    private AstCache() {
         File f = new File(CACHE_DIR);
         if (!f.exists()) {
             f.mkdirs();
         }
     }
 
-    public static AstCache get() throws Exception {
+    public static AstCache get() {
         if (INSTANCE == null) {
             INSTANCE = new AstCache();
         }
@@ -75,11 +75,9 @@ public class AstCache {
      *
      * @param path absolute path to a source file
      * @return the AST, or {@code null} if the parse failed for any reason
-     * @throws Exception if anything unexpected occurs
      */
     @Nullable
-    public Module getAST(@Nullable String path) throws Exception {
-        if (path == null) throw new IllegalArgumentException("null path");
+    public Module getAST(@NotNull String path) {
         return fetch(path);
     }
 
@@ -92,10 +90,7 @@ public class AstCache {
      * @param contents the source to parse
      */
     @Nullable
-    public Module getAST(@Nullable String path, @Nullable String contents) throws Exception {
-        if (path == null) throw new IllegalArgumentException("null path");
-        if (contents == null) throw new IllegalArgumentException("null contents");
-
+    public Module getAST(@NotNull String path, @NotNull String contents) {
         // Cache stores null value if the parse failed.
         if (cache.containsKey(path)) {
             return cache.get(path);
@@ -105,7 +100,11 @@ public class AstCache {
         try {
             mod = parse(path, contents);
             if (mod != null) {
-                mod.setFileAndMD5(path, Util.getMD5(contents.getBytes("UTF-8")));
+                try {
+                    mod.setFileAndMD5(path, Util.getMD5(contents.getBytes("UTF-8")));
+                } catch (Exception e) {
+                    return null;
+                }
             }
         } finally {
             cache.put(path, mod);  // may be null
@@ -120,7 +119,7 @@ public class AstCache {
      * @param path absolute source path
      */
     @Nullable
-    private Module fetch(String path) throws Exception {
+    private Module fetch(String path) {
         // Cache stores null value if the parse failed.
         if (cache.containsKey(path)) {
             return cache.get(path);
@@ -151,8 +150,7 @@ public class AstCache {
     /**
      * Parse a file.  Does not look in the cache or cache the result.
      */
-    @NotNull
-    private Module parse(String path) throws Exception {
+    private Module parse(String path) {
         fine("parsing " + path);
 //        mod ast = invokeANTLR(path);
 //        return generateAST(ast, path);
@@ -162,8 +160,7 @@ public class AstCache {
     /**
      * Parse a string.  Does not look in the cache or cache the result.
      */
-    @NotNull
-    private Module parse(String path, String contents) throws Exception {
+    private Module parse(String path, String contents) {
         fine("parsing " + path);
 //        mod ast = invokeANTLR(path, contents);
 //        return generateAST(ast, path);
@@ -177,7 +174,7 @@ public class AstCache {
      * file's base name is included for ease of debugging.
      */
     @NotNull
-    public String getCachePath(@NotNull File sourcePath) throws Exception {
+    public String getCachePath(@NotNull File sourcePath) {
         return getCachePath(Util.getMD5(sourcePath), sourcePath.getName());
     }
 
@@ -187,7 +184,7 @@ public class AstCache {
     }
 
     // package-private for testing
-    void serialize(@NotNull Module ast) throws Exception {
+    void serialize(@NotNull Module ast) {
         String path = getCachePath(ast.getMD5(), new File(ast.getFile()).getName());
         ObjectOutputStream oos = null;
         FileOutputStream fos = null;
@@ -195,11 +192,15 @@ public class AstCache {
             fos = new FileOutputStream(path);
             oos = new ObjectOutputStream(fos);
             oos.writeObject(ast);
+        } catch (Exception e) {
         } finally {
-            if (oos != null) {
-                oos.close();
-            } else if (fos != null) {
-                fos.close();
+            try {
+                if (oos != null) {
+                    oos.close();
+                } else if (fos != null) {
+                    fos.close();
+                }
+            } catch (Exception e) {
             }
         }
     }
@@ -207,25 +208,20 @@ public class AstCache {
     // package-private for testing
     @Nullable
     Module getSerializedModule(String sourcePath) {
-        try {
-            File sourceFile = new File(sourcePath);
-            if (sourceFile == null || !sourceFile.canRead()) {
-                return null;
-            }
-            File cached = new File(getCachePath(sourceFile));
-            if (!cached.canRead()) {
-                return null;
-            }
-            return deserialize(sourceFile);
-        } catch (Exception x) {
-//            severe("Failed to deserialize " + sourcePath + ": " + x);
+        File sourceFile = new File(sourcePath);
+        if (sourceFile == null || !sourceFile.canRead()) {
             return null;
         }
+        File cached = new File(getCachePath(sourceFile));
+        if (!cached.canRead()) {
+            return null;
+        }
+        return deserialize(sourceFile);
     }
 
     // package-private for testing
-    @NotNull
-    Module deserialize(@NotNull File sourcePath) throws Exception {
+    @Nullable
+    Module deserialize(@NotNull File sourcePath) {
         String cachePath = getCachePath(sourcePath);
         FileInputStream fis = null;
         ObjectInputStream ois = null;
@@ -236,11 +232,17 @@ public class AstCache {
             // Files in different dirs may have the same base name and contents.
             mod.setFile(sourcePath);
             return mod;
+        } catch (Exception e) {
+            return null;
         } finally {
-            if (ois != null) {
-                ois.close();
-            } else if (fis != null) {
-                fis.close();
+            try {
+                if (ois != null) {
+                    ois.close();
+                } else if (fis != null) {
+                    fis.close();
+                }
+            } catch (Exception e) {
+
             }
         }
     }

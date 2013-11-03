@@ -136,7 +136,7 @@ public class FunctionDef extends Node {
      * "lexically".
      */
     @Override
-    public Type resolve(@NotNull Scope outer, int tag) throws Exception {
+    public Type resolve(@NotNull Scope outer, int tag) {
         resolveList(decoratorList, outer, tag);   //XXX: not handling functional transformations yet
         FunType cl = new FunType(this, outer.getForwarding());
         cl.getTable().setParent(outer);

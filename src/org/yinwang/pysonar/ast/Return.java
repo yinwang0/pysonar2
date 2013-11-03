@@ -21,7 +21,7 @@ public class Return extends Node {
 
     @Nullable
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         if (value == null) {
             return Indexer.idx.builtins.None;
         } else {

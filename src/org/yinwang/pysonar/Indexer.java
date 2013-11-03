@@ -128,24 +128,24 @@ public class Indexer {
     }
 
 
-    public void setCWD(String cd) throws IOException {
+    public void setCWD(String cd) {
         cwd = Util.canonicalize(cd);
     }
 
 
-    public void addPaths(@NotNull List<String> p) throws IOException {
+    public void addPaths(@NotNull List<String> p) {
         for (String s : p) {
             addPath(s);
         }
     }
 
 
-    public void addPath(String p) throws IOException {
+    public void addPath(String p) {
         path.add(Util.canonicalize(p));
     }
 
 
-    public void setPath(@NotNull List<String> path) throws IOException {
+    public void setPath(@NotNull List<String> path) {
         this.path = new ArrayList<String>(path.size());
         addPaths(path);
     }
@@ -221,7 +221,7 @@ public class Indexer {
      * @param file absolute file path
      */
     @Nullable
-    public ModuleType getModuleForFile(String file) throws Exception {
+    public ModuleType getModuleForFile(String file) {
         if (failedModules.contains(file)) {
             return null;
         }
@@ -251,7 +251,7 @@ public class Indexer {
      * Returns an empty list if the indexer hasn't indexed that path.
      */
     @NotNull
-    public List<Outliner.Entry> generateOutline(@NotNull String file) throws Exception {
+    public List<Outliner.Entry> generateOutline(@NotNull String file) {
         return new Outliner().generate(this, file);
     }
 
@@ -361,7 +361,7 @@ public class Indexer {
 
 
     @Nullable
-    public ModuleType loadString(String path, String contents) throws Exception {
+    public ModuleType loadString(String path, String contents) {
         ModuleType module = getCachedModule(path);
         if (module != null) {
             finer("\nusing cached module " + path + " [succeeded]");
@@ -372,7 +372,7 @@ public class Indexer {
 
 
     @Nullable
-    public ModuleType loadFile(String path) throws Exception {
+    public ModuleType loadFile(String path) {
         File f = new File(path);
 
         if (!f.canRead()) {
@@ -400,7 +400,7 @@ public class Indexer {
     }
 
     @Nullable
-    private ModuleType parseAndResolve(String file) throws Exception {
+    private ModuleType parseAndResolve(String file) {
     	finer("Indexing: " + file);
     	progress.tick();
         return parseAndResolve(file, null);
@@ -413,7 +413,7 @@ public class Indexer {
      *        file contents from disk.
      */
     @Nullable
-    private ModuleType parseAndResolve(String file, @Nullable String contents) throws Exception {
+    private ModuleType parseAndResolve(String file, @Nullable String contents) {
         // Avoid infinite recursion if any caller forgets this check.  (Has happened.)
         ModuleType cached = (ModuleType)moduleTable.lookupType(file);
         if (cached != null) {
@@ -446,7 +446,7 @@ public class Indexer {
         }
     }
 
-    private AstCache getAstCache() throws Exception {
+    private AstCache getAstCache() {
         if (astCache == null) {
             astCache = AstCache.get();
             astCache.clearDiskCache();
@@ -458,7 +458,7 @@ public class Indexer {
      * Returns the syntax tree for {@code file}. <p>
      */
     @Nullable
-    public Module getAstForFile(String file) throws Exception {
+    public Module getAstForFile(String file) {
         return getAstCache().getAST(file);
     }
 
@@ -466,12 +466,12 @@ public class Indexer {
      * Returns the syntax tree for {@code file}. <p>
      */
     @Nullable
-    public Module getAstForFile(String file, String contents) throws Exception {
+    public Module getAstForFile(String file, String contents) {
         return getAstCache().getAST(file, contents);
     }
 
     @Nullable
-    public ModuleType getBuiltinModule(@NotNull String qname) throws Exception {
+    public ModuleType getBuiltinModule(@NotNull String qname) {
         return builtins.get(qname);
     }
 
@@ -493,8 +493,26 @@ public class Indexer {
     }
 
 
+    public ModuleType searchModuleInPath(String modname) {
+        List<String> loadPath = getLoadPath();
+
+        for (String p : loadPath) {
+            File startDir = new File(p, modname);
+            File initFile = new File(Util.joinPath(startDir, "__init__.py").getPath());
+
+            if (initFile.exists()) {
+                ModuleType mod = loadFile(initFile.getPath());
+                if (mod != null) {
+                    return mod;
+                }
+            }
+        }
+        return null;
+    }
+
+
     @Nullable
-    public ModuleType loadModule(@NotNull List<Name> name, @NotNull Scope scope, int tag) throws Exception {
+    public ModuleType loadModule(@NotNull List<Name> name, @NotNull Scope scope, int tag) {
         String qname = makeQname(name);
 
         ModuleType mt = getBuiltinModule(qname);
@@ -519,6 +537,7 @@ public class Indexer {
 
                 if (initFile.exists()) {
                     ModuleType initMod = loadFile(initFile.getPath());
+                    if (initMod == null) return null;
                     prev = initMod;
                     scope.put(name.get(0).id, name.get(0), initMod, Binding.Kind.MODULE, tag);
                     break;
@@ -533,6 +552,7 @@ public class Indexer {
 
                 if (initFile.exists()) {
                     ModuleType mod = loadFile(initFile.getPath());
+                    if (mod == null) return null;
 
                     if (prev != null) {
                         prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
@@ -542,6 +562,8 @@ public class Indexer {
                     File startFile = new File(startDir + ".py");
                     if (startFile.exists()) {
                         ModuleType mod = loadFile(startFile.getPath());
+                        if (mod == null) return null;
+
                         if (prev != null) {
                             prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
                         }
@@ -550,11 +572,38 @@ public class Indexer {
                         return null;
                     }
                 }
-
             }
-        }
+            return prev;
 
-        return prev;
+        } else if (name.size() == 1) {
+            File startDir = new File(name.get(0).id);
+            File initFile = new File(Util.joinPath(startDir, "__init__.py").getPath());
+
+            if (initFile.exists()) {
+                ModuleType mod = loadFile(initFile.getPath());
+                if (mod == null) return null;
+
+                if (prev != null) {
+                    prev.getTable().put(name.get(0).id, name.get(0), mod, Binding.Kind.MODULE, tag);
+                }
+                return mod;
+            } else {
+                File startFile = new File(startDir + ".py");
+                if (startFile.exists()) {
+                    ModuleType mod = loadFile(startFile.getPath());
+                    if (mod == null) return null;
+
+                    if (prev != null) {
+                        prev.getTable().put(name.get(0).id, name.get(0), mod, Binding.Kind.MODULE, tag);
+                    }
+                    return mod;
+                } else {
+                    return null;
+                }
+            }
+        } else {
+            return null;
+        }
     }
 
 
@@ -563,7 +612,7 @@ public class Indexer {
      * directory; otherwise just load a file.  Looks at file extension to
      * determine whether to load a given file.
      */
-    public void loadFileRecursive(String fullname) throws Exception {
+    public void loadFileRecursive(String fullname) {
         File file_or_dir = new File(fullname);
 
         if (file_or_dir.isDirectory()) {
@@ -583,13 +632,8 @@ public class Indexer {
         }
     }
 
-    /**
-     * Performs final indexing-building passes, including marking references to
-     * undeclared variables. Caller should invoke this method after loading all
-     * files.
-     * @throws Exception
-     */
-    public void finish() throws Exception {
+
+    public void finish() {
         progress.end();
         Util.msg("Finished loading files. " + nCalled + " functions were called.");
         Util.msg("Analyzing uncalled functions, count: " + uncalled.size());
@@ -650,7 +694,7 @@ public class Indexer {
     }
 
 
-    public void applyUncalled() throws Exception {
+    public void applyUncalled() {
         Progress progress = new Progress(100, 50);
         while (!uncalled.isEmpty()) {
             List<FunType> uncalledDup = new ArrayList<FunType>(uncalled);

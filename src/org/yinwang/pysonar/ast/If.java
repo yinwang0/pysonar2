@@ -24,7 +24,7 @@ public class If extends Node {
     }
 
     @Override
-    public Type resolve(@NotNull Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) {
         Type type1, type2;
         resolveExpr(test, s, tag);
         int newTag = Indexer.idx.newThread();

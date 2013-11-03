@@ -32,7 +32,7 @@ public class Alias extends Node {
      * resolve their child NAliases.
      */
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         return Indexer.idx.builtins.unknown;
     }
 

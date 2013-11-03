@@ -45,7 +45,7 @@ public class Name extends Node {
     }
     
     @Override
-    public Type resolve(@NotNull Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) {
         Binding b = s.lookup(id);
         if (b != null) {
             Indexer.idx.putLocation(this, b);

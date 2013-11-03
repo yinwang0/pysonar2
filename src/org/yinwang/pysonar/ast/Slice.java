@@ -24,7 +24,7 @@ public class Slice extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         if (lower != null) resolveExpr(lower, s, tag);
         if (step != null) resolveExpr(step, s, tag);
         if (upper != null) resolveExpr(upper, s, tag);

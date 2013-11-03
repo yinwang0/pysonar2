@@ -23,7 +23,7 @@ public class Raise extends Node {
     }
 
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         if (exceptionType != null) resolveExpr(exceptionType, s, tag);
         if (inst != null) resolveExpr(inst, s, tag);
         if (traceback != null) resolveExpr(traceback, s, tag);

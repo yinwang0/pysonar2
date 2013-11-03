@@ -30,7 +30,7 @@ public class ExceptHandler extends Node {
 
     @Nullable
     @Override
-    public Type resolve(@NotNull Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) {
         Type typeval = Indexer.idx.builtins.unknown;
         if (exceptionType != null) {
             typeval = resolveExpr(exceptionType, s, tag);

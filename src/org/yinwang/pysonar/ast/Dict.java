@@ -25,7 +25,7 @@ public class Dict extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         Type keyType = resolveListAsUnion(keys, s, tag);
         Type valType = resolveListAsUnion(values, s, tag);
         return new DictType(keyType, valType);

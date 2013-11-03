@@ -35,8 +35,7 @@ public class ProxyParser {
         python3Process = startPython(PYTHON3_EXE);
 
         if (python2Process == null && python3Process == null) {
-            Util.msg("You don't seem to have either of Python2 or Python3 on PATH");
-            System.exit(-2);
+            Util.die("You don't seem to have either of Python2 or Python3 on PATH");
         }
     }
 
@@ -161,7 +160,8 @@ public class ProxyParser {
                 i++;
             }
             int nameStop = i - 1;
-            result.add(new Name(name, nameStart, nameStop));
+            int shift = "import ".length();
+            result.add(new Name(name, nameStart+shift, nameStop+shift));
         }
 
         return result;
@@ -382,7 +382,7 @@ public class ProxyParser {
 
         if (type.equals("ImportFrom")) {
             String module = (String) map.get("module");
-            List<Name> moduleSeg = module == null ? null : segmentQname(module, start + "ImportFrom".length());
+            List<Name> moduleSeg = module == null ? null : segmentQname(module, start);
             List<Alias> names = convertListAlias(map.get("names"));
             int level = ((Double) map.get("level")).intValue();
             return new ImportFrom(moduleSeg, names, level, start, end);
@@ -604,7 +604,7 @@ public class ProxyParser {
             json = Util.readFile(exchangeFile);
         } catch (Exception e) {
             int version = (pythonProcess == python2Process) ? 2 : 3;
-            Util.msg("\nPython" + version + " failed to parse file: " + filename);
+//            Util.msg("\nPython" + version + " failed to parse file: " + filename);
 
             if (version == 2 && python3Process != null) {
                 exchange.delete();

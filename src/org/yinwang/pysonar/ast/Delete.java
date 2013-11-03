@@ -21,7 +21,7 @@ public class Delete extends Node {
     }
 
     @Override
-    public Type resolve(@NotNull Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) {
         for (Node n : targets) {
             resolveExpr(n, s, tag);
             if (n instanceof Name) {

@@ -26,7 +26,7 @@ class HtmlOutline {
      * @return the html as an {@code UL} element
      */
     @NotNull
-    public String generate(String path) throws Exception {
+    public String generate(String path) {
         buffer = new StringBuilder(1024);
         List<Outliner.Entry> entries = indexer.generateOutline(path);
         addOutline(entries);

@@ -27,7 +27,7 @@ public class InstanceType extends Type {
         classType = c;
     }
     
-    public InstanceType(@NotNull Type c, Call call, List<Type> args, int tag) throws Exception {
+    public InstanceType(@NotNull Type c, Call call, List<Type> args, int tag) {
         this(c);
         Type initFunc = this.getTable().lookupAttrType("__init__");
         if (initFunc != null && initFunc.isFuncType() && initFunc.asFuncType().getFunc() != null) {

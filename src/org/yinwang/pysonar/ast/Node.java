@@ -91,7 +91,7 @@ public abstract class Node implements java.io.Serializable {
 
 
     @Nullable
-    public static Type resolveExpr(@NotNull Node n, Scope s, int tag) throws Exception {
+    public static Type resolveExpr(@NotNull Node n, Scope s, int tag) {
         Type result = n.resolve(s, tag);
         if (result == null) {
             Indexer.idx.warn(n + " resolved to a null type");
@@ -105,7 +105,7 @@ public abstract class Node implements java.io.Serializable {
      * @param tag thread tag of the execution path
      */
     @Nullable
-    abstract public Type resolve(Scope s, int tag) throws Exception;
+    abstract public Type resolve(Scope s, int tag);
 
     public boolean isCall() {
         return this instanceof Call;
@@ -216,10 +216,9 @@ public abstract class Node implements java.io.Serializable {
      * Utility method to resolve every node in {@code nodes} and
      * return the union of their types.  If {@code nodes} is empty or
      * {@code null}, returns a new {@link org.yinwang.pysonar.types.UnknownType}.
-     * @throws Exception 
      */
     @Nullable
-    protected Type resolveListAsUnion(@Nullable List<? extends Node> nodes, Scope s, int tag) throws Exception {
+    protected Type resolveListAsUnion(@Nullable List<? extends Node> nodes, Scope s, int tag) {
         if (nodes == null || nodes.isEmpty()) {
             return Indexer.idx.builtins.unknown;
         }
@@ -239,9 +238,8 @@ public abstract class Node implements java.io.Serializable {
     /**
      * Resolves each element of a node list in the passed scope.
      * Node list may be empty or {@code null}.
-     * @throws Exception 
      */
-    static protected void resolveList(@Nullable List<? extends Node> nodes, Scope s, int tag) throws Exception {
+    static protected void resolveList(@Nullable List<? extends Node> nodes, Scope s, int tag) {
         if (nodes != null) {
             for (Node n : nodes) {
                 resolveExpr(n, s, tag);
@@ -250,7 +248,7 @@ public abstract class Node implements java.io.Serializable {
     }
     
     @Nullable
-    static protected List<Type> resolveAndConstructList(@Nullable List<? extends Node> nodes, Scope s, int tag) throws Exception {
+    static protected List<Type> resolveAndConstructList(@Nullable List<? extends Node> nodes, Scope s, int tag) {
         if (nodes == null) {
             return null;
         } else {

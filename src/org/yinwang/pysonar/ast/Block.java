@@ -35,7 +35,7 @@ public class Block extends Node {
      * This can be used to generate warnings such as "This function may not return a value."
      */
     @Override
-    public Type resolve(@NotNull Scope scope, int tag) throws Exception {
+    public Type resolve(@NotNull Scope scope, int tag) {
         // find global names and mark them
         for (Node n : seq) {
             if (n.isGlobal()) {

@@ -28,7 +28,7 @@ public class Assign extends Node {
     }
 
     @Override
-    public Type resolve(@NotNull Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) {
         if (rvalue == null) {
             Indexer.idx.putProblem(this, "missing RHS of assignment");
         } else {

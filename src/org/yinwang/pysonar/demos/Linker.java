@@ -239,11 +239,13 @@ class Linker {
     /**
      * Generate an anchorless URL linking to another file in the index.
      */
-    @NotNull
+    @Nullable
     private String toModuleUrl(@NotNull Binding nb) {
         ModuleType mtype = nb.getType().asModuleType();
 //        if (mtype == null) { return null; }
         String path = mtype.getFile();
+        if (path == null) return null;
+
         if (!path.startsWith(rootPath)) {
             return "file://" + path;  // can't find file => punt & load it directly
         }

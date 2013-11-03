@@ -23,7 +23,7 @@ public class TryFinally extends Node {
 
     @Nullable
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         Type tFinal = Indexer.idx.builtins.unknown;
         if (body != null) resolveExpr(body, s, tag);
         if (finalbody != null) tFinal = resolveExpr(finalbody, s, tag);

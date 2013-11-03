@@ -6,8 +6,6 @@ import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Module extends Node {
 
@@ -26,14 +24,18 @@ public class Module extends Node {
         addChildren(this.body);
     }
 
-    public void setFile(String file) throws Exception {
+    public void setFile(String file) {
         this.file = file;
         this.name = Util.moduleNameFor(file);
         this.md5 = Util.getMD5(new File(file));
     }
 
-    public void setFile(@NotNull File path) throws Exception {
-        file = path.getCanonicalPath();
+    public void setFile(@NotNull File path) {
+        try {
+            file = path.getCanonicalPath();
+        } catch (Exception e) {
+            Util.msg("invalid path: " + path);
+        }
         name = Util.moduleNameFor(file);
         md5 = Util.getMD5(path);
     }
@@ -43,7 +45,7 @@ public class Module extends Node {
      * @param path file path
      * @param md5 md5 message digest for source contents
      */
-    public void setFileAndMD5(String path, String md5) throws Exception {
+    public void setFileAndMD5(String path, String md5) {
         file = path;
         name = Util.moduleNameFor(file);
         this.md5 = md5;
@@ -60,7 +62,7 @@ public class Module extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) {
         ModuleType mt = new ModuleType(Util.moduleNameFor(file), file, Indexer.idx.globaltable);
         s.put(file, new Url("file://" + file), mt, Binding.Kind.MODULE, tag);
         resolveExpr(body, mt.getTable(), tag);

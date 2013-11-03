@@ -20,7 +20,7 @@ public class Assert extends Node {
     }
 
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         if (test != null) resolveExpr(test, s, tag);
         if (msg != null) resolveExpr(msg, s, tag);
         return Indexer.idx.builtins.Cont;

@@ -28,7 +28,7 @@ public class TryExcept extends Node {
     }
 
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(Scope s, int tag) {
         Type tp1 = Indexer.idx.builtins.unknown;
         Type tp2 = Indexer.idx.builtins.unknown;
         Type tph = Indexer.idx.builtins.unknown;

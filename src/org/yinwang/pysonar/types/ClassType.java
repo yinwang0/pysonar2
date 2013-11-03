@@ -55,7 +55,7 @@ public class ClassType extends Type {
         getTable().addSuper(sp.getTable());
     }
     
-    public InstanceType getCanon() throws Exception {
+    public InstanceType getCanon() {
         if (canon == null) {
             canon = new InstanceType(this, null, null, 0);
         }

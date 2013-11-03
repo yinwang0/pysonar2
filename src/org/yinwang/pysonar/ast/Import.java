@@ -17,12 +17,19 @@ public class Import extends Node {
     public Import(List<Alias> names, int start, int end) {
         super(start, end);
         this.names = names;
+        for (Alias a : names) {
+            for (Name n : a.name) {
+                if (n == null) {
+                    Util.msg("segment is null!");
+                }
+            }
+        }
         addChildren(names);
     }
 
 
     @Override
-    public Type resolve(@NotNull Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) {
         for (Alias a : names) {
             ModuleType mod = Indexer.idx.loadModule(a.name, s, tag);
             if (mod == null) {
