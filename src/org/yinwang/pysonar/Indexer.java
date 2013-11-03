@@ -106,7 +106,7 @@ public class Indexer {
     private Progress progress;
 
     public Indexer() {
-    	progress = new Progress(10, 100);
+    	progress = new Progress(10, 50);
     	logger = Logger.getLogger(Indexer.class.getCanonicalName());
         idx = this;
         builtins = new Builtins();
@@ -337,12 +337,7 @@ public class Indexer {
         return msgs;
     }
 
-    /**
-     * Loads a module from a string containing the module contents.
-     * Idempotent:  looks in the module cache first. Used for simple unit tests.
-     * @param path a path for reporting/caching purposes.  The filename
-     *        component is used to construct the module qualified name.
-     */
+
     public ModuleType loadString(String path, String contents) throws Exception {
         ModuleType module = getCachedModule(path);
         if (module != null) {
@@ -352,23 +347,9 @@ public class Indexer {
         return parseAndResolve(path, contents);
     }
 
-    /**
-     * Load, parse and analyze a source file given its absolute path.
-     * By default, loads the entire ancestor package chain.
-     *
-     * @param path the absolute path to the file or directory.
-     *        If it is a directory, it is suffixed with "__init__.py", and
-     *        only that file is loaded from the directory.
-     *
-     * @return {@code null} if {@code path} could not be loaded
-     */
+
     public ModuleType loadFile(String path) throws Exception {
         File f = new File(path);
-        if (f.isDirectory()) {
-            finer("\n    loading init file from directory: " + path);
-            f = Util.joinPath(path, "__init__.py");
-            path = f.getAbsolutePath();
-        }
 
         if (!f.canRead()) {
             finer("\nfile not not found or cannot be read: " + path);
@@ -381,35 +362,9 @@ public class Indexer {
             return module;
         }
 
-        loadParentPackage(path);
         return parseAndResolve(path);
     }
 
-    /**
-     * When we load a module, load all its parent packages, top-down.
-     * This is in part because Python does it anyway, and in part so that you
-     * can click on all parent package components in import statements.
-     * We load whole ancestor chain top-down, as does Python.
-     */
-    private void loadParentPackage(String file) throws Exception {
-        File f = new File(file);
-        File parent = f.getParentFile();
-        if (parent == null || isInLoadPath(parent)) {
-            return;
-        }
-        // the parent package of an __init__.py file is the grandparent dir
-        if (f.isFile() && "__init__.py".equals(f.getName())) {
-            parent = parent.getParentFile();
-        }
-        if (parent == null || isInLoadPath(parent)) {
-            return;
-        }
-        File initpy = Util.joinPath(parent, "__init__.py");
-        if (!(initpy.isFile() && initpy.canRead())) {
-            return;
-        }
-        loadFile(initpy.getPath());
-    }
 
     private boolean isInLoadPath(File dir) {
         for (String s : getLoadPath()) {
@@ -432,7 +387,6 @@ public class Indexer {
      * @param contents optional file contents.  If {@code null}, loads the
      *        file contents from disk.
      */
-    @SuppressWarnings("unchecked")
     private ModuleType parseAndResolve(String file, String contents) throws Exception {
         // Avoid infinite recursion if any caller forgets this check.  (Has happened.)
         ModuleType cached = (ModuleType)moduleTable.lookupType(file);
@@ -492,76 +446,89 @@ public class Indexer {
         return builtins.get(qname);
     }
 
-    /**
-     * This method searches the module path for the module {@code modname}.
-     * If found, it is passed to {@link #loadFile}.
-     *
-     * <p>The mechanisms for importing modules are in general statically
-     * undecidable.  We make a reasonable effort to follow the most common
-     * lookup rules.
-     *
-     * @param modname a module name.   Can be a relative path to a directory
-     *        or a file (without the extension) or a possibly-qualified
-     *        module name.  If it is a module name, cannot contain leading dots.
-     *
-     * @see http://docs.python.org/reference/simple_stmts.html#the-import-statement
-     */
-    public ModuleType loadModule(String modname) throws Exception {
-        if (failedModules.contains(modname)) {
-            return null;
+
+    public String makeQname(List<Name> names) {
+        if (names.isEmpty()) {
+            return "";
         }
 
-        ModuleType cached = getCachedModule(modname); // builtin file-less modules
+        String ret = "";
+
+        for (int i = 0; i < names.size() - 1; i++) {
+            ret += names.get(i).id + ".";
+        }
+
+        ret += names.get(names.size() - 1).id;
+        return ret;
+    }
+
+
+    public ModuleType loadModule(List<Name> name, Scope scope, int tag) throws Exception {
+        String qname = makeQname(name);
+
+        ModuleType cached = getCachedModule(qname); // builtin file-less modules
         if (cached != null) {
-            finer("using cached module " + modname);
+            finer("using cached module " + qname);
             return cached;
         }
 
-        ModuleType mt = getBuiltinModule(modname);
+        ModuleType mt = getBuiltinModule(qname);
         if (mt != null) {
             return mt;
         }
 
-        finer("looking for module " + modname);
+        // If there are more than one segment
+        // load the packages first
+        ModuleType prev = null;
 
-        if (modname.endsWith(".py")) {
-            modname = modname.substring(0, modname.length() - 3);
-        }
-        String modpath = modname.replace('.', '/');
+        if (name.size() > 1) {
+            List<String> loadPath = getLoadPath();
+            File startDir = new File("");
 
-        // A nasty hack to avoid e.g. python2.5 becoming python2/5.
-        // Should generalize this for directory components containing '.'.
-        modpath = modpath.replaceFirst("(/python[23])/([0-9]/)", "$1.$2");
+            for (String p : loadPath) {
+                startDir = new File(p, name.get(0).id);
+                File initFile = new File(Util.joinPath(startDir, "__init__.py").getPath());
 
-        List<String> loadPath = getLoadPath();
-
-        for (String p : loadPath) {
-            String dirname = p + modpath;
-            String pyname = dirname + ".py";
-            String initname = Util.joinPath(dirname, "__init__.py").getAbsolutePath();
-            String name;
-
-            // foo/bar has priority over foo/bar.py
-            // http://www.python.org/doc/essays/packages.html
-            if (Util.isReadableFile(initname)) {
-                name = initname;
-            } else if (Util.isReadableFile(pyname)) {
-                name = pyname;
-            } else {
-                continue;
+                if (initFile.exists()) {
+                    ModuleType initMod = loadFile(initFile.getPath());
+                    prev = initMod;
+                    scope.put(name.get(0).id, name.get(0), initMod, Binding.Kind.MODULE, tag);
+                    break;
+                } else {
+                    return null;
+                }
             }
 
-            name = Util.canonicalize(name);
-            ModuleType m = loadFile(name);
-            if (m != null) {
-                finer("load of module " + modname + "[succeeded]");
-                return m;
+            for (int i = 1; i < name.size(); i++) {
+                startDir = new File(startDir, name.get(i).id);
+                File initFile = new File(Util.joinPath(startDir, "__init__.py").getPath());
+
+                if (initFile.exists()) {
+                    ModuleType mod = loadFile(initFile.getPath());
+
+                    if (prev != null) {
+                        prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
+                    }
+                    prev = mod;
+                } else if (i == name.size() - 1) {
+                    File startFile = new File(startDir + ".py");
+                    if (startFile.exists()) {
+                        ModuleType mod = loadFile(startFile.getPath());
+                        if (prev != null) {
+                            prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
+                        }
+                        prev = mod;
+                    } else {
+                        return null;
+                    }
+                }
+
             }
         }
-        finer("failed to find module " + modname + " in load path");
-        failedModules.add(modname);
-        return null;
+
+        return prev;
     }
+
 
     /**
      * Load all Python source files recursively if the given fullname is a
@@ -570,12 +537,17 @@ public class Indexer {
      */
     public void loadFileRecursive(String fullname) throws Exception {
         File file_or_dir = new File(fullname);
+
         if (file_or_dir.isDirectory()) {
+
             setCWD(fullname);
+
             for (File file : file_or_dir.listFiles()) {
                 loadFileRecursive(file.getAbsolutePath());
             }
+
         } else {
+
             if (file_or_dir.getAbsolutePath().endsWith(".py")) {
                 setCWD(file_or_dir.getParent());
                 loadFile(file_or_dir.getAbsolutePath());
@@ -595,6 +567,7 @@ public class Indexer {
         Util.msg("Analyzing uncalled functions, count: " + uncalled.size());
         applyUncalled();
 
+        // mark unused variables
         for (List<Binding> lb : allBindings.values()) {
             for (Binding b: lb) {
                 if (!b.getType().isClassType() &&

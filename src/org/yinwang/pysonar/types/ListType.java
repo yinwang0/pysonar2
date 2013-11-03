@@ -8,7 +8,8 @@ import java.util.List;
 public class ListType extends Type {
 
     private Type eltType;
-    public List<Type> values = new ArrayList<Type>();
+    public List<Type> positional = new ArrayList<Type>();
+    public List<Object> values = new ArrayList<Object>();
 
     public ListType() {
         this(Indexer.idx.builtins.unknown);
@@ -34,11 +35,15 @@ public class ListType extends Type {
 
     public void add(Type another) {
         eltType = UnionType.union(eltType, another);
-        values.add(another);
+        positional.add(another);
+    }
+
+    public void addValue(Object v) {
+        values.add(v);
     }
 
     public Type get(int i) {
-        return values.get(i);
+        return positional.get(i);
     }
 
     public TupleType toTupleType(int n) {
@@ -51,7 +56,7 @@ public class ListType extends Type {
 
 
     public TupleType toTupleType() {
-        return new TupleType(values);
+        return new TupleType(positional);
     }
 
 

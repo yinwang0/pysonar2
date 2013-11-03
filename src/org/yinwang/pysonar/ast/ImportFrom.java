@@ -3,9 +3,12 @@ package org.yinwang.pysonar.ast;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.Util;
+import org.yinwang.pysonar.types.ListType;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -66,14 +69,12 @@ public class ImportFrom extends Node {
 
     static final long serialVersionUID = 5070549408963950138L;
 
-    // from ...a.b.c import x, foo as bar, y
-    // from y.z import *
-    public String module;  // "...a.b.c"
-    public int level;  // ".", ".", ".", "a", "b", "c"
-    public List<Alias> names;  // "x", "foo" [as] "bar", "y"
+    public List<Name> module;
+    public List<Alias> names;
+    public int level;
 
 
-    public ImportFrom(String module, List<Alias> names, int level, int start, int end) {
+    public ImportFrom(List<Name> module, List<Alias> names, int level, int start, int end) {
         super(start, end);
         this.module = module;
         this.level = level;
@@ -88,72 +89,39 @@ public class ImportFrom extends Node {
 
     @Override
     public Type resolve(Scope s, int tag) throws Exception {
-//        resolveExpr(qname, s, tag);
-//
-//        Type bottomType = qname.getBottom().getType();
-//        if (!bottomType.isModuleType()) {
-//            return setType(Indexer.idx.builtins.unknown);
-//        }
-//        ModuleType mt = (ModuleType)bottomType;
-//        setType(mt);
-//
-//        Import.addReferences(s, qname, false /* don't put top name in scope */);
-//
-//        if (isImportStar()) {
-//            importStar(s, mt);
-//            return getType();
-//        }
-//
-//        for (Alias a : names) {
-////            resolveAlias(s, mt, a);
-//        }
+        if (module == null) {
+            return Indexer.idx.builtins.Cont;
+        }
+
+        ModuleType mod = Indexer.idx.loadModule(module, s, tag);
+
+        if (mod == null) {
+            Indexer.idx.putProblem(this, "Can't load module");
+        } else if (isImportStar()) {
+            importStar(s, mod, tag);
+        } else {
+            for (Alias a : names) {
+                Type t = mod.table.lookupType(a.name.get(0).id);
+                Binding b = mod.table.lookup(a.name.get(0).id);
+
+                if (a.asname != null) {
+                    s.put(a.asname.id, a.asname, t, Binding.Kind.MODULE, tag);
+                } else {
+                    s.put(a.name.get(0).id, b);
+                }
+            }
+        }
+
         return Indexer.idx.builtins.Cont;
     }
 
+
     public boolean isImportStar() {
-        return names.size() == 1 && "*".equals(names.get(0).name);
+        return names.size() == 1 && "*".equals(names.get(0).name.get(0).id);
     }
 
-    /**
-     * Resolve "foo [as bar]" in "from x[.y] import foo [as bar]".
-     * There are several possibilities for "foo":  it could be a file
-     * in the directory "x[.y]", or it could be a name exported by
-     * the module "x[.y]" (from its __init__.py), or it could be a
-     * public name in the file "x/y.py".
-     *
-     */
-//    private void resolveAlias(Scope scope, ModuleType mt, Alias a) throws Exception {
-//        // Possibilities 1 & 2:  x/y.py or x/y/__init__.py
-//        Binding entry = mt.getTable().lookup(a.name);
-//
-//        if (entry == null) {
-//            // Possibility 3:  try looking for x/y/foo.py
-//            String mqname = qname.toQname() + "." + a.qname.toQname();
-//            ModuleType mt2 = Indexer.idx.loadModule(mqname);
-//            if (mt2 != null) {
-//                entry = Indexer.idx.lookupFirstBinding(mt2.getTable().getPath());
-//            }
-//        }
-//        if (entry == null) {
-//            addError(a, "name " + a.qname.getName().getId()
-//                     + " not found in module " + this.module);
-//            return;
-//        }
-//        String qname = a.qname.getName().getId();
-//        String aname = a.aname != null ? a.aname.getId() : null;
-//
-//        // Create references for both the name and the alias (if present).
-//        // Then if "foo", add "foo" to scope.  If "foo as bar", add "bar".
-//        Indexer.idx.putLocation(a.qname.getName(), entry);
-//        if (aname != null) {
-//            Indexer.idx.putLocation(a.aname, entry);
-//            scope.put(aname, entry);
-//        } else {
-//            scope.put(qname, entry);
-//        }
-//    }
 
-    private void importStar(Scope s, ModuleType mt) throws Exception {
+    private void importStar(Scope s, ModuleType mt, int tag) throws Exception {
         if (mt == null || mt.getFile() == null) {
             return;
         }
@@ -163,12 +131,30 @@ public class ImportFrom extends Node {
             return;
         }
 
-        List<String> names = mod.getExportedNames(mt);
+        List<String> names = new ArrayList<String>();
+        Type allType = mt.table.lookupType("__all__");
+        if (!allType.isListType()) {
+            return;
+        } else {
+            ListType lt = allType.asListType();
+
+            for (Object o: lt.values) {
+                if (o instanceof String) {
+                    names.add((String) o);
+                }
+            }
+        }
+
         if (!names.isEmpty()) {
             for (String name : names) {
                 Binding nb = mt.getTable().lookupLocal(name);
                 if (nb != null) {
                     s.put(name, nb);
+                } else {
+                    List<Name> m2 = new ArrayList<Name>(module);
+                    m2.add(new Name(name));
+                    ModuleType mod2 = Indexer.idx.loadModule(m2, s, tag);
+                    s.put(name, null, mod2, Binding.Kind.MODULE, tag);
                 }
             }
         } else {

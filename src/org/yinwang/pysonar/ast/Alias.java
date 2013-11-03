@@ -1,7 +1,10 @@
 package org.yinwang.pysonar.ast;
 
+import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
+
+import java.util.List;
 
 /**
  * A name alias.  Used for the components of import and import-from statements.
@@ -10,13 +13,15 @@ public class Alias extends Node {
 
     static final long serialVersionUID = 4127878954298987559L;
 
-    public Node name;
+    public List<Name> name;
     public Name asname;
 
-    public Alias(Node name, String asname, int start, int end) {
+    public Alias(List<Name> name, Name asname, int start, int end) {
         super(start, end);
         this.name = name;
-        this.asname = asname == null? null : new Name(asname);
+        this.asname = asname;
+        addChildren(name);
+        addChildren(asname);
     }
 
     /**
@@ -27,11 +32,7 @@ public class Alias extends Node {
      */
     @Override
     public Type resolve(Scope s, int tag) throws Exception {
-        Type t = resolveExpr(name, s, tag);
-
-        // "import a.b.c" defines 'a' (the top module) in the scope, whereas
-        // "import a.b.c as x" defines 'x', which refers to the bottom module.
-        return t;
+        return Indexer.idx.builtins.unknown;
     }
 
     @Override
@@ -42,7 +43,9 @@ public class Alias extends Node {
     @Override
     public void visit(NodeVisitor v) {
         if (v.visit(this)) {
-            visitNode(name, v);
+            for (Name n : name) {
+                visitNode(n, v);
+            }
             visitNode(asname, v);
         }
     }

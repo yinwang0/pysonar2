@@ -77,7 +77,7 @@ public class Def {
      * Returns {@code true} if this node is from a URL.
      */
     public boolean isURL() {
-        return fileOrUrl.startsWith("http://");
+        return fileOrUrl != null && fileOrUrl.startsWith("http://");
     }
 
     public boolean isModule() {

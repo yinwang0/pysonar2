@@ -137,7 +137,10 @@ public class Call extends Node {
             Type toType = resolveExpr(func.func.body, funcTable, tag);
             if (missingReturn(toType)) {
                 Indexer.idx.putProblem(func.func.name, "Function not always return a value");
-                Indexer.idx.putProblem(call, "Call not always return a value");
+
+                if (call != null) {
+                    Indexer.idx.putProblem(call, "Call not always return a value");
+                }
             }
 
             func.setMapping(fromType, toType);

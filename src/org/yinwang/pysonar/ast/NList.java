@@ -24,6 +24,9 @@ public class NList extends Sequence {
         ListType listType = new ListType();
         for (Node elt : elts) {
             listType.add(resolveExpr(elt, s, tag));
+            if (elt instanceof Str) {
+                listType.addValue(((Str)elt).getStr());
+            }
         }
 
         return listType;

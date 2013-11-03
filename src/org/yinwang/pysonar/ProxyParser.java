@@ -135,6 +135,28 @@ public class ProxyParser {
     }
 
 
+    List<Name> segmentQname(String qname, int start) {
+        List<Name> result = new ArrayList<Name>();
+
+        for (int i = start; i < qname.length(); i++) {
+            String name = "";
+            while (Character.isSpaceChar(qname.charAt(i))) i++;
+            int nameStart = i;
+            while (i < qname.length() &&
+                    (Character.isJavaIdentifierPart(qname.charAt(i)) ||
+                     qname.charAt(i) == '*') &&
+                    qname.charAt(i) != '.') {
+                name += qname.charAt(i);
+                i++;
+            }
+            int nameStop = i - 1;
+            result.add(new Name(name, nameStart, nameStop));
+        }
+
+        return result;
+    }
+
+
     public Node deJson(Object o) {
         if (!(o instanceof Map)) {
             return null;
@@ -162,9 +184,13 @@ public class ProxyParser {
         }
 
         if (type.equals("alias")) {         // lower case alias
-            Node name = new Name((String) map.get("name"));    // maybe Name or Attribute
-            String asname = map.get("asname") == null ? null : (String) map.get("asname");
-            return new Alias(name, asname, start, end);
+            String qname = (String) map.get("name");
+            if (qname == null) {
+                Util.msg("qname is null");
+            }
+            List<Name> names = segmentQname(qname, start);
+            Name asname = map.get("asname") == null ? null : new Name((String) map.get("asname"));
+            return new Alias(names, asname, start, end);
         }
 
         if (type.equals("Assert")) {
@@ -344,9 +370,10 @@ public class ProxyParser {
 
         if (type.equals("ImportFrom")) {
             String module = (String) map.get("module");
+            List<Name> moduleSeg = module==null? null : segmentQname(module, start);
             List<Alias> names = convertListAlias(map.get("names"));
             int level = ((Double) map.get("level")).intValue();
-            return new ImportFrom(module, names, level, start, end);
+            return new ImportFrom(moduleSeg, names, level, start, end);
         }
 
         if (type.equals("Index")) {

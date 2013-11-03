@@ -308,11 +308,13 @@ public class Binding implements Comparable<Object> {
     @Override
     public boolean equals(Object o) {
         if (o instanceof Binding) {
-            Binding other = (Binding)o;
-            return other.getDef().equals(getDef());
-        } else {
-            return false;
+            Binding other = (Binding) o;
+            if (other.getDef() != null) {
+                return other.getDef().equals(getDef());
+            }
         }
+
+        return false;
     }
 
 }
