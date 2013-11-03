@@ -319,7 +319,11 @@ public class Util {
 
 
     public static void die(String msg) {
-        System.err.println(msg);
+        die(msg, null);
+    }
+
+    public static void die(String msg, Exception e) {
+        System.err.println(msg + ":\n" + e);
         Thread.dumpStack();
         System.exit(2);
     }

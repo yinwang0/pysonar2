@@ -16,9 +16,6 @@ public abstract class Type {
     @Nullable
     public Scope table;
 
-    protected static final String LIBRARY_URL = Builtins.LIBRARY_URL;
-    protected static final String TUTORIAL_URL = Builtins.TUTORIAL_URL;
-    protected static final String REFERENCE_URL = Builtins.REFERENCE_URL;
 
     @NotNull
     protected static TypeStack typeStack = new TypeStack();

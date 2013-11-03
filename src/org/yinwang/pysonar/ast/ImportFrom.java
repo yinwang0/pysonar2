@@ -97,17 +97,18 @@ public class ImportFrom extends Node {
         ModuleType mod = Indexer.idx.loadModule(module, s, tag);
 
         if (mod == null) {
-            Indexer.idx.putProblem(this, "Can't load module");
+            Indexer.idx.putProblem(this, "Cannot load module");
         } else if (isImportStar()) {
             importStar(s, mod, tag);
         } else {
             for (Alias a : names) {
                 Type t = mod.getTable().lookupType(a.name.get(0).id);
+                if (t == null) return Indexer.idx.builtins.Cont;
 
                 if (a.asname != null) {
                     s.put(a.asname.id, a.asname, t, Binding.Kind.MODULE, tag);
                 } else {
-                    Binding b = mod.table.lookup(a.name.get(0).id);
+                    Binding b = mod.getTable().lookup(a.name.get(0).id);
                     if (b != null) {
                         s.put(a.name.get(0).id, b);
                     }
@@ -135,8 +136,9 @@ public class ImportFrom extends Node {
         }
 
         List<String> names = new ArrayList<String>();
-        Type allType = mt.table.lookupType("__all__");
-        if (!allType.isListType()) {
+        Type allType = mt.getTable().lookupType("__all__");
+
+        if (allType == null || !allType.isListType()) {
             return;
         } else {
             ListType lt = allType.asListType();

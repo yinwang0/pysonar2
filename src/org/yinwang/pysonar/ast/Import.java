@@ -33,7 +33,7 @@ public class Import extends Node {
         for (Alias a : names) {
             ModuleType mod = Indexer.idx.loadModule(a.name, s, tag);
             if (mod == null) {
-                Indexer.idx.putProblem(this, "Can't load module");
+                Indexer.idx.putProblem(this, "Cannot load module");
             } else if (a.asname != null) {
                 s.put(a.asname.id, a.asname, mod, Binding.Kind.MODULE, tag);
             }

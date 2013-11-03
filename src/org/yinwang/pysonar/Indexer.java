@@ -373,6 +373,8 @@ public class Indexer {
 
     @Nullable
     public ModuleType loadFile(String path) {
+//        Util.msg("loading: " + path);
+
         File f = new File(path);
 
         if (!f.canRead()) {
@@ -493,26 +495,35 @@ public class Indexer {
     }
 
 
-    public ModuleType searchModuleInPath(String modname) {
+    /**
+     * Find the path that contains modname. Used to find the starting point of locating a qname.
+     * @param headName first module name segment
+     */
+    public String locateModule(String headName) {
         List<String> loadPath = getLoadPath();
 
         for (String p : loadPath) {
-            File startDir = new File(p, modname);
+            File startDir = new File(p, headName);
             File initFile = new File(Util.joinPath(startDir, "__init__.py").getPath());
 
             if (initFile.exists()) {
-                ModuleType mod = loadFile(initFile.getPath());
-                if (mod != null) {
-                    return mod;
-                }
+                return p;
+            }
+
+            File startFile = new File(startDir + ".py");
+            if (startFile.exists()) {
+                return p;
             }
         }
+
         return null;
     }
 
 
     @Nullable
     public ModuleType loadModule(@NotNull List<Name> name, @NotNull Scope scope, int tag) {
+        if (name.isEmpty()) return null;
+
         String qname = makeQname(name);
 
         ModuleType mt = getBuiltinModule(qname);
@@ -526,84 +537,46 @@ public class Indexer {
         // If there are more than one segment
         // load the packages first
         ModuleType prev = null;
+        String startPath = locateModule(name.get(0).id);
 
-        if (name.size() > 1) {
-            List<String> loadPath = getLoadPath();
-            File startDir = new File("");
+        if (startPath == null) {
+            return null;
+        }
 
-            for (String p : loadPath) {
-                startDir = new File(p, name.get(0).id);
-                File initFile = new File(Util.joinPath(startDir, "__init__.py").getPath());
+        File path = new File(startPath);
 
-                if (initFile.exists()) {
-                    ModuleType initMod = loadFile(initFile.getPath());
-                    if (initMod == null) return null;
-                    prev = initMod;
-                    scope.put(name.get(0).id, name.get(0), initMod, Binding.Kind.MODULE, tag);
-                    break;
-                } else {
-                    return null;
-                }
-            }
-
-            for (int i = 1; i < name.size(); i++) {
-                startDir = new File(startDir, name.get(i).id);
-                File initFile = new File(Util.joinPath(startDir, "__init__.py").getPath());
-
-                if (initFile.exists()) {
-                    ModuleType mod = loadFile(initFile.getPath());
-                    if (mod == null) return null;
-
-                    if (prev != null) {
-                        prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
-                    }
-                    prev = mod;
-                } else if (i == name.size() - 1) {
-                    File startFile = new File(startDir + ".py");
-                    if (startFile.exists()) {
-                        ModuleType mod = loadFile(startFile.getPath());
-                        if (mod == null) return null;
-
-                        if (prev != null) {
-                            prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
-                        }
-                        prev = mod;
-                    } else {
-                        return null;
-                    }
-                }
-            }
-            return prev;
-
-        } else if (name.size() == 1) {
-            File startDir = new File(name.get(0).id);
-            File initFile = new File(Util.joinPath(startDir, "__init__.py").getPath());
+        for (int i = 0; i < name.size(); i++) {
+            path = new File(path, name.get(i).id);
+            File initFile = new File(Util.joinPath(path, "__init__.py").getPath());
 
             if (initFile.exists()) {
                 ModuleType mod = loadFile(initFile.getPath());
                 if (mod == null) return null;
-
                 if (prev != null) {
-                    prev.getTable().put(name.get(0).id, name.get(0), mod, Binding.Kind.MODULE, tag);
+                    Binding b = prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
+                    Indexer.idx.putLocation(name.get(i), b);
                 }
-                return mod;
-            } else {
-                File startFile = new File(startDir + ".py");
+                prev = mod;
+            } else if (i == name.size() - 1) {
+                File startFile = new File(path + ".py");
                 if (startFile.exists()) {
                     ModuleType mod = loadFile(startFile.getPath());
                     if (mod == null) return null;
-
                     if (prev != null) {
-                        prev.getTable().put(name.get(0).id, name.get(0), mod, Binding.Kind.MODULE, tag);
+                        Binding b = prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
+                        Indexer.idx.putLocation(name.get(i), b);
+                    } else {
+                        Binding b = scope.put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
+                        Indexer.idx.putLocation(name.get(i), b);
+
                     }
-                    return mod;
+                    prev = mod;
                 } else {
                     return null;
                 }
             }
-        } else {
-            return null;
         }
+        return prev;
     }
 
 

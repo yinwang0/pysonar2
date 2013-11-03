@@ -95,16 +95,28 @@ public class HtmlDemo {
         }
     }
 
-    private void start(@NotNull File stdlib, @NotNull File fileOrDir) {
+    private void start(@NotNull File stdlib, @NotNull File fileOrDir) throws Exception {
         long start = System.currentTimeMillis();
 
         File rootDir = fileOrDir.isFile() ? fileOrDir.getParentFile() : fileOrDir;
-        rootPath = rootDir.getPath();
+        try {
+            rootPath = rootDir.getCanonicalPath();
+        } catch (Exception e) {
+            Util.die("Doh");
+        }
 
         indexer = new Indexer();
-        indexer.addPath(stdlib.getPath());
+
+        try {
+            indexer.addPath(stdlib.getCanonicalPath());
+        } catch (Exception e) {
+            Util.die("Doh");
+        }
+
         Util.msg("Building index");
-        indexer.loadFileRecursive(fileOrDir.getPath());
+
+        indexer.loadFileRecursive(fileOrDir.getCanonicalPath());
+
         indexer.finish();
 
         Util.msg(indexer.getStatusReport());
@@ -209,7 +221,7 @@ public class HtmlDemo {
         return f;
     }
 
-    public static void main(@NotNull String[] args) {
+    public static void main(@NotNull String[] args) throws Exception {
         if (args.length < 2 || args.length > 3) {
             usage();
         }

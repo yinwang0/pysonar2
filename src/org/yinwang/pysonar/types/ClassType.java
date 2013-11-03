@@ -18,7 +18,7 @@ public class ClassType extends Type {
     public boolean equals(Object other) {
         if (other instanceof ClassType) {
             ClassType co = (ClassType) other;
-            return table.getPath().equals(co.table.getPath());
+            return getTable().getPath().equals(co.getTable().getPath());
         } else {
             return this == other;
         }
