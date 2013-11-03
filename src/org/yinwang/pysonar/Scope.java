@@ -43,7 +43,7 @@ public class Scope {
     private ScopeType scopeType;
     private Type type;
     private String path = "";
-    private static int lambdaCounter = 0;
+
 
     public Scope(Scope parent, ScopeType type) {
         this.parent = parent;
@@ -142,35 +142,13 @@ public class Scope {
         getInternalTable().put(id, b);
     }
 
-    /**
-     * Adds a definition and/or reference to the table.
-     * If there is no binding for {@code id}, creates one and gives it
-     * {@code type} and {@code kind}.  <p>
-     * <p/>
-     * If a binding already exists, then add either a definition or a reference
-     * at {@code loc} to the binding.  By convention we consider it a definition
-     * if the type changes.  If the passed type is different from the binding's
-     * current type, set the binding's type to the union of the old and new
-     * types, and add a definition.  If the new type is the same, just add a
-     * reference.  <p>
-     * <p/>
-     * If the binding already exists, {@code kind} is only updated if a
-     * definition was added <em>and</em> the binding's type was previously the
-     * unknown type.
-     */
+
     public Binding put(String id, Node loc, Type type, Binding.Kind kind, int tag) {
         Binding b = lookupScope(id);
         return insertOrUpdate(b, id, loc, type, kind, tag);
     }
 
-    /**
-     * Same as {@link #put}, but adds the name as an attribute of this scope.
-     * Looks up the superclass chain to see if the attribute exists, rather
-     * than looking in the lexical scope chain.
-     *
-     * @return the new binding, or {@code null} if the current scope does
-     *         not have a properly initialized path.
-     */
+
     public Binding putAttr(String id, Node loc, Type type, Binding.Kind kind, int tag) {
         // Attributes are always part of a qualified name.  If there is no qname
         // on the target type, it's a bug (we forgot to set the path somewhere.)
@@ -495,9 +473,6 @@ public class Scope {
         }
     }
 
-    public String newLambdaName() {
-        return "lambda%" + (++lambdaCounter);
-    }
 
     /**
      * Generates a qname for a parameter of a function or method.
