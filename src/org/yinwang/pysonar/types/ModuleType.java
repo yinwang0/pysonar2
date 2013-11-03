@@ -1,13 +1,17 @@
 package org.yinwang.pysonar.types;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.Util;
 
 public class ModuleType extends Type {
 
+    @Nullable
     private String file;
     private String name;
+    @Nullable
     private String qname;
 
     public ModuleType() { }
@@ -23,7 +27,7 @@ public class ModuleType extends Type {
         }
     }
 
-    public ModuleType(String name, String file, Scope parent) {
+    public ModuleType(String name, @Nullable String file, @NotNull Scope parent) {
         this.name = name;
         this.file = file;  // null for builtin modules
         if (file != null) {
@@ -49,6 +53,7 @@ public class ModuleType extends Type {
       this.file = file;
     }
 
+    @Nullable
     public String getFile() {
       return file;
     }
@@ -65,6 +70,7 @@ public class ModuleType extends Type {
       this.qname = qname;
     }
 
+    @Nullable
     public String getQname() {
       return qname;
     }
@@ -76,7 +82,7 @@ public class ModuleType extends Type {
 
 
     @Override
-    protected void printType(CyclicTypeRecorder ctr, StringBuilder sb) {
+    protected void printType(CyclicTypeRecorder ctr, @NotNull StringBuilder sb) {
         sb.append(getName());
     }
 }

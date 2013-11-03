@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.demos;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Progress;
 import org.yinwang.pysonar.Util;
@@ -94,7 +95,7 @@ public class HtmlDemo {
         }
     }
 
-    private void start(File stdlib, File fileOrDir) throws Exception {
+    private void start(@NotNull File stdlib, @NotNull File fileOrDir) throws Exception {
         long start = System.currentTimeMillis();
 
         File rootDir = fileOrDir.isFile() ? fileOrDir.getParentFile() : fileOrDir;
@@ -141,6 +142,7 @@ public class HtmlDemo {
         Util.msg("Wrote " + indexer.getLoadedFiles().size() + " files to " + OUTPUT_DIR);
     }
 
+    @NotNull
     private String markup(String path) throws Exception {
         String source = Util.readFile(path);
 
@@ -163,7 +165,8 @@ public class HtmlDemo {
         return sb.toString();
     }
 
-    private String addLineNumbers(String source) {
+    @NotNull
+    private String addLineNumbers(@NotNull String source) {
         StringBuilder result = new StringBuilder((int)(source.length() * 1.2));
         int count = 1;
         for (String line : source.split("\n")) {
@@ -194,6 +197,7 @@ public class HtmlDemo {
         System.exit(0);
     }
 
+    @NotNull
     private static File checkFile(String path) {
         File f = new File(path);
         if (!f.canRead()) {
@@ -202,7 +206,7 @@ public class HtmlDemo {
         return f;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(@NotNull String[] args) throws Exception {
         if (args.length < 2 || args.length > 3) {
             usage();
         }

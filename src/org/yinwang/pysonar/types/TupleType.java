@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.types;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Indexer;
 
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ public class TupleType extends Type {
         return eltTypes.get(i);
     }
 
+    @NotNull
     public ListType toListType() {
         ListType t = new ListType();
         for (Type e : eltTypes) {
@@ -93,7 +95,7 @@ public class TupleType extends Type {
     }
 
     @Override
-    protected void printType(CyclicTypeRecorder ctr, StringBuilder sb) {
+    protected void printType(@NotNull CyclicTypeRecorder ctr, @NotNull StringBuilder sb) {
         Integer num = ctr.visit(this);
         if (num != null) {
             sb.append("#").append(num);

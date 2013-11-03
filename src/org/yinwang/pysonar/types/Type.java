@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.types;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Builtins;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
@@ -11,12 +13,14 @@ import java.util.Map;
 
 public abstract class Type {
 
+    @Nullable
     public Scope table;
 
     protected static final String LIBRARY_URL = Builtins.LIBRARY_URL;
     protected static final String TUTORIAL_URL = Builtins.TUTORIAL_URL;
     protected static final String REFERENCE_URL = Builtins.REFERENCE_URL;
 
+    @NotNull
     protected static TypeStack typeStack = new TypeStack();
 
 
@@ -27,6 +31,7 @@ public abstract class Type {
         this.table = table;
     }
 
+    @Nullable
     public Scope getTable() {
         if (table == null) {
             table = new Scope(null, Scope.ScopeType.SCOPE);
@@ -89,26 +94,32 @@ public abstract class Type {
         return this instanceof UnknownType;
     }
 
+    @NotNull
     public ClassType asClassType() {
         return (ClassType) this;
     }
 
+    @NotNull
     public DictType asDictType() {
         return (DictType) this;
     }
 
+    @NotNull
     public FunType asFuncType() {
         return (FunType) this;
     }
 
+    @NotNull
     public InstanceType asInstanceType() {
         return (InstanceType) this;
     }
 
+    @NotNull
     public ListType asListType() {
         return (ListType) this;
     }
 
+    @Nullable
     public ModuleType asModuleType() {
         if (this.isUnionType()) {
             for (Type t : this.asUnionType().getTypes()) {
@@ -124,14 +135,17 @@ public abstract class Type {
         }
     }
 
+    @NotNull
     public TupleType asTupleType() {
         return (TupleType) this;
     }
 
+    @NotNull
     public UnionType asUnionType() {
         return (UnionType) this;
     }
 
+    @NotNull
     public UnknownType asUnknownType() {
         return (UnknownType) this;
     }
@@ -141,7 +155,9 @@ public abstract class Type {
      */
     protected class CyclicTypeRecorder {
         int count = 0;
+        @NotNull
         private Map<Type, Integer> elements = new HashMap<Type, Integer>();
+        @NotNull
         private Map<Type, Integer> used = new HashMap<Type, Integer>();
 
         /**
@@ -208,6 +224,7 @@ public abstract class Type {
     protected abstract void printType(CyclicTypeRecorder ctr, StringBuilder sb);
 
 
+    @NotNull
     @Override
     public String toString() {
         StringBuilder input = new StringBuilder();

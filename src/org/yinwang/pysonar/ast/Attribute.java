@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
@@ -15,7 +17,9 @@ public class Attribute extends Node {
 
     static final long serialVersionUID = -1120979305017812255L;
 
+    @Nullable
     public Node target;
+    @Nullable
     public Name attr;
 
     public Attribute(Node target, Name attr, int start, int end) {
@@ -25,6 +29,7 @@ public class Attribute extends Node {
         addChildren(target, attr);
     }
 
+    @Nullable
     public String getAttributeName() {
         return attr.getId();
     }
@@ -33,13 +38,14 @@ public class Attribute extends Node {
      * Sets the attribute node.  Used when constructing the AST.
      * @throws IllegalArgumentException if the param is null
      */
-    public void setAttr(Name attr) {
+    public void setAttr(@Nullable Name attr) {
         if (attr == null) {
             throw new IllegalArgumentException("param cannot be null");
         }
         this.attr = attr;
     }
 
+    @Nullable
     public Name getAttr() {
         return attr;
     }
@@ -48,13 +54,14 @@ public class Attribute extends Node {
      * Sets the target node.  Used when constructing the AST.
      * @throws IllegalArgumentException if the param is null
      */
-    public void setTarget(Node target) {
+    public void setTarget(@Nullable Node target) {
         if (target == null) {
             throw new IllegalArgumentException("param cannot be null");
         }
         this.target = target;
     }
 
+    @Nullable
     public Node getTarget() {
         return target;
     }
@@ -64,7 +71,7 @@ public class Attribute extends Node {
      * resolution pass.  This method is called when this node is in the lvalue of
      * an assignment, in which case it is called in lieu of {@link #resolve}.<p>
      */
-    public void setAttr(Scope s, Type v, int tag) throws Exception {
+    public void setAttr(Scope s, @NotNull Type v, int tag) throws Exception {
         Type targetType = resolveExpr(target, s, tag);
         if (targetType.isUnionType()) {
             Set<Type> types = targetType.asUnionType().getTypes();
@@ -76,7 +83,7 @@ public class Attribute extends Node {
         }
     }
 
-    private void setAttrType(Type targetType, Type v, int tag) {
+    private void setAttrType(@NotNull Type targetType, @NotNull Type v, int tag) {
         if (targetType.isUnknownType()) {
             Indexer.idx.putProblem(this, "Can't set attribute for UnknownType");
             return;
@@ -102,7 +109,7 @@ public class Attribute extends Node {
         }
     }
 
-    private Type getAttrType(Type targetType) {
+    private Type getAttrType(@NotNull Type targetType) {
         if (attr == null) {
             Util.msg("attr is null");
         }
@@ -131,13 +138,14 @@ public class Attribute extends Node {
         }
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Attribute:" + start + ":" + target + "." + getAttributeName() + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(target, v);
             visitNode(attr, v);

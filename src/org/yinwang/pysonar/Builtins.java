@@ -1,5 +1,7 @@
 package org.yinwang.pysonar;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Url;
 import org.yinwang.pysonar.types.*;
 
@@ -23,31 +25,38 @@ public class Builtins {
     public static final String REFERENCE_URL = "http://docs.python.org/reference/";
     public static final String DATAMODEL_URL = "http://docs.python.org/reference/datamodel#";
 
+    @NotNull
     public static Url newLibUrl(String module, String name) {
         return newLibUrl(module + ".html#" + name);
     }
 
-    public static Url newLibUrl(String path) {
+    @NotNull
+    public static Url newLibUrl(@NotNull String path) {
         if (!path.contains("#") && !path.endsWith(".html")) {
             path += ".html";
         }
         return new Url(LIBRARY_URL + path);
     }
 
+    @NotNull
     public static Url newRefUrl(String path) {
         return new Url(REFERENCE_URL + path);
     }
 
+    @NotNull
     public static Url newDataModelUrl(String path) {
         return new Url(DATAMODEL_URL + path);
     }
 
+    @NotNull
     public static Url newTutUrl(String path) {
         return new Url(TUTORIAL_URL + path);
     }
 
     // XXX:  need to model "types" module and reconcile with these types
+    @Nullable
     public ModuleType Builtin;
+    @NotNull
     public UnknownType unknown = new UnknownType();
     public ClassType Object;
     public ClassType Type;
@@ -77,6 +86,7 @@ public class Builtins {
     public ClassType Time_struct_time;
 
 
+    @NotNull
     String[] builtin_exception_types = {
         "ArithmeticError", "AssertionError", "AttributeError",
         "BaseException", "Exception", "DeprecationWarning", "EOFError",
@@ -94,14 +104,17 @@ public class Builtins {
         "ZeroDivisionError"
     };
 
+    @NotNull
     Set<Type> nativeTypes = new HashSet<Type>();
 
-    ClassType newClass(String name, Scope table) {
+    @NotNull
+    ClassType newClass(@NotNull String name, Scope table) {
         return newClass(name, table, null);
     }
 
-    ClassType newClass(String name, Scope table,
-                        ClassType superClass, ClassType... moreSupers) {
+    @NotNull
+    ClassType newClass(@NotNull String name, Scope table,
+                        ClassType superClass, @NotNull ClassType... moreSupers) {
         ClassType t = new ClassType(name, table, superClass);
         for (ClassType c : moreSupers) {
             t.addSuper(c);
@@ -110,29 +123,34 @@ public class Builtins {
         return t;
     }
 
+    @Nullable
     ModuleType newModule(String name) {
         ModuleType mt = new ModuleType(name, null, Indexer.idx.globaltable);
         nativeTypes.add(mt);
         return mt;
     }
 
+    @NotNull
     UnknownType unknown() {
         UnknownType t = Indexer.idx.builtins.unknown;
         nativeTypes.add(t);
         return t;
     }
 
-    ClassType newException(String name, Scope t) {
+    @NotNull
+    ClassType newException(@NotNull String name, Scope t) {
         return newClass(name, t, BaseException);
     }
 
+    @NotNull
     FunType newFunc() {
         FunType t = new FunType();
         nativeTypes.add(t);
         return t;
     }
 
-    FunType newFunc(Type type) {
+    @Nullable
+    FunType newFunc(@Nullable Type type) {
         if (type == null) {
             type = Indexer.idx.builtins.unknown;
         }
@@ -141,28 +159,33 @@ public class Builtins {
         return t;
     }
 
+    @NotNull
     ListType newList() {
         return newList(unknown());
     }
 
+    @NotNull
     ListType newList(Type type) {
         ListType t = new ListType(type);
         nativeTypes.add(t);
         return t;
     }
 
+    @NotNull
     DictType newDict(Type ktype, Type vtype) {
         DictType t = new DictType(ktype, vtype);
         nativeTypes.add(t);
         return t;
     }
 
+    @NotNull
     TupleType newTuple(Type... types) {
         TupleType t = new TupleType(types);
         nativeTypes.add(t);
         return t;
     }
 
+    @NotNull
     UnionType newUnion(Type... types) {
         UnionType t = new UnionType(types);
         nativeTypes.add(t);
@@ -176,7 +199,9 @@ public class Builtins {
     private abstract class NativeModule {
 
         protected String name;
+        @Nullable
         protected ModuleType module;
+        @Nullable
         protected Scope table;  // the module's symbol table
 
         NativeModule(String name) {
@@ -185,6 +210,7 @@ public class Builtins {
         }
 
         /** Lazily load the module. */
+        @Nullable
         ModuleType getModule() {
             if (module == null) {
                 createModuleType();
@@ -203,24 +229,28 @@ public class Builtins {
             }
         }
 
+        @Nullable
         protected Binding update(String name, Url url, Type type, Binding.Kind kind) {
             return table.update(name, url, type, kind);
         }
 
+        @Nullable
         protected Binding addClass(String name, Url url, Type type) {
             return table.update(name, url, type, CLASS);
         }
 
+        @Nullable
         protected Binding addMethod(String name, Url url, Type type) {
             return table.update(name, url, type, METHOD);
         }
 
+        @Nullable
         protected Binding addFunction(String name, Url url, Type type) {
             return table.update(name, url, newFunc(type), FUNCTION);
         }
 
         // don't use this unless you're sure it's OK to share the type object
-        protected void addFunctions_beCareful(Type type, String... names) {
+        protected void addFunctions_beCareful(Type type, @NotNull String... names) {
             for (String name : names) {
                 addFunction(name, liburl(), type);
             }
@@ -238,18 +268,19 @@ public class Builtins {
             addFunctions_beCareful(BaseStr, names);
         }
 
-        protected void addUnknownFuncs(String... names) {
+        protected void addUnknownFuncs(@NotNull String... names) {
             for (String name : names) {
                 addFunction(name, liburl(), unknown());
             }
         }
 
+        @Nullable
         protected Binding addAttr(String name, Url url, Type type) {
             return table.update(name, url, type, ATTRIBUTE);
         }
 
         // don't use this unless you're sure it's OK to share the type object
-        protected void addAttributes_beCareful(Type type, String... names) {
+        protected void addAttributes_beCareful(Type type, @NotNull String... names) {
             for (String name : names) {
                 addAttr(name, liburl(), type);
             }
@@ -263,20 +294,23 @@ public class Builtins {
             addAttributes_beCareful(BaseStr, names);
         }
 
-        protected void addUnknownAttrs(String... names) {
+        protected void addUnknownAttrs(@NotNull String... names) {
             for (String name : names) {
                 addAttr(name, liburl(), unknown());
             }
         }
 
+        @NotNull
         protected Url liburl() {
             return newLibUrl(name);
         }
 
+        @NotNull
         protected Url liburl(String anchor) {
             return newLibUrl(name, anchor);
         }
 
+        @NotNull
         @Override
         public String toString() {
             return module == null
@@ -288,6 +322,7 @@ public class Builtins {
     /**
      * The set of top-level native modules.
      */
+    @NotNull
     private Map<String, NativeModule> modules = new HashMap<String, NativeModule>();
 
     public Builtins() {
@@ -386,10 +421,8 @@ public class Builtins {
     /**
      * Loads (if necessary) and returns the specified built-in module.
      */
-    public ModuleType get(String name) {
-    	if (name.startsWith(".")) {
-    		return null;
-    	}
+    @Nullable
+    public ModuleType get(@NotNull String name) {
         if (!name.contains(".")) {  // unqualified
             return getModule(name);
         }
@@ -408,6 +441,7 @@ public class Builtins {
         return (ModuleType)type;
     }
 
+    @Nullable
     private ModuleType getModule(String name) {
         NativeModule wrap = modules.get(name);
         return wrap == null ? null : wrap.getModule();
@@ -486,6 +520,7 @@ public class Builtins {
         }
     }
 
+    @NotNull
     Url numUrl() {
         return newLibUrl("stdtypes", "typesnumeric");
     }
@@ -664,7 +699,8 @@ public class Builtins {
         table.update("newlines", newLibUrl(url), newUnion(BaseStr, newTuple(BaseStr)), ATTRIBUTE);
     }
 
-    private Binding synthetic(Scope table, String n, Url url, Type type, Binding.Kind k) {
+    @Nullable
+    private Binding synthetic(@NotNull Scope table, String n, Url url, Type type, Binding.Kind k) {
         Binding b = table.update(n, url, type, k);
         b.markSynthetic();
         return b;
@@ -870,6 +906,7 @@ public class Builtins {
         public CPickleModule() {
             super("cPickle");
         }
+        @NotNull
         @Override
         protected Url liburl() {
             return newLibUrl("pickle", "module-cPickle");
@@ -905,10 +942,12 @@ public class Builtins {
         public CStringIOModule() {
             super("cStringIO");
         }
+        @NotNull
         @Override
         protected Url liburl() {
             return newLibUrl("stringio");
         }
+        @NotNull
         @Override
         protected Url liburl(String anchor) {
             return newLibUrl("stringio", anchor);
@@ -961,9 +1000,11 @@ public class Builtins {
         public CollectionsModule() {
             super("collections");
         }
+        @NotNull
         private Url abcUrl() {
             return liburl("abcs-abstract-base-classes");
         }
+        @NotNull
         private Url dequeUrl() {
             return liburl("deque-objects");
         }
@@ -1113,6 +1154,7 @@ public class Builtins {
         public DatetimeModule() {
             super("datetime");
         }
+        @NotNull
         private Url dtUrl(String anchor) {
             return liburl("datetime." + anchor);
         }
@@ -1280,7 +1322,7 @@ public class Builtins {
             ModuleType builtins = get("__builtin__");
             for (String s : builtin_exception_types) {
                 Binding b = builtins.getTable().lookup(s);
-                table.update(b.getName(), b.getSignatureNode(), b.getType(), b.getKind());
+                table.update(b.getName(), b.getFirstNode(), b.getType(), b.getKind());
             }
         }
     }

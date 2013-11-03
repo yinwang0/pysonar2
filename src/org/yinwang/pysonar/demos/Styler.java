@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.demos;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.ast.*;
 
@@ -26,10 +28,12 @@ class Styler extends DefaultNodeVisitor {
     private Indexer indexer;
     private String source;
     private String path;
+    @NotNull
     private List<StyleRun> styles = new ArrayList<StyleRun>();
     private Linker linker;
 
     /** Offsets of doc strings found by node visitor. */
+    @NotNull
     private Set<Integer> docOffsets = new HashSet<Integer>();
 
     public Styler(Indexer idx, Linker linker) {
@@ -42,6 +46,7 @@ class Styler extends DefaultNodeVisitor {
      * @param path absolute file path
      * @param src file contents
      */
+    @NotNull
     public List<StyleRun> addStyles(String path, String src) throws Exception {
         this.path = path;
         source = src;
@@ -54,7 +59,7 @@ class Styler extends DefaultNodeVisitor {
     }
 
     @Override
-    public boolean visit(Name n) {
+    public boolean visit(@NotNull Name n) {
         Node parent = n.getParent();
         if (parent instanceof FunctionDef) {
             FunctionDef fn = (FunctionDef)parent;
@@ -81,7 +86,7 @@ class Styler extends DefaultNodeVisitor {
     }
 
     @Override
-    public boolean visit(Str n) {
+    public boolean visit(@NotNull Str n) {
         String s = sourceString(n.start, n.end);
         if (TRISTRING_PREFIX.matcher(s).lookingAt()) {
             addStyle(n.start, n.end - n.start, StyleRun.Type.DOC_STRING);
@@ -92,14 +97,14 @@ class Styler extends DefaultNodeVisitor {
     }
 
 
-    private void addStyle(Node e, int start, int len, StyleRun.Type type) {
+    private void addStyle(@Nullable Node e, int start, int len, StyleRun.Type type) {
         if (e == null || e.getFile() == null) {  // if it's an NUrl, for instance
             return;
         }
         addStyle(start, len, type);
     }
 
-    private void addStyle(Node e, StyleRun.Type type) {
+    private void addStyle(@Nullable Node e, StyleRun.Type type) {
         if (e != null) {
             addStyle(e, e.start, e.end - e.start, type);
         }
@@ -109,7 +114,7 @@ class Styler extends DefaultNodeVisitor {
         styles.add(new StyleRun(type, beg, len));
     }
 
-    private String sourceString(Node e) {
+    private String sourceString(@NotNull Node e) {
         return sourceString(e.start, e.end);
     }
 

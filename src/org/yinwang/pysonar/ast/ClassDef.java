@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Builtins;
 import org.yinwang.pysonar.Indexer;
@@ -45,7 +46,7 @@ public class ClassDef extends Node {
     }
 
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) throws Exception {
         ClassType classType = new ClassType(getName().getId(), s);
         List<Type> baseTypes = new ArrayList<Type>();
         for (Node base : bases) {
@@ -79,20 +80,21 @@ public class ClassDef extends Node {
         return Indexer.idx.builtins.Cont;
     }
 
-    private void addSpecialAttribute(Scope s, String name, Type proptype) {
+    private void addSpecialAttribute(@NotNull Scope s, String name, Type proptype) {
         Binding b = s.update(name, Builtins.newTutUrl("classes.html"), proptype, Binding.Kind.ATTRIBUTE);
         b.markSynthetic();
         b.markStatic();
         b.markReadOnly();
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<ClassDef:" + name.getId() + ":" + start + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(name, v);
             visitNodeList(bases, v);

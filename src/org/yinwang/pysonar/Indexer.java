@@ -1,5 +1,7 @@
 package org.yinwang.pysonar;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.*;
 import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.ModuleType;
@@ -29,16 +31,19 @@ public class Indexer {
     /**
      * A scope containing bindings for all modules currently loaded by the indexer.
      */
+    @NotNull
     public Scope moduleTable = new Scope(null, Scope.ScopeType.GLOBAL);
 
     /**
      * The top-level (builtin) scope.
      */
+    @NotNull
     public Scope globaltable = new Scope(null, Scope.ScopeType.GLOBAL);
 
     /**
      * A map of all bindings created, keyed on their qnames.
      */
+    @NotNull
     public Map<String, List<Binding>> allBindings = new HashMap<String, List<Binding>>();
 
     /**
@@ -59,19 +64,26 @@ public class Indexer {
      *   var.foo()  # foo here refers to both A.foo and B.foo
      * <pre>
      */
+    @NotNull
     private Map<Ref, List<Binding>> references = new HashMap<Ref, List<Binding>>();
 
     /**
      * Diagnostics: map from file names to Diagnostics
      */
+    @NotNull
     public Map<String, List<Diagnostic>> semanticErrors = new HashMap<String, List<Diagnostic>>();
+    @NotNull
     public Map<String, List<Diagnostic>> parseErrors = new HashMap<String, List<Diagnostic>>();
 
+    @Nullable
     public String cwd = null;
     public int nCalled = 0;
 
+    @NotNull
     public List<String> path = new ArrayList<String>();
+    @NotNull
     private Set<FunType> uncalled = new HashSet<FunType>();
+    @NotNull
     private Set<Object> callStack = new HashSet<Object>();
 
     private int threadCounter = 0;
@@ -91,7 +103,9 @@ public class Indexer {
      * When resolving imports we look in various possible locations.
      * This set keeps track of modules we attempted but didn't find.
      */
+    @NotNull
     public Set<String> failedModules = new HashSet<String>();
+    @NotNull
     public Set<String> failedToParse = new HashSet<String>();
 
     /**
@@ -119,7 +133,7 @@ public class Indexer {
     }
 
 
-    public void addPaths(List<String> p) throws IOException {
+    public void addPaths(@NotNull List<String> p) throws IOException {
         for (String s : p) {
             addPath(s);
         }
@@ -131,7 +145,7 @@ public class Indexer {
     }
 
 
-    public void setPath(List<String> path) throws IOException {
+    public void setPath(@NotNull List<String> path) throws IOException {
         this.path = new ArrayList<String>(path.size());
         addPaths(path);
     }
@@ -141,6 +155,7 @@ public class Indexer {
      * Returns the module search path -- the project directory followed by any
      * paths that were added by {@link addPath}.
      */
+    @NotNull
     public List<String> getLoadPath() {
         List<String> loadPath = new ArrayList<String>();
         if (cwd != null) {
@@ -165,6 +180,7 @@ public class Indexer {
     /**
      * Returns the mutable set of all bindings collected, keyed on their qnames.
      */
+    @NotNull
     public Map<String, List<Binding>> getBindings() {
         return allBindings;
     }
@@ -181,6 +197,7 @@ public class Indexer {
     }
 
 
+    @Nullable
     ModuleType getCachedModule(String file) {
         Type t = moduleTable.lookupType(file);
         if (t == null) {
@@ -203,6 +220,7 @@ public class Indexer {
      * Returns (loading/resolving if necessary) the module for a given source path.
      * @param file absolute file path
      */
+    @Nullable
     public ModuleType getModuleForFile(String file) throws Exception {
         if (failedModules.contains(file)) {
             return null;
@@ -232,7 +250,8 @@ public class Indexer {
      * @return a list of entries constituting the file outline.
      * Returns an empty list if the indexer hasn't indexed that path.
      */
-    public List<Outliner.Entry> generateOutline(String file) throws Exception {
+    @NotNull
+    public List<Outliner.Entry> generateOutline(@NotNull String file) throws Exception {
         return new Outliner().generate(this, file);
     }
 
@@ -241,7 +260,7 @@ public class Indexer {
      * @param node a node referring to a name binding.  Typically a
      * {@link org.yinwang.pysonar.ast.Name}, {@link org.yinwang.pysonar.ast.Str} or {@link org.yinwang.pysonar.ast.Url}.
      */
-    public void putLocation(Node node, Binding b) {
+    public void putLocation(@Nullable Node node, @Nullable Binding b) {
         if (node == null || node instanceof Url || b == null) {
             return;
         }
@@ -261,6 +280,7 @@ public class Indexer {
         b.addRef(ref);
     }
 
+    @NotNull
     public Map<Ref, List<Binding>> getReferences() {
         return references;
     }
@@ -272,7 +292,8 @@ public class Indexer {
      * method of NBinding and their types will be the union of all types that
      * appear at the same location.
      */
-    public Binding putBinding(Binding b) {
+    @Nullable
+    public Binding putBinding(@Nullable Binding b) {
         if (b == null) {
             throw new IllegalArgumentException("null binding arg");
         }
@@ -291,7 +312,8 @@ public class Indexer {
     }
 
 
-    private Binding findBinding(Binding b) {
+    @Nullable
+    private Binding findBinding(@NotNull Binding b) {
         List<Binding> existing = allBindings.get(b.getQname());
         if (existing != null) {
             for (Binding eb : existing) {
@@ -304,7 +326,7 @@ public class Indexer {
     }
 
 
-    public void putProblem(Node loc, String msg) {
+    public void putProblem(@NotNull Node loc, String msg) {
         String file = loc.getFile();
         if (file != null) {
             addFileErr(file, loc.start, loc.end, msg);
@@ -313,7 +335,7 @@ public class Indexer {
 
 
     // for situations without a Node
-    public void putProblem(String file, int begin, int end, String msg) {
+    public void putProblem(@Nullable String file, int begin, int end, String msg) {
         if (file != null) {
             addFileErr(file, begin, end, msg);
         }
@@ -328,7 +350,7 @@ public class Indexer {
         return getFileErrs(file, parseErrors);
     }
 
-    List<Diagnostic> getFileErrs(String file, Map<String, List<Diagnostic>> map) {
+    List<Diagnostic> getFileErrs(String file, @NotNull Map<String, List<Diagnostic>> map) {
         List<Diagnostic> msgs = map.get(file);
         if (msgs == null) {
             msgs = new ArrayList<Diagnostic>();
@@ -338,6 +360,7 @@ public class Indexer {
     }
 
 
+    @Nullable
     public ModuleType loadString(String path, String contents) throws Exception {
         ModuleType module = getCachedModule(path);
         if (module != null) {
@@ -348,6 +371,7 @@ public class Indexer {
     }
 
 
+    @Nullable
     public ModuleType loadFile(String path) throws Exception {
         File f = new File(path);
 
@@ -375,6 +399,7 @@ public class Indexer {
         return false;
     }
 
+    @Nullable
     private ModuleType parseAndResolve(String file) throws Exception {
     	finer("Indexing: " + file);
     	progress.tick();
@@ -387,7 +412,8 @@ public class Indexer {
      * @param contents optional file contents.  If {@code null}, loads the
      *        file contents from disk.
      */
-    private ModuleType parseAndResolve(String file, String contents) throws Exception {
+    @Nullable
+    private ModuleType parseAndResolve(String file, @Nullable String contents) throws Exception {
         // Avoid infinite recursion if any caller forgets this check.  (Has happened.)
         ModuleType cached = (ModuleType)moduleTable.lookupType(file);
         if (cached != null) {
@@ -431,6 +457,7 @@ public class Indexer {
     /**
      * Returns the syntax tree for {@code file}. <p>
      */
+    @Nullable
     public Module getAstForFile(String file) throws Exception {
         return getAstCache().getAST(file);
     }
@@ -438,16 +465,19 @@ public class Indexer {
     /**
      * Returns the syntax tree for {@code file}. <p>
      */
+    @Nullable
     public Module getAstForFile(String file, String contents) throws Exception {
         return getAstCache().getAST(file, contents);
     }
 
-    public ModuleType getBuiltinModule(String qname) throws Exception {
+    @Nullable
+    public ModuleType getBuiltinModule(@NotNull String qname) throws Exception {
         return builtins.get(qname);
     }
 
 
-    public String makeQname(List<Name> names) {
+    @Nullable
+    public String makeQname(@NotNull List<Name> names) {
         if (names.isEmpty()) {
             return "";
         }
@@ -463,17 +493,15 @@ public class Indexer {
     }
 
 
-    public ModuleType loadModule(List<Name> name, Scope scope, int tag) throws Exception {
+    @Nullable
+    public ModuleType loadModule(@NotNull List<Name> name, @NotNull Scope scope, int tag) throws Exception {
         String qname = makeQname(name);
-
-        ModuleType cached = getCachedModule(qname); // builtin file-less modules
-        if (cached != null) {
-            finer("using cached module " + qname);
-            return cached;
-        }
 
         ModuleType mt = getBuiltinModule(qname);
         if (mt != null) {
+            scope.update(name.get(0).id,
+                    new Url(Builtins.LIBRARY_URL + mt.getTable().getPath() + ".html"),
+                    mt, Binding.Kind.SCOPE);
             return mt;
         }
 
@@ -586,7 +614,7 @@ public class Indexer {
         }
     }
 
-    private void convertCallToNew(Ref ref, List<Binding> bindings) {
+    private void convertCallToNew(@NotNull Ref ref, @NotNull List<Binding> bindings) {
 
         if (ref.isRef()) {
             return;
@@ -610,7 +638,7 @@ public class Indexer {
         }
     }
 
-    public void addUncalled(FunType cl) {
+    public void addUncalled(@NotNull FunType cl) {
         if (!cl.func.called) {
             uncalled.add(cl);
         }
@@ -635,6 +663,7 @@ public class Indexer {
     }
 
 
+    @NotNull
     public String getStatusReport() {
         StringBuilder sb = new StringBuilder();
         sb.append("Summary: \n")
@@ -647,6 +676,7 @@ public class Indexer {
     }
 
 
+    @NotNull
     public List<String> getLoadedFiles() {
         List<String> files = new ArrayList<String>();
         for (String file : moduleTable.keySet()) {
@@ -683,6 +713,7 @@ public class Indexer {
         log(Level.FINER, msg);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Indexer:locs=" + references.size() + ":probs="

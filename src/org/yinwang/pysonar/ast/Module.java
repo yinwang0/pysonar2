@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.*;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
@@ -31,7 +32,7 @@ public class Module extends Node {
         this.md5 = Util.getMD5(new File(file));
     }
 
-    public void setFile(File path) throws Exception {
+    public void setFile(@NotNull File path) throws Exception {
         file = path.getCanonicalPath();
         name = Util.moduleNameFor(file);
         md5 = Util.getMD5(path);
@@ -57,8 +58,9 @@ public class Module extends Node {
         return md5;
     }
 
+    @NotNull
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) throws Exception {
         ModuleType mt = new ModuleType(Util.moduleNameFor(file), file, Indexer.idx.globaltable);
         s.put(file, new Url("file://" + file), mt, Binding.Kind.MODULE, tag);
         resolveExpr(body, mt.getTable(), tag);
@@ -66,17 +68,19 @@ public class Module extends Node {
     }
 
 
+    @NotNull
     public String toLongString() {
         return "<Module:" + body + ">";
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Module:" + file + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(body, v);
         }

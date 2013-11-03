@@ -1,5 +1,7 @@
 package org.yinwang.pysonar;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Diagnostic {
     public enum Category {
         INFO, WARNING, ERROR
@@ -19,6 +21,7 @@ public class Diagnostic {
         this.msg = msg;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Diagnostic:" + file + ":" + category + ":" + msg + ">";

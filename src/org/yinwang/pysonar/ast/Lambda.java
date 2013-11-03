@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
@@ -27,6 +28,7 @@ public class Lambda extends FunctionDef {
 
 
     private static int lambdaCounter = 0;
+    @NotNull
     public static String genLambdaName() {
         lambdaCounter = lambdaCounter + 1;
         return "lambda%" + lambdaCounter;
@@ -44,8 +46,9 @@ public class Lambda extends FunctionDef {
         }
     }
 
+    @NotNull
     @Override
-    public Type resolve(Scope outer, int tag) throws Exception {
+    public Type resolve(@NotNull Scope outer, int tag) throws Exception {
         this.defaultTypes = resolveAndConstructList(defaults, outer, tag);
         FunType cl = new FunType(this, outer.getForwarding());
         cl.getTable().setParent(outer);
@@ -56,13 +59,14 @@ public class Lambda extends FunctionDef {
         return cl;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Lambda:" + start + ":" + args + ":" + body + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNodeList(args, v);
             visitNodeList(defaults, v);

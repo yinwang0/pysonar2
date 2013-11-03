@@ -1,5 +1,7 @@
 package org.yinwang.pysonar;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class TypeStack {
         }
     }
 
+    @NotNull
     private List<Pair> stack = new ArrayList<Pair>();
 
     public void push(Object first, Object second) {

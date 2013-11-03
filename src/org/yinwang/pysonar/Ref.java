@@ -1,5 +1,7 @@
 package org.yinwang.pysonar;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Attribute;
 import org.yinwang.pysonar.ast.Name;
 import org.yinwang.pysonar.ast.Node;
@@ -16,11 +18,13 @@ public class Ref {
     private static final int STRING = 0x8; // source node is a String
 
     private int start;
+    @Nullable
     private String file;
+    @Nullable
     private String name;
     private int flags;
 
-    public Ref(Node node) {
+    public Ref(@Nullable Node node) {
         if (node == null) {
             throw new IllegalArgumentException("null node");
         }
@@ -58,7 +62,7 @@ public class Ref {
      * @param offset the 0-indexed file offset of the reference
      * @param text the text of the reference
      */
-    public Ref(String path, int offset, String text) {
+    public Ref(@Nullable String path, int offset, @Nullable String text) {
         if (path == null) {
             throw new IllegalArgumentException("'path' cannot be null");
         }
@@ -73,6 +77,7 @@ public class Ref {
     /**
      * Returns the file containing the reference.
      */
+    @Nullable
     public String getFile() {
         return file;
     }
@@ -80,6 +85,7 @@ public class Ref {
     /**
      * Returns the text of the reference.
      */
+    @Nullable
     public String getName() {
         return name;
     }
@@ -166,6 +172,7 @@ public class Ref {
         return !(isCall() || isNew());
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Ref:" + file + ":" + name + ":" + start + ">";

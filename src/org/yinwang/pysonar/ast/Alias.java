@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -35,13 +36,14 @@ public class Alias extends Node {
         return Indexer.idx.builtins.unknown;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Alias:" + name + " as " + asname + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             for (Name n : name) {
                 visitNode(n, v);

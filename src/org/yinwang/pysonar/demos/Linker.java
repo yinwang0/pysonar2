@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.demos;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.*;
 import org.yinwang.pysonar.types.ModuleType;
 
@@ -17,6 +19,7 @@ class Linker {
     private static final Pattern CONSTANT = Pattern.compile("[A-Z_][A-Z0-9_]*");
 
     // Map of file-path to semantic styles & links for that path.
+    @NotNull
     private Map<String, List<StyleRun>> fileStyles = new HashMap<String, List<StyleRun>>();
 
     private File outDir;  // where we're generating the output html
@@ -36,7 +39,7 @@ class Linker {
      * Process all bindings across all files and record per-file semantic styles.
      * Should be called once per index.
      */
-    public void findLinks(Indexer indexer) {
+    public void findLinks(@NotNull Indexer indexer) {
         // backlinks
         for (List<Binding> lb : indexer.getBindings().values()) {
             for (Binding nb : lb) {
@@ -52,7 +55,6 @@ class Linker {
             processRef(e.getKey(), e.getValue());
         }
 
-//// disable for now, turn on when false positive rate is low enough
         for (List<Diagnostic> ld: indexer.semanticErrors.values()) {
             for (Diagnostic d: ld) {
                 processDiagnostic(d);
@@ -93,8 +95,8 @@ class Linker {
      * Add additional highlighting styles based on information not evident from
      * the AST.
      */
-    private void addSemanticStyles(Binding nb) {
-        Def def = nb.getSignatureNode();
+    private void addSemanticStyles(@NotNull Binding nb) {
+        Def def = nb.getFirstNode();
         if (def == null || !def.isName()) {
             return;
         }
@@ -118,14 +120,14 @@ class Linker {
         }
     }
 
-    private void addSemanticStyle(Def def, StyleRun.Type type) {
+    private void addSemanticStyle(@NotNull Def def, StyleRun.Type type) {
         String path = def.getFile();
         if (path != null) {
             addFileStyle(path, new StyleRun(type, def.getStart(), def.getLength()));
         }
     }
 
-    private void processDef(Def def, Binding binding) {
+    private void processDef(@Nullable Def def, @NotNull Binding binding) {
         if (def == null || def.isURL() || def.getStart() < 0) {
             return;
         }
@@ -142,7 +144,7 @@ class Linker {
         addFileStyle(def.getFile(), style);
     }
     
-    private void processDiagnostic(Diagnostic d) {
+    private void processDiagnostic(@NotNull Diagnostic d) {
         StyleRun style = new StyleRun(StyleRun.Type.WARNING, d.start, d.end - d.start);
         style.message = d.msg;
         style.url = d.file;
@@ -152,7 +154,7 @@ class Linker {
     /**
      * Adds a hyperlink for a single reference.
      */
-    void processRef(Ref ref, Binding nb) {
+    void processRef(@NotNull Ref ref, @NotNull Binding nb) {
         String path = ref.getFile();
         StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start(), ref.length());
         link.message = nb.getQname() + " :: " + nb.getType();
@@ -163,7 +165,7 @@ class Linker {
         }
     }
 
-    void processRef(Ref ref, List<Binding> bindings) {
+    void processRef(@NotNull Ref ref, @NotNull List<Binding> bindings) {
         StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start(), ref.length());
         link.id = Integer.toString(Math.abs(ref.hashCode()));
 
@@ -202,8 +204,9 @@ class Linker {
      * @param binding the referenced binding
      * @param path the path containing the reference, or null if there was an error
      */
-    private String toURL(Binding binding, String path) {
-        Def def = binding.getSignatureNode();
+    @Nullable
+    private String toURL(@NotNull Binding binding, String path) {
+        Def def = binding.getFirstNode();
         if (def == null) {
             return null;
         }
@@ -236,7 +239,8 @@ class Linker {
     /**
      * Generate an anchorless URL linking to another file in the index.
      */
-    private String toModuleUrl(Binding nb) {
+    @NotNull
+    private String toModuleUrl(@NotNull Binding nb) {
         ModuleType mtype = nb.getType().asModuleType();
 //        if (mtype == null) { return null; }
         String path = mtype.getFile();

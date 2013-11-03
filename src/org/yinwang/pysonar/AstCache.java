@@ -1,5 +1,7 @@
 package org.yinwang.pysonar;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Module;
 
 import java.io.*;
@@ -18,10 +20,12 @@ public class AstCache {
 
     private static final Logger LOG = Logger.getLogger(AstCache.class.getCanonicalName());
 
+    @NotNull
     private Map<String, Module> cache = new HashMap<String, Module>();
 
     private static AstCache INSTANCE;
 
+    @NotNull
     private static ProxyParser parser = new ProxyParser();
 
     private AstCache() throws Exception {
@@ -73,7 +77,8 @@ public class AstCache {
      * @return the AST, or {@code null} if the parse failed for any reason
      * @throws Exception if anything unexpected occurs
      */
-    public Module getAST(String path) throws Exception {
+    @Nullable
+    public Module getAST(@Nullable String path) throws Exception {
         if (path == null) throw new IllegalArgumentException("null path");
         return fetch(path);
     }
@@ -86,7 +91,8 @@ public class AstCache {
      * @param path     a name for the file.  Can be relative.
      * @param contents the source to parse
      */
-    public Module getAST(String path, String contents) throws Exception {
+    @Nullable
+    public Module getAST(@Nullable String path, @Nullable String contents) throws Exception {
         if (path == null) throw new IllegalArgumentException("null path");
         if (contents == null) throw new IllegalArgumentException("null contents");
 
@@ -113,6 +119,7 @@ public class AstCache {
      *
      * @param path absolute source path
      */
+    @Nullable
     private Module fetch(String path) throws Exception {
         // Cache stores null value if the parse failed.
         if (cache.containsKey(path)) {
@@ -144,6 +151,7 @@ public class AstCache {
     /**
      * Parse a file.  Does not look in the cache or cache the result.
      */
+    @NotNull
     private Module parse(String path) throws Exception {
         fine("parsing " + path);
 //        mod ast = invokeANTLR(path);
@@ -154,6 +162,7 @@ public class AstCache {
     /**
      * Parse a string.  Does not look in the cache or cache the result.
      */
+    @NotNull
     private Module parse(String path, String contents) throws Exception {
         fine("parsing " + path);
 //        mod ast = invokeANTLR(path, contents);
@@ -167,16 +176,18 @@ public class AstCache {
      * checksum of the source file.  All that is needed is the MD5, but the
      * file's base name is included for ease of debugging.
      */
-    public String getCachePath(File sourcePath) throws Exception {
+    @NotNull
+    public String getCachePath(@NotNull File sourcePath) throws Exception {
         return getCachePath(Util.getMD5(sourcePath), sourcePath.getName());
     }
 
+    @NotNull
     public String getCachePath(String md5, String name) {
         return CACHE_DIR + name + md5 + ".ast";
     }
 
     // package-private for testing
-    void serialize(Module ast) throws Exception {
+    void serialize(@NotNull Module ast) throws Exception {
         String path = getCachePath(ast.getMD5(), new File(ast.getFile()).getName());
         ObjectOutputStream oos = null;
         FileOutputStream fos = null;
@@ -194,6 +205,7 @@ public class AstCache {
     }
 
     // package-private for testing
+    @Nullable
     Module getSerializedModule(String sourcePath) {
         try {
             File sourceFile = new File(sourcePath);
@@ -212,7 +224,8 @@ public class AstCache {
     }
 
     // package-private for testing
-    Module deserialize(File sourcePath) throws Exception {
+    @NotNull
+    Module deserialize(@NotNull File sourcePath) throws Exception {
         String cachePath = getCachePath(sourcePath);
         FileInputStream fis = null;
         ObjectInputStream ois = null;

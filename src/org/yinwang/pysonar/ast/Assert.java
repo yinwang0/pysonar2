@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -25,13 +26,14 @@ public class Assert extends Node {
         return Indexer.idx.builtins.Cont;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Assert:" + test + ":" + msg + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(test, v);
             visitNode(msg, v);

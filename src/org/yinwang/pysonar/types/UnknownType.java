@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.types;
 
+import org.jetbrains.annotations.NotNull;
+
 public class UnknownType extends Type {
 
     public UnknownType() { }
@@ -18,7 +20,7 @@ public class UnknownType extends Type {
 
 
     @Override
-    protected void printType(CyclicTypeRecorder ctr, StringBuilder sb) {
+    protected void printType(CyclicTypeRecorder ctr, @NotNull StringBuilder sb) {
         sb.append("?");
     }
     

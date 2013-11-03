@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -15,6 +17,7 @@ public abstract class Node implements java.io.Serializable {
     public int start = -1;
     public int end = -1;
 
+    @Nullable
     protected Node parent = null;
 
     public Node() {
@@ -29,10 +32,12 @@ public abstract class Node implements java.io.Serializable {
         this.parent = parent;
     }
 
+    @Nullable
     public Node getParent() {
         return parent;
     }
 
+    @NotNull
     public Node getAstRoot() {
         if (parent == null) {
             return this;
@@ -59,11 +64,12 @@ public abstract class Node implements java.io.Serializable {
     /**
      * @return the path to the code that generated this AST
      */
+    @Nullable
     public String getFile() {
         return parent != null ? parent.getFile() : null;
     }
 
-    public void addChildren(Node... nodes) {
+    public void addChildren(@Nullable Node... nodes) {
         if (nodes != null) {
             for (Node n : nodes) {
                 if (n != null) {
@@ -73,7 +79,7 @@ public abstract class Node implements java.io.Serializable {
         }
     }
 
-    public void addChildren(List<? extends Node> nodes) {
+    public void addChildren(@Nullable List<? extends Node> nodes) {
         if (nodes != null) {
             for (Node n : nodes) {
                 if (n != null) {
@@ -84,7 +90,8 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
-    public static Type resolveExpr(Node n, Scope s, int tag) throws Exception {
+    @Nullable
+    public static Type resolveExpr(@NotNull Node n, Scope s, int tag) throws Exception {
         Type result = n.resolve(s, tag);
         if (result == null) {
             Indexer.idx.warn(n + " resolved to a null type");
@@ -97,6 +104,7 @@ public abstract class Node implements java.io.Serializable {
      * @param s the symbol table
      * @param tag thread tag of the execution path
      */
+    @Nullable
     abstract public Type resolve(Scope s, int tag) throws Exception;
 
     public boolean isCall() {
@@ -127,42 +135,49 @@ public abstract class Node implements java.io.Serializable {
         return this instanceof Global;
     }
     
+    @NotNull
     public Call asCall() {
         return (Call)this;
     }
 
+    @NotNull
     public Module asModule() {
         return (Module)this;
     }
 
+    @NotNull
     public ClassDef asClassDef() {
         return (ClassDef)this;
     }
 
+    @NotNull
     public FunctionDef asFunctionDef() {
         return (FunctionDef)this;
     }
 
+    @NotNull
     public Lambda asLambda() {
         return (Lambda)this;
     }
 
+    @NotNull
     public Name asName() {
         return (Name)this;
     }
     
 
+    @NotNull
     public Global asGlobal() {
         return (Global)this;
     }
 
-    protected void visitNode(Node n, NodeVisitor v) {
+    protected void visitNode(@Nullable Node n, NodeVisitor v) {
         if (n != null) {
             n.visit(v);
         }
     }
 
-    protected void visitNodeList(List<? extends Node> nodes, NodeVisitor v) {
+    protected void visitNodeList(@Nullable List<? extends Node> nodes, NodeVisitor v) {
         if (nodes != null) {
             for (Node n : nodes) {
                 if (n != null) {
@@ -185,7 +200,7 @@ public abstract class Node implements java.io.Serializable {
         Indexer.idx.putProblem(this, msg);
     }
 
-    protected void addWarning(Node loc, String msg) {
+    protected void addWarning(@NotNull Node loc, String msg) {
         Indexer.idx.putProblem(loc, msg);
     }
 
@@ -193,7 +208,7 @@ public abstract class Node implements java.io.Serializable {
         Indexer.idx.putProblem(this, msg);
     }
 
-    protected void addError(Node loc, String msg) {
+    protected void addError(@NotNull Node loc, String msg) {
         Indexer.idx.putProblem(loc, msg);
     }
 
@@ -203,7 +218,8 @@ public abstract class Node implements java.io.Serializable {
      * {@code null}, returns a new {@link org.yinwang.pysonar.types.UnknownType}.
      * @throws Exception 
      */
-    protected Type resolveListAsUnion(List<? extends Node> nodes, Scope s, int tag) throws Exception {
+    @Nullable
+    protected Type resolveListAsUnion(@Nullable List<? extends Node> nodes, Scope s, int tag) throws Exception {
         if (nodes == null || nodes.isEmpty()) {
             return Indexer.idx.builtins.unknown;
         }
@@ -225,7 +241,7 @@ public abstract class Node implements java.io.Serializable {
      * Node list may be empty or {@code null}.
      * @throws Exception 
      */
-    static protected void resolveList(List<? extends Node> nodes, Scope s, int tag) throws Exception {
+    static protected void resolveList(@Nullable List<? extends Node> nodes, Scope s, int tag) throws Exception {
         if (nodes != null) {
             for (Node n : nodes) {
                 resolveExpr(n, s, tag);
@@ -233,7 +249,8 @@ public abstract class Node implements java.io.Serializable {
         }
     }
     
-    static protected List<Type> resolveAndConstructList(List<? extends Node> nodes, Scope s, int tag) throws Exception {
+    @Nullable
+    static protected List<Type> resolveAndConstructList(@Nullable List<? extends Node> nodes, Scope s, int tag) throws Exception {
         if (nodes == null) {
             return null;
         } else {
@@ -266,7 +283,7 @@ public abstract class Node implements java.io.Serializable {
         }
 
         @Override
-        public boolean dispatch(Node node) {
+        public boolean dispatch(@NotNull Node node) {
             // This node ends before the offset, so don't look inside it.
             if (offset > node.end) {
                 return false;  // don't traverse children, but do keep going

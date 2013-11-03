@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -23,13 +24,14 @@ public class Repr extends Node {
         return Indexer.idx.builtins.BaseStr;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Repr:" + value +  ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(value, v);
         }

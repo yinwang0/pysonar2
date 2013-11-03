@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -40,13 +41,14 @@ public class IfExp extends Node {
         return UnionType.union(type1, type2);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<IfExp:" + start + ":" + test + ":" + body + ":" + orelse + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(test, v);
             visitNode(body, v);

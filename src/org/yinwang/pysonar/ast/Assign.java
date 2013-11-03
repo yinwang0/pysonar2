@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -27,7 +28,7 @@ public class Assign extends Node {
     }
 
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) throws Exception {
         if (rvalue == null) {
             Indexer.idx.putProblem(this, "missing RHS of assignment");
         } else {
@@ -40,13 +41,14 @@ public class Assign extends Node {
         return Indexer.idx.builtins.Cont;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Assign:" + targets + "=" + rvalue + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNodeList(targets, v);
             visitNode(rvalue, v);

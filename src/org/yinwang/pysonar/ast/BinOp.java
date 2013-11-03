@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -52,13 +53,14 @@ public class BinOp extends Node {
         return UnionType.union(ltype, rtype);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<BinOp:" + left + " " + op + " " + right + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(left, v);
             visitNode(right, v);

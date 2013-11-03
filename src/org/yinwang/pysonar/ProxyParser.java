@@ -2,6 +2,8 @@ package org.yinwang.pysonar;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.*;
 
 import java.io.File;
@@ -15,7 +17,9 @@ import java.util.Map;
 
 
 public class ProxyParser {
+    @Nullable
     Process python2Process;
+    @Nullable
     Process python3Process;
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final String PYTHON2_EXE = "python";
@@ -41,7 +45,8 @@ public class ProxyParser {
     }
 
 
-    private Block convertBlock(Object o) {
+    @Nullable
+    private Block convertBlock(@Nullable Object o) {
         if (o == null) {
             return null;
         } else {
@@ -50,7 +55,8 @@ public class ProxyParser {
     }
 
 
-    private List<Node> convertList(Object o) {
+    @Nullable
+    private List<Node> convertList(@Nullable Object o) {
         if (o == null) {
             return null;
         } else {
@@ -67,7 +73,8 @@ public class ProxyParser {
     }
 
 
-    private List<Keyword> convertListKeyword(Object o) {
+    @Nullable
+    private List<Keyword> convertListKeyword(@Nullable Object o) {
         if (o == null) {
             return null;
         } else {
@@ -84,7 +91,8 @@ public class ProxyParser {
     }
 
 
-    private List<ExceptHandler> convertListExceptHandler(Object o) {
+    @Nullable
+    private List<ExceptHandler> convertListExceptHandler(@Nullable Object o) {
         if (o == null) {
             return null;
         } else {
@@ -101,7 +109,8 @@ public class ProxyParser {
     }
 
 
-    private List<Alias> convertListAlias(Object o) {
+    @Nullable
+    private List<Alias> convertListAlias(@Nullable Object o) {
         if (o == null) {
             return null;
         } else {
@@ -118,7 +127,8 @@ public class ProxyParser {
     }
 
 
-    private List<Comprehension> convertListComprehension(Object o) {
+    @Nullable
+    private List<Comprehension> convertListComprehension(@Nullable Object o) {
         if (o == null) {
             return null;
         } else {
@@ -135,7 +145,8 @@ public class ProxyParser {
     }
 
 
-    List<Name> segmentQname(String qname, int start) {
+    @NotNull
+    List<Name> segmentQname(@NotNull String qname, int start) {
         List<Name> result = new ArrayList<Name>();
 
         for (int i = start; i < qname.length(); i++) {
@@ -144,7 +155,7 @@ public class ProxyParser {
             int nameStart = i;
             while (i < qname.length() &&
                     (Character.isJavaIdentifierPart(qname.charAt(i)) ||
-                     qname.charAt(i) == '*') &&
+                            qname.charAt(i) == '*') &&
                     qname.charAt(i) != '.') {
                 name += qname.charAt(i);
                 i++;
@@ -157,6 +168,7 @@ public class ProxyParser {
     }
 
 
+    @Nullable
     public Node deJson(Object o) {
         if (!(o instanceof Map)) {
             return null;
@@ -370,7 +382,7 @@ public class ProxyParser {
 
         if (type.equals("ImportFrom")) {
             String module = (String) map.get("module");
-            List<Name> moduleSeg = module==null? null : segmentQname(module, start);
+            List<Name> moduleSeg = module == null ? null : segmentQname(module, start + "ImportFrom".length());
             List<Alias> names = convertListAlias(map.get("names"));
             int level = ((Double) map.get("level")).intValue();
             return new ImportFrom(moduleSeg, names, level, start, end);
@@ -534,6 +546,7 @@ public class ProxyParser {
     }
 
 
+    @Nullable
     public Process startPython(String pythonExe) {
         try {
             URL jsonize = getClass().getResource("/org/yinwang/pysonar/jsonize.py");
@@ -547,6 +560,7 @@ public class ProxyParser {
         }
     }
 
+    @NotNull
     private SecureRandom random = new SecureRandom();
 
     public String nextSessionId() {
@@ -554,12 +568,14 @@ public class ProxyParser {
     }
 
 
+    @Nullable
     public Node parseFile(String filename) {
         return parseFileInner(filename, python2Process);
     }
 
 
-    public Node parseFileInner(String filename, Process pythonProcess) {
+    @Nullable
+    public Node parseFileInner(String filename, @NotNull Process pythonProcess) {
 //        Util.msg("parsing: " + filename);
 //        Util.msg("exchangeFile: " + exchangeFile + ", end: " + endMark);
 
@@ -587,7 +603,7 @@ public class ProxyParser {
         try {
             json = Util.readFile(exchangeFile);
         } catch (Exception e) {
-            int version = (pythonProcess == python2Process)? 2 : 3;
+            int version = (pythonProcess == python2Process) ? 2 : 3;
             Util.msg("\nPython" + version + " failed to parse file: " + filename);
 
             if (version == 2 && python3Process != null) {

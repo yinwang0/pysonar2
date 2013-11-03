@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
@@ -13,9 +15,10 @@ public class Block extends Node {
 
     static final long serialVersionUID = -9096405259154069107L;
 
+    @Nullable
     public List<Node> seq;
 
-    public Block(List<Node> seq, int start, int end) {
+    public Block(@Nullable List<Node> seq, int start, int end) {
         super(start, end);
         if (seq == null) {
             seq = new ArrayList<Node>();
@@ -32,7 +35,7 @@ public class Block extends Node {
      * This can be used to generate warnings such as "This function may not return a value."
      */
     @Override
-    public Type resolve(Scope scope, int tag) throws Exception {
+    public Type resolve(@NotNull Scope scope, int tag) throws Exception {
         // find global names and mark them
         for (Node n : seq) {
             if (n.isGlobal()) {
@@ -70,13 +73,14 @@ public class Block extends Node {
         return seq.isEmpty();
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Block:" + seq + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNodeList(seq, v);
         }

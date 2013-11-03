@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
@@ -18,18 +20,20 @@ public class UnaryOp extends Node {
         addChildren(op, n);
     }
 
+    @Nullable
     @Override
     public Type resolve(Scope s, int tag) throws Exception {
         return resolveExpr(operand, s, tag);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<UOp:" + op + ":" + operand + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(op, v);
             visitNode(operand, v);

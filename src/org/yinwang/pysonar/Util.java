@@ -1,5 +1,8 @@
 package org.yinwang.pysonar;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -11,6 +14,7 @@ public class Util {
 
     private static int gensymCount = -1;
 
+    @NotNull
     public static String gensym(String base) {
         gensymCount++;
         return base + gensymCount;
@@ -29,7 +33,7 @@ public class Util {
      * Returns the parent qname of {@code qname} -- everything up to the
      * last dot (exclusive), or if there are no dots, the empty string.
      */
-    public static String getQnameParent(String qname) {
+    public static String getQnameParent(@Nullable String qname) {
         if (qname == null || qname.isEmpty()) {
             return "";
         }
@@ -50,7 +54,8 @@ public class Util {
      * @param file absolute canonical path to a file (__init__.py for dirs)
      * @return null if {@code file} is not somewhere under the load path
      */
-    public static String moduleQname(String file) {
+    @Nullable
+    public static String moduleQname(@NotNull String file) {
         boolean initpy = file.endsWith("/__init__.py");
         if (initpy) {
             file = file.substring(0, file.length() - "/__init__.py".length());
@@ -65,7 +70,8 @@ public class Util {
         return null;
     }
 
-    public static String arrayToString(Collection<String> strings) {
+    @NotNull
+    public static String arrayToString(@NotNull Collection<String> strings) {
         StringBuffer sb = new StringBuffer();
         for (String s : strings) {
             sb.append(s).append("\n");
@@ -73,6 +79,7 @@ public class Util {
         return sb.toString();
     }
 
+    @NotNull
     public static String arrayToSortedStringSet(Collection<String> strings) {
         Set<String> sorter = new TreeSet<String>();
         sorter.addAll(strings);
@@ -97,10 +104,12 @@ public class Util {
         return fname.substring(0, fname.lastIndexOf('.'));
     }
 
-    public static File joinPath(File dir, String file) {
+    @NotNull
+    public static File joinPath(@NotNull File dir, String file) {
         return joinPath(dir.getAbsolutePath(), file);
     }
 
+    @NotNull
     public static File joinPath(String dir, String file) {
         File file1 = new File(dir);
         File file2 = new File(file1, file);
@@ -120,17 +129,20 @@ public class Util {
         }
     }
 
+    @NotNull
     public static String readFile(String filename) throws Exception {
         return readFile(new File(filename));
     }
 
-    public static String readFile(File path) throws Exception {
+    @NotNull
+    public static String readFile(@NotNull File path) throws Exception {
         // Don't use line-oriented file read -- need to retain CRLF if present
         // so the style-run and link offsets are correct.
         return new String(getBytesFromFile(path), UTF_8);
     }
 
-    public static byte[] getBytesFromFile(File file) throws IOException {
+    @NotNull
+    public static byte[] getBytesFromFile(@NotNull File file) throws IOException {
         InputStream is = null;
 
         try {
@@ -159,7 +171,8 @@ public class Util {
     }
 
 
-    public static String readWhole(InputStream is) throws IOException {
+    @NotNull
+    public static String readWhole(@NotNull InputStream is) throws IOException {
         StringBuilder sb = new StringBuilder();
         byte[] bytes = new byte[8192];
 
@@ -171,11 +184,13 @@ public class Util {
     }
 
 
-    public static String getMD5(File path) throws Exception {
+    @NotNull
+    public static String getMD5(@NotNull File path) throws Exception {
         byte[] bytes = getBytesFromFile(path);
         return getMD5(bytes);
     }
 
+    @NotNull
     public static String getMD5(byte[] fileContents) throws Exception {
 	MessageDigest algorithm = MessageDigest.getInstance("MD5");
 	algorithm.reset();
@@ -211,11 +226,12 @@ public class Util {
         return f.canRead() && f.isFile();
     }
 
-    static public String escapeQname_(String s) {
+    static public String escapeQname_(@NotNull String s) {
         return s.replaceAll("[.&@%-]", "_");
     }
 
-    public static Collection<String> toStringCollection(Collection<Integer> collection) {
+    @NotNull
+    public static Collection<String> toStringCollection(@NotNull Collection<Integer> collection) {
         List<String> ret = new ArrayList<String>();
         for (Integer x : collection) {
             ret.add(x.toString());
@@ -223,7 +239,8 @@ public class Util {
         return ret;
     }
 
-    static public String joinWithSep(Collection<String> ls, String sep, String start, String end) {
+    @NotNull
+    static public String joinWithSep(@NotNull Collection<String> ls, String sep, @Nullable String start, @Nullable String end) {
         StringBuilder sb = new StringBuilder();
         if (start != null && ls.size() > 1) {
             sb.append(start);
@@ -242,6 +259,7 @@ public class Util {
         return sb.toString();
     }
 
+    @NotNull
     public static String timeString(long millis) {
         long sec = millis / 1000;
         long min = sec / 60;
@@ -257,6 +275,7 @@ public class Util {
         System.out.println(m);
     }
 
+    @Nullable
     public static String readWholeFile(String filename) {
         try {
             return new Scanner(new File(filename)).useDelimiter("PYSONAR2END").next();
@@ -270,6 +289,7 @@ public class Util {
     }
 
 
+    @NotNull
     private static String percent(int num, int total) {
         double pct = (num * 1.0) / total;
         pct = Math.round(pct * 10000) / 100.0;

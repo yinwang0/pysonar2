@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.demos;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Outliner;
 import org.yinwang.pysonar.Util;
@@ -12,6 +14,7 @@ import java.util.List;
 class HtmlOutline {
 
     private Indexer indexer;
+    @Nullable
     private StringBuilder buffer;
 
     public HtmlOutline(Indexer idx) {
@@ -22,6 +25,7 @@ class HtmlOutline {
      * Generates HTML outline for {@code path}.
      * @return the html as an {@code UL} element
      */
+    @NotNull
     public String generate(String path) throws Exception {
         buffer = new StringBuilder(1024);
         List<Outliner.Entry> entries = indexer.generateOutline(path);
@@ -31,7 +35,7 @@ class HtmlOutline {
         return html;
     }
 
-    private void addOutline(List<Outliner.Entry> entries) {
+    private void addOutline(@NotNull List<Outliner.Entry> entries) {
         add("<ul>\n");
         for (Outliner.Entry e : entries) {
             addEntry(e);
@@ -39,7 +43,7 @@ class HtmlOutline {
         add("</ul>\n");
     }
 
-    private void addEntry(Outliner.Entry e) {
+    private void addEntry(@NotNull Outliner.Entry e) {
         add("<li>");
 
         String style = null;

@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
@@ -16,6 +18,7 @@ public class FunctionDef extends Node {
     public Name name;
     public List<Node> args;
     public List<Node> defaults;
+    @Nullable
     public List<Type> defaultTypes;
     public Name vararg;  // *args
 
@@ -66,6 +69,7 @@ public class FunctionDef extends Node {
      * Returns the name of the function for indexing/qname purposes.
      * Lambdas will return a generated name.
      */
+    @Nullable
     protected String getBindingName(Scope s) {
         return name.getId();
     }
@@ -78,6 +82,7 @@ public class FunctionDef extends Node {
         return defaults;
     }
 
+    @Nullable
     public List<Type> getDefaultTypes() {
         return defaultTypes;
     }
@@ -131,7 +136,7 @@ public class FunctionDef extends Node {
      * "lexically".
      */
     @Override
-    public Type resolve(Scope outer, int tag) throws Exception {
+    public Type resolve(@NotNull Scope outer, int tag) throws Exception {
         resolveList(decoratorList, outer, tag);   //XXX: not handling functional transformations yet
         FunType cl = new FunType(this, outer.getForwarding());
         cl.getTable().setParent(outer);
@@ -161,13 +166,14 @@ public class FunctionDef extends Node {
         return Indexer.idx.builtins.Cont;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Function:" + start + ":" + name + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(name, v);
             visitNodeList(args, v);

@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
@@ -9,13 +11,14 @@ public class Name extends Node {
 
     static final long serialVersionUID = -1160862551327528304L;
 
+    @Nullable
     public final String id;  // identifier
 
     public Name(String id) {
         this(id, -1, -1);
     }
 
-    public Name(String id, int start, int end) {
+    public Name(@Nullable String id, int start, int end) {
         super(start, end);
         if (id == null) {
             throw new IllegalArgumentException("'id' param cannot be null");
@@ -42,7 +45,7 @@ public class Name extends Node {
     }
     
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) throws Exception {
         Binding b = s.lookup(id);
         if (b != null) {
             Indexer.idx.putLocation(this, b);
@@ -64,17 +67,19 @@ public class Name extends Node {
                 && ((Attribute)parent).getAttr() == this;
     }
     
+    @Nullable
     public String getId() {
         return id;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Name:" + start + ":" + id +  ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         v.visit(this);
     }
 }

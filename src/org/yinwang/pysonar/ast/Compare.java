@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -31,13 +32,14 @@ public class Compare extends Node {
         return Indexer.idx.builtins.BaseNum;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Compare:" + left + ":" + ops + ":" + comparators + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(left, v);
             visitNodeList(ops, v);

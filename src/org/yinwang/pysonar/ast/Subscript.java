@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.ListType;
@@ -38,7 +40,8 @@ public class Subscript extends Node {
     }
 
 
-    private Type getSubscript(Type vt, Type st, Scope s, int tag) throws Exception {
+    @Nullable
+    private Type getSubscript(@NotNull Type vt, @Nullable Type st, Scope s, int tag) throws Exception {
         if (vt.isUnknownType()) {
             return Indexer.idx.builtins.unknown;
         } else if (vt.isListType()) {
@@ -60,7 +63,8 @@ public class Subscript extends Node {
         }
     }
 
-    private Type getListSubscript(Type vt, Type st, Scope s, int tag) throws Exception {
+    @Nullable
+    private Type getListSubscript(@NotNull Type vt, @NotNull Type st, Scope s, int tag) throws Exception {
         if (vt.isListType()) {
             if (st.isListType()) {
                 return vt;
@@ -83,13 +87,14 @@ public class Subscript extends Node {
         }
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Subscript:" + value + ":" + slice + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(value, v);
             visitNode(slice, v);

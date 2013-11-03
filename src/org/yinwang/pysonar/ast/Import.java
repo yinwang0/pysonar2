@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.*;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
@@ -21,7 +22,7 @@ public class Import extends Node {
 
 
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) throws Exception {
         for (Alias a : names) {
             ModuleType mod = Indexer.idx.loadModule(a.name, s, tag);
             if (mod == null) {
@@ -34,13 +35,14 @@ public class Import extends Node {
     }
 
 
+    @NotNull
     @Override
     public String toString() {
         return "<Import:" + names + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNodeList(names, v);
         }

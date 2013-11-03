@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -23,7 +24,7 @@ public class If extends Node {
     }
 
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) throws Exception {
         Type type1, type2;
         resolveExpr(test, s, tag);
         int newTag = Indexer.idx.newThread();
@@ -44,13 +45,14 @@ public class If extends Node {
         return UnionType.union(type1, type2);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<If:" + start + ":" + test + ":" + body + ":" + orelse + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(test, v);
             visitNode(body, v);

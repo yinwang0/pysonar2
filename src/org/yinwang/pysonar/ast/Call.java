@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Builtins;
 import org.yinwang.pysonar.Indexer;
@@ -69,7 +71,8 @@ public class Call extends Node {
     }
 
 
-    private Type resolveCall(Type rator, List<Type> aTypes, Map<String, Type> kwTypes, Type kwargsType, Type starargsType, int tag) throws Exception {
+    @Nullable
+    private Type resolveCall(@NotNull Type rator, List<Type> aTypes, Map<String, Type> kwTypes, Type kwargsType, Type starargsType, int tag) throws Exception {
         if (rator.isFuncType()) {
             FunType ft = rator.asFuncType();
             return apply(ft, aTypes, kwTypes, kwargsType, starargsType, this, tag);
@@ -82,7 +85,8 @@ public class Call extends Node {
     }
 
 
-    public static Type apply(FunType func, List<Type> aTypes, Map<String, Type> kTypes, Type kwargsType, Type starargsType, Node call, int tag)
+    @Nullable
+    public static Type apply(@NotNull FunType func, @Nullable List<Type> aTypes, Map<String, Type> kTypes, Type kwargsType, Type starargsType, @Nullable Node call, int tag)
             throws Exception {
 
         Indexer.idx.removeUncalled(func);
@@ -149,9 +153,10 @@ public class Call extends Node {
         }
     }
 
-    static private Type bindParams(Node call, Scope funcTable, List<Node> args, Name fvarargs, Name fkwargs,
-                                   List<Type> aTypes, List<Type> dTypes, Map<String, Type> kwTypes,
-                                   Type kwargsType, Type starargsType, int tag) throws Exception {
+    @NotNull
+    static private Type bindParams(@Nullable Node call, @NotNull Scope funcTable, @NotNull List<Node> args, Name fvarargs, Name fkwargs,
+                                   @Nullable List<Type> aTypes, @Nullable List<Type> dTypes, @Nullable Map<String, Type> kwTypes,
+                                   Type kwargsType, @Nullable Type starargsType, int tag) throws Exception {
 
         TupleType fromType = new TupleType();
         int aSize = aTypes == null ? 0 : aTypes.size();
@@ -206,7 +211,7 @@ public class Call extends Node {
     }
 
 
-    static void bindMethodAttrs(FunType cl, int tag) throws Exception {
+    static void bindMethodAttrs(@NotNull FunType cl, int tag) throws Exception {
         if (cl.getTable().getParent() != null) {
             Type cls = cl.getTable().getParent().getType();
             if (cls != null && cls.isClassType()) {
@@ -218,7 +223,8 @@ public class Call extends Node {
         }
     }
 
-    static Binding addReadOnlyAttr(FunType cl, String name, Type type, Binding.Kind kind, int tag) {
+    @Nullable
+    static Binding addReadOnlyAttr(@NotNull FunType cl, String name, @NotNull Type type, Binding.Kind kind, int tag) {
         Binding b = cl.getTable().put(name,
                 Builtins.newDataModelUrl("the-standard-type-hierarchy"),
                 type, kind, tag);
@@ -228,7 +234,7 @@ public class Call extends Node {
         return b;
     }
 
-    static boolean missingReturn(Type toType) {
+    static boolean missingReturn(@NotNull Type toType) {
         boolean hasNone = false;
         boolean hasOther = false;
 
@@ -246,13 +252,14 @@ public class Call extends Node {
     }
 
 
+    @NotNull
     @Override
     public String toString() {
         return "<Call:" + func + ":" + args + ":" + start + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(func, v);
             visitNodeList(args, v);

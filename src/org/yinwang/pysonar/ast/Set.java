@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.ListType;
 import org.yinwang.pysonar.types.Type;
@@ -15,6 +17,7 @@ public class Set extends Sequence {
         super(elts, start, end);
     }
 
+    @Nullable
     @Override
     public Type resolve(Scope s, int tag) throws Exception {
         if (elts.size() == 0) {
@@ -33,13 +36,14 @@ public class Set extends Sequence {
         return listType;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<List:" + start + ":" + elts + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNodeList(elts, v);
         }

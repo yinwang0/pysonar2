@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.types;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Indexer;
 
 import java.util.ArrayList;
@@ -8,7 +9,9 @@ import java.util.List;
 public class ListType extends Type {
 
     private Type eltType;
+    @NotNull
     public List<Type> positional = new ArrayList<Type>();
+    @NotNull
     public List<Object> values = new ArrayList<Object>();
 
     public ListType() {
@@ -33,7 +36,7 @@ public class ListType extends Type {
       return eltType;
     }
 
-    public void add(Type another) {
+    public void add(@NotNull Type another) {
         eltType = UnionType.union(eltType, another);
         positional.add(another);
     }
@@ -46,6 +49,7 @@ public class ListType extends Type {
         return positional.get(i);
     }
 
+    @NotNull
     public TupleType toTupleType(int n) {
         TupleType ret = new TupleType();
         for (int i = 0; i < n; i++) {
@@ -55,6 +59,7 @@ public class ListType extends Type {
     }
 
 
+    @NotNull
     public TupleType toTupleType() {
         return new TupleType(positional);
     }
@@ -83,7 +88,7 @@ public class ListType extends Type {
 
 
     @Override
-    protected void printType(CyclicTypeRecorder ctr, StringBuilder sb) {
+    protected void printType(@NotNull CyclicTypeRecorder ctr, @NotNull StringBuilder sb) {
         Integer num = ctr.visit(this);
         if (num != null) {
             sb.append("#").append(num);

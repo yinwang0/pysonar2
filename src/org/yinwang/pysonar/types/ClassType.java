@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.types;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Scope;
 
 public class ClassType extends Type {
@@ -23,7 +25,7 @@ public class ClassType extends Type {
     }
 
 
-    public ClassType(String name, Scope parent) {
+    public ClassType(@NotNull String name, @Nullable Scope parent) {
         this.name = name;
         this.setTable(new Scope(parent, Scope.ScopeType.CLASS));
         this.getTable().setType(this);
@@ -34,7 +36,7 @@ public class ClassType extends Type {
         }
     }
 
-    public ClassType(String name, Scope parent, ClassType superClass) {
+    public ClassType(@NotNull String name, Scope parent, @Nullable ClassType superClass) {
         this(name, parent);
         if (superClass != null) {
             addSuper(superClass);
@@ -49,7 +51,7 @@ public class ClassType extends Type {
       return name;
     }
 
-    public void addSuper(Type sp) {
+    public void addSuper(@NotNull Type sp) {
         getTable().addSuper(sp.getTable());
     }
     
@@ -78,7 +80,7 @@ public class ClassType extends Type {
     // defined.
     
     @Override
-    protected void printType(CyclicTypeRecorder ctr, StringBuilder sb) {
+    protected void printType(CyclicTypeRecorder ctr, @NotNull StringBuilder sb) {
         sb.append("<").append(getName()).append(">");
     }
 

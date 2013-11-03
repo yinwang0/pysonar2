@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
@@ -14,7 +16,7 @@ import java.util.List;
  */
 public class NameBinder {
 
-    public static void bind(Scope s, Node target, Type rvalue, Binding.Kind kind, int tag) throws Exception {
+    public static void bind(@NotNull Scope s, Node target, @NotNull Type rvalue, Binding.Kind kind, int tag) throws Exception {
         if (target instanceof Name) {
             bindName(s, (Name)target, rvalue, kind, tag);
         } else if (target instanceof Tuple) {
@@ -41,7 +43,7 @@ public class NameBinder {
      * Without specifying a kind, bind determines the kind according to the type
      * of the scope.
      */
-    public static void bind(Scope s, Node target, Type rvalue, int tag) throws Exception {
+    public static void bind(@NotNull Scope s, Node target, @NotNull Type rvalue, int tag) throws Exception {
         Binding.Kind kind;
         if (s.getScopeType() == Scope.ScopeType.FUNCTION) {
             kind = Binding.Kind.VARIABLE;
@@ -52,7 +54,7 @@ public class NameBinder {
     }
 
 
-    public static void bind(Scope s, List<Node> xs, Type rvalue, Binding.Kind kind, int tag) throws Exception {
+    public static void bind(@NotNull Scope s, @NotNull List<Node> xs, @NotNull Type rvalue, Binding.Kind kind, int tag) throws Exception {
         if (rvalue.isTupleType()) {
             List<Type> vs = rvalue.asTupleType().getElementTypes();
             if (xs.size() != vs.size()) {
@@ -79,7 +81,8 @@ public class NameBinder {
     }
 
 
-    public static Binding bindName(Scope s, Name name, Type rvalue,
+    @Nullable
+    public static Binding bindName(@NotNull Scope s, @NotNull Name name, @NotNull Type rvalue,
                                     Binding.Kind kind, int tag) throws Exception {
         Binding b;
 
@@ -108,7 +111,7 @@ public class NameBinder {
     }
 
 
-    public static void bindIter(Scope s, Node target, Node iter, Binding.Kind kind, int tag) throws Exception {
+    public static void bindIter(@NotNull Scope s, Node target, @NotNull Node iter, Binding.Kind kind, int tag) throws Exception {
         Type iterType = Node.resolveExpr(iter, s, tag);
 
         if (iterType.isListType()) {
@@ -129,7 +132,7 @@ public class NameBinder {
     }
 
 
-    private static void reportUnpackMismatch(List<Node> xs, int vsize) {
+    private static void reportUnpackMismatch(@NotNull List<Node> xs, int vsize) {
         int xsize = xs.size();
         int beg = xs.get(0).start;
         int end = xs.get(xs.size() - 1).end;

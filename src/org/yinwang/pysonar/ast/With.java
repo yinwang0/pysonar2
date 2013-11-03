@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
@@ -20,20 +22,22 @@ public class With extends Node {
         addChildren(optional_vars, context_expr, body);
     }
 
+    @Nullable
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) throws Exception {
         Type val = resolveExpr(context_expr, s, tag);
         NameBinder.bind(s, optional_vars, val, tag);
         return resolveExpr(body, s, tag);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<With:" + context_expr + ":" + optional_vars + ":" + body + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(optional_vars, v);
             visitNode(context_expr, v);

@@ -1,5 +1,7 @@
 package org.yinwang.pysonar;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 
@@ -15,8 +17,10 @@ import java.util.TreeSet;
 public class Outliner {
 
     public static abstract class Entry {
+        @Nullable
         protected String qname;  // entry qualified name
         protected int offset;  // file offset of referenced declaration
+        @Nullable
         protected Binding.Kind kind;  // binding kind of outline entry
 
         public Entry() {
@@ -30,12 +34,14 @@ public class Outliner {
 
         public abstract boolean isLeaf();
 
+        @NotNull
         public Leaf asLeaf() {
             return (Leaf) this;
         }
 
         public abstract boolean isBranch();
 
+        @NotNull
         public Branch asBranch() {
             return (Branch) this;
         }
@@ -46,11 +52,12 @@ public class Outliner {
 
         public abstract void setChildren(List<Entry> children);
 
+        @Nullable
         public String getQname() {
             return qname;
         }
 
-        public void setQname(String qname) {
+        public void setQname(@Nullable String qname) {
             if (qname == null) {
                 throw new IllegalArgumentException("qname param cannot be null");
             }
@@ -69,11 +76,12 @@ public class Outliner {
             this.offset = offset;
         }
 
+        @Nullable
         public Binding.Kind getKind() {
             return kind;
         }
 
-        public void setKind(Binding.Kind kind) {
+        public void setKind(@Nullable Binding.Kind kind) {
             if (kind == null) {
                 throw new IllegalArgumentException("kind param cannot be null");
             }
@@ -95,7 +103,7 @@ public class Outliner {
             return sb.toString().trim();
         }
 
-        public void toString(StringBuilder sb, int depth) {
+        public void toString(@NotNull StringBuilder sb, int depth) {
             for (int i = 0; i < depth; i++) {
                 sb.append("  ");
             }
@@ -168,6 +176,7 @@ public class Outliner {
             return false;
         }
 
+        @NotNull
         public List<Entry> getChildren() {
             return new ArrayList<Entry>();
         }
@@ -185,7 +194,8 @@ public class Outliner {
      * @return a list of entries constituting the file outline.
      *         Returns an empty list if the indexer hasn't indexed that path.
      */
-    public List<Entry> generate(Indexer idx, String abspath) throws Exception {
+    @NotNull
+    public List<Entry> generate(@NotNull Indexer idx, @NotNull String abspath) throws Exception {
         ModuleType mt = idx.getModuleForFile(abspath);
         if (mt == null) {
             return new ArrayList<Entry>();
@@ -200,7 +210,8 @@ public class Outliner {
      * @param path  the file for which we're building the outline
      * @return a list of entries constituting the outline
      */
-    public List<Entry> generate(Scope scope, String path) {
+    @NotNull
+    public List<Entry> generate(@NotNull Scope scope, @NotNull String path) {
         List<Entry> result = new ArrayList<Entry>();
 
         Set<Binding> entries = new TreeSet<Binding>();
@@ -208,13 +219,13 @@ public class Outliner {
             if (!nb.isSynthetic()
                     && !nb.isBuiltin()
                     && !nb.getDefs().isEmpty()
-                    && path.equals(nb.getSignatureNode().getFile())) {
+                    && path.equals(nb.getFirstNode().getFile())) {
                 entries.add(nb);
             }
         }
 
         for (Binding nb : entries) {
-            Def signode = nb.getSignatureNode();
+            Def signode = nb.getFirstNode();
             List<Entry> kids = null;
 
             if (nb.getKind() == Binding.Kind.CLASS) {

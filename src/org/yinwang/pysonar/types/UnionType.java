@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.types;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Indexer;
 
 import java.util.Collection;
@@ -18,7 +20,7 @@ public class UnionType extends Type {
         this.types = new HashSet<Type>();
     }
 
-    public UnionType(Type... initialTypes) {
+    public UnionType(@NotNull Type... initialTypes) {
         this();
         for (Type nt : initialTypes) {
             addType(nt);
@@ -53,7 +55,8 @@ public class UnionType extends Type {
     }
 
 
-    static public Type newUnion(Collection<Type> types) {
+    @NotNull
+    static public Type newUnion(@NotNull Collection<Type> types) {
         Type t = Indexer.idx.builtins.unknown;
         for (Type nt : types) {
             t = union(t, nt);
@@ -69,7 +72,7 @@ public class UnionType extends Type {
         return types;
     }
 
-    public void addType(Type t) {
+    public void addType(@NotNull Type t) {
         if (t.isUnionType()) {
             types.addAll(t.asUnionType().types);
         } else {
@@ -81,7 +84,8 @@ public class UnionType extends Type {
         return types.contains(t);
     }
 
-    public static Type union(Type u, Type v) {
+    @NotNull
+    public static Type union(@NotNull Type u, @NotNull Type v) {
         if (u.equals(v)) {
             return u;
         } else if (u.isUnknownType()) {
@@ -100,6 +104,7 @@ public class UnionType extends Type {
      *
      * @return the first non-unknown, non-{@code None} alternate, or {@code null} if none found
      */
+    @Nullable
     public Type firstUseful() {
         for (Type type : types) {
             if (!type.isUnknownType() && type != Indexer.idx.builtins.None) {
@@ -149,7 +154,7 @@ public class UnionType extends Type {
 
 
     @Override
-    protected void printType(CyclicTypeRecorder ctr, StringBuilder sb) {
+    protected void printType(@NotNull CyclicTypeRecorder ctr, @NotNull StringBuilder sb) {
         Integer num = ctr.visit(this);
         if (num != null) {
             sb.append("#").append(num);

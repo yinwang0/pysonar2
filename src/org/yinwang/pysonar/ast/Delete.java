@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -20,7 +21,7 @@ public class Delete extends Node {
     }
 
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) throws Exception {
         for (Node n : targets) {
             resolveExpr(n, s, tag);
             if (n instanceof Name) {
@@ -30,13 +31,14 @@ public class Delete extends Node {
         return Indexer.idx.builtins.Cont;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Delete:" + targets + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNodeList(targets, v);
         }

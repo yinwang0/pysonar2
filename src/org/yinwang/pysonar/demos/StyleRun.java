@@ -1,5 +1,8 @@
 package org.yinwang.pysonar.demos;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 /**
@@ -37,7 +40,9 @@ public class StyleRun implements Comparable<StyleRun> {
     private int length;  // style run length
 
     public String message;  // optional hover text
+    @Nullable
     public String url;  // internal or external link
+    @Nullable
     public String id;   // for hover highlight
     public List<String> highlight;   // for hover highlight
 
@@ -73,7 +78,7 @@ public class StyleRun implements Comparable<StyleRun> {
                 && equalFields(other.url, this.url);
     }
 
-    private boolean equalFields(Object o1, Object o2) {
+    private boolean equalFields(@Nullable Object o1, @Nullable Object o2) {
         if (o1 == null) {
             return o2 == null;
         } else {
@@ -81,7 +86,7 @@ public class StyleRun implements Comparable<StyleRun> {
         }
     }
 
-    public int compareTo(StyleRun other) {
+    public int compareTo(@NotNull StyleRun other) {
         if (this.equals(other)) {
             return 0;
         }
@@ -94,6 +99,7 @@ public class StyleRun implements Comparable<StyleRun> {
         return this.hashCode() - other.hashCode();
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "[" + type + " beg=" + offset + " len=" + length + "]";

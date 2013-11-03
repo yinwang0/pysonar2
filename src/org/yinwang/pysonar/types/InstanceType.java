@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.types;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.ast.Call;
@@ -19,14 +20,14 @@ public class InstanceType extends Type {
         classType = Indexer.idx.builtins.unknown;
     }
 
-    public InstanceType(Type c) {
+    public InstanceType(@NotNull Type c) {
         this.getTable().setScopeType(Scope.ScopeType.INSTANCE);
         this.getTable().addSuper(c.getTable());
         this.getTable().setPath(c.getTable().getPath());
         classType = c;
     }
     
-    public InstanceType(Type c, Call call, List<Type> args, int tag) throws Exception {
+    public InstanceType(@NotNull Type c, Call call, List<Type> args, int tag) throws Exception {
         this(c);
         Type initFunc = this.getTable().lookupAttrType("__init__");
         if (initFunc != null && initFunc.isFuncType() && initFunc.asFuncType().getFunc() != null) {
@@ -69,7 +70,7 @@ public class InstanceType extends Type {
     }
     
     @Override
-    protected void printType(CyclicTypeRecorder ctr, StringBuilder sb) {
+    protected void printType(CyclicTypeRecorder ctr, @NotNull StringBuilder sb) {
         if (getClassType().isClassType()) {
             sb.append(getClassType().asClassType().getName());
         }

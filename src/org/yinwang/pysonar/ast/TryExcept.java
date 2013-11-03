@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -42,13 +43,14 @@ public class TryExcept extends Node {
         return UnionType.union(tp1, UnionType.union(tp2, tph));
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<TryExcept:" + handlers + ":" + body + ":" + orelse + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNodeList(handlers, v);
             visitNode(body, v);

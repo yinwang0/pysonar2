@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -17,6 +19,7 @@ public class Return extends Node {
         addChildren(n);
     }
 
+    @Nullable
     @Override
     public Type resolve(Scope s, int tag) throws Exception {
         if (value == null) {
@@ -26,13 +29,14 @@ public class Return extends Node {
         }
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Return:" + value + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(value, v);
         }

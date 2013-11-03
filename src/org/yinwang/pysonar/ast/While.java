@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -22,6 +24,7 @@ public class While extends Node {
         addChildren(test, body, orelse);
     }
 
+    @Nullable
     @Override
     public Type resolve(Scope s, int tag) throws Exception {
         resolveExpr(test, s, tag);
@@ -38,13 +41,14 @@ public class While extends Node {
         return t;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<While:" + test + ":" + body + ":" + orelse + ":" + start + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(test, v);
             visitNode(body, v);

@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.ListType;
 import org.yinwang.pysonar.types.Type;
@@ -21,6 +22,7 @@ public class Slice extends Node {
         addChildren(lower, step, upper);
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) throws Exception {
         if (lower != null) resolveExpr(lower, s, tag);
@@ -29,13 +31,14 @@ public class Slice extends Node {
         return new ListType();
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Slice:" + lower + ":" + step + ":" + upper + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(lower, v);
             visitNode(step, v);

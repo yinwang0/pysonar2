@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
@@ -32,7 +33,7 @@ public class For extends Node {
     }
 
     @Override
-    public Type resolve(Scope s, int tag) throws Exception {
+    public Type resolve(@NotNull Scope s, int tag) throws Exception {
         NameBinder.bindIter(s, target, iter, Binding.Kind.SCOPE, tag);
 
         Type ret;
@@ -47,13 +48,14 @@ public class For extends Node {
         return ret;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<For:" + target + ":" + iter + ":" + body + ":" + orelse + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(target, v);
             visitNode(iter, v);

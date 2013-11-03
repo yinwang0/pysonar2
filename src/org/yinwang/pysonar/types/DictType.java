@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.types;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Indexer;
 
 public class DictType extends Type {
@@ -19,12 +20,13 @@ public class DictType extends Type {
     }
 
 
-    public void add(Type key, Type val) {
+    public void add(@NotNull Type key, @NotNull Type val) {
         keyType = UnionType.union(keyType, key);
         valueType = UnionType.union(valueType, val);
     }
 
 
+    @NotNull
     public TupleType toTupleType(int n) {
         TupleType ret = new TupleType();
         for (int i = 0; i < n; i++) {
@@ -56,7 +58,7 @@ public class DictType extends Type {
     }
     
     @Override
-    protected void printType(CyclicTypeRecorder ctr, StringBuilder sb) {
+    protected void printType(@NotNull CyclicTypeRecorder ctr, @NotNull StringBuilder sb) {
         Integer num = ctr.visit(this);
         if (num != null) {
             sb.append("#").append(num);

@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.demos;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Util;
 
 import java.util.List;
@@ -14,6 +15,7 @@ class StyleApplier {
     // Empirically, adding the span tags multiplies length by 6 or more.
     private static final int SOURCE_BUF_MULTIPLIER = 6;
 
+    @NotNull
     private SortedSet<Tag> tags = new TreeSet<Tag>();
 
     private StringBuilder buffer;  // html output buffer
@@ -27,7 +29,7 @@ class StyleApplier {
         int offset;
         StyleRun style;
         @Override
-        public int compareTo(Tag other) {
+        public int compareTo(@NotNull Tag other) {
             if (this == other) {
                 return 0;
             }
@@ -48,7 +50,7 @@ class StyleApplier {
     }
 
     class StartTag extends Tag {
-        public StartTag(StyleRun style) {
+        public StartTag(@NotNull StyleRun style) {
             offset = style.start();
             this.style = style;
         }
@@ -87,7 +89,7 @@ class StyleApplier {
     }
 
     class EndTag extends Tag {
-        public EndTag(StyleRun style) {
+        public EndTag(@NotNull StyleRun style) {
             offset = style.end();
             this.style = style;
         }
@@ -106,7 +108,7 @@ class StyleApplier {
         }
     }
 
-    public StyleApplier(String path, String src, List<StyleRun> runs) {
+    public StyleApplier(String path, String src, @NotNull List<StyleRun> runs) {
         source = src;
         for (StyleRun run : runs) {
             tags.add(new StartTag(run));
@@ -117,6 +119,7 @@ class StyleApplier {
     /**
      * @return the html
      */
+    @NotNull
     public String apply() {
         buffer = new StringBuilder(source.length() * SOURCE_BUF_MULTIPLIER);
 
@@ -148,7 +151,7 @@ class StyleApplier {
         sourceOffset = end;
     }
 
-    private String escape(String s) {
+    private String escape(@NotNull String s) {
         return s.replace("&", "&amp;")
                 .replace("'", "&#39;")
                 .replace("\"", "&quot;")
@@ -157,7 +160,7 @@ class StyleApplier {
     }
    
 
-    private String toCSS(StyleRun style) {
+    private String toCSS(@NotNull StyleRun style) {
         return style.type.toString().toLowerCase().replace("_", "-");
     }
 }

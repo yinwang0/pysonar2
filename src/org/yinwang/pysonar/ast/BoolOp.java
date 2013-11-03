@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -23,6 +25,7 @@ public class BoolOp extends Node {
         addChildren(values);
     }
 
+    @Nullable
     @Override
     public Type resolve(Scope s, int tag) throws Exception {
         if (op.id.equals("and")) {
@@ -37,13 +40,14 @@ public class BoolOp extends Node {
         return resolveListAsUnion(values, s, tag);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<BoolOp:" + op + ":" + values + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNodeList(values, v);
         }

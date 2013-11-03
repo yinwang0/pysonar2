@@ -1,5 +1,6 @@
 package org.yinwang.pysonar;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.types.Type;
 
@@ -10,6 +11,7 @@ import java.util.Set;
 public class CallStack {
 
     //    private Map<Node, Set<Type>> stack = new HashMap<Node, Set<Type>>();
+    @NotNull
     private Set<Node> stack = new HashSet<Node>();
 
     public void push(Node call, Type type) {

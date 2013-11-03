@@ -1,5 +1,7 @@
 package org.yinwang.pysonar;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Name;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Url;
@@ -13,7 +15,9 @@ public class Def {
     private int start = -1;
     private int end = -1;
     private Binding binding;
+    @Nullable
     private String fileOrUrl;
+    @Nullable
     private String name;
     private Node node;
 
@@ -48,6 +52,7 @@ public class Def {
      *
      * @return the name, or null
      */
+    @Nullable
     public String getName() {
         return name;
     }
@@ -55,6 +60,7 @@ public class Def {
     /**
      * Returns the file if this node is from a source file, else {@code null}.
      */
+    @Nullable
     public String getFile() {
         return isURL() ? null : fileOrUrl;
     }
@@ -62,6 +68,7 @@ public class Def {
     /**
      * Returns the URL if this node is from a URL, else {@code null}.
      */
+    @Nullable
     public String getURL() {
         return isURL() ? fileOrUrl : null;
     }
@@ -69,6 +76,7 @@ public class Def {
     /**
      * Returns the file if from a source file, else the URL.
      */
+    @Nullable
     public String getFileOrUrl() {
         return fileOrUrl;
     }
@@ -116,6 +124,7 @@ public class Def {
         this.node = node;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Def:" + (name == null ? "" : name) +

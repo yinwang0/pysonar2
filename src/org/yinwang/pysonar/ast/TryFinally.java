@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -19,6 +21,7 @@ public class TryFinally extends Node {
         addChildren(body, orelse);
     }
 
+    @Nullable
     @Override
     public Type resolve(Scope s, int tag) throws Exception {
         Type tFinal = Indexer.idx.builtins.unknown;
@@ -27,13 +30,14 @@ public class TryFinally extends Node {
         return tFinal;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<TryFinally:" + body + ":" + finalbody + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(body, v);
             visitNode(finalbody, v);

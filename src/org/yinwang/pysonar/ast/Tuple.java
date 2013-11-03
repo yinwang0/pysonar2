@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.TupleType;
 import org.yinwang.pysonar.types.Type;
@@ -15,6 +16,7 @@ public class Tuple extends Sequence {
         super(elts, start, end);
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) throws Exception {
         TupleType t = new TupleType();
@@ -24,13 +26,14 @@ public class Tuple extends Sequence {
         return t;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "<Tuple:" + start + ":" + elts + ">";
     }
 
     @Override
-    public void visit(NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNodeList(elts, v);
         }

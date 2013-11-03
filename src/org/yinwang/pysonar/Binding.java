@@ -1,5 +1,7 @@
 package org.yinwang.pysonar;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
@@ -53,7 +55,9 @@ public class Binding implements Comparable<Object> {
     private boolean isDeprecated = false;     // documented as deprecated
     private boolean isBuiltin = false;        // not from a source file
 
+    @Nullable
     private String name;    // unqualified name
+    @Nullable
     private String qname;   // qualified name
     private Type type;     // inferred type
     public Kind kind;      // name usage context
@@ -68,11 +72,11 @@ public class Binding implements Comparable<Object> {
         this.tag = tag;
     }
     
-    public Binding(String id, Node node, Type type, Kind kind) {
+    public Binding(String id, @Nullable Node node, Type type, Kind kind) {
         this(id, node != null ? new Def(node) : null, type, kind);
     }
 
-    public Binding(String id, Def def, Type type, Kind kind) {
+    public Binding(@Nullable String id, Def def, @Nullable Type type, @Nullable Kind kind) {
         if (id == null) {
             throw new IllegalArgumentException("'id' param cannot be null");
         }
@@ -86,6 +90,7 @@ public class Binding implements Comparable<Object> {
     /**
      * Returns the unqualified name.
      */
+    @Nullable
     public String getName() {
         return name;
     }
@@ -101,6 +106,7 @@ public class Binding implements Comparable<Object> {
     /**
      * Returns the qualified name.
      */
+    @Nullable
     public String getQname() {
         return qname;
     }
@@ -110,7 +116,7 @@ public class Binding implements Comparable<Object> {
      * automatically (when appropriate) by adding the binding to a
      * {@link Scope}.
      */
-    public void addDef(Node node) {
+    public void addDef(@Nullable Node node) {
         if (node != null) {
             addDef(new Def(node));
         }
@@ -122,7 +128,7 @@ public class Binding implements Comparable<Object> {
      * {@link Scope}.  If {@code node} is an {@link org.yinwang.pysonar.ast.Url}, and this is the
      * binding's only definition, it will be marked as a builtin.
      */
-    public void addDef(Def def) {
+    public void addDef(@Nullable Def def) {
         if (def == null) {
             return;
         }
@@ -143,7 +149,8 @@ public class Binding implements Comparable<Object> {
      * Returns the first definition, which by convention is treated as
      * the one that introduced the binding.
      */
-    public Def getSignatureNode() {
+    @Nullable
+    public Def getFirstNode() {
         return getDefs().isEmpty() ? null : getDefs().iterator().next();
     }
 
@@ -206,8 +213,8 @@ public class Binding implements Comparable<Object> {
     /**
      * Bindings can be sorted by their location for outlining purposes.
      */
-    public int compareTo(Object o) {
-        return getSignatureNode().getStart() - ((Binding)o).getSignatureNode().getStart();
+    public int compareTo(@NotNull Object o) {
+        return getFirstNode().getStart() - ((Binding)o).getFirstNode().getStart();
     }
     
     /**
@@ -221,6 +228,7 @@ public class Binding implements Comparable<Object> {
         return defs;
     }
     
+    @Nullable
     public Def getDef() {
         if (defs == null || defs.isEmpty()) {
             return null;
@@ -261,6 +269,7 @@ public class Binding implements Comparable<Object> {
      *     or the first definition (if present), otherwise a string
      *     describing what is known about the binding's source.
      */
+    @Nullable
     public String getFirstFile() {
         Type bt = getType();
         if (bt instanceof ModuleType) {
@@ -279,6 +288,7 @@ public class Binding implements Comparable<Object> {
         return "<unknown source>";
     }
 
+    @NotNull
     @Override
     public String toString() {
         StringBuilder sb =  new StringBuilder();

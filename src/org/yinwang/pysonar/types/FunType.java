@@ -1,5 +1,7 @@
 package org.yinwang.pysonar.types;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.ast.FunctionDef;
@@ -21,10 +23,13 @@ public class FunType extends Type {
         }
     }
 
+    @NotNull
     private List<Arrow> arrows = new ArrayList<Arrow>();
     public FunctionDef func;
+    @Nullable
     public ClassType cls = null;
     private Scope env;
+    @Nullable
     public Type selfType;                 // self's type for calls
     public List<Type> defaultTypes;       // types for default parameters (evaluated at def time)
 
@@ -74,7 +79,8 @@ public class FunType extends Type {
     }
 
 
-    public Type getMapping(Type from) {
+    @Nullable
+    public Type getMapping(@NotNull Type from) {
         for (Arrow a : arrows) {
             if (from.equals(a.from)) {
                 return a.to;
@@ -101,6 +107,7 @@ public class FunType extends Type {
         return env;
     }
 
+    @Nullable
     public ClassType getCls() {
         return cls;
     }
@@ -109,6 +116,7 @@ public class FunType extends Type {
         this.cls = cls;
     }
 
+    @Nullable
     public Type getSelfType() {
         return selfType;
     }
@@ -147,7 +155,7 @@ public class FunType extends Type {
     }
 
 
-    static Type removeNoneReturn(Type toType) {
+    static Type removeNoneReturn(@NotNull Type toType) {
         if (toType.isUnionType()) {
             Set<Type> types = new HashSet<Type>(toType.asUnionType().getTypes());
             types.remove(Indexer.idx.builtins.Cont);
@@ -165,7 +173,7 @@ public class FunType extends Type {
 
 
     @Override
-    protected void printType(CyclicTypeRecorder ctr, StringBuilder sb) {
+    protected void printType(@NotNull CyclicTypeRecorder ctr, @NotNull StringBuilder sb) {
 
         Integer num = ctr.visit(this);
         if (num != null) {
