@@ -239,14 +239,7 @@ public class Util {
      */
     public static String canonicalize(String path) {
         File f = new File(path);
-        path = f.getAbsolutePath();
-        if (f.isDirectory() && !path.endsWith("/")) {
-            return path + "/";
-        } else if (f.isDirectory() && !path.endsWith("\\")) {
-            return path + "\\";
-        }
-
-        return path;
+        return f.getAbsolutePath();
     }
 
     static boolean isReadableFile(String path) {

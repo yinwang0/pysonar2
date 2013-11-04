@@ -154,9 +154,11 @@ public class Indexer {
 
     private void addPythonPath() {
         String path = System.getenv("PYTHONPATH");
-        String[] segments = path.split(":");
-        for (String p : segments) {
-            addPath(p);
+        if (path != null) {
+            String[] segments = path.split(":");
+            for (String p : segments) {
+                addPath(p);
+            }
         }
     }
 
@@ -696,7 +698,7 @@ public class Indexer {
     public List<String> getLoadedFiles() {
         List<String> files = new ArrayList<String>();
         for (String file : moduleTable.keySet()) {
-            if (file.startsWith("/")) {
+            if (file.endsWith(".py")) {
                 files.add(file);
             }
         }
