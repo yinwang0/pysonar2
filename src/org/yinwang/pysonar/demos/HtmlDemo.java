@@ -95,7 +95,7 @@ public class HtmlDemo {
         }
     }
 
-    private void start(@NotNull File stdlib, @NotNull File fileOrDir) throws Exception {
+    private void start(@NotNull File fileOrDir) throws Exception {
         long start = System.currentTimeMillis();
 
         File rootDir = fileOrDir.isFile() ? fileOrDir.getParentFile() : fileOrDir;
@@ -106,12 +106,6 @@ public class HtmlDemo {
         }
 
         indexer = new Indexer();
-
-        try {
-            indexer.addPath(stdlib.getCanonicalPath());
-        } catch (Exception e) {
-            Util.die("Stdlib not found: " + stdlib);
-        }
 
         Util.msg("Building index");
 
@@ -222,17 +216,12 @@ public class HtmlDemo {
     }
 
     public static void main(@NotNull String[] args) throws Exception {
-        if (args.length < 2 || args.length > 3) {
+        if (args.length != 1) {
             usage();
         }
 
-        File fileOrDir = checkFile(args[1]);
-        File stdlib = checkFile(args[0]);
+        File fileOrDir = checkFile(args[0]);
 
-        if (!stdlib.isDirectory()) {
-            Util.die("Not a directory: " + stdlib);
-        }
-
-        new HtmlDemo().start(stdlib, fileOrDir);
+        new HtmlDemo().start(fileOrDir);
     }
 }

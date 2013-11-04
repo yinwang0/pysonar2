@@ -125,6 +125,7 @@ public class Indexer {
         idx = this;
         builtins = new Builtins();
         builtins.init();
+        addPythonPath();
     }
 
 
@@ -151,9 +152,17 @@ public class Indexer {
     }
 
 
+    private void addPythonPath() {
+        String path = System.getenv("PYTHONPATH");
+        String[] segments = path.split(":");
+        for (String p : segments) {
+            addPath(p);
+        }
+    }
+
+
     /**
-     * Returns the module search path -- the project directory followed by any
-     * paths that were added by {@link addPath}.
+     * Returns the module search path. Put cwd on top.
      */
     @NotNull
     public List<String> getLoadPath() {
@@ -244,16 +253,6 @@ public class Indexer {
         return new ArrayList<Diagnostic>();
     }
 
-    /**
-     * Create an outline for a file in the index.
-     * @param path the file for which to build the outline
-     * @return a list of entries constituting the file outline.
-     * Returns an empty list if the indexer hasn't indexed that path.
-     */
-    @NotNull
-    public List<Outliner.Entry> generateOutline(@NotNull String file) {
-        return new Outliner().generate(this, file);
-    }
 
     /**
      * Add a reference to binding {@code b} at AST node {@code node}.

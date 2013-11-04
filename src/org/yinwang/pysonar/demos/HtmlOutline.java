@@ -8,9 +8,7 @@ import org.yinwang.pysonar.Util;
 
 import java.util.List;
 
-/**
- * Generates a static-html outline for a file.
- */
+
 class HtmlOutline {
 
     private Indexer indexer;
@@ -21,19 +19,23 @@ class HtmlOutline {
         this.indexer = idx;
     }
 
-    /**
-     * Generates HTML outline for {@code path}.
-     * @return the html as an {@code UL} element
-     */
+
     @NotNull
     public String generate(String path) {
         buffer = new StringBuilder(1024);
-        List<Outliner.Entry> entries = indexer.generateOutline(path);
+        List<Outliner.Entry> entries = generateOutline(indexer, path);
         addOutline(entries);
         String html = buffer.toString();
         buffer = null;
         return html;
     }
+
+
+    @NotNull
+    public List<Outliner.Entry> generateOutline(Indexer indexer, @NotNull String file) {
+        return new Outliner().generate(indexer, file);
+    }
+
 
     private void addOutline(@NotNull List<Outliner.Entry> entries) {
         add("<ul>\n");
