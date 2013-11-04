@@ -102,7 +102,7 @@ public class HtmlDemo {
         try {
             rootPath = rootDir.getCanonicalPath();
         } catch (Exception e) {
-            Util.die("Doh");
+            Util.die("File not found: " + fileOrDir);
         }
 
         indexer = new Indexer();
@@ -110,7 +110,7 @@ public class HtmlDemo {
         try {
             indexer.addPath(stdlib.getCanonicalPath());
         } catch (Exception e) {
-            Util.die("Doh");
+            Util.die("Stdlib not found: " + stdlib);
         }
 
         Util.msg("Building index");

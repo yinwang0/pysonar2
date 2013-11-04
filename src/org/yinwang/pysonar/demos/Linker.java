@@ -41,11 +41,11 @@ class Linker {
      */
     public void findLinks(@NotNull Indexer indexer) {
         // backlinks
-        for (List<Binding> lb : indexer.getBindings().values()) {
-            for (Binding nb : lb) {
-                addSemanticStyles(nb);
-                for (Def def : nb.getDefs()) {
-                    processDef(def, nb);
+        for (List<Binding> bindings : indexer.getBindings().values()) {
+            for (Binding b : bindings) {
+                addSemanticStyles(b);
+                for (Def def : b.getDefs()) {
+                    processDef(def, b);
                 }
             }
         }
@@ -143,27 +143,7 @@ class Linker {
         }
         addFileStyle(def.getFile(), style);
     }
-    
-    private void processDiagnostic(@NotNull Diagnostic d) {
-        StyleRun style = new StyleRun(StyleRun.Type.WARNING, d.start, d.end - d.start);
-        style.message = d.msg;
-        style.url = d.file;
-        addFileStyle(d.file, style);
-    }
 
-    /**
-     * Adds a hyperlink for a single reference.
-     */
-    void processRef(@NotNull Ref ref, @NotNull Binding nb) {
-        String path = ref.getFile();
-        StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start(), ref.length());
-        link.message = nb.getQname() + " :: " + nb.getType();
-        link.url = toURL(nb, path);
-        link.id = nb.getQname();
-        if (link.url != null) {
-            addFileStyle(path, link);
-        }
-    }
 
     void processRef(@NotNull Ref ref, @NotNull List<Binding> bindings) {
         StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start(), ref.length());
@@ -196,6 +176,14 @@ class Linker {
                 break;
             }
         }
+    }
+
+
+    private void processDiagnostic(@NotNull Diagnostic d) {
+        StyleRun style = new StyleRun(StyleRun.Type.WARNING, d.start, d.end - d.start);
+        style.message = d.msg;
+        style.url = d.file;
+        addFileStyle(d.file, style);
     }
 
     
