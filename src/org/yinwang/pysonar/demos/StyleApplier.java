@@ -135,18 +135,19 @@ class StyleApplier {
 
     /**
      * Copies code from the input source to the output html.
-     * @param beg the starting source offset
+     * @param begin the starting source offset
      * @param end the end offset, or -1 to go to end of file
      */
-    private void copySource(int beg, int end) {
+    private void copySource(int begin, int end) {
         // Be robust if the analyzer gives us bad offsets.
         try {
             String src = escape((end == -1)
-                                ? source.substring(beg)
-                                : source.substring(beg, end));
+                                ? source.substring(begin)
+                                : source.substring(begin, end));
             buffer.append(src);
         } catch (RuntimeException x) {
-            System.err.println("Warning: " + x);
+            // This can happen with files with weird encodings
+            // Igore them because of the rareness
         }
         sourceOffset = end;
     }

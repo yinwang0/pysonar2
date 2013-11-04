@@ -96,35 +96,32 @@ class Styler extends DefaultNodeVisitor {
     }
 
 
-    private void addStyle(@Nullable Node e, int start, int len, StyleRun.Type type) {
-        if (e == null || e.getFile() == null) {  // if it's an NUrl, for instance
-            return;
-        }
-        addStyle(start, len, type);
-    }
-
-    private void addStyle(@Nullable Node e, StyleRun.Type type) {
-        if (e != null) {
-            addStyle(e, e.start, e.end - e.start, type);
+    private void addStyle(@NotNull Node e, int start, int len, StyleRun.Type type) {
+        if (e.getFile() != null) {  // if it's an NUrl, for instance
+            addStyle(start, len, type);
         }
     }
 
-    private void addStyle(int beg, int len, StyleRun.Type type) {
-        styles.add(new StyleRun(type, beg, len));
+    private void addStyle(@NotNull Node e, StyleRun.Type type) {
+        addStyle(e, e.start, e.end - e.start, type);
+    }
+
+    private void addStyle(int begin, int len, StyleRun.Type type) {
+        styles.add(new StyleRun(type, begin, len));
     }
 
     private String sourceString(@NotNull Node e) {
         return sourceString(e.start, e.end);
     }
 
-    private String sourceString(int beg, int end) {
-        int a = Math.max(beg, 0);
+    private String sourceString(int begin, int end) {
+        int a = Math.max(begin, 0);
         int b = Math.min(end, source.length());
         b = Math.max(b, 0);
         try {
             return source.substring(a, b);
         } catch (StringIndexOutOfBoundsException sx) {
-            System.out.println("whoops: beg=" + a + ", end=" + b + ", len=" + source.length());
+            // Silent here, only happens for weird encodings in file
             return "";
         }
     }
