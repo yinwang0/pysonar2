@@ -202,10 +202,10 @@ class Linker {
     /**
      * Generate a URL for a reference to a binding.
      * @param binding the referenced binding
-     * @param path the path containing the reference, or null if there was an error
+     * @param filename the path containing the reference, or null if there was an error
      */
     @Nullable
-    private String toURL(@NotNull Binding binding, String path) {
+    private String toURL(@NotNull Binding binding, String filename) {
         Def def = binding.getFirstNode();
         if (def == null) {
             return null;
@@ -214,44 +214,33 @@ class Linker {
             return def.getURL();
         }
 
+        String destPath = null;
+
         if (binding.getKind() == Binding.Kind.MODULE) {
-            return toModuleUrl(binding);
+            ModuleType mtype = binding.getType().asModuleType();
+            if (mtype != null) {
+                destPath = mtype.getFile();
+            }
+        } else {
+            destPath = def.getFile();
+        }
+
+        if (destPath == null) {
+            return null;
         }
 
         String anchor = "#" + binding.getQname();
-        if (binding.getFirstFile().equals(path)) {
+        if (binding.getFirstFile().equals(filename)) {
             return anchor;
         }
 
-        String destPath = def.getFile();
         String relpath;
-        if (destPath.length() >= rootPath.length()) {
+        if (destPath.startsWith(rootPath)) {
             relpath = destPath.substring(rootPath.length());
             return Util.joinPath(outDir.getAbsolutePath(), relpath) + ".html" + anchor;
         } else {
-            System.err.println("dest path length is shorter than root path:  dest="
-                                + destPath + ", root=" + rootPath);
-            return null;
+            return "file://" + destPath + anchor;
         }
     }
 
-
-    /**
-     * Generate an anchorless URL linking to another file in the index.
-     */
-    @Nullable
-    private String toModuleUrl(@NotNull Binding b) {
-        ModuleType mtype = b.getType().asModuleType();
-        if (mtype == null) { return null; }
-
-        String path = mtype.getFile();
-        if (path == null) return null;
-
-        if (!path.startsWith(rootPath)) {
-            return "file://" + path;  // can't find file => punt & load it directly
-        } else {
-            String relpath = path.substring(rootPath.length());
-            return Util.joinPath(outDir.getAbsolutePath(), relpath) + ".html";
-        }
-    }
 }
