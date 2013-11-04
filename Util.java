@@ -51,15 +51,22 @@ public class Util {
      * @return null if {@code file} is not somewhere under the load path
      */
     public static String moduleQname(String file) {
-        boolean initpy = file.endsWith("/__init__.py");
+        File f = new File(file);
+        boolean initpy = f.getName().equals("__init__.py");
+
         if (initpy) {
-            file = file.substring(0, file.length() - "/__init__.py".length());
+            file = f.getAbsolutePath();
         } else if (file.endsWith(".py")) {
             file = file.substring(0, file.length() - ".py".length());
         }
+
         for (String root : Indexer.idx.getLoadPath()) {
             if (file.startsWith(root)) {
-                return file.substring(root.length()).replace('/', '.');
+                if (file.contains("/")) {
+                    return file.substring(root.length()).replace('/', '.');
+                } else if (file.contains("\\")) {
+                    return file.substring(root.length()).replace('\\', '.');
+                }
             }
         }
         return null;
