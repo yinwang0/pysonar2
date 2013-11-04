@@ -14,18 +14,6 @@ public class ModuleType extends Type {
     @Nullable
     private String qname;
 
-    public ModuleType() { }
-
-
-    @Override
-    public boolean equals(Object other) {
-        if (other instanceof ModuleType) {
-            ModuleType co = (ModuleType) other;
-            return getQname().equals(co.getQname());
-        } else {
-            return this == other;
-        }
-    }
 
     public ModuleType(String name, @Nullable String file, @NotNull Scope parent) {
         this.name = name;
@@ -66,10 +54,6 @@ public class ModuleType extends Type {
       return name;
     }
 
-    public void setQname(String qname) {
-      this.qname = qname;
-    }
-
     @Nullable
     public String getQname() {
       return qname;
@@ -78,6 +62,18 @@ public class ModuleType extends Type {
     @Override
     public int hashCode() {
         return "ModuleType".hashCode();
+    }
+
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof ModuleType) {
+            ModuleType co = (ModuleType) other;
+            if (file != null) {
+                return file.equals(file);
+            }
+        }
+        return this == other;
     }
 
 
