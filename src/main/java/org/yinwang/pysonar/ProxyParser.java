@@ -12,7 +12,6 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 
 public class ProxyParser {
@@ -568,7 +567,7 @@ public class ProxyParser {
             Util.msg("Started process: " + pythonExe);
             return p;
         } catch (Exception e) {
-            Util.msg("Failed to start process: " + pythonExe);
+            Util.msg("Not found: " + pythonExe);
             return null;
         }
     }

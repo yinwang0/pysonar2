@@ -84,6 +84,8 @@ public class Indexer {
     private Set<FunType> uncalled = new HashSet<FunType>();
     @NotNull
     private Set<Object> callStack = new HashSet<Object>();
+    @NotNull
+    private Set<Object> importStack = new HashSet<>();
 
     private int threadCounter = 0;
     public int newThread() {
@@ -129,7 +131,9 @@ public class Indexer {
 
 
     public void setCWD(String cd) {
-        cwd = Util.canonicalize(cd);
+        if (cd != null) {
+            cwd = Util.canonicalize(cd);
+        }
     }
 
 
@@ -185,6 +189,18 @@ public class Indexer {
 
     public void popStack(Object f) {
     	callStack.remove(f);
+    }
+
+    public boolean inImportStack(Object f) {
+        return importStack.contains(f);
+    }
+
+    public void pushImportStack(Object f) {
+        importStack.add(f);
+    }
+
+    public void popImportStack(Object f) {
+        importStack.remove(f);
     }
 
     /**
@@ -382,13 +398,30 @@ public class Indexer {
             return null;
         }
 
+
         ModuleType module = getCachedModule(path);
         if (module != null) {
             finer("\nusing cached module " + path + " [succeeded]");
             return module;
         }
 
-        return parseAndResolve(path);
+
+        // detect circular import
+        if (Indexer.idx.inImportStack(path)) {
+            return null;
+        }
+
+
+        String oldcwd = cwd;
+        setCWD(f.getParent());
+
+        Indexer.idx.pushImportStack(path);
+        ModuleType mod = parseAndResolve(path);
+//        Indexer.idx.popImportStack(path);
+
+        setCWD(oldcwd);       // restore old CWD
+
+        return mod;
     }
 
 
@@ -551,11 +584,17 @@ public class Indexer {
             if (initFile.exists()) {
                 ModuleType mod = loadFile(initFile.getPath());
                 if (mod == null) return null;
+
                 if (prev != null) {
                     Binding b = prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
                     Indexer.idx.putLocation(name.get(i), b);
+                } else {
+                    Binding b = scope.put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
+                    Indexer.idx.putLocation(name.get(i), b);
                 }
+
                 prev = mod;
+
             } else if (i == name.size() - 1) {
                 File startFile = new File(path + ".py");
                 if (startFile.exists()) {
@@ -588,17 +627,11 @@ public class Indexer {
         File file_or_dir = new File(fullname);
 
         if (file_or_dir.isDirectory()) {
-
-            setCWD(fullname);
-
             for (File file : file_or_dir.listFiles()) {
                 loadFileRecursive(file.getAbsolutePath());
             }
-
         } else {
-
             if (file_or_dir.getAbsolutePath().endsWith(".py")) {
-                setCWD(file_or_dir.getParent());
                 loadFile(file_or_dir.getAbsolutePath());
             }
         }

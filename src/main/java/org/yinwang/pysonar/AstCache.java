@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class AstCache {
 
     public static final String CACHE_DIR =
-            Util.makePathString(Util.getSystemTempDir(),  "pysonar2", "ast_cache." + Util.newSessionId());
+            Util.makePathString(Util.getSystemTempDir(),  "pysonar2", "ast_cache");
 
     private static final Logger LOG = Logger.getLogger(AstCache.class.getCanonicalName());
 
@@ -68,7 +68,7 @@ public class AstCache {
 
     public void close() {
         parser.close();
-        clearDiskCache();
+//        clearDiskCache();
     }
 
     /**
@@ -173,7 +173,7 @@ public class AstCache {
      */
     @NotNull
     public String getCachePath(@NotNull File sourcePath) {
-        return getCachePath(Util.getMD5(sourcePath), sourcePath.getName());
+        return getCachePath(Util.getSHA1(sourcePath), sourcePath.getName());
     }
 
     @NotNull

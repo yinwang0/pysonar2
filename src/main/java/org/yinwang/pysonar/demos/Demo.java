@@ -11,8 +11,7 @@ import java.util.List;
 
 public class Demo {
 
-    private static final File OUTPUT_DIR =
-            new File(new File("html").getAbsolutePath());
+    private static File OUTPUT_DIR;
 
     private static final String CSS =
             "a {text-decoration: none; color: #2e8b57}\n" +
@@ -174,11 +173,9 @@ public class Demo {
 
 
     private static void usage() {
-        Util.msg("Usage:  java org.yinwang.pysonar.HtmlDemo <python-stdlib> <file-or-dir>");
-        Util.msg("  first arg specifies the root of the python standard library");
-        Util.msg("  second arg specifies file or directory for which to generate the index");
-        Util.msg("Example that generates an index for just the email libraries:");
-        Util.msg(" java org.yinwang.pysonar.HtmlDemo ./CPythonLib ./CPythonLib/email");
+        Util.msg("Usage:  java org.yinwang.pysonar.HtmlDemo <file-or-dir> <output-dir>");
+        Util.msg("Example that generates an index for Python 2.7 standard library:");
+        Util.msg(" java org.yinwang.pysonar.HtmlDemo /usr/lib/python2.7 ./html");
         System.exit(0);
     }
 
@@ -192,11 +189,12 @@ public class Demo {
     }
 
     public static void main(@NotNull String[] args) throws Exception {
-        if (args.length != 1) {
+        if (args.length != 2) {
             usage();
         }
 
         File fileOrDir = checkFile(args[0]);
+        OUTPUT_DIR = new File(args[1]);
 
         new Demo().start(fileOrDir);
     }

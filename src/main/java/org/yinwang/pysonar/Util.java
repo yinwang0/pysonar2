@@ -68,9 +68,9 @@ public class Util {
         for (String root : Indexer.idx.getLoadPath()) {
             if (file.startsWith(root)) {
                 if (file.contains("/")) {
-                    return file.substring(root.length()).replace('/', '.');
+                    return file.substring(root.length() + 1).replace('/', '.');
                 } else if (file.contains("\\")) {
-                    return file.substring(root.length()).replace('\\', '.');
+                    return file.substring(root.length() + 1).replace('\\', '.');
                 }
             }
         }
@@ -198,10 +198,10 @@ public class Util {
 
 
     @NotNull
-    public static String getMD5(@NotNull File path) {
+    public static String getSHA1(@NotNull File path) {
         byte[] bytes = getBytesFromFile(path);
         if (bytes == null) {
-            Util.msg("getMD5: failed to read from file: " + path);
+            Util.msg("getSHA1: failed to read from file: " + path);
             System.exit(2);
             return "";
         } else {
@@ -215,9 +215,9 @@ public class Util {
         MessageDigest algorithm;
 
         try {
-             algorithm = MessageDigest.getInstance("MD5");
+             algorithm = MessageDigest.getInstance("SHA-1");
         } catch (Exception e) {
-            Util.die("getMD5: failed to get MD5, shouldn't happen");
+            Util.die("getSHA1: failed to get MD5, shouldn't happen");
             return "";
         }
 

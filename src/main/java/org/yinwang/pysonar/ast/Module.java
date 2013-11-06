@@ -18,7 +18,7 @@ public class Module extends Node {
     public Block body;
 
     private String file;  // input source file path
-    private String md5;   // input source file md5
+    private String sha1;   // input source file sha1
 
 
     public Module(Block body, int start, int end) {
@@ -30,7 +30,7 @@ public class Module extends Node {
     public void setFile(String file) {
         this.file = file;
         this.name = Util.moduleNameFor(file);
-        this.md5 = Util.getMD5(new File(file));
+        this.sha1 = Util.getSHA1(new File(file));
     }
 
     public void setFile(@NotNull File path) {
@@ -40,18 +40,18 @@ public class Module extends Node {
             Util.msg("invalid path: " + path);
         }
         name = Util.moduleNameFor(file);
-        md5 = Util.getMD5(path);
+        sha1 = Util.getSHA1(path);
     }
 
     /**
      * Used when module is parsed from an in-memory string.
      * @param path file path
-     * @param md5 md5 message digest for source contents
+     * @param md5 sha1 message digest for source contents
      */
     public void setFileAndMD5(String path, String md5) {
         file = path;
         name = Util.moduleNameFor(file);
-        this.md5 = md5;
+        this.sha1 = md5;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class Module extends Node {
     }
 
     public String getMD5() {
-        return md5;
+        return sha1;
     }
 
     @NotNull
