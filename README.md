@@ -21,6 +21,12 @@ output from CPython's `ast.parse`. You can get Gson <a
 href="https://code.google.com/p/google-gson/downloads">here</a>. Maven should be
 able to set this all up, but I don't know how. If you know please let me know.
 
+Also, PySonar2 relies the `PYTHONPATH` environment variable for locating the
+Python standard libraries. It is important to point it to the correct Python
+library, for example
+
+    export PYTHONPATH=/usr/lib/python2.7
+
 Now you can try building an index of the Python 2.7 standard library with the
 following command line:
 
