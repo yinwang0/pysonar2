@@ -174,9 +174,9 @@ public class Demo {
 
 
     private static void usage() {
-        Util.msg("Usage:  java org.yinwang.pysonar.HtmlDemo <file-or-dir> <output-dir>");
+        Util.msg("Usage:  java -jar pysonar-2.0-SNAPSHOT.jar <file-or-dir> <output-dir>");
         Util.msg("Example that generates an index for Python 2.7 standard library:");
-        Util.msg(" java org.yinwang.pysonar.HtmlDemo /usr/lib/python2.7 ./html");
+        Util.msg(" java -jar pysonar-2.0-SNAPSHOT.jar /usr/lib/python2.7 ./html");
         System.exit(0);
     }
 

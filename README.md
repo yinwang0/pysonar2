@@ -18,36 +18,36 @@ PySonar2 is a static analyzer for Python, which does global interprocedural anal
 
     mvn clean package
 
-### How to run?
 
-PySonar2 is mainly designed as a library for Python IDEs and other tools, but
-for your understanding of the library's capabilities, a demo program is built
-(most credits go to Steve Yegge).
+### Configuration
 
-To run it, first you need Gson because PySonar2 uses Gson to deserialize the AST
-output from CPython's `ast.parse`. You can get Gson <a
-href="https://code.google.com/p/google-gson/downloads">here</a>. Maven should be
-able to set this all up, but I don't know how. If you know please let me know.
-
-Also, PySonar2 relies the `PYTHONPATH` environment variable for locating the
+PySonar2 relies the `PYTHONPATH` environment variable for locating the
 Python standard libraries. It is important to point it to the correct Python
 library, for example
 
     export PYTHONPATH=/usr/lib/python2.7
 
+
+### How to run?
+
+PySonar2 is mainly designed as a library for Python IDEs and other tools, so its
+interface may not be as appealing as an end-user tool, but for your
+understanding of the library's capabilities, a reasonably nice demo program is
+built (most credits go to Steve Yegge).
+
 Now you can try building an index of the Python 2.7 standard library with the
 following command line:
 
-    java -classpath target/pysonar.jar:<path-to-gson-2.2.4.jar> \
-         org.yinwang.pysonar.demos.Demo /usr/lib/python2.7 ./html
+    java -jar target/pysonar-2.0-SNAPSHOT.jar /usr/lib/python2.7 ./html
 
-You should find some interactive HTML files inside the _html_ directory
-generated after this process.
+You should find some interactive HTML files inside the _html_ directory after
+this process.
 
 Note: PySonar2 doesn't need much memory to do analysis (1GB is probably enough),
 but for generating the HTML files, you may need a lot of memory (~4GB for
-Python 2.5 standard lib). This is due to the highlighting I added without using
-more sophisticated ways of doing it. The situation may change soon.
+Python 2.5 standard lib). This is due to the highlighting code not using more
+sophisticated ways of doing it. The situation may change soon.
+
 
 
 ### Jython Branch
