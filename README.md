@@ -1,7 +1,9 @@
 (Notice 11/06/2013: Significant change has been merged into the master branch.
 PySonar2 now no longer relies on Jython's parser, but uses CPython to dump out
-ASTs as JSON. New bugs are stil being fixed, and code is much cleaner than
-before. If you see any problems, please file an issue.)
+ASTs as JSON. It also becomes a Maven project, so the build process and command
+lines are all very different now (but more convenient). New bugs are stil being
+fixed, and code is much cleaner than before. If you see any problems, please
+file an issue.)
 
 
 ## PySonar2 - an advanced static analyzer for Python
