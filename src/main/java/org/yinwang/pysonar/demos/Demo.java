@@ -14,28 +14,29 @@ public class Demo {
     private static File OUTPUT_DIR;
 
     private static final String CSS =
-            "a {text-decoration: none; color: #2e8b57}\n" +
+                    "body { color: #666666; } \n" +
+                    "a {text-decoration: none; color: #5A82F7}\n" +
                     "table, th, td { border: 1px solid lightgrey; padding: 5px; corner: rounded; }\n" +
-                    ".builtin {color: #5b4eaf;}\n" +
+                    ".builtin {color: #B17E41;}\n" +
                     ".comment, .block-comment {color: #aaaaaa; font-style: italic;}\n" +
                     ".constant {color: #888888;}\n" +
                     ".decorator {color: #778899;}\n" +
-                    ".doc-string {color: #005000;}\n" +
+                    ".doc-string {color: #aaaaaa;}\n" +
                     ".error {border-bottom: 1px solid red;}\n" +
                     ".field-name {color: #2e8b57;}\n" +
-                    ".function {color: #880000;}\n" +
+                    ".function {color: #4682b4;}\n" +
                     ".identifier {color: #8b7765;}\n" +
                     ".info {border-bottom: 1px dotted RoyalBlue;}\n" +
                     ".keyword {color: #0000cd;}\n" +
                     ".lineno {color: #aaaaaa;}\n" +
                     ".number {color: #483d8b;}\n" +
-                    ".parameter {color: #2e8b57;}\n" +
-                    ".string {color: #4169e1;}\n" +
+                    ".parameter {color: #777777;}\n" +
+                    ".string {color: #999999;}\n" +
                     ".type-name {color: #4682b4;}\n" +
                     ".warning {border-bottom: 1px dotted orange;}\n";
 
     private  static final String JS =
-            "<script language=\"JavaScript\" type=\"text/javascript\">\n" +
+                    "<script language=\"JavaScript\" type=\"text/javascript\">\n" +
                     "var highlighted = new Array();\n" +
                     "function highlight()\n" +
                     "{\n" +
