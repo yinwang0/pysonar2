@@ -39,7 +39,8 @@ more sophisticated ways of doing it. The situation may change soon.
 ### Jython Branch
 
 PySonar used to use Jython's parser and was part of Jython. If you want to try
-the old version, please checkout the jython branch.
+the old version, please checkout the <a
+href="https://github.com/yinwang0/pysonar2/tree/jython">jython branch</a>.
 
 
 
