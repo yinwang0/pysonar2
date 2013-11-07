@@ -121,8 +121,8 @@ public class Indexer {
     private Progress progress;
 
     public Indexer() {
-    	progress = new Progress(10, 50);
-    	logger = Logger.getLogger(Indexer.class.getCanonicalName());
+        progress = new Progress(10, 50);
+        logger = Logger.getLogger(Indexer.class.getCanonicalName());
         idx = this;
         builtins = new Builtins();
         builtins.init();
@@ -180,15 +180,15 @@ public class Indexer {
     }
 
     public boolean inStack(Object f) {
-    	return callStack.contains(f);
+        return callStack.contains(f);
     }
 
     public void pushStack(Object f) {
-    	callStack.add(f);
+        callStack.add(f);
     }
 
     public void popStack(Object f) {
-    	callStack.remove(f);
+        callStack.remove(f);
     }
 
     public boolean inImportStack(Object f) {
@@ -391,13 +391,12 @@ public class Indexer {
     public ModuleType loadFile(String path) {
 //        Util.msg("loading: " + path);
 
-        File f = new File(path);
+        File f = new File(Util.canonicalize(path));
 
         if (!f.canRead()) {
             finer("\nfile not not found or cannot be read: " + path);
             return null;
         }
-
 
         ModuleType module = getCachedModule(path);
         if (module != null) {
@@ -411,16 +410,15 @@ public class Indexer {
             return null;
         }
 
-
+        // set new CWD and save the old one on stack
         String oldcwd = cwd;
         setCWD(f.getParent());
 
         Indexer.idx.pushImportStack(path);
         ModuleType mod = parseAndResolve(path);
-//        Indexer.idx.popImportStack(path);
 
-        setCWD(oldcwd);       // restore old CWD
-
+        // restore old CWD
+        setCWD(oldcwd);
         return mod;
     }
 
@@ -436,8 +434,8 @@ public class Indexer {
 
     @Nullable
     private ModuleType parseAndResolve(String file) {
-    	finer("Indexing: " + file);
-    	progress.tick();
+        finer("Indexing: " + file);
+        progress.tick();
         return parseAndResolve(file, null);
     }
 
@@ -628,11 +626,11 @@ public class Indexer {
 
         if (file_or_dir.isDirectory()) {
             for (File file : file_or_dir.listFiles()) {
-                loadFileRecursive(file.getAbsolutePath());
+                loadFileRecursive(file.getPath());
             }
         } else {
-            if (file_or_dir.getAbsolutePath().endsWith(".py")) {
-                loadFile(file_or_dir.getAbsolutePath());
+            if (file_or_dir.getPath().endsWith(".py")) {
+                loadFile(file_or_dir.getPath());
             }
         }
     }

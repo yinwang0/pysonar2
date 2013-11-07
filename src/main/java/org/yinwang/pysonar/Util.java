@@ -164,7 +164,7 @@ public class Util {
             int offset = 0;
             int numRead = 0;
             while (offset < bytes.length
-                   && (numRead = is.read(bytes, offset, bytes.length-offset)) >= 0) {
+                    && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
                 offset += numRead;
             }
             if (offset < bytes.length) {
@@ -215,7 +215,7 @@ public class Util {
         MessageDigest algorithm;
 
         try {
-             algorithm = MessageDigest.getInstance("SHA-1");
+            algorithm = MessageDigest.getInstance("SHA-1");
         } catch (Exception e) {
             Util.die("getSHA1: failed to get MD5, shouldn't happen");
             return "";
@@ -231,16 +231,6 @@ public class Util {
         return sb.toString();
     }
 
-    /**
-     * Return absolute path for {@code path}.
-     * Make sure path ends with "/" if it's a directory.
-     * Does _not_ resolve symlinks, since the caller may need to play
-     * symlink tricks to produce the desired paths for loaded modules.
-     */
-    public static String canonicalize(String path) {
-        File f = new File(path);
-        return f.getAbsolutePath();
-    }
 
     static boolean isReadableFile(String path) {
         File f = new File(path);
@@ -365,7 +355,21 @@ public class Util {
     }
 
     public static String makePathString(String... files) {
-        return makePath(files).getAbsolutePath();
+        return canonicalize(makePath(files).getPath());
+    }
+
+
+    public static String canonicalize(String filename) {
+        return canonicalize(new File(filename));
+    }
+
+
+    public static String canonicalize(File file) {
+        try {
+            return file.getCanonicalPath();
+        } catch (Exception e) {
+            return file.getAbsolutePath();
+        }
     }
 
 }

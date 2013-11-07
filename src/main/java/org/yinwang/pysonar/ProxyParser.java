@@ -29,9 +29,11 @@ public class ProxyParser {
     public ProxyParser() {
         String tmpDir = Util.getSystemTempDir();
         String sid = Util.newSessionId();
-        exchangeFile = new File(tmpDir, "pysonar2/" + "json." + sid).getAbsolutePath();
-        endMark = new File(tmpDir, "pysonar2/" + "end." + sid).getAbsolutePath();
-        pyStub = new File(tmpDir, "pysonar2/" + "ast2json." + sid).getAbsolutePath();
+
+        exchangeFile = Util.makePathString(tmpDir, "pysonar2", "json." + sid);
+        endMark = Util.makePathString(tmpDir, "pysonar2", "end." + sid);
+        pyStub = Util.makePathString(tmpDir, "pysonar2", "ast2json." + sid);
+
         python2Process = startPython(PYTHON2_EXE);
         python3Process = startPython(PYTHON3_EXE);
 

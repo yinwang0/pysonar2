@@ -178,7 +178,7 @@ public class AstCache {
 
     @NotNull
     public String getCachePath(String md5, String name) {
-        return Util.makePath(CACHE_DIR, name + md5 + ".ast").getAbsolutePath();
+        return Util.makePathString(CACHE_DIR, name + md5 + ".ast");
     }
 
     // package-private for testing
