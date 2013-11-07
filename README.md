@@ -34,12 +34,12 @@ library, for example
 
 
 
-### How to use?
+### How to use
 
 PySonar2 is mainly designed as a library for Python IDEs and other developer
 tools, so its interface may not be as appealing as an end-user tool, but for
 your understanding of the library's capabilities, a reasonably nice demo program
-has been built (most credits go to Steve Yegge).
+has been built (all features added by Steve Yegge, all bugs added by Yin Wang).
 
 Now you can try building a "code-browser" of the Python 2.7 standard library
 with the following command line:
@@ -47,12 +47,18 @@ with the following command line:
     java -jar target/pysonar-2.0-SNAPSHOT.jar /usr/lib/python2.7 ./html
 
 You should find some interactive HTML files inside the _html_ directory after
-this process.
+this process (will take a few minutes).
 
-Note: PySonar2 doesn't need much memory to do analysis (1GB is probably enough),
-but for generating the HTML files, you may need a lot of memory (~4GB for
-Python 2.5 standard lib). This is due to the highlighting code not using more
-sophisticated ways of doing it. The situation may change soon.
+
+
+### Memory Usage
+
+All serious static analysis tools require a lot of memory to run. PySonar2
+doesn't need much memory to do analysis. 1GB is probably enough for analyzing a
+medium sized project such as the standard library or Django. But for generating
+the HTML files, you may need a lot of memory (~4GB for Python 2.5 standard lib).
+This is due to the highlighting code I added to the demo not using sophisticated
+ways of doing it. The situation may change soon.
 
 
 
