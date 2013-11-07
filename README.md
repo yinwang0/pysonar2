@@ -26,11 +26,17 @@ blog posts:
 
 ### Configuration
 
-PySonar2 relies the `PYTHONPATH` environment variable for locating the
-Python standard libraries. It is important to point it to the correct Python
-library, for example
+PySonar2 uses on CPython interpreter to parse Python code, so please make sure
+you have `python` or `python3` installed and pointed to by the PATH environment
+variable.
+
+`PYTHONPATH` environment variable is used for locating the Python standard
+libraries. It is important to point it to the correct Python library, for
+example
 
     export PYTHONPATH=/usr/lib/python2.7
+
+If this is not set up correctly, you may find suboptimal results.
 
 
 
@@ -46,8 +52,8 @@ with the following command line:
 
     java -jar target/pysonar-2.0-SNAPSHOT.jar /usr/lib/python2.7 ./html
 
-You should find some interactive HTML files inside the _html_ directory after
-this process (will take a few minutes).
+This will take a few minutes. You should find some interactive HTML files inside
+the _html_ directory after this process.
 
 
 
@@ -65,8 +71,12 @@ ways of doing it. The situation may change soon.
 ### Jython Branch
 
 PySonar used to use Jython's parser and was part of Jython. If you want to try
-the old version, please checkout the <a
-href="https://github.com/yinwang0/pysonar2/tree/jython">jython branch</a>.
+that version, please checkout the <a
+href="https://github.com/yinwang0/pysonar2/tree/jython">jython branch</a>. You
+may also want to look at <a
+href="http://hg.python.org/jython/file/11776cd9765b/src/org/python/indexer">PySonar 1.0
+code</a> inside Jython project. But keep in mind that the new code is much
+better, and those old versions are no longer supported by me.
 
 
 
