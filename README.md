@@ -6,17 +6,22 @@ fixed, and code is much cleaner than before. If you see any problems, please
 file an issue.)
 
 
+
 ## PySonar2 - an advanced static analyzer for Python
 
-PySonar2 is a static analyzer for Python, which does global interprocedural analysis to infer types. To understand it, please refer to my blog posts:
+PySonar2 is a static analyzer for Python, which does sophisticated
+interprocedural analysis to infer types. To understand it, please refer to my
+blog posts:
 
 - http://yinwang0.wordpress.com/2010/09/12/pysonar
 - http://yinwang0.wordpress.com/2013/06/21/pysonar-slides
 
 
+
 ### How to build
 
     mvn clean package
+
 
 
 ### Configuration
@@ -28,15 +33,16 @@ library, for example
     export PYTHONPATH=/usr/lib/python2.7
 
 
-### How to run?
 
-PySonar2 is mainly designed as a library for Python IDEs and other tools, so its
-interface may not be as appealing as an end-user tool, but for your
-understanding of the library's capabilities, a reasonably nice demo program is
-built (most credits go to Steve Yegge).
+### How to use?
 
-Now you can try building an index of the Python 2.7 standard library with the
-following command line:
+PySonar2 is mainly designed as a library for Python IDEs and other developer
+tools, so its interface may not be as appealing as an end-user tool, but for
+your understanding of the library's capabilities, a reasonably nice demo program
+has been built (most credits go to Steve Yegge).
+
+Now you can try building a "code-browser" of the Python 2.7 standard library
+with the following command line:
 
     java -jar target/pysonar-2.0-SNAPSHOT.jar /usr/lib/python2.7 ./html
 
