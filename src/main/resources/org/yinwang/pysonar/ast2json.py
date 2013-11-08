@@ -1,7 +1,9 @@
-import sys
 import ast
-from json import JSONEncoder
+import codecs
+import re
 import sys
+
+from json import JSONEncoder
 from ast import *
 
 
@@ -19,11 +21,11 @@ class Encoder(JSONEncoder):
 if is_python3:
     encoder = Encoder()
 else:
-    encoder = Encoder(encoding='latin1')
+    encoder = Encoder(encoding='utf8')
 
 
 def parse(filename):
-    f = open(filename)
+    f = codecs.open(filename, encoding="utf8")
     lines = f.read()
     f.close()
     return parse_string(lines, filename)
@@ -48,6 +50,12 @@ def parse_file(file, output, end_mark):
         f = open(end_mark, "w")
         f.close()
 
+
+def detect_encoding(path):
+    fin = open(path, 'rb')
+    prefix = fin.read(80)
+    encs = re.findall('#.*coding\s*:\s*([\w\d\-]+)\s+', prefix)
+    return encs[0] if encs else 'utf8'
 
 
 ## contents of improve_ast
