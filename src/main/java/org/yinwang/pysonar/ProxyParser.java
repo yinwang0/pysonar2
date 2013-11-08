@@ -38,7 +38,7 @@ public class ProxyParser {
         python3Process = startPython(PYTHON3_EXE);
 
         if (python2Process == null && python3Process == null) {
-            Util.die("You don't seem to have either of Python2 or Python3 on PATH");
+            Util.die("You don't seem to have either of Python or Python3 on PATH");
         }
     }
 

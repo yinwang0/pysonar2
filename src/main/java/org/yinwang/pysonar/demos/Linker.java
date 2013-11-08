@@ -222,10 +222,19 @@ class Linker {
             return anchor;
         }
 
-        String relpath;
         if (destPath.startsWith(rootPath)) {
-            relpath = destPath.substring(rootPath.length());
-            return Util.joinPath(outDir.getAbsolutePath(), relpath) + ".html" + anchor;
+            String relpath;
+            if (filename != null) {
+                relpath = Util.relativize(filename, destPath);
+            } else {
+                relpath = destPath;
+            }
+
+            if (relpath != null) {
+                return relpath + ".html" + anchor;
+            } else {
+                return anchor;
+            }
         } else {
             return "file://" + destPath + anchor;
         }
