@@ -1,7 +1,7 @@
 (Notice 11/06/2013: Significant change has been merged into the master branch.
 PySonar2 now no longer relies on Jython's parser, but uses CPython to dump out
 ASTs as JSON. It also becomes a Maven project, so the build process and command
-lines are all very different now (but more convenient). New bugs are stil being
+lines are all very different now (but more convenient). New bugs are still being
 fixed, and code is much cleaner than before. If you see any problems, please
 file an issue.)
 
@@ -26,8 +26,8 @@ blog posts:
 
 ### Configuration
 
-PySonar2 uses on CPython interpreter to parse Python code, so please make sure
-you have `python` or `python3` installed and pointed to by the PATH environment
+PySonar2 uses CPython interpreter to parse Python code, so please make sure you
+have `python` or `python3` installed and pointed to by the `PATH` environment
 variable.
 
 `PYTHONPATH` environment variable is used for locating the Python standard
@@ -47,7 +47,7 @@ tools, so its interface may not be as appealing as an end-user tool, but for
 your understanding of the library's capabilities, a reasonably nice demo program
 has been built (all features added by Steve Yegge, all bugs added by Yin Wang).
 
-Now you can try building a "code-browser" of the Python 2.7 standard library
+Now you can build a simple "code-browser" of the Python 2.7 standard library
 with the following command line:
 
     java -jar target/pysonar-2.0-SNAPSHOT.jar /usr/lib/python2.7 ./html
@@ -75,8 +75,8 @@ that version, please checkout the <a
 href="https://github.com/yinwang0/pysonar2/tree/jython">jython branch</a>. You
 may also want to look at <a
 href="http://hg.python.org/jython/file/11776cd9765b/src/org/python/indexer">PySonar 1.0
-code</a> inside Jython project. But keep in mind that the new code is much
-better, and those old versions are no longer supported by me.
+code</a> inside Jython project. But keep in mind that the new code here is much
+better, and those old versions are no longer supported or developed by me.
 
 
 
