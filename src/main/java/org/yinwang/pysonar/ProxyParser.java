@@ -606,7 +606,7 @@ public class ProxyParser {
 
     @Nullable
     public Node parseFileInner(String filename, @NotNull Process pythonProcess) {
-        Util.msg("parsing: " + filename);
+//        Util.msg("parsing: " + filename);
 //        Util.msg("exchangeFile: " + exchangeFile + ", end: " + endMark);
 
         File exchange = new File(exchangeFile);
