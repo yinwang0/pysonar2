@@ -74,7 +74,7 @@ public class Demo {
 
         File rootDir = fileOrDir.isFile() ? fileOrDir.getParentFile() : fileOrDir;
         try {
-            rootPath = rootDir.getCanonicalPath();
+            rootPath = Util.unifyPath(rootDir);
         } catch (Exception e) {
             Util.die("File not found: " + fileOrDir);
         }
@@ -83,7 +83,7 @@ public class Demo {
 
         Util.msg("Building index");
 
-        indexer.loadFileRecursive(fileOrDir.getCanonicalPath());
+        indexer.loadFileRecursive(Util.unifyPath(fileOrDir));
 
         indexer.finish();
 

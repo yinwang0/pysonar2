@@ -227,11 +227,12 @@ public class ProxyParser {
 
         if (type.equals("Attribute")) {
             Node value = deJson(map.get("value"));
-            if (!map.containsKey("attr_name")) {
-                Util.msg("map hasn't attr key: " + map);
+            Name attr;
+            if (map.containsKey("attr_name")) {
+                attr = (Name) deJson(map.get("attr_name"));
+            } else {
+                attr = new Name((String) map.get("attr"));
             }
-
-            Name attr = (Name) deJson(map.get("attr_name"));
             return new Attribute(value, attr, start, end);
         }
 
@@ -584,13 +585,28 @@ public class ProxyParser {
 
     @Nullable
     public Node parseFile(String filename) {
-        return parseFileInner(filename, python2Process);
+        Node n2 = parseFileInner(filename, python2Process);
+        if (n2 != null) {
+            return n2;
+        } else if (python3Process != null) {
+            Node n3 = parseFileInner(filename, python3Process);
+            if (n3 == null) {
+                Util.msg("Python3 failed to parse: " + filename);
+                return null;
+            } else {
+                return n3;
+            }
+        } else {
+            Util.msg("Failed to parse: " + filename);
+            Indexer.idx.failedToParse.add(filename);
+            return null;
+        }
     }
 
 
     @Nullable
     public Node parseFileInner(String filename, @NotNull Process pythonProcess) {
-//        Util.msg("parsing: " + filename);
+        Util.msg("parsing: " + filename);
 //        Util.msg("exchangeFile: " + exchangeFile + ", end: " + endMark);
 
         File exchange = new File(exchangeFile);
@@ -611,7 +627,7 @@ public class ProxyParser {
 
         while (!marker.exists()) {
             try {
-                Thread.sleep(10);
+                Thread.sleep(1);
             } catch (Exception e) {
             }
         }
@@ -620,20 +636,14 @@ public class ProxyParser {
         try {
             json = Util.readFile(exchangeFile);
         } catch (Exception e) {
-            int version = (pythonProcess == python2Process) ? 2 : 3;
-//            Util.msg("\nPython" + version + " failed to parse file: " + filename);
-
-            if (version == 2 && python3Process != null) {
-                exchange.delete();
-                marker.delete();
-                return parseFileInner(filename, python3Process);
-            } else {
-                Indexer.idx.failedToParse.add(filename);
-            }
+            exchange.delete();
+            marker.delete();
+            return null;
         }
 
         exchange.delete();
         marker.delete();
+
 
 //            Util.msg("json: " + json);
         if (json != null) {
@@ -644,10 +654,4 @@ public class ProxyParser {
         }
     }
 
-
-    public static void main(String[] args) throws Exception {
-        String filename = args[0];
-        ProxyParser deserializer = new ProxyParser();
-        Node result = deserializer.parseFile(filename);
-    }
 }

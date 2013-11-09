@@ -360,16 +360,12 @@ public class Util {
 
 
     public static String canonicalize(String filename) {
-        return canonicalize(new File(filename));
+        return unifyPath(new File(filename));
     }
 
 
-    public static String canonicalize(File file) {
-        try {
-            return file.getCanonicalPath();
-        } catch (Exception e) {
-            return file.getAbsolutePath();
-        }
+    public static String unifyPath(File file) {
+        return file.getAbsolutePath();
     }
 
 

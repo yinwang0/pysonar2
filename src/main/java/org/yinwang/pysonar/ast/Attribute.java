@@ -17,12 +17,12 @@ public class Attribute extends Node {
 
     static final long serialVersionUID = -1120979305017812255L;
 
-    @Nullable
+    @NotNull
     public Node target;
-    @Nullable
+    @NotNull
     public Name attr;
 
-    public Attribute(Node target, Name attr, int start, int end) {
+    public Attribute(@NotNull Node target, @NotNull Name attr, int start, int end) {
         super(start, end);
         this.target = target;
         this.attr = attr;
@@ -39,16 +39,13 @@ public class Attribute extends Node {
         this.attr = attr;
     }
 
-    @Nullable
+    @NotNull
     public Name getAttr() {
         return attr;
     }
 
 
     public void setTarget(@NotNull Node target) {
-        if (target == null) {
-            throw new IllegalArgumentException("param cannot be null");
-        }
         this.target = target;
     }
 
@@ -80,9 +77,6 @@ public class Attribute extends Node {
 
     @Override
     public Type resolve(Scope s, int tag) {
-        if (target == null) {
-            Util.msg("target is null!");
-        }
         Type targetType = resolveExpr(target, s, tag);
         if (targetType.isUnionType()) {
             Set<Type> types = targetType.asUnionType().getTypes();
@@ -97,9 +91,6 @@ public class Attribute extends Node {
     }
 
     private Type getAttrType(@NotNull Type targetType) {
-        if (attr == null) {
-            Util.msg("attr is null");
-        }
         Binding b = targetType.getTable().lookupAttr(attr.getId());
         if (b == null) {
             Indexer.idx.putProblem(attr, "attribute not found in type: " + targetType);
@@ -108,19 +99,20 @@ public class Attribute extends Node {
             return t;
         } else {
             Indexer.idx.putLocation(attr, b);
+
             if (b.getType() == null) {
                 Util.msg("b.getType() is null!");
             }
+
             if (getParent() == null) {
                 Util.msg("parent is null!");
             }
-            if (targetType == null) {
-                Util.msg("targetType is null");
-            }
+
             if (getParent() != null && getParent().isCall() &&
                     b.getType().isFuncType() && targetType.isInstanceType()) {  // method call
                 b.getType().asFuncType().setSelfType(targetType);
             }
+
             return b.getType();
         }
     }

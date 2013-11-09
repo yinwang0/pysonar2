@@ -13,15 +13,18 @@ is_python3 = (sys.version_info.major == 3)
 
 class Encoder(JSONEncoder):
     def default(self, o):
-        d = o.__dict__
-        d['ast_type'] = o.__class__.__name__
-        return d
+        if hasattr(o, '__dict__'):
+            d = o.__dict__
+            d['ast_type'] = o.__class__.__name__
+            return d
+        else:
+            return str(o)
 
 
 if is_python3:
     encoder = Encoder()
 else:
-    encoder = Encoder(encoding='utf8')
+    encoder = Encoder(encoding="utf8")
 
 
 def parse(filename):
@@ -42,13 +45,14 @@ def parse_string(lines, filename=None):
 def parse_file(file, output, end_mark):
     try:
         tree = parse(file)
-        f = open(output, "w")
-        f.write(encoder.encode(tree))
-        f.close()
+        f1 = open(output, "w")
+        f1.write(encoder.encode(tree))
+        f1.close()
     finally:
         # write marker file to signal write end
-        f = open(end_mark, "w")
-        f.close()
+        f2 = open(end_mark, "w")
+        f2.write("END")
+        f2.close()
 
 
 def detect_encoding(path):
@@ -342,9 +346,6 @@ def add_missing_names(node, s, idxmap):
             name = str_to_name(s, start, idxmap)
             node.attr_name = name
             node._fields = ('value', 'attr_name')  # remove attr for node size accuracy
-        else:
-            print("start is none", node.value)
-
 
     elif isinstance(node, Compare):
         start = find_node_start(node, s, idxmap)

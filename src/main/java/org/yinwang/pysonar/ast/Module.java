@@ -35,7 +35,7 @@ public class Module extends Node {
 
     public void setFile(@NotNull File path) {
         try {
-            file = path.getCanonicalPath();
+            file = Util.unifyPath(path);
         } catch (Exception e) {
             Util.msg("invalid path: " + path);
         }
