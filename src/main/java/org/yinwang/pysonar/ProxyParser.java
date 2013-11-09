@@ -6,9 +6,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.*;
 
-import java.io.*;
-import java.math.BigInteger;
-import java.security.SecureRandom;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -584,13 +585,11 @@ public class ProxyParser {
         } else if (python3Process != null) {
             Node n3 = parseFileInner(filename, python3Process);
             if (n3 == null) {
-                Util.msg("Python3 failed to parse: " + filename);
                 return null;
             } else {
                 return n3;
             }
         } else {
-//            Util.msg("Failed to parse: " + filename);
             Indexer.idx.failedToParse.add(filename);
             return null;
         }
@@ -618,14 +617,16 @@ public class ProxyParser {
             return null;
         }
 
+
         while (!marker.exists()) {
             try {
                 Thread.sleep(1);
             } catch (Exception e) {
+                break;
             }
         }
 
-        String json = null;
+        String json;
         try {
             json = Util.readFile(exchangeFile);
         } catch (Exception e) {

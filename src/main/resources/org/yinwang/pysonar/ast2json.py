@@ -24,11 +24,11 @@ class Encoder(JSONEncoder):
 if is_python3:
     encoder = Encoder()
 else:
-    encoder = Encoder(encoding="utf8")
+    encoder = Encoder(encoding="latin1")
 
 
 def parse(filename):
-    f = codecs.open(filename, encoding="utf8")
+    f = open(filename)
     lines = f.read()
     f.close()
     return parse_string(lines, filename)
