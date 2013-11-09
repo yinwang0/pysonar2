@@ -576,13 +576,6 @@ public class ProxyParser {
     }
 
 
-    @NotNull
-    private SecureRandom random = new SecureRandom();
-
-
-
-
-
     @Nullable
     public Node parseFile(String filename) {
         Node n2 = parseFileInner(filename, python2Process);
@@ -597,7 +590,7 @@ public class ProxyParser {
                 return n3;
             }
         } else {
-            Util.msg("Failed to parse: " + filename);
+//            Util.msg("Failed to parse: " + filename);
             Indexer.idx.failedToParse.add(filename);
             return null;
         }
