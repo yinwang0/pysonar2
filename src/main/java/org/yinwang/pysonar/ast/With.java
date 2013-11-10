@@ -5,42 +5,50 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
+import java.util.List;
+
 public class With extends Node {
 
     static final long serialVersionUID = 560128079414064421L;
 
-    public Node optional_vars;
-    public Node context_expr;
+    @NotNull
+    public List<Withitem> items;
     public Block body;
 
 
-    public With(Node optional_vars, Node context_expr, Block body, int start, int end) {
+    public With(@NotNull List<Withitem> items, Block body, int start, int end) {
         super(start, end);
-        this.optional_vars = optional_vars;
-        this.context_expr = context_expr;
+        this.items = items;
         this.body = body;
-        addChildren(optional_vars, context_expr, body);
+        addChildren(items);
+        addChildren(body);
     }
 
     @Nullable
     @Override
     public Type resolve(@NotNull Scope s, int tag) {
-        Type val = resolveExpr(context_expr, s, tag);
-        NameBinder.bind(s, optional_vars, val, tag);
+        for (Withitem item : items) {
+            Type val = resolveExpr(item.context_expr, s, tag);
+            if (item.optional_vars != null) {
+                NameBinder.bind(s, item.optional_vars, val, tag);
+            }
+        }
         return resolveExpr(body, s, tag);
     }
 
     @NotNull
     @Override
     public String toString() {
-        return "<With:" + context_expr + ":" + optional_vars + ":" + body + ">";
+        return "<With:" + items + ":" + body + ">";
     }
 
     @Override
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
-            visitNode(optional_vars, v);
-            visitNode(context_expr, v);
+            for (Withitem item : items) {
+                visitNode(item, v);
+            }
+
             visitNode(body, v);
         }
     }

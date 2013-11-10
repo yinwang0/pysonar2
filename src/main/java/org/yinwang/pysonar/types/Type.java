@@ -27,7 +27,7 @@ public abstract class Type {
         this.table = table;
     }
 
-    @Nullable
+    @NotNull
     public Scope getTable() {
         if (table == null) {
             table = new Scope(null, Scope.ScopeType.SCOPE);

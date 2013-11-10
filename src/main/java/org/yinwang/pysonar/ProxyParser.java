@@ -534,10 +534,30 @@ public class ProxyParser {
         }
 
         if (type.equals("With")) {
-            Node optional_vars = deJson(map.get("optional_vars"));
+            List<Withitem> items = new ArrayList<>();
+
             Node context_expr = deJson(map.get("context_expr"));
+            Node optional_vars = deJson(map.get("optional_vars"));
             Block body = convertBlock(map.get("body"));
-            return new With(optional_vars, context_expr, body, start, end);
+
+            // Python 3 puts context_expr and optional_vars inside "items"
+            // only handle one of them at this moment and
+            // think of a good way to reconsile the two versions
+            if (context_expr != null) {
+                Withitem item = new Withitem(context_expr, optional_vars, -1, -1);
+                items.add(item);
+            } else {
+                List<Map<String, Object>> itemsMap = (List<Map<String, Object>>) map.get("items");
+
+                for (Map<String, Object> m : itemsMap) {
+                    context_expr = deJson(m.get("context_expr"));
+                    optional_vars = deJson(m.get("optional_vars"));
+                    Withitem item = new Withitem(context_expr, optional_vars, -1, -1);
+                    items.add(item);
+                }
+            }
+
+            return new With(items, body, start, end);
         }
 
         if (type.equals("Yield")) {

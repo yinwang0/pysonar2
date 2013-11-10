@@ -90,7 +90,7 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
-    @Nullable
+    @NotNull
     public static Type resolveExpr(@NotNull Node n, Scope s, int tag) {
         Type result = n.resolve(s, tag);
         if (result == null) {

@@ -32,7 +32,10 @@ public class AstCache {
     private AstCache() {
         File f = new File(CACHE_DIR);
         if (!f.exists()) {
-            f.mkdirs();
+            if (!f.mkdirs()) {
+                Util.die("Failed to create tmp directory: " + CACHE_DIR +
+                         ".Please check permissions");
+            }
         }
     }
 

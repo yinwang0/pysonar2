@@ -66,6 +66,7 @@ public interface NodeVisitor {
     public boolean visit(Url m);
     public boolean visit(While m);
     public boolean visit(With m);
+    public boolean visit(Withitem m);
     public boolean visit(Yield m);
 	public boolean visit(Set s);
 }

@@ -239,6 +239,10 @@ public class DefaultNodeVisitor implements NodeVisitor {
         return traverseIntoNodes;
     }
 
+    public boolean visit(Withitem n) {
+        return traverseIntoNodes;
+    }
+
     public boolean visit(Yield n) {
         return traverseIntoNodes;
     }
