@@ -21,71 +21,32 @@ import java.util.logging.Logger;
  */
 public class Indexer {
 
-    /**
-     * The global indexer instance.  Provides convenient access to global
-     * resources, as well as easy cleanup of resources after the index is built.
-     */
     public static Indexer idx;
 
-    /**
-     * A scope containing bindings for all modules currently loaded by the indexer.
-     */
     @NotNull
     public Scope moduleTable = new Scope(null, Scope.ScopeType.GLOBAL);
-
-    /**
-     * The top-level (builtin) scope.
-     */
     @NotNull
     public Scope globaltable = new Scope(null, Scope.ScopeType.GLOBAL);
-
-    /**
-     * A map of all bindings created, keyed on their qnames.
-     */
     @NotNull
-    public Map<String, List<Binding>> allBindings = new HashMap<String, List<Binding>>();
-
-    /**
-     * A map of references to their referenced bindings.  Most nodes will refer
-     * to a single binding, and few ever refer to more than two.  One situation
-     * in which a multiple reference can occur is the an attribute of a union
-     * type.  For instance:
-     *
-     * <pre>
-     *   class A:
-     *     def foo(self): pass
-     *   class B:
-     *     def foo(self): pass
-     *   if some_condition:
-     *     var = A()
-     *   else
-     *     var = B()
-     *   var.foo()  # foo here refers to both A.foo and B.foo
-     * <pre>
-     */
+    public Map<String, List<Binding>> allBindings = new HashMap<>();
     @NotNull
-    private Map<Ref, List<Binding>> references = new HashMap<Ref, List<Binding>>();
-
-    /**
-     * Diagnostics: map from file names to Diagnostics
-     */
+    private Map<Ref, List<Binding>> references = new HashMap<>();
     @NotNull
-    public Map<String, List<Diagnostic>> semanticErrors = new HashMap<String, List<Diagnostic>>();
+    public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
     @NotNull
-    public Map<String, List<Diagnostic>> parseErrors = new HashMap<String, List<Diagnostic>>();
-
+    public Map<String, List<Diagnostic>> parseErrors = new HashMap<>();
     @Nullable
     public String cwd = null;
     public int nCalled = 0;
-
     @NotNull
-    public List<String> path = new ArrayList<String>();
+    public List<String> path = new ArrayList<>();
     @NotNull
-    private Set<FunType> uncalled = new HashSet<FunType>();
+    private Set<FunType> uncalled = new HashSet<>();
     @NotNull
-    private Set<Object> callStack = new HashSet<Object>();
+    private Set<Object> callStack = new HashSet<>();
     @NotNull
     private Set<Object> importStack = new HashSet<>();
+
 
     private int threadCounter = 0;
     public int newThread() {
@@ -93,21 +54,13 @@ public class Indexer {
         return threadCounter;
     }
 
-    /**
-     * Manages a store of serialized ASTs. Parsing is one of the slower and
-     * more expensive phases of indexing; reusing parse trees can help with resource
-     * utilization when indexing several projects (or re-indexing one project).
-     */
     private AstCache astCache;
+    public String cacheDir;
 
-    /**
-     * When resolving imports we look in various possible locations.
-     * This set keeps track of modules we attempted but didn't find.
-     */
     @NotNull
-    public Set<String> failedModules = new HashSet<String>();
+    public Set<String> failedModules = new HashSet<>();
     @NotNull
-    public Set<String> failedToParse = new HashSet<String>();
+    public Set<String> failedToParse = new HashSet<>();
 
     /**
      * Manages the built-in modules -- that is, modules from the standard Python
@@ -127,12 +80,14 @@ public class Indexer {
         builtins = new Builtins();
         builtins.init();
         addPythonPath();
+        createCacheDir();
+        cacheDir = Util.makePathString(Util.getSystemTempDir(),  "pysonar2", "ast_cache");
     }
 
 
     public void setCWD(String cd) {
         if (cd != null) {
-            cwd = Util.canonicalize(cd);
+            cwd = Util.unifyPath(cd);
         }
     }
 
@@ -145,7 +100,7 @@ public class Indexer {
 
 
     public void addPath(String p) {
-        path.add(Util.canonicalize(p));
+        path.add(Util.unifyPath(p));
     }
 
 
@@ -391,7 +346,7 @@ public class Indexer {
     public ModuleType loadFile(String path) {
 //        Util.msg("loading: " + path);
 
-        File f = new File(Util.canonicalize(path));
+        File f = new File(Util.unifyPath(path));
 
         if (!f.canRead()) {
             finer("\nfile not not found or cannot be read: " + path);
@@ -478,6 +433,18 @@ public class Indexer {
             return null;
         }
     }
+
+
+    private void createCacheDir() {
+        File f = new File(cacheDir);
+        if (!f.exists()) {
+            if (!f.mkdirs()) {
+                Util.die("Failed to create tmp directory: " + cacheDir +
+                        ".Please check permissions");
+            }
+        }
+    }
+
 
     private AstCache getAstCache() {
         if (astCache == null) {

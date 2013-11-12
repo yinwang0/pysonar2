@@ -14,6 +14,7 @@ public class Def {
     // Being frugal with fields here is good for memory usage.
     private int start = -1;
     private int end = -1;
+    @NotNull
     private Binding binding;
     @Nullable
     private String fileOrUrl;
@@ -21,13 +22,10 @@ public class Def {
     private String name;
     private Node node;
 
-    public Def(Node node) {
-        this(node, null);
-    }
 
-    public Def(Node node, Binding b) {
+    public Def(Node node, @NotNull Binding binding) {
         this.node = node;
-        binding = b;
+        this.binding = binding;
 
         if (node instanceof Url) {
             String url = ((Url) node).getURL();
@@ -112,6 +110,7 @@ public class Def {
         binding = b;
     }
 
+    @Nullable
     public Binding getBinding() {
         return binding;
     }

@@ -1321,8 +1321,8 @@ public class Builtins {
         public void initBindings() {
             ModuleType builtins = get("__builtin__");
             for (String s : builtin_exception_types) {
-                Binding b = builtins.getTable().lookup(s);
-                table.update(b.getName(), b.getFirstNode(), b.getType(), b.getKind());
+//                Binding b = builtins.getTable().lookup(s);
+//                table.update(b.getName(), b.getFirstNode(), b.getType(), b.getKind());
             }
         }
     }

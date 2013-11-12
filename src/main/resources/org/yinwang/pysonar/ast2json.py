@@ -45,14 +45,18 @@ def parse_string(lines, filename=None):
 def parse_file(file, output, end_mark):
     try:
         tree = parse(file)
-        f1 = open(output, "w")
-        f1.write(encoder.encode(tree))
-        f1.close()
+        encoded = encoder.encode(tree)
+        f = open(output, "w")
+        f.write(encoded)
+        f.close()
     finally:
         # write marker file to signal write end
-        f2 = open(end_mark, "w")
-        f2.write("END")
-        f2.close()
+        f = open(end_mark, "w")
+        f.close()
+
+
+def p(file):
+    parse_file(file, "t1", "t2")
 
 
 def detect_encoding(path):

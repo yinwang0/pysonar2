@@ -200,7 +200,7 @@ public class ProxyParser {
             Block b = convertBlock(map.get("body"));
             Module m = new Module(b, -1, -1);
             try {
-                m.setFile((String) map.get("filename"));
+                m.setFile(Util.unifyPath((String) map.get("filename")));
             } catch (Exception e) {
 
             }
@@ -541,8 +541,6 @@ public class ProxyParser {
             Block body = convertBlock(map.get("body"));
 
             // Python 3 puts context_expr and optional_vars inside "items"
-            // only handle one of them at this moment and
-            // think of a good way to reconsile the two versions
             if (context_expr != null) {
                 Withitem item = new Withitem(context_expr, optional_vars, -1, -1);
                 items.add(item);
@@ -619,7 +617,6 @@ public class ProxyParser {
     @Nullable
     public Node parseFileInner(String filename, @NotNull Process pythonProcess) {
 //        Util.msg("parsing: " + filename);
-//        Util.msg("exchangeFile: " + exchangeFile + ", end: " + endMark);
 
         File exchange = new File(exchangeFile);
         File marker = new File(endMark);

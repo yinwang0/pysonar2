@@ -57,8 +57,8 @@ public class Binding implements Comparable<Object> {
 
     @Nullable
     private String name;    // unqualified name
-    @Nullable
-    private String qname;   // qualified name
+    @NotNull
+    private String qname = "";   // qualified name
     private Type type;     // inferred type
     public Kind kind;      // name usage context
     public int tag;        // control-flow tag
@@ -71,18 +71,12 @@ public class Binding implements Comparable<Object> {
         this(id, node, type, kind);
         this.tag = tag;
     }
-    
-    public Binding(String id, @Nullable Node node, Type type, Kind kind) {
-        this(id, node != null ? new Def(node) : null, type, kind);
-    }
 
-    public Binding(@Nullable String id, Def def, @Nullable Type type, @Nullable Kind kind) {
-        if (id == null) {
-            throw new IllegalArgumentException("'id' param cannot be null");
-        }
+
+    public Binding(@NotNull String id, Node node, @Nullable Type type, @Nullable Kind kind) {
         qname = name = id;
-        defs = new HashSet<Def>(DEF_SET_INITIAL_CAPACITY);
-        addDef(def);
+        defs = new HashSet<>(DEF_SET_INITIAL_CAPACITY);
+        addDef(node);
         this.type = type == null ? Indexer.idx.builtins.unknown : type;
         this.kind = kind == null ? Kind.SCOPE : kind;
     }
@@ -106,7 +100,7 @@ public class Binding implements Comparable<Object> {
     /**
      * Returns the qualified name.
      */
-    @Nullable
+    @NotNull
     public String getQname() {
         return qname;
     }
@@ -118,19 +112,10 @@ public class Binding implements Comparable<Object> {
      */
     public void addDef(@Nullable Node node) {
         if (node != null) {
-            addDef(new Def(node));
-        }
-    }
+            Def def = new Def(node, this);
+            def.setBinding(this);
 
-    /**
-     * Adds {@code def} as a definition for this binding.  This is called
-     * automatically (when appropriate) by adding the binding to a
-     * {@link Scope}.  If {@code node} is an {@link org.yinwang.pysonar.ast.Url}, and this is the
-     * binding's only definition, it will be marked as a builtin.
-     */
-    public void addDef(@NotNull Def def) {
-        Set<Def> defs = getDefs();
-        if (!defs.contains(def)) {
+            Set<Def> defs = getDefs();
             defs.add(def);
             if (def.isURL()) {
                 markBuiltin();

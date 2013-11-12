@@ -200,15 +200,6 @@ public class Scope {
         }
     }
 
-    /**
-     * Adds a new binding for {@code id}.  If a binding already existed,
-     * replaces its previous definitions, if any, with {@code loc}.  Sets the
-     * binding's type to {@code type} (not a union with the previous type).
-     */
-    @Nullable
-    public Binding update(String id, Node loc,Type type, Binding.Kind kind) {
-        return update(id, new Def(loc), type, kind);
-    }
 
     /**
      * Adds a new binding for {@code id}.  If a binding already existed,
@@ -216,23 +207,19 @@ public class Scope {
      * binding's type to {@code type} (not a union with the previous type).
      */
     @Nullable
-    public Binding update(String id, Def loc,  Type type, Binding.Kind kind) {
+    public Binding update(String id, Node node, Type type, Binding.Kind kind) {
         Binding b = lookupScope(id);
         if (b == null) {
-            return insertBinding(id, new Binding(id, loc, type, kind));
-        }
-
-        b.getDefs().clear();  // XXX:  what about updating refs & idx.locations?
-        b.addDef(loc);
-        b.setType(type);
-
-        // XXX: is this a bug?  I think he meant to do this check before the
-        // line above that sets b.type, if it's supposed to be like put().
-        if (b.getType().isUnknownType()) {
+            return insertBinding(id, new Binding(id, node, type, kind));
+        } else {
+            b.getDefs().clear();
+            b.addDef(node);
+            b.setType(type);
             b.setKind(kind);
+            return b;
         }
-        return b;
     }
+
 
     /**
      * Create a copy of the symbol table but without the links to parent, supers

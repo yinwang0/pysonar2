@@ -16,8 +16,6 @@ import java.util.logging.Logger;
  */
 public class AstCache {
 
-    public static final String CACHE_DIR =
-            Util.makePathString(Util.getSystemTempDir(),  "pysonar2", "ast_cache");
 
     private static final Logger LOG = Logger.getLogger(AstCache.class.getCanonicalName());
 
@@ -30,13 +28,6 @@ public class AstCache {
     private static ProxyParser parser = new ProxyParser();
 
     private AstCache() {
-        File f = new File(CACHE_DIR);
-        if (!f.exists()) {
-            if (!f.mkdirs()) {
-                Util.die("Failed to create tmp directory: " + CACHE_DIR +
-                         ".Please check permissions");
-            }
-        }
     }
 
     public static AstCache get() {
@@ -60,7 +51,7 @@ public class AstCache {
      */
     public boolean clearDiskCache() {
         try {
-            Util.deleteDirectory(new File(CACHE_DIR));
+            Util.deleteDirectory(new File(Indexer.idx.cacheDir));
             return true;
         } catch (Exception x) {
             severe("Failed to clear disk cache: " + x);
@@ -181,7 +172,7 @@ public class AstCache {
 
     @NotNull
     public String getCachePath(String md5, String name) {
-        return Util.makePathString(CACHE_DIR, name + md5 + ".ast");
+        return Util.makePathString(Indexer.idx.cacheDir, name + md5 + ".ast");
     }
 
     // package-private for testing

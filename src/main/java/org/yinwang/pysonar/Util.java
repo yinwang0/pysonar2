@@ -355,11 +355,11 @@ public class Util {
     }
 
     public static String makePathString(String... files) {
-        return canonicalize(makePath(files).getPath());
+        return unifyPath(makePath(files).getPath());
     }
 
 
-    public static String canonicalize(String filename) {
+    public static String unifyPath(String filename) {
         return unifyPath(new File(filename));
     }
 
@@ -370,8 +370,8 @@ public class Util {
 
 
     public static String relativize(String path1, String path2) {
-        String a = canonicalize(path1);
-        String b = canonicalize(path2);
+        String a = unifyPath(path1);
+        String b = unifyPath(path2);
 
         String[] as = a.split("[/\\\\]");
         String[] bs = b.split("[/\\\\]");
