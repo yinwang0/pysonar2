@@ -33,11 +33,11 @@ public class Scope {
     private Set<String> globalNames;
     private ScopeType scopeType;
     private Type type;
-    @Nullable
+    @NotNull
     private String path = "";
 
 
-    public Scope(Scope parent, ScopeType type) {
+    public Scope(@Nullable Scope parent, ScopeType type) {
         this.parent = parent;
         this.scopeType = type;
 
@@ -51,7 +51,7 @@ public class Scope {
 
     public Scope(@NotNull Scope s) {
         if (s.table != null) {
-            this.table = new HashMap<String, Binding>(s.table);
+            this.table = new HashMap<>(s.table);
         }
         this.parent = s.parent;
         this.scopeType = s.scopeType;
@@ -63,7 +63,7 @@ public class Scope {
     }
 
 
-    public void setParent(Scope parent) {
+    public void setParent(@Nullable Scope parent) {
         this.parent = parent;
     }
 
@@ -104,7 +104,7 @@ public class Scope {
             throw new IllegalArgumentException("name shouldn't be null");
         }
         if (globalNames == null) {
-            globalNames = new HashSet<String>();
+            globalNames = new HashSet<>();
         }
         globalNames.add(name);
     }
@@ -123,18 +123,6 @@ public class Scope {
         }
     }
 
-    /**
-     * Directly assigns a binding to a name in this table.  Does not add a new
-     * definition or reference to the binding.  This form of {@code put} is
-     * often followed by a call to {@link putLocation} to create a reference to
-     * the binding.  When there is no code location associated with {@code id},
-     * or it is otherwise undesirable to create a reference, the
-     * {@link putLocation} call is omitted.
-     */
-    public void put(String id, @NotNull Binding b) {
-        getInternalTable().put(id, b);
-    }
-
 
     @Nullable
     public Binding put(String id, Node loc, @NotNull Type type, Binding.Kind kind, int tag) {
@@ -145,52 +133,8 @@ public class Scope {
 
     @Nullable
     public Binding putAttr(String id, Node loc, @NotNull Type type, Binding.Kind kind, int tag) {
-        // Attributes are always part of a qualified name.  If there is no qname
-        // on the target type, it's a bug (we forgot to set the path somewhere.)
-        if ("".equals(path)) {
-            return null;
-        } else {
-            Binding b = lookupAttr(id);
-            return insertOrUpdate(b, id, loc, type, kind, tag);
-        }
-    }
-
-
-    /**
-     * If no bindings are found, or it is rebinding in the same thread of
-     * control to a new type, then create a new binding and rewrite/shadow the
-     * old one. Otherwise, use the exisitng binding and update the type.
-     */
-    @Nullable
-    private Binding insertOrUpdate(@Nullable Binding b, String id, Node loc, @NotNull Type t, Binding.Kind k, int tag) {
-        if (b == null) {
-            b = insertBinding(id, new Binding(id, loc, t, k, tag));
-        } else if (tag == b.tag && !b.getType().equals(t)) {
-            b = insertBinding(id, new Binding(id, loc, t, k, tag));
-        } else {
-            b.addDef(loc);
-            b.setType(UnionType.union(t, b.getType()));
-        }
-        return b;
-    }
-
-
-    @NotNull
-    private Binding insertBinding(String id, @NotNull Binding b) {
-        switch (b.getKind()) {
-            case MODULE:
-                b.setQname(b.getType().getTable().getPath());
-                break;
-            case PARAMETER:
-                b.setQname(extendPathForParam(b.getName()));
-                break;
-            default:
-                b.setQname(extendPath(b.getName()));
-                break;
-        }
-        Indexer.idx.putBinding(b);
-        put(id, b);
-        return b;
+        Binding b = lookupAttr(id);
+        return insertOrUpdate(b, id, loc, type, kind, tag);
     }
 
 
@@ -201,23 +145,44 @@ public class Scope {
     }
 
 
-    /**
-     * Adds a new binding for {@code id}.  If a binding already existed,
-     * replaces its previous definitions, if any, with {@code loc}.  Sets the
-     * binding's type to {@code type} (not a union with the previous type).
-     */
-    @Nullable
-    public Binding update(String id, Node node, Type type, Binding.Kind kind) {
-        Binding b = lookupScope(id);
+    @NotNull
+    private Binding insertOrUpdate(@Nullable Binding b, String id, Node loc,
+                                   @NotNull Type t, Binding.Kind k, int tag) {
         if (b == null) {
-            return insertBinding(id, new Binding(id, node, type, kind));
+            b = update(id, new Binding(id, loc, t, k, tag));
+        } else if (tag == b.tag && !b.getType().equals(t)) {
+            b = update(id, new Binding(id, loc, t, k, tag));
         } else {
-            b.getDefs().clear();
-            b.addDef(node);
-            b.setType(type);
-            b.setKind(kind);
-            return b;
+            b.addDef(loc);
+            b.setType(UnionType.union(t, b.getType()));
         }
+        return b;
+    }
+
+
+    @NotNull
+    public Binding update(String id, Node node, Type type, Binding.Kind kind) {
+        return update(id, new Binding(id, node, type, kind));
+    }
+
+
+    @NotNull
+    public Binding update(String id, @NotNull Binding b) {
+        switch (b.getKind()) {
+            case MODULE:
+                b.setQname(b.getType().getTable().getPath());
+                break;
+            default:
+                b.setQname(extendPath(b.getName()));
+                break;
+        }
+
+        if (!getInternalTable().containsKey(id)) {
+            Indexer.idx.recordBinding(b);
+            getInternalTable().put(id, b);
+        }
+
+        return b;
     }
 
 
@@ -243,7 +208,7 @@ public class Scope {
         this.path = path;
     }
 
-    @Nullable
+    @NotNull
     public String getPath() {
         return path;
     }
@@ -290,6 +255,22 @@ public class Scope {
         }
     }
 
+
+    /**
+     * Look up a name in the module if it is declared as global, otherwise look
+     * it up locally.
+     */
+    @Nullable
+    public Binding lookupScope(String name) {
+        Binding b = getModuleBindingIfGlobal(name);
+        if (b != null) {
+            return b;
+        } else {
+            return lookupLocal(name);
+        }
+    }
+
+
     /**
      * Look up an attribute in the type hierarchy.  Don't look at parent link,
      * because the enclosing scope may not be a super class. The search is
@@ -297,8 +278,8 @@ public class Scope {
      * rule. The new MRO can be implemented, but will probably not introduce
      * much difference.
      */
-    @Nullable
-    private static Set<Scope> looked = new HashSet<Scope>();    // circularity prevention
+    @NotNull
+    private static Set<Scope> looked = new HashSet<>();    // circularity prevention
 
     @Nullable
     public Binding lookupAttr(String attr) {
@@ -353,19 +334,6 @@ public class Scope {
         }
     }
 
-    /**
-     * Look up a name in the module if it is declared as global, otherwise look
-     * it up locally.
-     */
-    @Nullable
-    public Binding lookupScope(String name) {
-        Binding b = getModuleBindingIfGlobal(name);
-        if (b != null) {
-            return b;
-        } else {
-            return lookupLocal(name);
-        }
-    }
 
     /**
      * Find a symbol table of a certain type in the enclosing scopes.
@@ -384,13 +352,15 @@ public class Scope {
     /**
      * Returns the global scope (i.e. the module scope for the current module).
      */
-    @Nullable
+    @NotNull
     public Scope getGlobalTable() {
         Scope result = getSymtabOfType(ScopeType.MODULE);
-        if (result == null) {
-            result = this;
+        if (result != null) {
+            return result;
+        } else {
+            Util.die("Couldn't find global table. Shouldn't happen");
+            return this;
         }
-        return result;
     }
 
     /**
@@ -400,19 +370,18 @@ public class Scope {
     private Binding getModuleBindingIfGlobal(String name) {
         if (isGlobalName(name)) {
             Scope module = getGlobalTable();
-            if (module != null && module != this) {
+            if (module != this) {
                 return module.lookupLocal(name);
             }
         }
         return null;
     }
 
-    /**
-     * Merge all records from another symbol table. Used by {@code import from *}.
-     */
-    public void merge(@NotNull Scope other) {
-        getInternalTable().putAll(other.table);
+
+    public void putAll(@NotNull Scope other) {
+        getInternalTable().putAll(other.getInternalTable());
     }
+
 
     @NotNull
     public Set<String> keySet() {
@@ -423,36 +392,26 @@ public class Scope {
         }
     }
 
+
     @NotNull
     public Collection<Binding> values() {
         if (table != null) {
             return table.values();
         }
-        Collection<Binding> result = Collections.emptySet();
-        return result;
+        return Collections.emptySet();
     }
+
 
     @NotNull
     public Set<Entry<String, Binding>> entrySet() {
         if (table != null) {
             return table.entrySet();
         }
-        Set<Entry<String, Binding>> result = Collections.emptySet();
-        return result;
+        return Collections.emptySet();
     }
 
     public boolean isEmpty() {
-        return table == null ? true : table.isEmpty();
-    }
-
-
-    @NotNull
-    public String extendPathForParam(String name) {
-        assert(!path.isEmpty());
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(path).append("@").append(name);
-        return sb.toString();
+        return table == null || table.isEmpty();
     }
 
 
@@ -461,9 +420,11 @@ public class Scope {
         if (name.endsWith(".py")) {
             name = Util.moduleNameFor(name);
         }
+
         if (path.equals("")) {
             return name;
         }
+
         String sep;
         switch (scopeType) {
             case MODULE:
@@ -473,20 +434,21 @@ public class Scope {
                 sep = ".";
                 break;
             case FUNCTION:
-                sep = "&";
+                sep = "@";
                 break;
             default:
-                System.err.println("unsupported context for extendPath: " + scopeType);
+                Util.msg("unsupported context for extendPath: " + scopeType);
                 return path;
         }
+
         return path + sep + name;
     }
 
 
-    @Nullable
+    @NotNull
     private Map<String, Binding> getInternalTable() {
         if (this.table == null) {
-            this.table = new HashMap<String, Binding>();
+            this.table = new HashMap<>();
         }
         return this.table;
     }
@@ -499,9 +461,4 @@ public class Scope {
                 (table == null ? "{}" : table.keySet()) + ">";
     }
 
-
-    @NotNull
-    public String toShortString() {
-        return "<Scope:" + getScopeType() + ":" + path + ">";
-    }
 }

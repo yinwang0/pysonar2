@@ -6,7 +6,6 @@ import org.yinwang.pysonar.ast.*;
 import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
-import org.yinwang.pysonar.types.UnionType;
 
 import java.io.File;
 import java.util.*;
@@ -28,7 +27,7 @@ public class Indexer {
     @NotNull
     public Scope globaltable = new Scope(null, Scope.ScopeType.GLOBAL);
     @NotNull
-    public Map<String, List<Binding>> allBindings = new HashMap<>();
+    public List<Binding> bindings = new ArrayList<>();
     @NotNull
     private Map<Ref, List<Binding>> references = new HashMap<>();
     @NotNull
@@ -104,7 +103,7 @@ public class Indexer {
 
 
     public void setPath(@NotNull List<String> path) {
-        this.path = new ArrayList<String>(path.size());
+        this.path = new ArrayList<>(path.size());
         addPaths(path);
     }
 
@@ -125,7 +124,7 @@ public class Indexer {
      */
     @NotNull
     public List<String> getLoadPath() {
-        List<String> loadPath = new ArrayList<String>();
+        List<String> loadPath = new ArrayList<>();
         if (cwd != null) {
             loadPath.add(cwd);
         }
@@ -161,19 +160,8 @@ public class Indexer {
      * Returns the mutable set of all bindings collected, keyed on their qnames.
      */
     @NotNull
-    public Map<String, List<Binding>> getBindings() {
-        return allBindings;
-    }
-
-    public void addBinding(String qname, Binding b) {
-        List<Binding> lb = allBindings.get(qname);
-        if (lb == null) {
-            lb = new ArrayList<Binding>();
-            lb.add(b);
-            allBindings.put(qname, lb);
-        } else {
-            lb.add(b);
-        }
+    public List<Binding> getBindings() {
+        return bindings;
     }
 
 
@@ -221,7 +209,7 @@ public class Indexer {
         if (errs != null) {
             return errs;
         }
-        return new ArrayList<Diagnostic>();
+        return new ArrayList<>();
     }
 
 
@@ -241,7 +229,7 @@ public class Indexer {
             // Empirically using a capacity-1 ArrayList for the binding set
             // uses about 1/2 the memory of a LinkedList, and 1/4 the memory
             // of a default HashSet.
-            bindings = new ArrayList<Binding>(1);
+            bindings = new ArrayList<>(1);
             references.put(ref, bindings);
         }
         if (!bindings.contains(b)) {
@@ -256,38 +244,8 @@ public class Indexer {
     }
 
 
-    /*
-     * Multiple bindings can exist for the same qname, but they should appear at
-     * different locations. Otherwise they are considered the same by the equals
-     * method of NBinding and their types will be the union of all types that
-     * appear at the same location.
-     */
-    @NotNull
-    public Binding putBinding(@NotNull Binding b) {
-        String qname = b.getQname();
-        Binding existing = findBinding(b);
-
-        if (existing == null) {
-            addBinding(qname, b);
-            return b;
-        } else {
-            existing.setType(UnionType.union(existing.getType(), b.getType()));
-            return existing;
-        }
-    }
-
-
-    @Nullable
-    private Binding findBinding(@NotNull Binding b) {
-        List<Binding> existing = allBindings.get(b.getQname());
-        if (existing != null) {
-            for (Binding eb : existing) {
-                if (eb.equals(b)) {
-                    return eb;
-                }
-            }
-        }
-        return null;
+    public void recordBinding(@NotNull Binding b) {
+        bindings.add(b);
     }
 
 
@@ -318,7 +276,7 @@ public class Indexer {
     List<Diagnostic> getFileErrs(String file, @NotNull Map<String, List<Diagnostic>> map) {
         List<Diagnostic> msgs = map.get(file);
         if (msgs == null) {
-            msgs = new ArrayList<Diagnostic>();
+            msgs = new ArrayList<>();
             map.put(file, msgs);
         }
         return msgs;
@@ -606,15 +564,13 @@ public class Indexer {
         applyUncalled();
 
         // mark unused variables
-        for (List<Binding> lb : allBindings.values()) {
-            for (Binding b: lb) {
-                if (!b.getType().isClassType() &&
-                        !b.getType().isFuncType() &&
-                        !b.getType().isModuleType()
-                        && b.getRefs().isEmpty()) {
-                    for (Def def : b.getDefs()) {
-                        Indexer.idx.putProblem(def.getNode(), "Unused variable: " + def.getName());
-                    }
+        for (Binding b : bindings) {
+            if (!b.getType().isClassType() &&
+                    !b.getType().isFuncType() &&
+                    !b.getType().isModuleType()
+                    && b.getRefs().isEmpty()) {
+                for (Def def : b.getDefs()) {
+                    Indexer.idx.putProblem(def.getNode(), "Unused variable: " + def.getName());
                 }
             }
         }

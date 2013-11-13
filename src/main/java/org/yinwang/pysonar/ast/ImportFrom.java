@@ -58,7 +58,7 @@ public class ImportFrom extends Node {
                 } else {
                     Binding b = mod.getTable().lookup(a.name.get(0).id);
                     if (b != null) {
-                        s.put(a.name.get(0).id, b);
+                        s.update(a.name.get(0).id, b);
                     }
                 }
             }
@@ -100,19 +100,21 @@ public class ImportFrom extends Node {
             for (String name : names) {
                 Binding nb = mt.getTable().lookupLocal(name);
                 if (nb != null) {
-                    s.put(name, nb);
+                    s.update(name, nb);
                 } else {
-                    List<Name> m2 = new ArrayList<Name>(module);
+                    List<Name> m2 = new ArrayList<>(module);
                     m2.add(new Name(name));
                     ModuleType mod2 = Indexer.idx.loadModule(m2, s, tag);
-                    s.put(name, null, mod2, Binding.Kind.MODULE, tag);
+                    if (mod2 != null) {
+                        s.put(name, null, mod2, Binding.Kind.MODULE, tag);
+                    }
                 }
             }
         } else {
             // Fall back to importing all names not starting with "_".
             for (Entry<String, Binding> e : mt.getTable().entrySet()) {
                 if (!e.getKey().startsWith("_")) {
-                    s.put(e.getKey(), e.getValue());
+                    s.update(e.getKey(), e.getValue());
                 }
             }
         }

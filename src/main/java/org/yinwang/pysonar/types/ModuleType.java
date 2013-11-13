@@ -70,7 +70,7 @@ public class ModuleType extends Type {
         if (other instanceof ModuleType) {
             ModuleType co = (ModuleType) other;
             if (file != null) {
-                return file.equals(file);
+                return file.equals(co.file);
             }
         }
         return this == other;

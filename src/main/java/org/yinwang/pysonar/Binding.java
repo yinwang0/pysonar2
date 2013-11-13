@@ -55,10 +55,10 @@ public class Binding implements Comparable<Object> {
     private boolean isDeprecated = false;     // documented as deprecated
     private boolean isBuiltin = false;        // not from a source file
 
-    @Nullable
+    @NotNull
     private String name;    // unqualified name
     @NotNull
-    private String qname = "";   // qualified name
+    private String qname;   // qualified name
     private Type type;     // inferred type
     public Kind kind;      // name usage context
     public int tag;        // control-flow tag
@@ -67,7 +67,7 @@ public class Binding implements Comparable<Object> {
     private Set<Ref> refs;
 
     
-    public Binding(String id, Node node, Type type, Kind kind, int tag) {
+    public Binding(@NotNull String id, Node node, Type type, Kind kind, int tag) {
         this(id, node, type, kind);
         this.tag = tag;
     }
@@ -84,7 +84,7 @@ public class Binding implements Comparable<Object> {
     /**
      * Returns the unqualified name.
      */
-    @Nullable
+    @NotNull
     public String getName() {
         return name;
     }

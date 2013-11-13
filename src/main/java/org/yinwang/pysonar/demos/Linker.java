@@ -41,14 +41,13 @@ class Linker {
      */
     public void findLinks(@NotNull Indexer indexer) {
         // backlinks
-        for (List<Binding> bindings : indexer.getBindings().values()) {
-            for (Binding b : bindings) {
-                addSemanticStyles(b);
-                for (Def def : b.getDefs()) {
-                    processDef(def, b);
-                }
+        for (Binding b : indexer.getBindings()) {
+            addSemanticStyles(b);
+            for (Def def : b.getDefs()) {
+                processDef(def, b);
             }
         }
+
 
         // highlight definitions
         for (Entry<Ref,List<Binding>> e : indexer.getReferences().entrySet()) {
@@ -132,12 +131,12 @@ class Linker {
             return;
         }
         StyleRun style = new StyleRun(StyleRun.Type.ANCHOR, def.getStart(), def.getLength());
-        style.message = binding.getQname() + " :: " + binding.getType();
+        style.message = binding.getQname() + " :" + binding.getType();
         style.url = binding.getQname();
         style.id = "" + Math.abs(def.hashCode());
 
         Set<Ref> refs = binding.getRefs();
-        style.highlight = new ArrayList<String>();
+        style.highlight = new ArrayList<>();
         for (Ref r : refs) {
             style.highlight.add(Integer.toString(Math.abs(r.hashCode())));
         }
@@ -149,13 +148,13 @@ class Linker {
         StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start(), ref.length());
         link.id = Integer.toString(Math.abs(ref.hashCode()));
 
-        List<String> typings = new ArrayList<String>();
+        List<String> typings = new ArrayList<>();
         for (Binding b : bindings) {
-            typings.add(b.getQname() + " :: " + b.getType());
+            typings.add(b.getQname() + " : " + b.getType());
         }
         link.message = Util.joinWithSep(typings, " | ", "{", "}");
 
-        link.highlight = new ArrayList<String>();
+        link.highlight = new ArrayList<>();
         for (Binding b : bindings) {
             for (Def d : b.getDefs()) {
                 link.highlight.add(Integer.toString(Math.abs(d.hashCode())));

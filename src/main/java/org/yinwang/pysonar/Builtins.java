@@ -823,7 +823,7 @@ public class Builtins {
             addFunction("__import__", newLibUrl("functions"), newModule("<?>"));
 
             Indexer.idx.globaltable.put("__builtins__", liburl(), module, ATTRIBUTE, 0);
-            Indexer.idx.globaltable.merge(table);
+            Indexer.idx.globaltable.putAll(table);
         }
     }
 
@@ -2110,7 +2110,7 @@ public class Builtins {
         }
         @Override
         public void initBindings() {
-            table.merge(BaseStr.getTable());
+            table.putAll(BaseStr.getTable());
         }
     }
 

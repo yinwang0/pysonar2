@@ -35,9 +35,8 @@ public class If extends Node {
             type1 = Indexer.idx.builtins.Cont;
         }
 
-        Scope s2 = new Scope(s);
         if (orelse != null && !orelse.isEmpty()) {
-            type2 = resolveExpr(orelse, s2, -newTag);
+            type2 = resolveExpr(orelse, s, -newTag);
         } else {
             type2 = Indexer.idx.builtins.Cont;
         }
