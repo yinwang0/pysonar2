@@ -8,6 +8,7 @@ public class ClassType extends Type {
 
     private String name;
     private InstanceType canon;
+    private Type superclass;
 
     public ClassType() {
         this("<unknown>", null);
@@ -51,8 +52,9 @@ public class ClassType extends Type {
       return name;
     }
 
-    public void addSuper(@NotNull Type sp) {
-        getTable().addSuper(sp.getTable());
+    public void addSuper(@NotNull Type superclass) {
+        this.superclass = superclass;
+        getTable().addSuper(superclass.getTable());
     }
     
     public InstanceType getCanon() {

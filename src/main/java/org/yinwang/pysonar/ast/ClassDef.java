@@ -17,12 +17,13 @@ public class ClassDef extends Node {
 
     static final long serialVersionUID = 7513873538009667540L;
 
+    @NotNull
     public Name name;
     public List<Node> bases;
     public Block body;
 
 
-    public ClassDef(Name name, List<Node> bases, Block body, int start, int end) {
+    public ClassDef(@NotNull Name name, List<Node> bases, Block body, int start, int end) {
         super(start, end);
         this.name = name;
         this.bases = bases;
@@ -35,7 +36,8 @@ public class ClassDef extends Node {
     public boolean isClassDef() {
         return true;
     }
-    
+
+    @NotNull
     public Name getName() {
       return name;
     }
@@ -48,7 +50,7 @@ public class ClassDef extends Node {
     @Override
     public Type resolve(@NotNull Scope s, int tag) {
         ClassType classType = new ClassType(getName().getId(), s);
-        List<Type> baseTypes = new ArrayList<Type>();
+        List<Type> baseTypes = new ArrayList<>();
         for (Node base : bases) {
             Type baseType = resolveExpr(base, s, tag);
             if (baseType.isClassType()) {
