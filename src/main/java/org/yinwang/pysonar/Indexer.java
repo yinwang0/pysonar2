@@ -262,16 +262,11 @@ public class Indexer {
      * method of NBinding and their types will be the union of all types that
      * appear at the same location.
      */
-    @Nullable
-    public Binding putBinding(@Nullable Binding b) {
-        if (b == null) {
-            throw new IllegalArgumentException("null binding arg");
-        }
+    @NotNull
+    public Binding putBinding(@NotNull Binding b) {
         String qname = b.getQname();
-        if (qname == null || qname.isEmpty()) {
-            throw new IllegalArgumentException("Null/empty qname: " + b);
-        }
         Binding existing = findBinding(b);
+
         if (existing == null) {
             addBinding(qname, b);
             return b;
