@@ -80,8 +80,8 @@ public class Indexer {
         builtins = new Builtins();
         builtins.init();
         addPythonPath();
-        createCacheDir();
         cacheDir = Util.makePathString(Util.getSystemTempDir(),  "pysonar2", "ast_cache");
+        createCacheDir();
     }
 
 
