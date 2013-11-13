@@ -158,12 +158,13 @@ public class ProxyParser {
 
     @NotNull
     List<Name> segmentQname(@NotNull String qname, int start) {
-        List<Name> result = new ArrayList<Name>();
+        List<Name> result = new ArrayList<>();
 
-        for (int i = start; i < qname.length(); i++) {
+        for (int i = 0; i < qname.length(); i++) {
             String name = "";
             while (Character.isSpaceChar(qname.charAt(i))) i++;
             int nameStart = i;
+
             while (i < qname.length() &&
                     (Character.isJavaIdentifierPart(qname.charAt(i)) ||
                             qname.charAt(i) == '*') &&
@@ -171,9 +172,9 @@ public class ProxyParser {
                 name += qname.charAt(i);
                 i++;
             }
-            int nameStop = i - 1;
-            int shift = "import ".length();
-            result.add(new Name(name, nameStart+shift, nameStop+shift));
+
+            int nameStop = i;
+            result.add(new Name(name, start + nameStart, start + nameStop));
         }
 
         return result;
@@ -209,7 +210,7 @@ public class ProxyParser {
 
         if (type.equals("alias")) {         // lower case alias
             String qname = (String) map.get("name");
-            List<Name> names = segmentQname(qname, start);
+            List<Name> names = segmentQname(qname, start + "import ".length());
             Name asname = map.get("asname") == null ? null : new Name((String) map.get("asname"));
             return new Alias(names, asname, start, end);
         }
@@ -363,7 +364,7 @@ public class ProxyParser {
 
         if (type.equals("Global")) {
             List<String> names = (List<String>) map.get("names");
-            List<Name> nameNodes = new ArrayList<Name>();
+            List<Name> nameNodes = new ArrayList<>();
             for (String name : names) {
                 nameNodes.add(new Name(name));
             }
@@ -392,7 +393,7 @@ public class ProxyParser {
 
         if (type.equals("ImportFrom")) {
             String module = (String) map.get("module");
-            List<Name> moduleSeg = module == null ? null : segmentQname(module, start);
+            List<Name> moduleSeg = module == null ? null : segmentQname(module, start + "from ".length());
             List<Alias> names = convertListAlias(map.get("names"));
             int level = ((Double) map.get("level")).intValue();
             return new ImportFrom(moduleSeg, names, level, start, end);

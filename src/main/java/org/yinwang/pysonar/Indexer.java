@@ -80,7 +80,6 @@ public class Indexer {
         builtins = new Builtins();
         builtins.init();
         addPythonPath();
-        cacheDir = Util.makePathString(Util.getSystemTempDir(),  "pysonar2", "ast_cache");
         createCacheDir();
     }
 
@@ -436,7 +435,9 @@ public class Indexer {
 
 
     private void createCacheDir() {
+        cacheDir = Util.makePathString(Util.getSystemTempDir(),  "pysonar2", "ast_cache");
         File f = new File(cacheDir);
+
         if (!f.exists()) {
             if (!f.mkdirs()) {
                 Util.die("Failed to create tmp directory: " + cacheDir +
