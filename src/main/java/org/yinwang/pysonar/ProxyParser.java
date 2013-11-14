@@ -492,6 +492,11 @@ public class ProxyParser {
             return new Slice(lower, step, upper, start, end);
         }
 
+        if (type.equals("ExtSlice")) {
+            List<Node> dims = convertList(map.get("dims"));
+            return new ExtSlice(dims, start, end);
+        }
+
         if (type.equals("Str")) {
             String s = (String) map.get("s");
             return new Str(s, start, end);

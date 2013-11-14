@@ -12,11 +12,13 @@ public class Subscript extends Node {
 
     static final long serialVersionUID = -493854491438387425L;
 
+    @NotNull
     public Node value;
+    @NotNull
     public Node slice;  // an NIndex or NSlice
 
 
-    public Subscript(Node value, Node slice, int start, int end) {
+    public Subscript(@NotNull Node value, @NotNull Node slice, int start, int end) {
         super(start, end);
         this.value = value;
         this.slice = slice;
@@ -26,7 +28,7 @@ public class Subscript extends Node {
     @Override
     public Type resolve(Scope s, int tag) {
         Type vt = resolveExpr(value, s, tag);
-        Type st = slice == null? null : resolveExpr(slice, s, tag);
+        Type st = resolveExpr(slice, s, tag);
 
         if (vt.isUnionType()) {
             Type retType = Indexer.idx.builtins.unknown;
@@ -40,8 +42,8 @@ public class Subscript extends Node {
     }
 
 
-    @Nullable
-    private Type getSubscript(@NotNull Type vt, @Nullable Type st, Scope s, int tag) {
+    @NotNull
+    private Type getSubscript(@NotNull Type vt, @NotNull Type st, Scope s, int tag) {
         if (vt.isUnknownType()) {
             return Indexer.idx.builtins.unknown;
         } else if (vt.isListType()) {
@@ -52,7 +54,7 @@ public class Subscript extends Node {
             ListType nl = new ListType(vt.asDictType().valueType);
             return getListSubscript(nl, st, s, tag);
         } else if (vt.isStrType()) {
-            if (st == null || st.isListType() || st.isNumType()) {
+            if (st.isListType() || st.isNumType()) {
                 return vt;
             } else {
                 addWarning("Possible KeyError (wrong type for subscript)");

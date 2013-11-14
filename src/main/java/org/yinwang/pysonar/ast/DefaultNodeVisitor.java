@@ -98,6 +98,14 @@ public class DefaultNodeVisitor implements NodeVisitor {
         return traverseIntoNodes;
     }
 
+    public boolean visit(Expr n) {
+        return traverseIntoNodes;
+    }
+
+    public boolean visit(ExtSlice n) {
+        return traverseIntoNodes;
+    }
+
     public boolean visit(For n) {
         return traverseIntoNodes;
     }
@@ -182,7 +190,6 @@ public class DefaultNodeVisitor implements NodeVisitor {
         return traverseIntoNodes;
     }
 
-
     public boolean visit(Raise n) {
         return traverseIntoNodes;
     }
@@ -192,10 +199,6 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
     public boolean visit(Return n) {
-        return traverseIntoNodes;
-    }
-
-    public boolean visit(Expr n) {
         return traverseIntoNodes;
     }
 

@@ -110,16 +110,12 @@ public class TupleType extends Type {
                 t.printType(ctr, sbElems);
                 first = false;
             }
-            if (getElementTypes().size() > 1) {
-                sb.append("(");
-            }
+            sb.append("(");
             if (ctr.isUsed(this)) {
                 sb.append("=#").append(newNum).append(":");
             }
             sb.append(sbElems);
-            if (getElementTypes().size() > 1) {
-                sb.append(")");
-            }
+            sb.append(")");
             ctr.pop(this);
         }
     }

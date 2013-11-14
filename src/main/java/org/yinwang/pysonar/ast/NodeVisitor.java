@@ -56,6 +56,7 @@ public interface NodeVisitor {
     public boolean visit(Repr m);
     public boolean visit(Return m);
     public boolean visit(Expr m);
+    public boolean visit(ExtSlice m);
     public boolean visit(Slice m);
     public boolean visit(Str m);
     public boolean visit(Subscript m);

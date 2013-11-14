@@ -180,6 +180,10 @@ public abstract class GenericNodeVisitor extends DefaultNodeVisitor {
         return traverseIntoNodes && dispatch(n);
     }
 
+    public boolean visit(ExtSlice n) {
+        return traverseIntoNodes && dispatch(n);
+    }
+
     public boolean visit(Slice n) {
         return traverseIntoNodes && dispatch(n);
     }
