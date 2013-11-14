@@ -95,7 +95,7 @@ class Linker {
      * the AST.
      */
     private void addSemanticStyles(@NotNull Binding nb) {
-        Def def = nb.getFirstNode();
+        Def def = nb.getSingle();
         if (def == null || !def.isName()) {
             return;
         }
@@ -193,7 +193,7 @@ class Linker {
      */
     @Nullable
     private String toURL(@NotNull Binding binding, String filename) {
-        Def def = binding.getFirstNode();
+        Def def = binding.getSingle();
         if (def == null) {
             return null;
         }

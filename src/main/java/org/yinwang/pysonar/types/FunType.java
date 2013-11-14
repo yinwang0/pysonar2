@@ -24,7 +24,7 @@ public class FunType extends Type {
     }
 
     @NotNull
-    private List<Arrow> arrows = new ArrayList<Arrow>();
+    private List<Arrow> arrows = new ArrayList<>();
     public FunctionDef func;
     @Nullable
     public ClassType cls = null;
@@ -157,7 +157,7 @@ public class FunType extends Type {
 
     static Type removeNoneReturn(@NotNull Type toType) {
         if (toType.isUnionType()) {
-            Set<Type> types = new HashSet<Type>(toType.asUnionType().getTypes());
+            Set<Type> types = new HashSet<>(toType.asUnionType().getTypes());
             types.remove(Indexer.idx.builtins.Cont);
             return UnionType.newUnion(types);
         } else {

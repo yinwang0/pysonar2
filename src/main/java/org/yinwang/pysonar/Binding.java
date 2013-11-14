@@ -63,7 +63,7 @@ public class Binding implements Comparable<Object> {
     public Kind kind;      // name usage context
     public int tag;        // control-flow tag
 
-    private Set<Def> defs;
+    private Set<Def> defs;   // definitions (may be multiple)
     private Set<Ref> refs;
 
     
@@ -127,14 +127,13 @@ public class Binding implements Comparable<Object> {
         getRefs().add(ref);
     }
 
-    /**
-     * Returns the first definition, which by convention is treated as
-     * the one that introduced the binding.
-     */
-    @Nullable
-    public Def getFirstNode() {
-        return getDefs().isEmpty() ? null : getDefs().iterator().next();
+
+    // Returns one definition (even if there are many)
+    @NotNull
+    public Def getSingle() {
+        return getDefs().iterator().next();
     }
+
 
     public void setType(Type type) {
         this.type = type;
@@ -196,7 +195,7 @@ public class Binding implements Comparable<Object> {
      * Bindings can be sorted by their location for outlining purposes.
      */
     public int compareTo(@NotNull Object o) {
-        return getFirstNode().getStart() - ((Binding)o).getFirstNode().getStart();
+        return getSingle().getStart() - ((Binding)o).getSingle().getStart();
     }
     
     /**
@@ -205,7 +204,7 @@ public class Binding implements Comparable<Object> {
      */
     public Set<Def> getDefs() {
         if (defs == null) {
-            defs = new HashSet<Def>(DEF_SET_INITIAL_CAPACITY);
+            defs = new HashSet<>(DEF_SET_INITIAL_CAPACITY);
         }
         return defs;
     }

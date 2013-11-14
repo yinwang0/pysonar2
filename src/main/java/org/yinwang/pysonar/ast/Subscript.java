@@ -63,7 +63,7 @@ public class Subscript extends Node {
         }
     }
 
-    @Nullable
+    @NotNull
     private Type getListSubscript(@NotNull Type vt, @NotNull Type st, Scope s, int tag) {
         if (vt.isListType()) {
             if (st.isListType()) {

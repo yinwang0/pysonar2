@@ -85,7 +85,7 @@ public class Call extends Node {
     }
 
 
-    @Nullable
+    @NotNull
     public static Type apply(@NotNull FunType func, @Nullable List<Type> aTypes, Map<String, Type> kTypes, Type kwargsType, Type starargsType, @Nullable Node call, int tag) {
 
         Indexer.idx.removeUncalled(func);

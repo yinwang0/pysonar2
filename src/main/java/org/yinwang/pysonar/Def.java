@@ -87,7 +87,7 @@ public class Def {
     }
 
     public boolean isModule() {
-        return binding != null && binding.getKind() == Binding.Kind.MODULE;
+        return binding.getKind() == Binding.Kind.MODULE;
     }
 
     public int getStart() {
@@ -110,7 +110,7 @@ public class Def {
         binding = b;
     }
 
-    @Nullable
+    @NotNull
     public Binding getBinding() {
         return binding;
     }

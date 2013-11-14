@@ -434,7 +434,7 @@ public class Scope {
                 sep = ".";
                 break;
             case FUNCTION:
-                sep = "@";
+                sep = ".";
                 break;
             default:
                 Util.msg("unsupported context for extendPath: " + scopeType);

@@ -219,13 +219,13 @@ public class Outliner {
             if (!b.isSynthetic()
                     && !b.isBuiltin()
                     && !b.getDefs().isEmpty()
-                    && path.equals(b.getFirstNode().getFile())) {
+                    && path.equals(b.getSingle().getFile())) {
                 entries.add(b);
             }
         }
 
         for (Binding nb : entries) {
-            Def signode = nb.getFirstNode();
+            Def signode = nb.getSingle();
             List<Entry> kids = null;
 
             if (nb.getKind() == Binding.Kind.CLASS) {
