@@ -9,8 +9,6 @@ import org.yinwang.pysonar.types.UnionType;
 
 public class While extends Node {
 
-    static final long serialVersionUID = -2419753875936526587L;
-
     public Node test;
     public Block body;
     public Block orelse;
@@ -24,7 +22,7 @@ public class While extends Node {
         addChildren(test, body, orelse);
     }
 
-    @Nullable
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         resolveExpr(test, s, tag);

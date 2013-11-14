@@ -9,8 +9,6 @@ import java.util.List;
 
 public class Assign extends Node {
 
-    static final long serialVersionUID = 928890389856851537L;
-
     public List<Node> targets;
     public Node rvalue;
 
@@ -27,6 +25,7 @@ public class Assign extends Node {
         return true;
     }
 
+    @NotNull
     @Override
     public Type resolve(@NotNull Scope s, int tag) {
         if (rvalue == null) {

@@ -9,8 +9,6 @@ import org.yinwang.pysonar.types.Type;
 
 public class Yield extends Node {
 
-    static final long serialVersionUID = 2639481204205358048L;
-
     public Node value;
 
 
@@ -20,7 +18,7 @@ public class Yield extends Node {
         addChildren(n);
     }
 
-    @Nullable
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         if (value != null) {

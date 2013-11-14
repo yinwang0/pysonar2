@@ -10,8 +10,6 @@ import java.util.List;
 
 public class SetComp extends Node {
 
-    static final long serialVersionUID = -150205687457446323L;
-
     public Node elt;
     public List<Comprehension> generators;
 
@@ -24,12 +22,8 @@ public class SetComp extends Node {
         addChildren(generators);
     }
 
-    /**
-     * Python's list comprehension will bind the variables used in generators.
-     * This will erase the original values of the variables even after the
-     * comprehension.
-     */
-    @Nullable
+
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         resolveList(generators, s, tag);

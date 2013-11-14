@@ -7,8 +7,6 @@ import org.yinwang.pysonar.types.Type;
 
 public class Assert extends Node {
 
-    static final long serialVersionUID = 7574732756076428388L;
-
     public Node test;
     public Node msg;
 
@@ -19,6 +17,7 @@ public class Assert extends Node {
         addChildren(test, msg);
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         if (test != null) resolveExpr(test, s, tag);

@@ -9,8 +9,6 @@ import java.util.List;
 
 public class With extends Node {
 
-    static final long serialVersionUID = 560128079414064421L;
-
     @NotNull
     public List<Withitem> items;
     public Block body;
@@ -24,7 +22,7 @@ public class With extends Node {
         addChildren(body);
     }
 
-    @Nullable
+    @NotNull
     @Override
     public Type resolve(@NotNull Scope s, int tag) {
         for (Withitem item : items) {

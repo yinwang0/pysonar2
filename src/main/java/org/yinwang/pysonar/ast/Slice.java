@@ -7,12 +7,9 @@ import org.yinwang.pysonar.types.Type;
 
 public class Slice extends Node {
 
-    static final long serialVersionUID = 8685364390631331543L;
-
     public Node lower;
     public Node step;
     public Node upper;
-
 
     public Slice(Node lower, Node step, Node upper, int start, int end) {
         super(start, end);

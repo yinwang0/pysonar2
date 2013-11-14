@@ -9,8 +9,6 @@ import java.util.List;
 
 public class Dict extends Node {
 
-    static final long serialVersionUID = 318144953740238374L;
-
     public List<Node> keys;
     public List<Node> values;
 

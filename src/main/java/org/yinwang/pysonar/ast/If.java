@@ -8,8 +8,6 @@ import org.yinwang.pysonar.types.UnionType;
 
 public class If extends Node {
 
-    static final long serialVersionUID = -3744458754599083332L;
-
     public Node test;
     public Block body;
     public Block orelse;
@@ -23,6 +21,7 @@ public class If extends Node {
         addChildren(test, body, orelse);
     }
 
+    @NotNull
     @Override
     public Type resolve(@NotNull Scope s, int tag) {
         Type type1, type2;

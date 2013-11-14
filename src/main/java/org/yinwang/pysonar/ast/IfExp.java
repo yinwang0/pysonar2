@@ -8,8 +8,6 @@ import org.yinwang.pysonar.types.UnionType;
 
 public class IfExp extends Node {
 
-    static final long serialVersionUID = 8516153579808365723L;
-
     public Node test;
     public Node body;
     public Node orelse;
@@ -23,6 +21,7 @@ public class IfExp extends Node {
         addChildren(test, body, orelse);
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         Type type1, type2;

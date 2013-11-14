@@ -10,14 +10,11 @@ import java.util.List;
 
 public class Set extends Sequence {
 
-    static final long serialVersionUID = 6623743056841822992L;
-
-
     public Set(List<Node> elts, int start, int end) {
         super(elts, start, end);
     }
 
-    @Nullable
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         if (elts.size() == 0) {

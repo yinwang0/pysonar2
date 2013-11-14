@@ -11,9 +11,7 @@ import org.yinwang.pysonar.types.Type;
  */
 public class Url extends Node {
 
-    static final long serialVersionUID = -3488021036061979551L;
     private String url;
-
 
     public Url(String url) {
         this.url = url;
@@ -24,6 +22,7 @@ public class Url extends Node {
         return url;
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         return Indexer.idx.builtins.BaseStr;

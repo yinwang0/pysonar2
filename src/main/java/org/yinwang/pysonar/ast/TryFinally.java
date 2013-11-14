@@ -8,8 +8,6 @@ import org.yinwang.pysonar.types.Type;
 
 public class TryFinally extends Node {
 
-    static final long serialVersionUID = 136428581711609107L;
-
     public Block body;
     public Block finalbody;
 
@@ -21,7 +19,7 @@ public class TryFinally extends Node {
         addChildren(body, orelse);
     }
 
-    @Nullable
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         Type tFinal = Indexer.idx.builtins.unknown;

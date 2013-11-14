@@ -9,8 +9,6 @@ import org.yinwang.pysonar.types.UnionType;
 
 public class For extends Node {
 
-    static final long serialVersionUID = 3228529969554646406L;
-
     public Node target;
     public Node iter;
     public Block body;
@@ -32,6 +30,7 @@ public class For extends Node {
         return true;
     }
 
+    @NotNull
     @Override
     public Type resolve(@NotNull Scope s, int tag) {
         NameBinder.bindIter(s, target, iter, Binding.Kind.SCOPE, tag);

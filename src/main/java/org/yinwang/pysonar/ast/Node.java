@@ -12,8 +12,6 @@ import java.util.List;
 
 public abstract class Node implements java.io.Serializable {
 
-    static final long serialVersionUID = 3682719481356964898L;
-
     public int start = -1;
     public int end = -1;
 
@@ -92,19 +90,14 @@ public abstract class Node implements java.io.Serializable {
 
     @NotNull
     public static Type resolveExpr(@NotNull Node n, Scope s, int tag) {
-        Type result = n.resolve(s, tag);
-        if (result == null) {
-            Indexer.idx.warn(n + " resolved to a null type");
-            return Indexer.idx.builtins.unknown;
-        }
-        return result;
+        return n.resolve(s, tag);
     }
 
     /**
      * @param s the symbol table
      * @param tag thread tag of the execution path
      */
-    @Nullable
+    @NotNull
     abstract public Type resolve(Scope s, int tag);
 
     public boolean isCall() {

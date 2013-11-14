@@ -13,8 +13,6 @@ import java.util.List;
 
 public class FunctionDef extends Node {
 
-    static final long serialVersionUID = 5495886181960463846L;
-
     public Name name;
     public List<Node> args;
     public List<Node> defaults;
@@ -135,6 +133,7 @@ public class FunctionDef extends Node {
      * its path should be derived from that scope too for locating the names
      * "lexically".
      */
+    @NotNull
     @Override
     public Type resolve(@NotNull Scope outer, int tag) {
         resolveList(decoratorList, outer, tag);   //XXX: not handling functional transformations yet

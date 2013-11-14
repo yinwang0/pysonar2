@@ -7,9 +7,6 @@ import org.yinwang.pysonar.types.Type;
 
 public class Continue extends Node {
 
-    static final long serialVersionUID = 1646681898280823606L;
-
-
     public Continue(int start, int end) {
         super(start, end);
     }
@@ -20,6 +17,7 @@ public class Continue extends Node {
         return "<Continue>";
     }
     
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         return Indexer.idx.builtins.None;

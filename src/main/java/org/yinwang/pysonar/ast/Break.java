@@ -7,8 +7,6 @@ import org.yinwang.pysonar.types.Type;
 
 public class Break extends Node {
 
-    static final long serialVersionUID = 2114759731430768793L;
-
     public Break(int start, int end) {
         super(start, end);
     }
@@ -24,6 +22,7 @@ public class Break extends Node {
         v.visit(this);
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         return Indexer.idx.builtins.None;

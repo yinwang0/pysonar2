@@ -9,8 +9,6 @@ import java.util.List;
 
 public class Global extends Node {
 
-    static final long serialVersionUID = 5978320165592263568L;
-
     private List<Name> names;
 
 
@@ -20,6 +18,7 @@ public class Global extends Node {
         addChildren(names);
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         // Do nothing here because global names are processed by NBlock

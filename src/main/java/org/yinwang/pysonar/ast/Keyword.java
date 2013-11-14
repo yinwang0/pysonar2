@@ -10,8 +10,6 @@ import org.yinwang.pysonar.types.Type;
  */
 public class Keyword extends Node {
 
-    static final long serialVersionUID = 9031782645918578266L;
-
     public String arg;
     public Node value;
 
@@ -23,7 +21,7 @@ public class Keyword extends Node {
         addChildren(value);
     }
 
-    @Nullable
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         return resolveExpr(value, s, tag);

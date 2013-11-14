@@ -9,8 +9,6 @@ import java.util.List;
 
 public class DictComp extends Node {
 
-    static final long serialVersionUID = -150205687457446323L;
-
     public Node key;
     public Node value;
     public List<Comprehension> generators;

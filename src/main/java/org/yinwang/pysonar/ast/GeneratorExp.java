@@ -10,8 +10,6 @@ import java.util.List;
 
 public class GeneratorExp extends Node {
 
-    static final long serialVersionUID = -8614142736962193509L;
-
     public Node elt;
     public List<Comprehension> generators;
 
@@ -28,7 +26,7 @@ public class GeneratorExp extends Node {
      * Python's list comprehension will erase any variable used in generators.
      * This is wrong, but we "respect" this bug here.
      */
-    @Nullable
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         resolveList(generators, s, tag);

@@ -16,8 +16,6 @@ import static org.yinwang.pysonar.Binding.Kind.CLASS;
 
 public class Call extends Node {
 
-    static final long serialVersionUID = 5212954751978100639L;
-
     public Node func;
     public List<Node> args;
     public List<Keyword> keywords;
@@ -43,6 +41,7 @@ public class Call extends Node {
      * used by Indexer.applyUncalled. By using a static method we avoid building
      * a NCall node for those dummy calls.
      */
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
 

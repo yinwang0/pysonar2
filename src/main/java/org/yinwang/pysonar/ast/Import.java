@@ -11,10 +11,7 @@ import java.util.List;
 
 public class Import extends Node {
 
-    static final long serialVersionUID = -2180402676651342012L;
-
     public List<Alias> names;
-
 
     public Import(List<Alias> names, int start, int end) {
         super(start, end);
@@ -23,6 +20,7 @@ public class Import extends Node {
     }
 
 
+    @NotNull
     @Override
     public Type resolve(@NotNull Scope s, int tag) {
         for (Alias a : names) {

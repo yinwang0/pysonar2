@@ -8,10 +8,7 @@ import org.yinwang.pysonar.types.Type;
 
 public class Return extends Node {
 
-    static final long serialVersionUID = 5795610129307339141L;
-
     public Node value;
-
 
     public Return(Node n, int start, int end) {
         super(start, end);
@@ -19,7 +16,7 @@ public class Return extends Node {
         addChildren(n);
     }
 
-    @Nullable
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         if (value == null) {

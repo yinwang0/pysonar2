@@ -7,8 +7,6 @@ import org.yinwang.pysonar.types.Type;
 
 public class AugAssign extends Node {
 
-    static final long serialVersionUID = -6479618862099506199L;
-
     public Node target;
     public Node value;
     public Name op;
@@ -21,6 +19,7 @@ public class AugAssign extends Node {
         addChildren(target, value);
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         resolveExpr(target, s, tag);

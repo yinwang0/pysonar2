@@ -10,8 +10,6 @@ import org.yinwang.pysonar.types.UnionType;
 
 public class Subscript extends Node {
 
-    static final long serialVersionUID = -493854491438387425L;
-
     @NotNull
     public Node value;
     @NotNull
@@ -25,6 +23,7 @@ public class Subscript extends Node {
         addChildren(value, slice);
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         Type vt = resolveExpr(value, s, tag);

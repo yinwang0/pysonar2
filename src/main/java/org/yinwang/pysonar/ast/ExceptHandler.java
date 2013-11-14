@@ -8,8 +8,6 @@ import org.yinwang.pysonar.types.Type;
 
 public class ExceptHandler extends Node {
 
-    static final long serialVersionUID = 6215262228266158119L;
-
     public Node name;
     public Node exceptionType;
     public Block body;
@@ -28,7 +26,7 @@ public class ExceptHandler extends Node {
         return true;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public Type resolve(@NotNull Scope s, int tag) {
         Type typeval = Indexer.idx.builtins.unknown;

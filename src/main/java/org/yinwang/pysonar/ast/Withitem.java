@@ -32,7 +32,7 @@ public class Withitem extends Node {
 
 
     // dummy, will never be called
-    @Nullable
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         return Indexer.idx.builtins.unknown;

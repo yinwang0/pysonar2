@@ -9,8 +9,6 @@ import java.util.List;
 
 public class Delete extends Node {
 
-    static final long serialVersionUID = -2223255555054110766L;
-
     public List<Node> targets;
 
 
@@ -20,6 +18,7 @@ public class Delete extends Node {
         addChildren(elts);
     }
 
+    @NotNull
     @Override
     public Type resolve(@NotNull Scope s, int tag) {
         for (Node n : targets) {

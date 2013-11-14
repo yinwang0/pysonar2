@@ -10,8 +10,6 @@ import java.util.List;
 
 public class TryExcept extends Node {
 
-    static final long serialVersionUID = 7210847998428480831L;
-
     public List<ExceptHandler> handlers;
     public Block body;
     public Block orelse;
@@ -27,6 +25,7 @@ public class TryExcept extends Node {
         addChildren(body, orelse);
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         Type tp1 = Indexer.idx.builtins.unknown;

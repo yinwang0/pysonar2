@@ -9,8 +9,6 @@ import java.util.List;
 
 public class Compare extends Node {
 
-    static final long serialVersionUID = 1013460919393985064L;
-
     public Node left;
     public List<Node> ops;
     public List<Node> comparators;
@@ -25,6 +23,7 @@ public class Compare extends Node {
         addChildren(comparators);
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         resolveExpr(left, s, tag);

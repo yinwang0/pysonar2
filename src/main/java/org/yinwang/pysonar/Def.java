@@ -14,6 +14,9 @@ public class Def {
     // Being frugal with fields here is good for memory usage.
     private int start = -1;
     private int end = -1;
+    private int bodyStart = -1;
+    private int bodyEnd = -1;
+
     @NotNull
     private Binding binding;
     @Nullable
@@ -35,8 +38,16 @@ public class Def {
                 fileOrUrl = url;
             }
         } else {
-            start = node.start;
-            end = node.end;
+            if (node.isFunctionDef()) {
+                start = node.asFunctionDef().name.start;
+                end = node.asFunctionDef().name.end;
+                bodyStart = node.start;
+                bodyStart = node.end;
+            } else {
+                start = node.start;
+                end = node.end;
+            }
+
             fileOrUrl = node.getFile();
             if (node instanceof Name) {
                 name = node.asName().getId();
@@ -100,6 +111,14 @@ public class Def {
 
     public int getLength() {
         return end - start;
+    }
+
+    public int getBodyStart() {
+        return bodyStart;
+    }
+
+    public int getBodyEnd() {
+        return bodyEnd;
     }
 
     public boolean isName() {

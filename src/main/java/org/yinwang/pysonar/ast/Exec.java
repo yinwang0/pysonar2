@@ -7,8 +7,6 @@ import org.yinwang.pysonar.types.Type;
 
 public class Exec extends Node {
 
-    static final long serialVersionUID = -1840017898177850339L;
-
     public Node body;
     public Node globals;
     public Node locals;
@@ -22,6 +20,7 @@ public class Exec extends Node {
         addChildren(body, globals, locals);
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         if (body != null) resolveExpr(body, s, tag);

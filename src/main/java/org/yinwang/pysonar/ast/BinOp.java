@@ -8,8 +8,6 @@ import org.yinwang.pysonar.types.UnionType;
 
 public class BinOp extends Node {
 
-    static final long serialVersionUID = -8961832251782335108L;
-
     public Node left;
     public Node right;
     public Node op;
@@ -23,6 +21,7 @@ public class BinOp extends Node {
         addChildren(left, right);
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         Type ltype = null, rtype = null;

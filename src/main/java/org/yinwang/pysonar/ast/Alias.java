@@ -12,8 +12,6 @@ import java.util.List;
  */
 public class Alias extends Node {
 
-    static final long serialVersionUID = 4127878954298987559L;
-
     public List<Name> name;
     public Name asname;
 
@@ -31,6 +29,7 @@ public class Alias extends Node {
      * or import-from statement.  NImportFrom statements manually
      * resolve their child NAliases.
      */
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         return Indexer.idx.builtins.unknown;

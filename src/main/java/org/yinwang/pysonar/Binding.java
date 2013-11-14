@@ -73,12 +73,12 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    public Binding(@NotNull String id, Node node, @Nullable Type type, @Nullable Kind kind) {
+    public Binding(@NotNull String id, Node node, @NotNull Type type, @NotNull Kind kind) {
         qname = name = id;
         defs = new HashSet<>(DEF_SET_INITIAL_CAPACITY);
         addDef(node);
-        this.type = type == null ? Indexer.idx.builtins.unknown : type;
-        this.kind = kind == null ? Kind.SCOPE : kind;
+        this.type = type;
+        this.kind = kind;
     }
 
     /**

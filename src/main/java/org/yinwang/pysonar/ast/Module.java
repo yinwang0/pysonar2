@@ -12,8 +12,6 @@ import java.io.File;
 
 public class Module extends Node {
 
-    static final long serialVersionUID = -7737089963380450802L;
-
     public String name;
     public Block body;
 

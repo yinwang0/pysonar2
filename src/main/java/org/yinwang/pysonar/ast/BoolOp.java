@@ -13,8 +13,6 @@ import java.util.List;
  */
 public class BoolOp extends Node {
 
-    static final long serialVersionUID = -5261954056600388069L;
-
     public List<Node> values;
     public Name op;
 
@@ -25,7 +23,7 @@ public class BoolOp extends Node {
         addChildren(values);
     }
 
-    @Nullable
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         if (op.id.equals("and")) {

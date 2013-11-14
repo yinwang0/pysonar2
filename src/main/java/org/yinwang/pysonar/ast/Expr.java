@@ -10,8 +10,6 @@ import org.yinwang.pysonar.types.Type;
  */
 public class Expr extends Node {
 
-    static final long serialVersionUID = 7366113211576923188L;
-
     public Node value;
 
 
@@ -21,6 +19,7 @@ public class Expr extends Node {
         addChildren(n);
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         if (value != null) resolveExpr(value, s, tag);

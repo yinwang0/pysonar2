@@ -7,13 +7,11 @@ import org.yinwang.pysonar.types.Type;
 
 public class Pass extends Node {
 
-    static final long serialVersionUID = 3668786487029793620L;
-
-
     public Pass(int start, int end) {
         super(start, end);
     }
     
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         return Indexer.idx.builtins.Cont;

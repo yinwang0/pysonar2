@@ -7,8 +7,6 @@ import org.yinwang.pysonar.types.Type;
 
 public class Raise extends Node {
 
-    static final long serialVersionUID = 5384576775167988640L;
-
     public Node exceptionType;
     public Node inst;
     public Node traceback;
@@ -22,6 +20,7 @@ public class Raise extends Node {
         addChildren(exceptionType, inst, traceback);
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         if (exceptionType != null) resolveExpr(exceptionType, s, tag);

@@ -16,8 +16,6 @@ import java.util.Map.Entry;
 
 public class ImportFrom extends Node {
 
-    static final long serialVersionUID = 5070549408963950138L;
-
     public List<Name> module;
     public List<Alias> names;
     public int level;
@@ -36,6 +34,7 @@ public class ImportFrom extends Node {
         return true;
     }
 
+    @NotNull
     @Override
     public Type resolve(@NotNull Scope s, int tag) {
         if (module == null) {

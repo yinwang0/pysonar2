@@ -7,10 +7,7 @@ import org.yinwang.pysonar.types.Type;
 
 public class Index extends Node {
 
-    static final long serialVersionUID = -8920941673115420849L;
-
     public Node value;
-
 
     public Index(Node n, int start, int end) {
         super(start, end);
@@ -18,7 +15,7 @@ public class Index extends Node {
         addChildren(n);
     }
 
-    @Nullable
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         return resolveExpr(value, s, tag);

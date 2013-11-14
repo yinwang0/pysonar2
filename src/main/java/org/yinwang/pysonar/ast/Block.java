@@ -13,8 +13,6 @@ import java.util.List;
 
 public class Block extends Node {
 
-    static final long serialVersionUID = -9096405259154069107L;
-
     @Nullable
     public List<Node> seq;
 
@@ -34,6 +32,7 @@ public class Block extends Node {
      * If the sequence contains escaping control-flow, None type will appear in the return type.
      * This can be used to generate warnings such as "This function may not return a value."
      */
+    @NotNull
     @Override
     public Type resolve(@NotNull Scope scope, int tag) {
         // find global names and mark them

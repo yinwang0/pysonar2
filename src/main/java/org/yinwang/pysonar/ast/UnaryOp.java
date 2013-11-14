@@ -7,8 +7,6 @@ import org.yinwang.pysonar.types.Type;
 
 public class UnaryOp extends Node {
 
-    static final long serialVersionUID = 4877088513200468108L;
-
     public Node op;
     public Node operand;
 
@@ -20,7 +18,7 @@ public class UnaryOp extends Node {
         addChildren(op, n);
     }
 
-    @Nullable
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         return resolveExpr(operand, s, tag);

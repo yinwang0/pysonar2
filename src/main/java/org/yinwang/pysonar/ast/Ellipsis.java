@@ -7,9 +7,6 @@ import org.yinwang.pysonar.types.Type;
 
 public class Ellipsis extends Node {
 
-    static final long serialVersionUID = 4148534089952252511L;
-
-
     public Ellipsis(int start, int end) {
         super(start, end);
     }
@@ -20,6 +17,7 @@ public class Ellipsis extends Node {
         return "<Ellipsis>";
     }
     
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         return Indexer.idx.builtins.None;

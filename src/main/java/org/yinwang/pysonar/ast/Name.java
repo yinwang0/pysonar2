@@ -9,20 +9,15 @@ import org.yinwang.pysonar.types.Type;
 
 public class Name extends Node {
 
-    static final long serialVersionUID = -1160862551327528304L;
-
-    @Nullable
+    @NotNull
     public final String id;  // identifier
 
     public Name(String id) {
         this(id, -1, -1);
     }
 
-    public Name(@Nullable String id, int start, int end) {
+    public Name(@NotNull String id, int start, int end) {
         super(start, end);
-        if (id == null) {
-            throw new IllegalArgumentException("'id' param cannot be null");
-        }
         this.id = id;
     }
     
@@ -44,6 +39,7 @@ public class Name extends Node {
                 && parent == ((Call)gramps).func;
     }
     
+    @NotNull
     @Override
     public Type resolve(@NotNull Scope s, int tag) {
         Binding b = s.lookup(id);

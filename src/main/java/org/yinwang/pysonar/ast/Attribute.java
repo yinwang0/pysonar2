@@ -15,8 +15,6 @@ import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
 
 public class Attribute extends Node {
 
-    static final long serialVersionUID = -1120979305017812255L;
-
     @NotNull
     public Node target;
     @NotNull
@@ -75,6 +73,7 @@ public class Attribute extends Node {
         targetType.getTable().putAttr(attr.getId(), attr, v, ATTRIBUTE, tag);
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         Type targetType = resolveExpr(target, s, tag);

@@ -9,8 +9,6 @@ import java.util.List;
 
 public class Print extends Node {
 
-    static final long serialVersionUID = 689872588518071148L;
-
     public Node dest;
     public List<Node> values;
 
@@ -23,6 +21,7 @@ public class Print extends Node {
         addChildren(elts);
     }
 
+    @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
         if (dest != null) resolveExpr(dest, s, tag);

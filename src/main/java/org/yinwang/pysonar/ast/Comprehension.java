@@ -10,8 +10,6 @@ import java.util.List;
 
 public class Comprehension extends Node {
 
-    static final long serialVersionUID = -598250664243757218L;
-
     public Node target;
     public Node iter;
     public List<Node> ifs;
@@ -31,7 +29,7 @@ public class Comprehension extends Node {
         return true;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public Type resolve(@NotNull Scope s, int tag) {
         NameBinder.bindIter(s, target, iter, Binding.Kind.SCOPE, tag);

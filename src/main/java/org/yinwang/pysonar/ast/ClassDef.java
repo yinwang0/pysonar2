@@ -15,8 +15,6 @@ import java.util.List;
 
 public class ClassDef extends Node {
 
-    static final long serialVersionUID = 7513873538009667540L;
-
     @NotNull
     public Name name;
     public List<Node> bases;
@@ -47,6 +45,7 @@ public class ClassDef extends Node {
         return true;
     }
 
+    @NotNull
     @Override
     public Type resolve(@NotNull Scope s, int tag) {
         ClassType classType = new ClassType(getName().getId(), s);
