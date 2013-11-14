@@ -17,7 +17,7 @@ public class UnionType extends Type {
     private Set<Type> types;
 
     public UnionType() {
-        this.types = new HashSet<Type>();
+        this.types = new HashSet<>();
     }
 
     public UnionType(@NotNull Type... initialTypes) {
@@ -154,29 +154,34 @@ public class UnionType extends Type {
 
 
     @Override
-    protected void printType(@NotNull CyclicTypeRecorder ctr, @NotNull StringBuilder sb) {
+    protected String printType(@NotNull CyclicTypeRecorder ctr) {
+        StringBuilder sb = new StringBuilder();
+
         Integer num = ctr.visit(this);
         if (num != null) {
             sb.append("#").append(num);
         } else {
-            StringBuilder sbElems = new StringBuilder();
             int newNum = ctr.push(this);
             boolean first = true;
+            sb.append("{");
+
             for (Type t : types) {
                 if (!first) {
-                    sbElems.append(" | ");
+                    sb.append(" | ");
                 }
-                t.printType(ctr, sbElems);
+                sb.append(t.printType(ctr));
                 first = false;
             }
-            sb.append("{");
+
             if (ctr.isUsed(this)) {
                 sb.append("=#").append(newNum).append(":");
             }
-            sb.append(sbElems);
+
             sb.append("}");
             ctr.pop(this);
         }
+
+        return sb.toString();
     }
 
 }

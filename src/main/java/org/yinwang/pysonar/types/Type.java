@@ -6,9 +6,7 @@ import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.TypeStack;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class Type {
 
@@ -152,16 +150,11 @@ public abstract class Type {
     protected class CyclicTypeRecorder {
         int count = 0;
         @NotNull
-        private Map<Type, Integer> elements = new HashMap<Type, Integer>();
+        private Map<Type, Integer> elements = new HashMap<>();
         @NotNull
-        private Map<Type, Integer> used = new HashMap<Type, Integer>();
+        private Set<Type> used = new HashSet<>();
 
-        /**
-         * Get the instance number for the specified type.
-         *
-         * @return the instance number:  positive if the type was already recorded,
-         *         or its negative if the type was just recorded and assigned a number.
-         */
+
         public Integer push(Type t) {
             count += 1;
             elements.put(t, count);
@@ -176,15 +169,14 @@ public abstract class Type {
         public Integer visit(Type t) {
             Integer i = elements.get(t);
             if (i != null) {
-                used.put(t, 1);
+                used.add(t);
             }
             return i;
         }
 
         public boolean isUsed(Type t) {
-            return used.containsKey(t);
+            return used.contains(t);
         }
-
     }
 
 
@@ -217,15 +209,13 @@ public abstract class Type {
 
     public abstract boolean equals(Object other);
 
-    protected abstract void printType(CyclicTypeRecorder ctr, StringBuilder sb);
+    protected abstract String printType(CyclicTypeRecorder ctr);
 
 
     @NotNull
     @Override
     public String toString() {
-        StringBuilder input = new StringBuilder();
-        printType(new CyclicTypeRecorder(), input);
-        return input.toString();
+        return printType(new CyclicTypeRecorder());
     }
 
 }

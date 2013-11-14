@@ -173,7 +173,8 @@ public class FunType extends Type {
 
 
     @Override
-    protected void printType(@NotNull CyclicTypeRecorder ctr, @NotNull StringBuilder sb) {
+    protected String printType(@NotNull CyclicTypeRecorder ctr) {
+        StringBuilder sb = new StringBuilder();
 
         Integer num = ctr.visit(this);
         if (num != null) {
@@ -183,9 +184,9 @@ public class FunType extends Type {
 
             int i = 0;
             for (Arrow a : arrows) {
-                a.from.printType(ctr, sb);
+                sb.append(a.from.printType(ctr));
                 sb.append(" -> ");
-                a.to.printType(ctr, sb);
+                sb.append(a.to.printType(ctr));
                 if (i < arrows.size() - 1) {
                     sb.append(" | ");
                 }
@@ -197,6 +198,6 @@ public class FunType extends Type {
             }
             ctr.pop(this);
         }
+        return sb.toString();
     }
-
 }

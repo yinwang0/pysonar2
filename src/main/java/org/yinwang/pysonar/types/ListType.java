@@ -88,17 +88,21 @@ public class ListType extends Type {
 
 
     @Override
-    protected void printType(@NotNull CyclicTypeRecorder ctr, @NotNull StringBuilder sb) {
+    protected String printType(@NotNull CyclicTypeRecorder ctr) {
+        StringBuilder sb = new StringBuilder();
+
         Integer num = ctr.visit(this);
         if (num != null) {
             sb.append("#").append(num);
         } else {
             ctr.push(this);
             sb.append("[");
-            getElementType().printType(ctr, sb);
+            sb.append(getElementType().printType(ctr));
             sb.append("]");
             ctr.pop(this);
         }
+
+        return sb.toString();
     }
 
 }

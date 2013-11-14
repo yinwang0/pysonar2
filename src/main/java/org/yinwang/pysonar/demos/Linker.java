@@ -131,7 +131,7 @@ class Linker {
             return;
         }
         StyleRun style = new StyleRun(StyleRun.Type.ANCHOR, def.getStart(), def.getLength());
-        style.message = binding.getQname() + " :" + binding.getType();
+        style.message = binding.getQname() + " : " + binding.getType();
         style.url = binding.getQname();
         style.id = "" + Math.abs(def.hashCode());
 

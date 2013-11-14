@@ -78,7 +78,7 @@ public class ModuleType extends Type {
 
 
     @Override
-    protected void printType(CyclicTypeRecorder ctr, @NotNull StringBuilder sb) {
-        sb.append(getName());
+    protected String printType(CyclicTypeRecorder ctr) {
+        return getName();
     }
 }

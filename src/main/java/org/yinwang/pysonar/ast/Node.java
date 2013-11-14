@@ -193,16 +193,8 @@ public abstract class Node implements java.io.Serializable {
         Indexer.idx.putProblem(this, msg);
     }
 
-    protected void addWarning(@NotNull Node loc, String msg) {
-        Indexer.idx.putProblem(loc, msg);
-    }
-
     protected void addError(String msg) {
         Indexer.idx.putProblem(this, msg);
-    }
-
-    protected void addError(@NotNull Node loc, String msg) {
-        Indexer.idx.putProblem(loc, msg);
     }
 
     /**
@@ -245,7 +237,7 @@ public abstract class Node implements java.io.Serializable {
         if (nodes == null) {
             return null;
         } else {
-            List<Type> typeList = new ArrayList<Type>();
+            List<Type> typeList = new ArrayList<>();
             for (Node n : nodes) {
                 typeList.add(resolveExpr(n, s, tag));
             }

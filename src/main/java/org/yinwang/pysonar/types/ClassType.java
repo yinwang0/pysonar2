@@ -64,10 +64,6 @@ public class ClassType extends Type {
         return canon;
     }
 
-    public void setCanon(InstanceType canon) {
-        this.canon = canon;
-    }
-
 
     @Override
     public int hashCode() {
@@ -82,8 +78,9 @@ public class ClassType extends Type {
     // defined.
     
     @Override
-    protected void printType(CyclicTypeRecorder ctr, @NotNull StringBuilder sb) {
+    protected String printType(CyclicTypeRecorder ctr) {
+        StringBuilder sb = new StringBuilder();
         sb.append("<").append(getName()).append(">");
+        return sb.toString();
     }
-
 }

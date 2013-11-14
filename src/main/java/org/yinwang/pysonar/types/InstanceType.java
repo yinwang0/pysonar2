@@ -70,10 +70,14 @@ public class InstanceType extends Type {
     }
     
     @Override
-    protected void printType(CyclicTypeRecorder ctr, @NotNull StringBuilder sb) {
+    protected String printType(CyclicTypeRecorder ctr) {
+        StringBuilder sb = new StringBuilder();
+
         if (getClassType().isClassType()) {
             sb.append(getClassType().asClassType().getName());
         }
+
+        return sb.toString();
     }
 
 }
