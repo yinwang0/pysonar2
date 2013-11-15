@@ -39,20 +39,31 @@ class Linker {
      * Process all bindings across all files and record per-file semantic styles.
      * Should be called once per index.
      */
+
+    int nDef = 0;
+
     public void findLinks(@NotNull Indexer indexer) {
-        // backlinks
-        for (Binding b : indexer.getBindings()) {
-            addSemanticStyles(b);
-            for (Def def : b.getDefs()) {
-                processDef(def, b);
+        Util.msg("Adding xref links for " + indexer.getAllBindings().size() + " bindings");
+
+        for (List<Binding> bindings : indexer.getAllBindings().values()) {
+            for (Binding b : bindings) {
+                addSemanticStyles(b);
+                for (Def def : b.getDefs()) {
+                    processDef(def, b);
+                    nDef++;
+                }
             }
         }
 
-
         // highlight definitions
+        Util.msg("Adding ref links");
         for (Entry<Ref,List<Binding>> e : indexer.getReferences().entrySet()) {
             processRef(e.getKey(), e.getValue());
         }
+
+        Util.msg("\n#xrefs: " + nXref);
+        Util.msg("#defs: " + nDef);
+        Util.msg("#refs: " + nRef);
 
 //        for (List<Diagnostic> ld: indexer.semanticErrors.values()) {
 //            for (Diagnostic d: ld) {
@@ -60,13 +71,79 @@ class Linker {
 //            }
 //        }
 
-        for (List<Diagnostic> ld: indexer.parseErrors.values()) {
-            for (Diagnostic d: ld) {
-                processDiagnostic(d);
+//        for (List<Diagnostic> ld: indexer.parseErrors.values()) {
+//            for (Diagnostic d: ld) {
+//                processDiagnostic(d);
+//            }
+//        }
+    }
 
+
+    int nXref = 0;
+    Progress progressXRef = new Progress(10000, 50);
+
+    private void processDef(@Nullable Def def, @NotNull Binding binding) {
+        if (def == null || def.isURL() || def.getStart() < 0) {
+            return;
+        }
+        StyleRun style = new StyleRun(StyleRun.Type.ANCHOR, def.getStart(), def.getLength());
+        style.message = binding.getQname() + " : " + binding.getType();
+        style.url = binding.getQname();
+        style.id = "" + Math.abs(def.hashCode());
+
+        Set<Ref> refs = binding.getRefs();
+        style.highlight = new ArrayList<>();
+
+
+        for (Ref r : refs) {
+            progressXRef.tick();
+            nXref++;
+//            style.highlight.add(Integer.toString(Math.abs(r.hashCode())));
+        }
+//        addFileStyle(def.getFile(), style);
+    }
+
+
+
+    int nRef = 0;
+    Progress progressRef = new Progress(10000, 50);
+
+    void processRef(@NotNull Ref ref, @NotNull List<Binding> bindings) {
+        StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start(), ref.length());
+        link.id = Integer.toString(Math.abs(ref.hashCode()));
+
+        List<String> typings = new ArrayList<>();
+        for (Binding b : bindings) {
+            typings.add(b.getQname() + " : " + b.getType());
+        }
+        link.message = Util.joinWithSep(typings, " | ", "{", "}");
+
+        link.highlight = new ArrayList<>();
+
+        for (Binding b : bindings) {
+            for (Def d : b.getDefs()) {
+                progressRef.tick();
+                nRef++;
+                link.highlight.add(Integer.toString(Math.abs(d.hashCode())));
+            }
+        }
+
+
+        // Currently jump to the first binding only. Should change to have a
+        // hover menu or something later.
+        String path = ref.getFile();
+        for (Binding b : bindings) {
+            if (link.url == null) {
+                link.url = toURL(b, path);
+            }
+
+            if (link.url != null) {
+                addFileStyle(path, link);
+                break;
             }
         }
     }
+
 
     /**
      * Returns the styles (links and extra styles) generated for a given file.
@@ -126,57 +203,6 @@ class Linker {
         }
     }
 
-    private void processDef(@Nullable Def def, @NotNull Binding binding) {
-        if (def == null || def.isURL() || def.getStart() < 0) {
-            return;
-        }
-        StyleRun style = new StyleRun(StyleRun.Type.ANCHOR, def.getStart(), def.getLength());
-        style.message = binding.getQname() + " : " + binding.getType();
-        style.url = binding.getQname();
-        style.id = "" + Math.abs(def.hashCode());
-
-        Set<Ref> refs = binding.getRefs();
-        style.highlight = new ArrayList<>();
-        for (Ref r : refs) {
-            style.highlight.add(Integer.toString(Math.abs(r.hashCode())));
-        }
-        addFileStyle(def.getFile(), style);
-    }
-
-
-    void processRef(@NotNull Ref ref, @NotNull List<Binding> bindings) {
-        StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start(), ref.length());
-        link.id = Integer.toString(Math.abs(ref.hashCode()));
-
-        List<String> typings = new ArrayList<>();
-        for (Binding b : bindings) {
-            typings.add(b.getQname() + " : " + b.getType());
-        }
-        link.message = Util.joinWithSep(typings, " | ", "{", "}");
-
-        link.highlight = new ArrayList<>();
-        for (Binding b : bindings) {
-            for (Def d : b.getDefs()) {
-                link.highlight.add(Integer.toString(Math.abs(d.hashCode())));
-            }
-        }
-
-        
-        // Currently jump to the first binding only. Should change to have a
-        // hover menu or something later.
-        String path = ref.getFile();
-        for (Binding b : bindings) {
-            if (link.url == null) {
-                link.url = toURL(b, path);
-            }
-
-            if (link.url != null) {
-                addFileStyle(path, link);
-                break;
-            }
-        }
-    }
-
 
     private void processDiagnostic(@NotNull Diagnostic d) {
         StyleRun style = new StyleRun(StyleRun.Type.WARNING, d.start, d.end - d.start);
@@ -194,9 +220,7 @@ class Linker {
     @Nullable
     private String toURL(@NotNull Binding binding, String filename) {
         Def def = binding.getSingle();
-        if (def == null) {
-            return null;
-        }
+
         if (binding.isBuiltin()) {
             return def.getURL();
         }

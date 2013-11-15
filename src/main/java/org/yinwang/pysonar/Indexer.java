@@ -6,6 +6,7 @@ import org.yinwang.pysonar.ast.*;
 import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
+import org.yinwang.pysonar.types.UnionType;
 
 import java.io.File;
 import java.util.*;
@@ -27,7 +28,7 @@ public class Indexer {
     @NotNull
     public Scope globaltable = new Scope(null, Scope.ScopeType.GLOBAL);
     @NotNull
-    public List<Binding> bindings = new ArrayList<>();
+    public Map<String, List<Binding>> allBindings = new HashMap<>();
     @NotNull
     private Map<Ref, List<Binding>> references = new HashMap<>();
     @NotNull
@@ -156,12 +157,10 @@ public class Indexer {
         importStack.remove(f);
     }
 
-    /**
-     * Returns the mutable set of all bindings collected, keyed on their qnames.
-     */
+
     @NotNull
-    public List<Binding> getBindings() {
-        return bindings;
+    public Map<String, List<Binding>> getAllBindings() {
+        return allBindings;
     }
 
 
@@ -241,11 +240,6 @@ public class Indexer {
     @NotNull
     public Map<Ref, List<Binding>> getReferences() {
         return references;
-    }
-
-
-    public void recordBinding(@NotNull Binding b) {
-        bindings.add(b);
     }
 
 
@@ -564,13 +558,15 @@ public class Indexer {
         applyUncalled();
 
         // mark unused variables
-        for (Binding b : bindings) {
-            if (!b.getType().isClassType() &&
-                    !b.getType().isFuncType() &&
-                    !b.getType().isModuleType()
-                    && b.getRefs().isEmpty()) {
-                for (Def def : b.getDefs()) {
-                    Indexer.idx.putProblem(def.getNode(), "Unused variable: " + def.getName());
+        for (List<Binding> bindings : allBindings.values()) {
+            for (Binding b : bindings) {
+                if (!b.getType().isClassType() &&
+                        !b.getType().isFuncType() &&
+                        !b.getType().isModuleType()
+                        && b.getRefs().isEmpty()) {
+                    for (Def def : b.getDefs()) {
+                        Indexer.idx.putProblem(def.getNode(), "Unused variable: " + def.getName());
+                    }
                 }
             }
         }
@@ -578,6 +574,8 @@ public class Indexer {
         for (Entry<Ref, List<Binding>> ent : references.entrySet()) {
             convertCallToNew(ent.getKey(), ent.getValue());
         }
+
+        Util.msg("total defs added: " + Binding.totalDefs);
     }
 
 
@@ -663,6 +661,48 @@ public class Indexer {
         }
         return files;
     }
+
+
+    @Nullable
+    private Binding findBinding(@NotNull Binding b) {
+        List<Binding> existing = allBindings.get(b.getQname());
+        if (existing != null) {
+            for (Binding eb : existing) {
+                if (eb.equals(b)) {
+                    return eb;
+                }
+            }
+        }
+        return null;
+    }
+
+
+    public void addBinding(String qname, Binding b) {
+        List<Binding> lb = allBindings.get(qname);
+        if (lb == null) {
+            lb = new ArrayList<Binding>();
+            lb.add(b);
+            allBindings.put(qname, lb);
+        } else {
+            lb.add(b);
+        }
+    }
+
+
+    @NotNull
+    public Binding putBinding(@NotNull Binding b) {
+        String qname = b.getQname();
+        Binding existing = findBinding(b);
+
+        if (existing == null) {
+            addBinding(qname, b);
+            return b;
+        } else {
+            existing.setType(UnionType.union(existing.getType(), b.getType()));
+            return existing;
+        }
+    }
+
 
     public void log(Level level, String msg) {
         if (logger.isLoggable(level)) {

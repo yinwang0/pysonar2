@@ -177,10 +177,8 @@ public class Scope {
                 break;
         }
 
-        if (!getInternalTable().containsKey(id)) {
-            Indexer.idx.recordBinding(b);
-            getInternalTable().put(id, b);
-        }
+        Indexer.idx.putBinding(b);
+        getInternalTable().put(id, b);
 
         return b;
     }

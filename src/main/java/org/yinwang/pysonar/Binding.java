@@ -110,18 +110,27 @@ public class Binding implements Comparable<Object> {
      * automatically (when appropriate) by adding the binding to a
      * {@link Scope}.
      */
+    public static int totalDefs = 0;
+
     public void addDef(@Nullable Node node) {
         if (node != null) {
             Def def = new Def(node, this);
-            def.setBinding(this);
-
-            Set<Def> defs = getDefs();
-            defs.add(def);
-            if (def.isURL()) {
-                markBuiltin();
-            }
+            addDef(def);
         }
     }
+
+
+    public void addDef(Def def) {
+        def.setBinding(this);
+
+        Set<Def> defs = getDefs();
+        defs.add(def);
+        totalDefs++;
+        if (def.isURL()) {
+            markBuiltin();
+        }
+    }
+
 
     public void addRef(Ref ref) {
         getRefs().add(ref);
@@ -238,7 +247,7 @@ public class Binding implements Comparable<Object> {
      */
     public Set<Ref> getRefs() {
         if (refs == null) {
-            refs = new HashSet<Ref>(REF_SET_INITIAL_CAPACITY);
+            refs = new HashSet<>(REF_SET_INITIAL_CAPACITY);
         }
         return refs;
     }
