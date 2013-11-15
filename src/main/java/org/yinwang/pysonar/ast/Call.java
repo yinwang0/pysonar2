@@ -145,7 +145,7 @@ public class Call extends Node {
                 }
             }
 
-            func.setMapping(fromType, toType);
+            func.addMapping(fromType, toType);
             func.setSelfType(null);
             return toType;
         }

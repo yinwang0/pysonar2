@@ -46,7 +46,10 @@ public class Name extends Node {
         if (b != null) {
             Indexer.idx.putLocation(this, b);
             return b.getType();
-        } else {
+        } else if (id.equals("True") || id.equals("False")) {
+            return Indexer.idx.builtins.BaseBool;
+        }
+        else {
             Indexer.idx.putProblem(this, "unbound variable " + getId());
             Type t = Indexer.idx.builtins.unknown;
             t.getTable().setPath(s.extendPath(getId()));
@@ -63,7 +66,7 @@ public class Name extends Node {
                 && ((Attribute)parent).getAttr() == this;
     }
     
-    @Nullable
+    @NotNull
     public String getId() {
         return id;
     }

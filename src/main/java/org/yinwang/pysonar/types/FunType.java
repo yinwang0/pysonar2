@@ -23,49 +23,26 @@ public class FunType extends Type {
     public Type selfType;                 // self's type for calls
     public List<Type> defaultTypes;       // types for default parameters (evaluated at def time)
 
+
     public FunType() {
     }
+
 
     public FunType(FunctionDef func, Scope env) {
         this.func = func;
         this.env = env;
     }
 
+
     public FunType(Type from, Type to) {
-        arrows.add(new Arrow(from, to));
+        addMapping(from, to);
         getTable().addSuper(Indexer.idx.builtins.BaseFunction.getTable());
         getTable().setPath(Indexer.idx.builtins.BaseFunction.getTable().getPath());
     }
 
 
-    public boolean contains(Type from) {
-        for (Arrow a : arrows) {
-            if (Type.subtypeOf(a.from, from)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    public synchronized void setMapping(Type from, Type to) {
-        if (arrows.isEmpty()) {
-            arrows.add(new Arrow(from, to));
-        } else {
-            List<Arrow> newArrows = new ArrayList<>();
-
-            for (Arrow a : arrows) {
-                if (!Type.subtypeOf(from, a.from)) {
-                    newArrows.add(a);
-                }
-            }
-
-            arrows = newArrows;
-
-            if (!contains(from)) {
-                arrows.add(new Arrow(from, to));
-            }
-        }
+    public void addMapping(Type from, Type to) {
+        arrows.add(new Arrow(from, to));
     }
 
 
@@ -132,11 +109,7 @@ public class FunType extends Type {
     public boolean equals(Object other) {
         if (other instanceof FunType) {
             FunType fo = (FunType) other;
-            if (fo.getTable().getPath().equals(getTable().getPath())) {
-                return true;
-            } else {
-                return this == other;
-            }
+            return fo.getTable().getPath().equals(getTable().getPath()) || this == other;
         } else {
             return false;
         }
