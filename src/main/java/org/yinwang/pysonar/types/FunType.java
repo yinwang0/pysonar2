@@ -6,15 +6,12 @@ import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.ast.FunctionDef;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class FunType extends Type {
 
     @NotNull
-    private List<Arrow> arrows = new ArrayList<>();
+    private Map<Type, Type> arrows = new HashMap<>();
     public FunctionDef func;
     @Nullable
     public ClassType cls = null;
@@ -42,24 +39,19 @@ public class FunType extends Type {
 
 
     public void addMapping(Type from, Type to) {
-        arrows.add(new Arrow(from, to));
+        arrows.put(from, to);
     }
 
 
     @Nullable
     public Type getMapping(@NotNull Type from) {
-        for (Arrow a : arrows) {
-            if (from.equals(a.from)) {
-                return a.to;
-            }
-        }
-        return null;
+        return arrows.get(from);
     }
 
 
     public Type getReturnType() {
         if (!arrows.isEmpty()) {
-            return arrows.get(0).to;
+            return arrows.values().iterator().next();
         } else {
             return Indexer.idx.builtins.unknown;
         }
@@ -148,10 +140,10 @@ public class FunType extends Type {
             int newNum = ctr.push(this);
 
             int i = 0;
-            for (Arrow a : arrows) {
-                sb.append(a.from.printType(ctr));
+            for (Map.Entry<Type, Type> e : arrows.entrySet()) {
+                sb.append(e.getKey().printType(ctr));
                 sb.append(" -> ");
-                sb.append(a.to.printType(ctr));
+                sb.append(e.getValue().printType(ctr));
                 if (i < arrows.size() - 1) {
                     sb.append(" | ");
                 }
