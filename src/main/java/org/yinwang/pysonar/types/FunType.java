@@ -13,16 +13,6 @@ import java.util.Set;
 
 public class FunType extends Type {
 
-    public class Arrow {
-        public Type from;
-        public Type to;
-
-        public Arrow(Type from, Type to) {
-            this.from = from;
-            this.to = to;
-        }
-    }
-
     @NotNull
     private List<Arrow> arrows = new ArrayList<>();
     public FunctionDef func;
@@ -42,7 +32,7 @@ public class FunType extends Type {
     }
 
     public FunType(Type from, Type to) {
-        setMapping(from, to);
+        arrows.add(new Arrow(from, to));
         getTable().addSuper(Indexer.idx.builtins.BaseFunction.getTable());
         getTable().setPath(Indexer.idx.builtins.BaseFunction.getTable().getPath());
     }
@@ -62,7 +52,7 @@ public class FunType extends Type {
         if (arrows.isEmpty()) {
             arrows.add(new Arrow(from, to));
         } else {
-            List<Arrow> newArrows = new ArrayList<Arrow>();
+            List<Arrow> newArrows = new ArrayList<>();
 
             for (Arrow a : arrows) {
                 if (!Type.subtypeOf(from, a.from)) {
@@ -142,12 +132,10 @@ public class FunType extends Type {
     public boolean equals(Object other) {
         if (other instanceof FunType) {
             FunType fo = (FunType) other;
-            if (fo.getFunc() == null && getFunc() == null) {
+            if (fo.getTable().getPath().equals(getTable().getPath())) {
                 return true;
-            } else if (fo.getFunc() != null && getFunc() != null) {
-                return fo.getFunc().equals(getFunc());
             } else {
-                return false;
+                return this == other;
             }
         } else {
             return false;
@@ -174,6 +162,10 @@ public class FunType extends Type {
 
     @Override
     protected String printType(@NotNull CyclicTypeRecorder ctr) {
+        if (arrows.isEmpty()) {
+            return "? -> ?";
+        }
+
         StringBuilder sb = new StringBuilder();
 
         Integer num = ctr.visit(this);

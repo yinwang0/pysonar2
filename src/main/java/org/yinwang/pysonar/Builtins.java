@@ -54,12 +54,10 @@ public class Builtins {
     }
 
     // XXX:  need to model "types" module and reconcile with these types
-    @Nullable
     public ModuleType Builtin;
-    @NotNull
-    public UnknownType unknown = new UnknownType();
     public ClassType Object;
     public ClassType Type;
+    public InstanceType unknown;
     public InstanceType None;
     public InstanceType Cont;
     public InstanceType BaseNum; // BaseNum models int, float and long
@@ -131,8 +129,8 @@ public class Builtins {
     }
 
     @NotNull
-    UnknownType unknown() {
-        UnknownType t = Indexer.idx.builtins.unknown;
+    InstanceType unknown() {
+        InstanceType t = Indexer.idx.builtins.unknown;
         nativeTypes.add(t);
         return t;
     }
@@ -323,7 +321,7 @@ public class Builtins {
      * The set of top-level native modules.
      */
     @NotNull
-    private Map<String, NativeModule> modules = new HashMap<String, NativeModule>();
+    private Map<String, NativeModule> modules = new HashMap<>();
 
     public Builtins() {
         buildTypes();
@@ -334,6 +332,7 @@ public class Builtins {
         Scope bt = Builtin.getTable();
 
         Object = newClass("object", bt);
+        unknown = new InstanceType(newClass("?", bt));
         None = new InstanceType(newClass("None", bt));
         Cont = new InstanceType(newClass("None", bt));                 // continuation (to express non-return)
         Type = newClass("type", bt, Object);

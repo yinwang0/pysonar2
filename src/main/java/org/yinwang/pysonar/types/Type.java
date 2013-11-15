@@ -85,7 +85,7 @@ public abstract class Type {
     }
 
     public boolean isUnknownType() {
-        return this instanceof UnknownType;
+        return this == Indexer.idx.builtins.unknown;
     }
 
     @NotNull
@@ -139,10 +139,6 @@ public abstract class Type {
         return (UnionType) this;
     }
 
-    @NotNull
-    public UnknownType asUnknownType() {
-        return (UnknownType) this;
-    }
 
     /**
      * Internal class to support printing in the presence of type-graph cycles.

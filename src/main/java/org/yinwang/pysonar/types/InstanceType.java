@@ -71,13 +71,7 @@ public class InstanceType extends Type {
     
     @Override
     protected String printType(CyclicTypeRecorder ctr) {
-        StringBuilder sb = new StringBuilder();
-
-        if (getClassType().isClassType()) {
-            sb.append(getClassType().asClassType().getName());
-        }
-
-        return sb.toString();
+        return getClassType().asClassType().getName();
     }
 
 }

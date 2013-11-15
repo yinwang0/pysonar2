@@ -12,7 +12,7 @@ public class TupleType extends Type {
     private List<Type> eltTypes;
 
     public TupleType() {
-        this.eltTypes = new ArrayList<Type>();
+        this.eltTypes = new ArrayList<>();
         getTable().addSuper(Indexer.idx.builtins.BaseTuple.getTable());
         getTable().setPath(Indexer.idx.builtins.BaseTuple.getTable().getPath());
     }
@@ -104,7 +104,7 @@ public class TupleType extends Type {
         } else {
             int newNum = ctr.push(this);
             boolean first = true;
-            sb.append("(");
+            if (getElementTypes().size() != 1) sb.append("(");
 
             for (Type t : getElementTypes()) {
                 if (!first) {
@@ -118,7 +118,7 @@ public class TupleType extends Type {
                 sb.append("=#").append(newNum).append(":");
             }
 
-            sb.append(")");
+            if (getElementTypes().size() != 1) sb.append(")");
             ctr.pop(this);
         }
         return sb.toString();
