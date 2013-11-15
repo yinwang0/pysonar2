@@ -125,9 +125,64 @@ public class FunType extends Type {
     }
 
 
+    private boolean subsumed(Type type1, Type type2) {
+        if (typeStack.contains(type1, type2)) {
+            return true;
+        }
+
+        if (type1.isUnknownType() || type1.equals(type2)) {
+            return true;
+        }
+
+        if (type1 instanceof TupleType && type2 instanceof TupleType) {
+            List<Type> elems1 = ((TupleType) type1).getElementTypes();
+            List<Type> elems2 = ((TupleType) type2).getElementTypes();
+
+            if (elems1.size() == elems2.size()) {
+                typeStack.push(type1, type2);
+                for (int i = 0; i < elems1.size(); i++) {
+                    if (!subsumed(elems1.get(i), elems2.get(i))) {
+                        typeStack.pop(type1, type2);
+                        return false;
+                    }
+                }
+            }
+
+            typeStack.pop(type1, type2);
+            return true;
+        }
+
+        return false;
+    }
+
+
+    private Map<Type, Type> compressArrows(Map<Type, Type> arrows) {
+        Map<Type, Type> ret = new HashMap<>();
+
+        for (Map.Entry<Type, Type> e1 : arrows.entrySet()) {
+            boolean subsumed = false;
+
+            for (Map.Entry<Type, Type> e2 : arrows.entrySet()) {
+                if (e1 != e2 && subsumed(e1.getKey(), e2.getKey())) {
+                    subsumed = true;
+                    break;
+                }
+            }
+
+            if (!subsumed) {
+                ret.put(e1.getKey(), e1.getValue());
+            }
+        }
+
+        return ret;
+    }
+
+
     @Override
     protected String printType(@NotNull CyclicTypeRecorder ctr) {
-        if (arrows.isEmpty()) {
+        Map<Type, Type> compressed = compressArrows(arrows);
+
+        if (compressed.isEmpty()) {
             return "? -> ?";
         }
 
@@ -142,7 +197,7 @@ public class FunType extends Type {
             int i = 0;
             Set<String> seen = new HashSet<>();
 
-            for (Map.Entry<Type, Type> e : arrows.entrySet()) {
+            for (Map.Entry<Type, Type> e : compressed.entrySet()) {
                 String as = e.getKey().printType(ctr) + " -> " + e.getValue().printType(ctr);
 
                 if (!seen.contains(as)) {
