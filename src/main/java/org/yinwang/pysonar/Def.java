@@ -2,9 +2,7 @@ package org.yinwang.pysonar;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.ast.Name;
-import org.yinwang.pysonar.ast.Node;
-import org.yinwang.pysonar.ast.Url;
+import org.yinwang.pysonar.ast.*;
 
 /**
  * Encapsulates information about a binding definition site.
@@ -16,6 +14,10 @@ public class Def {
     private int end = -1;
     private int bodyStart = -1;
     private int bodyEnd = -1;
+
+    public String docstring;
+    public int docstringStart;
+    public int docstringEnd;
 
     @NotNull
     private Binding binding;
@@ -38,21 +40,50 @@ public class Def {
                 fileOrUrl = url;
             }
         } else {
-            if (node.isFunctionDef()) {
-                start = node.asFunctionDef().name.start;
-                end = node.asFunctionDef().name.end;
-                bodyStart = node.start;
-                bodyStart = node.end;
-            } else {
-                start = node.start;
-                end = node.end;
-            }
-
             fileOrUrl = node.getFile();
             if (node instanceof Name) {
                 name = node.asName().getId();
             }
         }
+
+        initLocationInfo(node);
+    }
+
+
+    private void initLocationInfo(Node node) {
+        start = node.start;
+        end = node.end;
+
+        Node parent = node.getParent();
+        if ((parent instanceof FunctionDef && ((FunctionDef)parent).name == node) ||
+                (parent instanceof ClassDef && ((ClassDef)parent).name == node)) {
+            bodyStart = parent.start;
+            bodyEnd = parent.end;
+            Str docstring = parent.docstring();
+            if (docstring != null ) {
+                this.docstring = docstring.getStr();
+                this.docstringStart = docstring.start;
+                this.docstringEnd = docstring.end;
+            }
+        } else if (node instanceof Module) {
+            bodyStart = node.start;
+            bodyEnd = node.end;
+            Util.msg("body start: " + bodyStart);
+            Util.msg("body end: " + bodyEnd);
+
+            Str docstring = parent.docstring();
+            if (docstring != null ) {
+                this.docstring = docstring.getStr();
+                this.docstringStart = docstring.start;
+                this.docstringEnd = docstring.end;
+            }
+        } else {
+            bodyStart = node.start;
+            bodyEnd = node.end;
+        }
+
+//        Util.msg("start: " + start + ", end: " + end + ", bodystart: " + bodyStart + ", bodyend: " + bodyEnd);
+
     }
 
     /**

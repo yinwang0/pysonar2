@@ -68,7 +68,7 @@ public class DictType extends Type {
             ctr.push(this);
             sb.append("{");
             sb.append(keyType.printType(ctr));
-            sb.append(":");
+            sb.append(" : ");
             sb.append(valueType.printType(ctr));
             sb.append("}");
             ctr.pop(this);

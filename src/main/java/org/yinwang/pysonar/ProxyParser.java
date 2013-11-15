@@ -199,7 +199,7 @@ public class ProxyParser {
 
         if (type.equals("Module")) {
             Block b = convertBlock(map.get("body"));
-            Module m = new Module(b, -1, -1);
+            Module m = new Module(b, start, end);
             try {
                 m.setFile(Util.unifyPath((String) map.get("filename")));
             } catch (Exception e) {

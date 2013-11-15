@@ -3,6 +3,7 @@ package org.yinwang.pysonar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Module;
+import org.yinwang.pysonar.ast.Str;
 
 import java.io.*;
 import java.util.HashMap;
@@ -16,11 +17,28 @@ import java.util.logging.Logger;
  */
 public class AstCache {
 
+    public static class DocstringInfo {
+        public String docstring;
+        public int start;
+        public int end;
+
+        public static DocstringInfo NewWithDocstringNode(Str docstringNode) {
+            if (docstringNode == null) {
+                return null;
+            }
+            DocstringInfo d = new DocstringInfo();
+            d.docstring = docstringNode.getStr();
+            d.start = docstringNode.start;
+            d.end = docstringNode.end;
+            return d;
+        }
+    }
 
     private static final Logger LOG = Logger.getLogger(AstCache.class.getCanonicalName());
 
     @NotNull
-    private Map<String, Module> cache = new HashMap<String, Module>();
+    private Map<String, Module> cache = new HashMap<>();
+    private Map<String, DocstringInfo> docstringCache = new HashMap<>();
 
     private static AstCache INSTANCE;
 
@@ -104,6 +122,7 @@ public class AstCache {
             }
         } finally {
             cache.put(path, mod);  // may be null
+            docstringCache.put(path, DocstringInfo.NewWithDocstringNode(mod.docstring())); // may be null
         }
         return mod;
     }
@@ -126,6 +145,7 @@ public class AstCache {
         if (mod != null) {
             fine("reusing " + path);
             cache.put(path, mod);
+            docstringCache.put(path, DocstringInfo.NewWithDocstringNode(mod.docstring())); // may be null
             return mod;
         }
 
@@ -134,6 +154,9 @@ public class AstCache {
             mod = parse(path);
         } finally {
             cache.put(path, mod);  // may be null
+            if (mod != null) {
+                docstringCache.put(path, DocstringInfo.NewWithDocstringNode(mod.docstring())); // may be null
+            }
         }
 
         if (mod != null) {
@@ -142,6 +165,19 @@ public class AstCache {
 
         return mod;
     }
+
+
+    public DocstringInfo getModuleDocstringInfo(String path) {
+        if (!docstringCache.containsKey(path)) {
+            if (cache.containsKey(path)) {
+                return null;
+            } else {
+                Util.die("Should not ask for docstring before parsing module");
+            }
+        }
+        return docstringCache.get(path);
+    }
+
 
     /**
      * Parse a file.  Does not look in the cache or cache the result.

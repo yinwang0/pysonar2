@@ -648,6 +648,11 @@ public class Indexer {
     }
 
 
+    public AstCache.DocstringInfo getModuleDocstringInfoForFile(String file) {
+        return getAstCache().getModuleDocstringInfo(file);
+    }
+
+
     @NotNull
     public List<String> getLoadedFiles() {
         List<String> files = new ArrayList<String>();
