@@ -97,9 +97,9 @@ public class ImportFrom extends Node {
 
         if (!names.isEmpty()) {
             for (String name : names) {
-                Binding nb = mt.getTable().lookupLocal(name);
-                if (nb != null) {
-                    s.update(name, nb);
+                Binding b = mt.getTable().lookupLocal(name);
+                if (b != null) {
+                    s.update(name, b);
                 } else {
                     List<Name> m2 = new ArrayList<>(module);
                     m2.add(new Name(name));
