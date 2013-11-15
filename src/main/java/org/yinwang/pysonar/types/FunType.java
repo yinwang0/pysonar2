@@ -11,7 +11,7 @@ import java.util.*;
 public class FunType extends Type {
 
     @NotNull
-    private Map<Type, Type> arrows = new HashMap<>();
+    public Map<Type, Type> arrows = new HashMap<>();
     public FunctionDef func;
     @Nullable
     public ClassType cls = null;
@@ -140,13 +140,20 @@ public class FunType extends Type {
             int newNum = ctr.push(this);
 
             int i = 0;
+            Set<String> seen = new HashSet<>();
+
             for (Map.Entry<Type, Type> e : arrows.entrySet()) {
-                sb.append(e.getKey().printType(ctr));
-                sb.append(" -> ");
-                sb.append(e.getValue().printType(ctr));
-                if (i < arrows.size() - 1) {
-                    sb.append(" | ");
+                String as = e.getKey().printType(ctr) + " -> " + e.getValue().printType(ctr);
+
+                if (!seen.contains(as)) {
+                    if (i != 0) {
+                        sb.append(" | ");
+                    }
+
+                    sb.append(as);
+                    seen.add(as);
                 }
+
                 i++;
             }
 
