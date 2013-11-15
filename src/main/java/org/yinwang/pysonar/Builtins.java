@@ -813,12 +813,12 @@ public class Builtins {
             }
             BaseException = (ClassType)table.lookup("BaseException").getType();
 
-            for (String f : list("True", "False", "None", "Ellipsis")) {
-                addAttr(f, newDataModelUrl("org/yinwang/pysonar/types"), unknown());
+            for (String f : list("True", "False")) {
+                addAttr(f, newDataModelUrl("org/yinwang/pysonar/types"), BaseBool);
             }
 
+            addAttr("None", newDataModelUrl("org/yinwang/pysonar/types"), None);
             addFunction("open", newTutUrl("inputoutput.html#reading-and-writing-files"), BaseFile);
-
             addFunction("__import__", newLibUrl("functions"), newModule("<?>"));
 
             Indexer.idx.globaltable.put("__builtins__", liburl(), module, ATTRIBUTE, 0);
