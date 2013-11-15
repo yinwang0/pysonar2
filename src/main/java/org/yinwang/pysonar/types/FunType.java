@@ -148,7 +148,6 @@ public class FunType extends Type {
                 }
             }
 
-            typeStack.pop(type1, type2);
             return true;
         }
 
