@@ -576,8 +576,6 @@ public class Indexer {
         for (Entry<Ref, List<Binding>> ent : references.entrySet()) {
             convertCallToNew(ent.getKey(), ent.getValue());
         }
-
-        Util.msg("total defs added: " + Binding.totalDefs);
     }
 
 
@@ -638,14 +636,30 @@ public class Indexer {
     @NotNull
     public String getStatusReport() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Summary: \n")
-                .append("- modules loaded:\t").append(nLoadedFiles)
-                .append("\n- unresolved modules:\t").append(failedModules.size())
-                .append("\n- semantic problems:\t").append(semanticErrors.size())
-                .append("\n- failed to parse:\t").append(failedToParse.size());
+        sb.append(Util.banner("summary"));
+        sb.append("\n- modules loaded:\t").append(nLoadedFiles);
+        sb.append("\n- unresolved modules:\t").append(failedModules.size());
+        sb.append("\n- semantic problems:\t").append(semanticErrors.size());
+        sb.append("\n- failed to parse:\t").append(failedToParse.size());
+
+        int nDef = 0;
+        int nXRef = 0;
+
+        for (List<Binding> bindings : getAllBindings().values()) {
+            for (Binding b : bindings) {
+                nDef += b.getDefs().size();
+                nXRef += b.getRefs().size();
+            }
+        }
+
+        sb.append("\n- number of definitions: " + nDef);
+        sb.append("\n- number of cross references: " + nXRef);
+        sb.append("\n- number of references: " + getReferences().size());
+
 
         return sb.toString();
     }
+
 
 
     public AstCache.DocstringInfo getModuleDocstringInfoForFile(String file) {

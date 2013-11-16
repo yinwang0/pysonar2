@@ -190,6 +190,7 @@ public class Demo {
         return f;
     }
 
+
     public static void main(@NotNull String[] args) throws Exception {
         if (args.length != 2) {
             usage();
@@ -199,5 +200,8 @@ public class Demo {
         OUTPUT_DIR = new File(args[1]);
 
         new Demo().start(fileOrDir);
+
+        Util.printGCStats();
+
     }
 }

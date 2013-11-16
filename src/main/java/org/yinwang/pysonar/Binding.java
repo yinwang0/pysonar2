@@ -105,12 +105,6 @@ public class Binding implements Comparable<Object> {
         return qname;
     }
 
-    /**
-     * Adds {@code node} as a definition for this binding.  This is called
-     * automatically (when appropriate) by adding the binding to a
-     * {@link Scope}.
-     */
-    public static int totalDefs = 0;
 
     public void addDef(@Nullable Node node) {
         if (node != null) {
@@ -125,7 +119,6 @@ public class Binding implements Comparable<Object> {
 
         Set<Def> defs = getDefs();
         defs.add(def);
-        totalDefs++;
         if (def.isURL()) {
             markBuiltin();
         }

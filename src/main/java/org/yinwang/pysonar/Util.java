@@ -4,8 +4,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.lang.management.GarbageCollectorMXBean;
+import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class Util {
@@ -400,6 +403,57 @@ public class Util {
         } else {
             return res.getPath();
         }
+    }
+
+
+    public static String printMem(long bytes) {
+        double dbytes = (double) bytes;
+        DecimalFormat df = new DecimalFormat("#.##");
+
+        if (dbytes < 1024) {
+            return df.format(bytes);
+        } else if (dbytes < 1024 * 1024) {
+            return df.format(dbytes / 1024);
+        } else if (dbytes < 1024 * 1024 * 1024) {
+            return df.format(dbytes / 1024 / 1024) + "M";
+        } else if (dbytes < 1024 * 1024 * 1024 * 1024L) {
+            return df.format(dbytes / 1024 / 1024 / 1024) + "G";
+        } else {
+            return "Too big to show you";
+        }
+    }
+
+
+    public static String banner(String msg) {
+        return "---------------- " + msg + " ----------------";
+    }
+
+
+    public static void printGCStats() {
+        long totalGC = 0;
+        long gcTime = 0;
+
+        for (GarbageCollectorMXBean gc : ManagementFactory.getGarbageCollectorMXBeans()) {
+            long count = gc.getCollectionCount();
+
+            if (count >= 0) {
+                totalGC += count;
+            }
+
+            long time = gc.getCollectionTime();
+
+            if (time >= 0) {
+                gcTime += time;
+            }
+        }
+
+        Util.msg(banner("memory stats"));
+        Util.msg("Total Collections: " + totalGC);
+        Util.msg("Total Collection Time: " + timeString(gcTime));
+
+        Runtime runtime = Runtime.getRuntime();
+        Util.msg("Allocated Memory: " + Util.printMem(runtime.totalMemory()));
+        Util.msg("Peak Memory: " + Util.printMem(runtime.maxMemory()));
     }
 
 }

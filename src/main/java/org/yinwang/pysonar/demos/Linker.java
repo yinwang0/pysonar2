@@ -40,30 +40,28 @@ class Linker {
      * Should be called once per index.
      */
 
-    int nDef = 0;
-
     public void findLinks(@NotNull Indexer indexer) {
-        Util.msg("Adding xref links for " + indexer.getAllBindings().size() + " bindings");
+        Util.msg("Adding xref links");
 
+        Progress progress = new Progress(1000, 50);
         for (List<Binding> bindings : indexer.getAllBindings().values()) {
             for (Binding b : bindings) {
                 addSemanticStyles(b);
                 for (Def def : b.getDefs()) {
                     processDef(def, b);
-                    nDef++;
+                    progress.tick();
                 }
             }
         }
 
         // highlight definitions
         Util.msg("\nAdding ref links");
+        progress = new Progress(1000, 50);
         for (Entry<Ref,List<Binding>> e : indexer.getReferences().entrySet()) {
             processRef(e.getKey(), e.getValue());
+            progress.tick();
         }
 
-        Util.msg("\n#xrefs: " + nXref);
-        Util.msg("#defs: " + nDef);
-        Util.msg("#refs: " + nRef);
 
 //        for (List<Diagnostic> ld: indexer.semanticErrors.values()) {
 //            for (Diagnostic d: ld) {
@@ -77,10 +75,6 @@ class Linker {
 //            }
 //        }
     }
-
-
-    int nXref = 0;
-    Progress progressXRef = new Progress(10000, 50);
 
     private void processDef(@Nullable Def def, @NotNull Binding binding) {
         if (def == null || def.isURL() || def.getStart() < 0) {
@@ -96,16 +90,11 @@ class Linker {
 
 
         for (Ref r : refs) {
-            progressXRef.tick();
-            nXref++;
             style.highlight.add(Integer.toString(Math.abs(r.hashCode())));
         }
         addFileStyle(def.getFile(), style);
     }
 
-
-    int nRef = 0;
-    Progress progressRef = new Progress(10000, 50);
 
     void processRef(@NotNull Ref ref, @NotNull List<Binding> bindings) {
         StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start(), ref.length());
@@ -121,8 +110,6 @@ class Linker {
 
         for (Binding b : bindings) {
             for (Def d : b.getDefs()) {
-                progressRef.tick();
-                nRef++;
                 link.highlight.add(Integer.toString(Math.abs(d.hashCode())));
             }
         }
