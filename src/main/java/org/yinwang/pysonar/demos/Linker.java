@@ -98,11 +98,10 @@ class Linker {
         for (Ref r : refs) {
             progressXRef.tick();
             nXref++;
-//            style.highlight.add(Integer.toString(Math.abs(r.hashCode())));
+            style.highlight.add(Integer.toString(Math.abs(r.hashCode())));
         }
-//        addFileStyle(def.getFile(), style);
+        addFileStyle(def.getFile(), style);
     }
-
 
 
     int nRef = 0;
