@@ -121,8 +121,10 @@ public class AstCache {
                 }
             }
         } finally {
-            cache.put(path, mod);  // may be null
-            docstringCache.put(path, DocstringInfo.NewWithDocstringNode(mod.docstring())); // may be null
+            if (mod != null) {
+                cache.put(path, mod);
+                docstringCache.put(path, DocstringInfo.NewWithDocstringNode(mod.docstring()));
+            }
         }
         return mod;
     }

@@ -66,12 +66,11 @@ public class Def {
                 this.docstringEnd = docstring.end;
             }
         } else if (node instanceof Module) {
+            name = ((Module) node).name;
             bodyStart = node.start;
             bodyEnd = node.end;
-            Util.msg("body start: " + bodyStart);
-            Util.msg("body end: " + bodyEnd);
 
-            Str docstring = parent.docstring();
+            Str docstring = node.docstring();
             if (docstring != null ) {
                 this.docstring = docstring.getStr();
                 this.docstringStart = docstring.start;
@@ -188,8 +187,9 @@ public class Def {
             Def def = (Def) obj;
             return (start == def.start
                     && end == def.end
-                    && (fileOrUrl == null && def.fileOrUrl == null
-                    || fileOrUrl == def.fileOrUrl));
+                    && ((fileOrUrl == null && def.fileOrUrl == null)
+                       || (fileOrUrl != null && def.fileOrUrl != null &&
+                           fileOrUrl.equals(def.fileOrUrl))));
         }
     }
 

@@ -369,6 +369,8 @@ public class Indexer {
                 ModuleType mod = (ModuleType)ast.resolve(moduleTable, 0);
                 finer("[success]");
                 nLoadedFiles++;
+                putBinding(new Binding(mod.getName(), ast, mod, Binding.Kind.MODULE));
+
                 return mod;
             }
         } catch (OutOfMemoryError e) {

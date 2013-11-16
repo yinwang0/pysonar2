@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.TypeStack;
 import org.yinwang.pysonar.ast.FunctionDef;
 
 import java.util.*;
@@ -39,7 +40,9 @@ public class FunType extends Type {
 
 
     public void addMapping(Type from, Type to) {
-        arrows.put(from, to);
+        if (arrows.size() < 5) {
+            arrows.put(from, to);
+        }
     }
 
 
@@ -126,6 +129,11 @@ public class FunType extends Type {
 
 
     private boolean subsumed(Type type1, Type type2) {
+        return subsumedInner(type1, type2, new TypeStack());
+    }
+
+
+    private boolean subsumedInner(Type type1, Type type2, TypeStack typeStack) {
         if (typeStack.contains(type1, type2)) {
             return true;
         }
@@ -141,7 +149,7 @@ public class FunType extends Type {
             if (elems1.size() == elems2.size()) {
                 typeStack.push(type1, type2);
                 for (int i = 0; i < elems1.size(); i++) {
-                    if (!subsumed(elems1.get(i), elems2.get(i))) {
+                    if (!subsumedInner(elems1.get(i), elems2.get(i), typeStack)) {
                         typeStack.pop(type1, type2);
                         return false;
                     }

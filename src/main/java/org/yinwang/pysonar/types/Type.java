@@ -184,6 +184,7 @@ public abstract class Type {
     @NotNull
     @Override
     public String toString() {
+//        return "?";
         return printType(new CyclicTypeRecorder());
     }
 

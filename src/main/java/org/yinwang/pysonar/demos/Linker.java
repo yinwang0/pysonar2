@@ -56,7 +56,7 @@ class Linker {
         }
 
         // highlight definitions
-        Util.msg("Adding ref links");
+        Util.msg("\nAdding ref links");
         for (Entry<Ref,List<Binding>> e : indexer.getReferences().entrySet()) {
             processRef(e.getKey(), e.getValue());
         }

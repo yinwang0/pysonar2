@@ -16,15 +16,11 @@ public class TypeStack {
             this.first = first;
             this.second = second;
         }
-
-        @Override
-        public int hashCode() {
-            return (first.hashCode() + second.hashCode()) / 2;
-        }
     }
 
+
     @NotNull
-    private List<Pair> stack = new ArrayList<Pair>();
+    private List<Pair> stack = new ArrayList<>();
 
     public void push(Object first, Object second) {
         stack.add(new Pair(first, second));
@@ -32,7 +28,6 @@ public class TypeStack {
 
 
     public void pop(Object first, Object second) {
-//        stack.remove(new Pair(first, second));
         stack.remove(stack.size() - 1);
     }
 

@@ -87,7 +87,7 @@ public abstract class Node implements java.io.Serializable {
         }
     }
 
-
+    @Nullable
     public Str docstring() {
         Node body = null;
         if (this instanceof FunctionDef) {

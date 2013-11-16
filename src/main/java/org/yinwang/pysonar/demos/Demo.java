@@ -108,6 +108,7 @@ public class Demo {
         linker.findLinks(indexer);
 
         int rootLength = rootPath.length();
+        Util.msg("\nGenerating HTML");
         Progress progress = new Progress(100, 100);
 
         for (String path : indexer.getLoadedFiles()) {

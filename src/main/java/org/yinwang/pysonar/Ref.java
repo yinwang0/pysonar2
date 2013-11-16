@@ -185,7 +185,8 @@ public class Ref {
         } else {
             Ref ref = (Ref)obj;
             return  (start == ref.start &&
-                        (file == null && ref.file == null) || file.equals(ref.file));
+                        (file == null && ref.file == null) ||
+                        (file != null && ref.file != null && file.equals(ref.file)));
         }
     }
 

@@ -71,9 +71,8 @@ public class TupleType extends Type {
         } else if (other instanceof TupleType) {
             List<Type> types1 = getElementTypes();
             List<Type> types2 = ((TupleType) other).getElementTypes();
-            if (types1.size() != types2.size()) {
-                return false;
-            } else {
+
+            if (types1.size() == types2.size()) {
                 typeStack.push(this, other);
                 for (int i = 0; i < types1.size(); i++) {
                     if (!types1.get(i).equals(types2.get(i))) {
@@ -83,7 +82,10 @@ public class TupleType extends Type {
                 }
                 typeStack.pop(this, other);
                 return true;
+            } else {
+                return false;
             }
+
         } else {
             return false;
         }

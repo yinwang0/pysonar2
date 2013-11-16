@@ -15,17 +15,6 @@ public class ClassType extends Type {
     }
 
 
-    @Override
-    public boolean equals(Object other) {
-        if (other instanceof ClassType) {
-            ClassType co = (ClassType) other;
-            return getTable().getPath().equals(co.getTable().getPath());
-        } else {
-            return this == other;
-        }
-    }
-
-
     public ClassType(@NotNull String name, @Nullable Scope parent) {
         this.name = name;
         this.setTable(new Scope(parent, Scope.ScopeType.CLASS));
@@ -68,6 +57,17 @@ public class ClassType extends Type {
     @Override
     public int hashCode() {
         return "ClassType".hashCode();
+    }
+
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof ClassType) {
+            ClassType co = (ClassType) other;
+            return getTable().getPath().equals(co.getTable().getPath());
+        } else {
+            return this == other;
+        }
     }
 
 

@@ -154,11 +154,9 @@ public class FunctionDef extends Node {
             funkind = Binding.Kind.FUNCTION;
         }
 
-        if (outer != null) {
-            Type outType = outer.getType();
-            if (outType != null && outType.isClassType()) {
-                cl.setCls(outType.asClassType());
-            }
+        Type outType = outer.getType();
+        if (outType != null && outType.isClassType()) {
+            cl.setCls(outType.asClassType());
         }
 
         NameBinder.bind(outer, name, cl, funkind, tag);
