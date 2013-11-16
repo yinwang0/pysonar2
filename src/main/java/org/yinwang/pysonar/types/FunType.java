@@ -42,6 +42,7 @@ public class FunType extends Type {
     public void addMapping(Type from, Type to) {
         if (arrows.size() < 5) {
             arrows.put(from, to);
+            arrows = compressArrows(arrows);
         }
     }
 
@@ -187,9 +188,8 @@ public class FunType extends Type {
 
     @Override
     protected String printType(@NotNull CyclicTypeRecorder ctr) {
-        Map<Type, Type> compressed = compressArrows(arrows);
 
-        if (compressed.isEmpty()) {
+        if (arrows.isEmpty()) {
             return "? -> ?";
         }
 
@@ -204,7 +204,7 @@ public class FunType extends Type {
             int i = 0;
             Set<String> seen = new HashSet<>();
 
-            for (Map.Entry<Type, Type> e : compressed.entrySet()) {
+            for (Map.Entry<Type, Type> e : arrows.entrySet()) {
                 String as = e.getKey().printType(ctr) + " -> " + e.getValue().printType(ctr);
 
                 if (!seen.contains(as)) {
