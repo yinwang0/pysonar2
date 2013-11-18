@@ -76,6 +76,7 @@ public class Indexer {
     private Progress progress;
 
     public Indexer() {
+        stats.putInt("startTime", System.currentTimeMillis());
         progress = new Progress(10, 50);
         logger = Logger.getLogger(Indexer.class.getCanonicalName());
         idx = this;
@@ -641,14 +642,16 @@ public class Indexer {
     public String getAnalysisSummary() {
         StringBuilder sb = new StringBuilder();
         sb.append(Util.banner("analysis summary"));
+
+        String duration = Util.timeString(System.currentTimeMillis() - stats.getInt("startTime"));
+        sb.append("\n- total time: " + duration);
         sb.append("\n- modules loaded: " + nLoadedFiles);
         sb.append("\n- unresolved modules: " + failedModules.size());
         sb.append("\n- semantic problems: " + semanticErrors.size());
         sb.append("\n- failed to parse: " + failedToParse.size());
 
-        int nDef = 0;
-        int nXRef = 0;
-
+        // calculate number of defs, refs, xrefs
+        int nDef = 0, nXRef = 0;
         for (List<Binding> bindings : getAllBindings().values()) {
             for (Binding b : bindings) {
                 nDef += b.getDefs().size();
@@ -660,10 +663,11 @@ public class Indexer {
         sb.append("\n- number of cross references: " + nXRef);
         sb.append("\n- number of references: " + getReferences().size());
 
-        sb.append(stats.print());
-        int resolved = stats.getInt("resolved");
-        int unresolved = stats.getInt("unresolved");
-        sb.append("\n- resolve rate: " + Util.percent(resolved, resolved + unresolved));
+        long resolved = stats.getInt("resolved");
+        long unresolved = stats.getInt("unresolved");
+        sb.append("\n- resolved names: " + resolved);
+        sb.append("\n- unresolved names: " + unresolved);
+        sb.append("\n- name resolve rate: " + Util.percent(resolved, resolved + unresolved));
         sb.append("\n" + Util.printGCStats());
 
         return sb.toString();

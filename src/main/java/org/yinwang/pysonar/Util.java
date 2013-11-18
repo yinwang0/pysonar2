@@ -304,7 +304,7 @@ public class Util {
 
 
     @NotNull
-    public static String percent(int num, int total) {
+    public static String percent(long num, long total) {
         double pct = (num * 1.0) / total;
         pct = Math.round(pct * 10000) / 100.0;
         return pct + "%";
@@ -450,11 +450,11 @@ public class Util {
         StringBuilder sb = new StringBuilder();
 
         sb.append(banner("memory stats"));
-        sb.append("\n- Total Collections: " + totalGC);
-        sb.append("\n- Total Collection Time: " + timeString(gcTime));
+        sb.append("\n- total collections: " + totalGC);
+        sb.append("\n- total collection time: " + timeString(gcTime));
 
         Runtime runtime = Runtime.getRuntime();
-        sb.append("\n- Total Memory: " + Util.printMem(runtime.totalMemory()));
+        sb.append("\n- total memory: " + Util.printMem(runtime.totalMemory()));
 
         return sb.toString();
     }

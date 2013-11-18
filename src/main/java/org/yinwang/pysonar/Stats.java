@@ -6,13 +6,13 @@ import java.util.Map;
 public class Stats {
     Map<String, Object> contents = new HashMap<>();
 
-    public void putInt(String key, int value) {
+    public void putInt(String key, long value) {
         contents.put(key, value);
     }
 
 
-    public void inc(String key, int x) {
-        Integer old = getInt(key);
+    public void inc(String key, long x) {
+        Long old = getInt(key);
 
         if (old == null) {
             contents.put(key, 1);
@@ -27,10 +27,10 @@ public class Stats {
     }
 
 
-    public Integer getInt(String key) {
-        Integer ret = (Integer) contents.get(key);
+    public Long getInt(String key) {
+        Long ret = (Long) contents.get(key);
         if (ret == null) {
-            return 0;
+            return 0L;
         } else {
             return ret;
         }
