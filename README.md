@@ -53,9 +53,9 @@ the _html_ directory after this process.
 All serious static analysis tools require a lot of memory to run. PySonar2
 doesn't need much memory to do analysis. 1GB is probably enough for analyzing a
 medium sized project such as the standard library or Django. But for generating
-the HTML files, you may need a lot of memory (~4GB for Python 2.5 standard lib).
-This is due to the highlighting code I added to the demo not using sophisticated
-ways of doing it. The situation may change soon.
+the HTML files, you may need quite some memory (~2.5GB for Python 2.7 standard
+lib). This is due to the highlighting code I added to the demo not using
+sophisticated ways of doing it. The situation may change soon.
 
 
 
