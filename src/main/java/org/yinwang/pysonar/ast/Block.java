@@ -42,7 +42,7 @@ public class Block extends Node {
                     scope.addGlobalName(name.getId());
                     Binding nb = scope.lookup(name.getId());
                     if (nb != null) {
-                        Indexer.idx.putLocation(name, nb);
+                        Indexer.idx.putRef(name, nb);
                     }
                 }
             }

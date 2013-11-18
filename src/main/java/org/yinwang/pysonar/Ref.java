@@ -24,17 +24,14 @@ public class Ref {
     private String name;
     private int flags;
 
-    public Ref(@Nullable Node node) {
-        if (node == null) {
-            throw new IllegalArgumentException("null node");
-        }
+    public Ref(@NotNull Node node) {
         file = node.getFile();
         start = node.start;
 
         if (node instanceof Name) {
-            Name nn = ((Name)node);
-            name = nn.getId();
-            if (nn.isCall()) {
+            Name n = ((Name)node);
+            name = n.getId();
+            if (n.isCall()) {
                 // We don't always have enough information at this point to know
                 // if it's a constructor call or a regular function/method call,
                 // so we just determine if it looks like a call or not, and the
@@ -183,10 +180,10 @@ public class Ref {
         if (!(obj instanceof Ref)) {
             return false;
         } else {
-            Ref ref = (Ref)obj;
-            return  (start == ref.start &&
-                        (file == null && ref.file == null) ||
-                        (file != null && ref.file != null && file.equals(ref.file)));
+            Ref ref = (Ref) obj;
+            return (start == ref.start &&
+                    (file == null && ref.file == null) ||
+                    (file != null && ref.file != null && file.equals(ref.file)));
         }
     }
 

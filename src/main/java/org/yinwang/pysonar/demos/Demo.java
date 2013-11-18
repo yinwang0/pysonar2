@@ -201,7 +201,7 @@ public class Demo {
 
         new Demo().start(fileOrDir);
 
-        Util.printGCStats();
+        Util.msg(Util.printGCStats());
 
     }
 }

@@ -61,6 +61,8 @@ public class Indexer {
     public Set<String> failedModules = new HashSet<>();
     @NotNull
     public Set<String> failedToParse = new HashSet<>();
+    @NotNull
+    public Stats stats = new Stats();
 
     /**
      * Manages the built-in modules -- that is, modules from the standard Python
@@ -217,7 +219,7 @@ public class Indexer {
      * @param node a node referring to a name binding.  Typically a
      * {@link org.yinwang.pysonar.ast.Name}, {@link org.yinwang.pysonar.ast.Str} or {@link org.yinwang.pysonar.ast.Url}.
      */
-    public void putLocation(@Nullable Node node, @Nullable Binding b) {
+    public void putRef(@Nullable Node node, @Nullable Binding b) {
         if (node == null || node instanceof Url || b == null) {
             return;
         }
@@ -502,10 +504,10 @@ public class Indexer {
 
                 if (prev != null) {
                     Binding b = prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
-                    Indexer.idx.putLocation(name.get(i), b);
+                    Indexer.idx.putRef(name.get(i), b);
                 } else {
                     Binding b = scope.put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
-                    Indexer.idx.putLocation(name.get(i), b);
+                    Indexer.idx.putRef(name.get(i), b);
                 }
 
                 prev = mod;
@@ -517,10 +519,10 @@ public class Indexer {
                     if (mod == null) return null;
                     if (prev != null) {
                         Binding b = prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
-                        Indexer.idx.putLocation(name.get(i), b);
+                        Indexer.idx.putRef(name.get(i), b);
                     } else {
                         Binding b = scope.put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
-                        Indexer.idx.putLocation(name.get(i), b);
+                        Indexer.idx.putRef(name.get(i), b);
 
                     }
                     prev = mod;
@@ -636,7 +638,7 @@ public class Indexer {
     @NotNull
     public String getStatusReport() {
         StringBuilder sb = new StringBuilder();
-        sb.append(Util.banner("summary"));
+        sb.append(Util.banner("analysis summary"));
         sb.append("\n- modules loaded:\t").append(nLoadedFiles);
         sb.append("\n- unresolved modules:\t").append(failedModules.size());
         sb.append("\n- semantic problems:\t").append(semanticErrors.size());
@@ -656,6 +658,11 @@ public class Indexer {
         sb.append("\n- number of cross references: " + nXRef);
         sb.append("\n- number of references: " + getReferences().size());
 
+        sb.append(stats.print());
+        int resolved = stats.getInt("resolved");
+        int unresolved = stats.getInt("unresolved");
+        sb.append("\n- resolve rate: " + Util.percent(resolved, resolved + unresolved));
+        sb.append("\n" + Util.printGCStats());
 
         return sb.toString();
     }

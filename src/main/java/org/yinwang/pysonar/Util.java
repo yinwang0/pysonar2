@@ -304,10 +304,10 @@ public class Util {
 
 
     @NotNull
-    private static String percent(int num, int total) {
+    public static String percent(int num, int total) {
         double pct = (num * 1.0) / total;
         pct = Math.round(pct * 10000) / 100.0;
-        return num + "/" + total + " = " + pct + "%";
+        return pct + "%";
     }
 
 
@@ -429,7 +429,7 @@ public class Util {
     }
 
 
-    public static void printGCStats() {
+    public static String printGCStats() {
         long totalGC = 0;
         long gcTime = 0;
 
@@ -447,13 +447,16 @@ public class Util {
             }
         }
 
-        Util.msg(banner("memory stats"));
-        Util.msg("Total Collections: " + totalGC);
-        Util.msg("Total Collection Time: " + timeString(gcTime));
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(banner("memory stats"));
+        sb.append("\n- Total Collections: " + totalGC);
+        sb.append("\n- Total Collection Time: " + timeString(gcTime));
 
         Runtime runtime = Runtime.getRuntime();
-        Util.msg("Allocated Memory: " + Util.printMem(runtime.totalMemory()));
-        Util.msg("Peak Memory: " + Util.printMem(runtime.maxMemory()));
+        sb.append("\n- Total Memory: " + Util.printMem(runtime.totalMemory()));
+
+        return sb.toString();
     }
 
 }

@@ -97,7 +97,7 @@ public class Attribute extends Node {
             t.getTable().setPath(targetType.getTable().extendPath(attr.getId()));
             return t;
         } else {
-            Indexer.idx.putLocation(attr, b);
+            Indexer.idx.putRef(attr, b);
 
             if (b.getType() == null) {
                 Util.msg("b.getType() is null!");

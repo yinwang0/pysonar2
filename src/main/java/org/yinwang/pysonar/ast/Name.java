@@ -1,7 +1,6 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
@@ -44,13 +43,14 @@ public class Name extends Node {
     public Type resolve(@NotNull Scope s, int tag) {
         Binding b = s.lookup(id);
         if (b != null) {
-            Indexer.idx.putLocation(this, b);
+            Indexer.idx.putRef(this, b);
+            Indexer.idx.stats.inc("resolved");
             return b.getType();
         } else if (id.equals("True") || id.equals("False")) {
             return Indexer.idx.builtins.BaseBool;
-        }
-        else {
+        } else {
             Indexer.idx.putProblem(this, "unbound variable " + getId());
+            Indexer.idx.stats.inc("unresolved");
             Type t = Indexer.idx.builtins.unknown;
             t.getTable().setPath(s.extendPath(getId()));
             return t;

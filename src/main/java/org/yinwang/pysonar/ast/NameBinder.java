@@ -88,7 +88,7 @@ public class NameBinder {
 
         if (s.isGlobalName(name.getId())) {
             b = s.getGlobalTable().put(name.getId(), name, rvalue, kind, tag);
-            Indexer.idx.putLocation(name, b);
+            Indexer.idx.putRef(name, b);
         } else {
             b = s.put(name.getId(), name, rvalue, kind, tag);
         }
