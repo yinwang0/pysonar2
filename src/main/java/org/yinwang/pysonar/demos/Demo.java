@@ -87,8 +87,6 @@ public class Demo {
 
         indexer.finish();
 
-        Util.msg(indexer.getStatusReport());
-
         long end = System.currentTimeMillis();
         Util.msg("Finished indexing in: " + Util.timeString(end - start));
 

@@ -578,6 +578,8 @@ public class Indexer {
         for (Entry<Ref, List<Binding>> ent : references.entrySet()) {
             convertCallToNew(ent.getKey(), ent.getValue());
         }
+
+        Util.msg(getAnalysisSummary());
     }
 
 
@@ -636,13 +638,13 @@ public class Indexer {
 
 
     @NotNull
-    public String getStatusReport() {
+    public String getAnalysisSummary() {
         StringBuilder sb = new StringBuilder();
         sb.append(Util.banner("analysis summary"));
-        sb.append("\n- modules loaded:\t").append(nLoadedFiles);
-        sb.append("\n- unresolved modules:\t").append(failedModules.size());
-        sb.append("\n- semantic problems:\t").append(semanticErrors.size());
-        sb.append("\n- failed to parse:\t").append(failedToParse.size());
+        sb.append("\n- modules loaded: " + nLoadedFiles);
+        sb.append("\n- unresolved modules: " + failedModules.size());
+        sb.append("\n- semantic problems: " + semanticErrors.size());
+        sb.append("\n- failed to parse: " + failedToParse.size());
 
         int nDef = 0;
         int nXRef = 0;
