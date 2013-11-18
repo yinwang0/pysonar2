@@ -28,7 +28,12 @@ public class Stats {
 
 
     public Integer getInt(String key) {
-        return (Integer) contents.get(key);
+        Integer ret = (Integer) contents.get(key);
+        if (ret == null) {
+            return 0;
+        } else {
+            return ret;
+        }
     }
 
 

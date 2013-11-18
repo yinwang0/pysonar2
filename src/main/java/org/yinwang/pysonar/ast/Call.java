@@ -95,7 +95,7 @@ public class Call extends Node {
         }
 
         if (func.getFunc() == null) {           // func without definition (possibly builtins)
-            return Indexer.idx.builtins.unknown;
+            return func.getReturnType();
         } else if (call != null && Indexer.idx.inStack(call)) {
             func.setSelfType(null);
             return Indexer.idx.builtins.unknown;
@@ -105,7 +105,7 @@ public class Call extends Node {
             Indexer.idx.pushStack(call);
         }
 
-        List<Type> argTypeList = new ArrayList<Type>();
+        List<Type> argTypeList = new ArrayList<>();
         if (func.getSelfType() != null) {
             argTypeList.add(func.getSelfType());
         } else if (func.getCls() != null) {

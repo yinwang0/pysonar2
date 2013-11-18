@@ -753,18 +753,18 @@ public class Builtins {
             table.addSuper(BaseModule.getTable());
 
             addClass("None", newLibUrl("constants"), None);
-            addClass("bool", newLibUrl("functions", "bool"), BaseBool);
-            addClass("complex", newLibUrl("functions", "complex"), BaseComplex);
+            addFunction("bool", newLibUrl("functions", "bool"), BaseBool);
+            addFunction("complex", newLibUrl("functions", "complex"), BaseComplex);
             addClass("dict", newLibUrl("stdtypes", "typesmapping"), BaseDict);
-            addClass("file", newLibUrl("functions", "file"), BaseFile);
-            addClass("float", newLibUrl("functions", "float"), BaseFloat);
-            addClass("int", newLibUrl("functions", "int"), BaseNum);
-            addClass("list", newLibUrl("functions", "list"), BaseList);
-            addClass("long", newLibUrl("functions", "long"), BaseNum);
-            addClass("object", newLibUrl("functions", "object"), Object);
-            addClass("str", newLibUrl("functions", "str"), BaseStr);
-            addClass("tuple", newLibUrl("functions", "tuple"), BaseTuple);
-            addClass("type", newLibUrl("functions", "type"), Type);
+            addFunction("file", newLibUrl("functions", "file"), BaseFile);
+            addFunction("float", newLibUrl("functions", "float"), BaseFloat);
+            addFunction("int", newLibUrl("functions", "int"), BaseNum);
+            addFunction("list", newLibUrl("functions", "list"), BaseList);
+            addFunction("long", newLibUrl("functions", "long"), BaseNum);
+            addFunction("object", newLibUrl("functions", "object"), Object);
+            addFunction("str", newLibUrl("functions", "str"), BaseStr);
+            addFunction("tuple", newLibUrl("functions", "tuple"), BaseTuple);
+            addFunction("type", newLibUrl("functions", "type"), Type);
 
             // XXX:  need to model the following as built-in class types:
             //   basestring, bool, buffer, frozenset, property, set, slice,
