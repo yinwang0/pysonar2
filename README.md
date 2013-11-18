@@ -14,6 +14,13 @@ blog posts:
     mvn clean package
 
 
+### If the build is broken
+
+I haven't set up releases, so I push working copies of the builds that I don't
+see problems so far to the `target` directory as a "stable" version. If the
+current build is broken or buggy, please grab that snapshot instead. And of
+course, filing an issue is appreciated.
+
 
 ### Configuration
 
