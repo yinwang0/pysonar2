@@ -559,7 +559,7 @@ public class Indexer {
     public void finish() {
         progress.end();
         Util.msg("Finished loading files. " + nCalled + " functions were called.");
-        Util.msg("Analyzing uncalled functions, count: " + uncalled.size());
+        Util.msg("Analyzing uncalled functions");
         applyUncalled();
 
         // mark unused variables

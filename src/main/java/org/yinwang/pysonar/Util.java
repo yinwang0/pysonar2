@@ -305,9 +305,10 @@ public class Util {
 
     @NotNull
     public static String percent(long num, long total) {
-        double pct = (num * 1.0) / total;
-        pct = Math.round(pct * 10000) / 100.0;
-        return pct + "%";
+        double pct = ((double) num) * 100 / total;
+        DecimalFormat df = new DecimalFormat("##");
+        String formatted = df.format(pct);
+        return formatted + "%";
     }
 
 
