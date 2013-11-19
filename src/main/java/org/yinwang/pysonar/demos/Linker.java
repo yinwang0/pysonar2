@@ -43,7 +43,14 @@ class Linker {
     public void findLinks(@NotNull Indexer indexer) {
         Util.msg("Adding xref links");
 
-        Progress progress = new Progress(1000, 50);
+        int ndef = 0;
+        for (List<Binding> bindings : indexer.getAllBindings().values()) {
+            for (Binding b : bindings) {
+                ndef += b.getDefs().size();
+            }
+        }
+
+        FancyProgress progress = new FancyProgress(ndef, 50);
         for (List<Binding> bindings : indexer.getAllBindings().values()) {
             for (Binding b : bindings) {
                 addSemanticStyles(b);
@@ -56,7 +63,8 @@ class Linker {
 
         // highlight definitions
         Util.msg("\nAdding ref links");
-        progress = new Progress(1000, 50);
+        progress = new FancyProgress(indexer.getReferences().size(), 50);
+
         for (Entry<Ref,List<Binding>> e : indexer.getReferences().entrySet()) {
             processRef(e.getKey(), e.getValue());
             progress.tick();

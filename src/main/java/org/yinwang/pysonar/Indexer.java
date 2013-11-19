@@ -626,22 +626,26 @@ public class Indexer {
 
 
     public void applyUncalled() {
-        Progress progress = new Progress(100, 50);
+        int total = 0;
+        FancyProgress progress = new FancyProgress(total, 50);
+
         while (!uncalled.isEmpty()) {
-            List<FunType> uncalledDup = new ArrayList<FunType>(uncalled);
+            List<FunType> uncalledDup = new ArrayList<>(uncalled);
+            total += uncalledDup.size();
+            progress.setTotal(total);
+
             for (FunType cl : uncalledDup) {
                 progress.tick();
                 Call.apply(cl, null, null, null, null, null, newThread());
             }
         }
-        progress.end();
     }
 
 
     @NotNull
     public String getAnalysisSummary() {
         StringBuilder sb = new StringBuilder();
-        sb.append(Util.banner("analysis summary"));
+        sb.append("\n" + Util.banner("analysis summary"));
 
         String duration = Util.timeString(System.currentTimeMillis() - stats.getInt("startTime"));
         sb.append("\n- total time: " + duration);

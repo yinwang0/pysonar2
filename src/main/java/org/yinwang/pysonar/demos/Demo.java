@@ -1,8 +1,8 @@
 package org.yinwang.pysonar.demos;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.FancyProgress;
 import org.yinwang.pysonar.Indexer;
-import org.yinwang.pysonar.Progress;
 import org.yinwang.pysonar.Util;
 
 import java.io.File;
@@ -107,7 +107,15 @@ public class Demo {
 
         int rootLength = rootPath.length();
         Util.msg("\nGenerating HTML");
-        Progress progress = new Progress(100, 100);
+
+        int total = 0;
+        for (String path : indexer.getLoadedFiles()) {
+            if (path.startsWith(rootPath)) {
+                total++;
+            }
+        }
+
+        FancyProgress progress = new FancyProgress(total, 50);
 
         for (String path : indexer.getLoadedFiles()) {
             if (path.startsWith(rootPath)) {
@@ -123,8 +131,8 @@ public class Demo {
                 }
             }
         }
-        progress.end();
-        Util.msg("Wrote " + indexer.getLoadedFiles().size() + " files to " + OUTPUT_DIR);
+
+        Util.msg("\nWrote " + indexer.getLoadedFiles().size() + " files to " + OUTPUT_DIR);
     }
 
     @NotNull
