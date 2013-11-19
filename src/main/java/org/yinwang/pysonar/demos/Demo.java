@@ -70,8 +70,6 @@ public class Demo {
     }
 
     private void start(@NotNull File fileOrDir) throws Exception {
-        long start = System.currentTimeMillis();
-
         File rootDir = fileOrDir.isFile() ? fileOrDir.getParentFile() : fileOrDir;
         try {
             rootPath = Util.unifyPath(rootDir);
@@ -80,20 +78,11 @@ public class Demo {
         }
 
         indexer = new Indexer();
-
-        Util.msg("Building index");
-
+        Util.msg("Loading and analyzing files");
         indexer.loadFileRecursive(Util.unifyPath(fileOrDir));
-
         indexer.finish();
 
-        long end = System.currentTimeMillis();
-        Util.msg("Finished indexing in: " + Util.timeString(end - start));
-
-        start = System.currentTimeMillis();
         generateHtml();
-        end = System.currentTimeMillis();
-        Util.msg("Finished generating HTML in: " + Util.timeString(end - start));
         indexer.close();
     }
 

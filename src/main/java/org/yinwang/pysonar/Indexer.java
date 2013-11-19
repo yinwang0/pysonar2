@@ -71,19 +71,18 @@ public class Indexer {
     public Builtins builtins;
 
     public int nLoadedFiles = 0;
-
     private Logger logger;
-    private Progress progress;
+    private FancyProgress loadingProgress = null;
 
     public Indexer() {
         stats.putInt("startTime", System.currentTimeMillis());
-        progress = new Progress(10, 50);
         logger = Logger.getLogger(Indexer.class.getCanonicalName());
         idx = this;
         builtins = new Builtins();
         builtins.init();
         addPythonPath();
         createCacheDir();
+        getAstCache();
     }
 
 
@@ -339,7 +338,8 @@ public class Indexer {
     @Nullable
     private ModuleType parseAndResolve(String file) {
         finer("Indexing: " + file);
-        progress.tick();
+//        progress.tick();
+        loadingProgress.tick();
         return parseAndResolve(file, null);
     }
 
@@ -542,6 +542,11 @@ public class Indexer {
      * determine whether to load a given file.
      */
     public void loadFileRecursive(String fullname) {
+        int count = countFileRecursive(fullname);
+        if (loadingProgress == null) {
+            loadingProgress = new FancyProgress(count, 50);
+        }
+
         File file_or_dir = new File(fullname);
 
         if (file_or_dir.isDirectory()) {
@@ -556,9 +561,27 @@ public class Indexer {
     }
 
 
+    // count number of .py files
+    public int countFileRecursive(String fullname) {
+        File file_or_dir = new File(fullname);
+        int sum = 0;
+
+        if (file_or_dir.isDirectory()) {
+            for (File file : file_or_dir.listFiles()) {
+                sum += countFileRecursive(file.getPath());
+            }
+        } else {
+            if (file_or_dir.getPath().endsWith(".py")) {
+                sum += 1;
+            }
+        }
+        return sum;
+    }
+
+
     public void finish() {
-        progress.end();
-        Util.msg("Finished loading files. " + nCalled + " functions were called.");
+//        progress.end();
+        Util.msg("\nFinished loading files. " + nCalled + " functions were called.");
         Util.msg("Analyzing uncalled functions");
         applyUncalled();
 
@@ -613,6 +636,7 @@ public class Indexer {
         }
     }
 
+
     public void addUncalled(@NotNull FunType cl) {
         if (!cl.func.called) {
             uncalled.add(cl);
@@ -626,13 +650,10 @@ public class Indexer {
 
 
     public void applyUncalled() {
-        int total = 0;
-        FancyProgress progress = new FancyProgress(total, 50);
+        FancyProgress progress = new FancyProgress(uncalled.size(), 50);
 
         while (!uncalled.isEmpty()) {
             List<FunType> uncalledDup = new ArrayList<>(uncalled);
-            total += uncalledDup.size();
-            progress.setTotal(total);
 
             for (FunType cl : uncalledDup) {
                 progress.tick();

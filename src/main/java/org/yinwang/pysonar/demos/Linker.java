@@ -20,7 +20,7 @@ class Linker {
 
     // Map of file-path to semantic styles & links for that path.
     @NotNull
-    private Map<String, List<StyleRun>> fileStyles = new HashMap<String, List<StyleRun>>();
+    private Map<String, List<StyleRun>> fileStyles = new HashMap<>();
 
     private File outDir;  // where we're generating the output html
     private String rootPath;
