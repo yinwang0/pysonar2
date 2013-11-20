@@ -93,16 +93,6 @@ public class NameBinder {
             b = s.put(name.getId(), name, rvalue, kind, tag);
         }
 
-        // If nameType is UnknownType, we extend its path so that the name will
-        // be routed via the path of the binding and not via the path where the
-        // type was constructed. Example,
-        //
-        // test.py
-        // def foo(x):
-        //   x.a = 2
-        //
-        // will have a binding "test.foo@x.a"
-        
         Type nameType = b.getType();
         if (nameType.isUnknownType()) {
             nameType.getTable().setPath(b.getQname());
