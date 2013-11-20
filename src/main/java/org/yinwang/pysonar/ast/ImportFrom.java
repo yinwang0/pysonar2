@@ -53,7 +53,7 @@ public class ImportFrom extends Node {
                 if (t == null) return Indexer.idx.builtins.Cont;
 
                 if (a.asname != null) {
-                    s.put(a.asname.id, a.asname, t, Binding.Kind.MODULE, tag);
+                    s.put(a.asname.id, a.asname, t, Binding.Kind.VARIABLE, tag);
                 } else {
                     Binding b = mod.getTable().lookup(a.name.get(0).id);
                     if (b != null) {
@@ -105,7 +105,7 @@ public class ImportFrom extends Node {
                     m2.add(new Name(name));
                     ModuleType mod2 = Indexer.idx.loadModule(m2, s, tag);
                     if (mod2 != null) {
-                        s.put(name, null, mod2, Binding.Kind.MODULE, tag);
+                        s.put(name, null, mod2, Binding.Kind.VARIABLE, tag);
                     }
                 }
             }

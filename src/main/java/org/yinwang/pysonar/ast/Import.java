@@ -28,7 +28,7 @@ public class Import extends Node {
             if (mod == null) {
                 Indexer.idx.putProblem(this, "Cannot load module");
             } else if (a.asname != null) {
-                s.put(a.asname.id, a.asname, mod, Binding.Kind.MODULE, tag);
+                s.put(a.asname.id, a.asname, mod, Binding.Kind.VARIABLE, tag);
             }
         }
         return Indexer.idx.builtins.Cont;
