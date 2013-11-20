@@ -524,7 +524,6 @@ public class Indexer {
                     } else {
                         Binding b = scope.put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
                         Indexer.idx.putRef(name.get(i), b);
-
                     }
                     prev = mod;
                 } else {
@@ -734,7 +733,7 @@ public class Indexer {
     public void addBinding(String qname, Binding b) {
         List<Binding> lb = allBindings.get(qname);
         if (lb == null) {
-            lb = new ArrayList<Binding>();
+            lb = new ArrayList<>();
             lb.add(b);
             allBindings.put(qname, lb);
         } else {

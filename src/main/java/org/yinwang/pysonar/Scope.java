@@ -168,18 +168,8 @@ public class Scope {
 
     @NotNull
     public Binding update(String id, @NotNull Binding b) {
-        switch (b.getKind()) {
-            case MODULE:
-                b.setQname(b.getType().getTable().getPath());
-                break;
-            default:
-                b.setQname(extendPath(b.getName()));
-                break;
-        }
-
         Indexer.idx.putBinding(b);
         getInternalTable().put(id, b);
-
         return b;
     }
 

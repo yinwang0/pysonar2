@@ -29,7 +29,7 @@ public class Expr extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<ExprStmt:" + value + ">";
+        return "<Expr:" + value + ">";
     }
 
     @Override

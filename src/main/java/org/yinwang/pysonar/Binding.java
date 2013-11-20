@@ -74,7 +74,8 @@ public class Binding implements Comparable<Object> {
 
 
     public Binding(@NotNull String id, Node node, @NotNull Type type, @NotNull Kind kind) {
-        qname = name = id;
+        name = id;
+        qname = type.getTable().getPath();
         defs = new HashSet<>(DEF_SET_INITIAL_CAPACITY);
         addDef(node);
         this.type = type;

@@ -22,10 +22,7 @@ public class AstCache {
         public int start;
         public int end;
 
-        public static DocstringInfo NewWithDocstringNode(Str docstringNode) {
-            if (docstringNode == null) {
-                return null;
-            }
+        public static DocstringInfo NewWithDocstringNode(@NotNull Str docstringNode) {
             DocstringInfo d = new DocstringInfo();
             d.docstring = docstringNode.getStr();
             d.start = docstringNode.start;
@@ -148,7 +145,10 @@ public class AstCache {
         if (mod != null) {
             fine("reusing " + path);
             cache.put(path, mod);
-            docstringCache.put(path, DocstringInfo.NewWithDocstringNode(mod.docstring())); // may be null
+            Str docstring = mod.docstring();
+            if (docstring != null) {
+                docstringCache.put(path, DocstringInfo.NewWithDocstringNode(docstring));
+            }
             return mod;
         }
 
@@ -157,7 +157,7 @@ public class AstCache {
             mod = parse(path);
         } finally {
             cache.put(path, mod);  // may be null
-            if (mod != null) {
+            if (mod != null && mod.docstring() != null) {
                 docstringCache.put(path, DocstringInfo.NewWithDocstringNode(mod.docstring())); // may be null
             }
         }

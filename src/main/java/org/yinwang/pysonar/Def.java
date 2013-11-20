@@ -67,6 +67,8 @@ public class Def {
             }
         } else if (node instanceof Module) {
             name = ((Module) node).name;
+            start = 0;
+            end = 0;
             bodyStart = node.start;
             bodyEnd = node.end;
 
