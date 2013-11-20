@@ -389,6 +389,7 @@ public class Indexer {
     private void createCacheDir() {
         cacheDir = Util.makePathString(Util.getSystemTempDir(),  "pysonar2", "ast_cache");
         File f = new File(cacheDir);
+        Util.msg("AST cache is at: " + cacheDir);
 
         if (!f.exists()) {
             if (!f.mkdirs()) {
