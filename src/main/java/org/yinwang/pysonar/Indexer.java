@@ -38,6 +38,7 @@ public class Indexer {
     @Nullable
     public String cwd = null;
     public int nCalled = 0;
+    public boolean multilineFunType = false;
     @NotNull
     public List<String> path = new ArrayList<>();
     @NotNull

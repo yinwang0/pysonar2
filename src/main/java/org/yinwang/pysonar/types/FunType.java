@@ -209,7 +209,11 @@ public class FunType extends Type {
 
                 if (!seen.contains(as)) {
                     if (i != 0) {
-                        sb.append(" | ");
+                        if (Indexer.idx.multilineFunType) {
+                            sb.append("\n| ");
+                        } else {
+                            sb.append(" | ");
+                        }
                     }
 
                     sb.append(as);

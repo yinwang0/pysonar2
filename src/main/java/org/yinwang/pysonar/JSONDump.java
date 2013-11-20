@@ -209,6 +209,7 @@ public class JSONDump {
 		});
 
 		Indexer idx = newIndexer(srcpath, inclpaths);
+        idx.multilineFunType = true;
 		JsonFactory jsonFactory = new JsonFactory();
 		JsonGenerator symJson = jsonFactory.createGenerator(symOut);
 		JsonGenerator refJson = jsonFactory.createGenerator(refOut);
