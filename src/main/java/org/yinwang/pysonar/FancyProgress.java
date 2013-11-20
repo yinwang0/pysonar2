@@ -65,7 +65,7 @@ public class FancyProgress {
                 rate = lastRate;
             }
 
-            System.out.print(" " + df.format(rate) + "/s");
+            System.out.print("\t" + df.format(rate) + "/s    ");
 
             lastTickTime = System.currentTimeMillis();
             lastCount = count;
