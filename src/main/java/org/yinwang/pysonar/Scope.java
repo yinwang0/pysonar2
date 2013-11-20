@@ -145,41 +145,37 @@ public class Scope {
     }
 
 
+    // helper for put and putAttr
     @NotNull
-    private Binding insertOrUpdate(@Nullable Binding b, String id, Node loc,
-                                   @NotNull Type t, Binding.Kind k, int tag) {
-        if (b == null) {
-            b = update(id, new Binding(id, loc, t, k, tag));
-        } else if (tag == b.tag && !b.getType().equals(t)) {
-            b = update(id, new Binding(id, loc, t, k, tag));
+    private Binding insertOrUpdate(@Nullable Binding binding, String id, @NotNull Node loc,
+                                   @NotNull Type type, Binding.Kind kind, int tag) {
+        if (binding == null) {
+            binding = update(id, new Binding(id, loc, type, kind, tag));
+        } else if (tag == binding.tag) {
+            binding = update(id, new Binding(id, loc, type, kind, tag));
         } else {
-            b.addDef(loc);
-            b.setType(UnionType.union(t, b.getType()));
+            binding.addDef(loc);
+            binding.setType(UnionType.union(type, binding.getType()));
         }
-        return b;
+        return binding;
     }
 
 
+    // direct update and replace the same name with a new binding
     @NotNull
     public Binding update(String id, Node node, Type type, Binding.Kind kind) {
         return update(id, new Binding(id, node, type, kind));
     }
 
 
+    // direct update and replace the name with a binding
     @NotNull
     public Binding update(String id, @NotNull Binding b) {
-        Indexer.idx.putBinding(b);
         getInternalTable().put(id, b);
         return b;
     }
 
 
-    /**
-     * Create a copy of the symbol table but without the links to parent, supers
-     * and children. Useful for creating instances.
-     *
-     * @return the symbol table for use by the instance.
-     */
     @NotNull
     public Scope copy(ScopeType tableType) {
         Scope ret = new Scope(null, tableType);

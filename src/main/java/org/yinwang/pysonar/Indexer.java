@@ -373,8 +373,6 @@ public class Indexer {
                 ModuleType mod = (ModuleType)ast.resolve(moduleTable, 0);
                 finer("[success]");
                 nLoadedFiles++;
-                putBinding(new Binding(mod.getName(), ast, mod, Binding.Kind.MODULE));
-
                 return mod;
             }
         } catch (OutOfMemoryError e) {
@@ -506,10 +504,10 @@ public class Indexer {
                 if (mod == null) return null;
 
                 if (prev != null) {
-                    Binding b = prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
+                    Binding b = prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE, tag);
                     Indexer.idx.putRef(name.get(i), b);
                 } else {
-                    Binding b = scope.put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
+                    Binding b = scope.put(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE, tag);
                     Indexer.idx.putRef(name.get(i), b);
                 }
 
@@ -521,10 +519,10 @@ public class Indexer {
                     ModuleType mod = loadFile(startFile.getPath());
                     if (mod == null) return null;
                     if (prev != null) {
-                        Binding b = prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
+                        Binding b = prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE, tag);
                         Indexer.idx.putRef(name.get(i), b);
                     } else {
-                        Binding b = scope.put(name.get(i).id, name.get(i), mod, Binding.Kind.MODULE, tag);
+                        Binding b = scope.put(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE, tag);
                         Indexer.idx.putRef(name.get(i), b);
                     }
                     prev = mod;
@@ -708,7 +706,7 @@ public class Indexer {
 
     @NotNull
     public List<String> getLoadedFiles() {
-        List<String> files = new ArrayList<String>();
+        List<String> files = new ArrayList<>();
         for (String file : moduleTable.keySet()) {
             if (file.endsWith(".py")) {
                 files.add(file);
@@ -732,29 +730,17 @@ public class Indexer {
     }
 
 
-    public void addBinding(String qname, Binding b) {
-        List<Binding> lb = allBindings.get(qname);
-        if (lb == null) {
-            lb = new ArrayList<>();
+    @NotNull
+    public void registerBinding(@NotNull Binding b) {
+        String qname = b.getQname();
+        List<Binding> existing = allBindings.get(qname);
+
+        if (existing != null) {
+            existing.add(b);
+        } else {
+            List<Binding> lb = new ArrayList<>();
             lb.add(b);
             allBindings.put(qname, lb);
-        } else {
-            lb.add(b);
-        }
-    }
-
-
-    @NotNull
-    public Binding putBinding(@NotNull Binding b) {
-        String qname = b.getQname();
-        Binding existing = findBinding(b);
-
-        if (existing == null) {
-            addBinding(qname, b);
-            return b;
-        } else {
-            existing.setType(UnionType.union(existing.getType(), b.getType()));
-            return existing;
         }
     }
 

@@ -80,6 +80,7 @@ public class Binding implements Comparable<Object> {
         addDef(node);
         this.type = type;
         this.kind = kind;
+        Indexer.idx.registerBinding(this);
     }
 
     /**
