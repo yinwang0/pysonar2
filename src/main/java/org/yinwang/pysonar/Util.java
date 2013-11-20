@@ -23,6 +23,11 @@ public class Util {
         return base + gensymCount;
     }
 
+    public static String baseFileName(String filename) {
+        return new File(filename).getName();
+    }
+
+
     public static String getSystemTempDir() {
         String tmp = System.getProperty("java.io.tmpdir");
         String sep = System.getProperty("file.separator");

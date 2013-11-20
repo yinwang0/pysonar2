@@ -276,7 +276,8 @@ public class Binding implements Comparable<Object> {
     @Override
     public String toString() {
         StringBuilder sb =  new StringBuilder();
-        sb.append("<Binding:").append(qname);
+        sb.append("<Binding:");
+        sb.append(":qname=").append(qname);
         sb.append(":type=").append(type);
         sb.append(":kind=").append(kind);
         sb.append(":defs=").append(defs);

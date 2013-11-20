@@ -180,7 +180,7 @@ public class Scope {
      *
      * @return the symbol table for use by the instance.
      */
-    @Nullable
+    @NotNull
     public Scope copy(ScopeType tableType) {
         Scope ret = new Scope(null, tableType);
         if (table != null) {
@@ -189,10 +189,7 @@ public class Scope {
         return ret;
     }
 
-    public void setPath(@Nullable String path) {
-        if (path == null) {
-            throw new IllegalArgumentException("'path' param cannot be null");
-        }
+    public void setPath(@NotNull String path) {
         this.path = path;
     }
 
