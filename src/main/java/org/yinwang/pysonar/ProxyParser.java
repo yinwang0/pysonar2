@@ -229,10 +229,8 @@ public class ProxyParser {
 
         if (type.equals("Attribute")) {
             Node value = deJson(map.get("value"));
-            Name attr;
-            if (map.containsKey("attr_name")) {
-                attr = (Name) deJson(map.get("attr_name"));
-            } else {
+            Name attr = (Name) deJson(map.get("attr_name"));
+            if (attr == null) {
                 attr = new Name((String) map.get("attr"));
             }
             return new Attribute(value, attr, start, end);
