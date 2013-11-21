@@ -153,7 +153,7 @@ public class Def {
         return bodyEnd;
     }
 
-    public boolean isName() {
+    public boolean hasName() {
         return name != null;
     }
 

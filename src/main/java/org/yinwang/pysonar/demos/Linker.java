@@ -167,7 +167,7 @@ class Linker {
      */
     private void addSemanticStyles(@NotNull Binding nb) {
         Def def = nb.getSingle();
-        if (def == null || !def.isName()) {
+        if (def == null || !def.hasName()) {
             return;
         }
 

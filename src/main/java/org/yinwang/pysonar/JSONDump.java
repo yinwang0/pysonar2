@@ -20,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class JSONDump {
 
+    private static final int MAX_PATH_LENGTH = 900;
+
 	private static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     private static Set<String> seenDef = new HashSet<>();
@@ -78,11 +80,19 @@ public class JSONDump {
 		boolean isExported = !(
                 Binding.Kind.VARIABLE == binding.getKind() ||
                 Binding.Kind.PARAMETER == binding.getKind() ||
-                (def.isName() && (name.length() == 0 || name.charAt(0) == '_')));
+                Binding.Kind.SCOPE == binding.getKind() ||
+                        Binding.Kind.ATTRIBUTE == binding.getKind() ||
+                (def.hasName() && (name.length() == 0 || name.charAt(0) == '_')));
+
+//        boolean isExported = (
+//                (Binding.Kind.FUNCTION == binding.getKind() ||
+//                        Binding.Kind.CLASS == binding.getKind()    ||
+//                        Binding.Kind.MODULE == binding.getKind()) &&
+//                        (def.hasName() && (name.length() > 0 && name.charAt(0) != '_')));
 
         String path = symPath(def, parentDirs);
 
-        if (!path.isEmpty() && !seenDef.contains(path)) {
+        if (!path.isEmpty() && path.length() < MAX_PATH_LENGTH && !seenDef.contains(path)) {
             seenDef.add(path);
 
             json.writeStartObject();
@@ -113,14 +123,18 @@ public class JSONDump {
 
     private static void writeRefJson(Ref ref, Binding binding, List<String> parentDirs, JsonGenerator json) throws IOException {
         Def def = binding.getSingle();
+
         if (def.getStart() >= 0 && def.getFile() != null && ref.start() >= 0 && !binding.isBuiltin()) {
-            json.writeStartObject();
-            json.writeStringField("sym", symPath(def, parentDirs));
-            json.writeStringField("file", ref.getFile());
-            json.writeNumberField("start", ref.start());
-            json.writeNumberField("end", ref.end());
-            json.writeBooleanField("builtin", binding.isBuiltin());
-            json.writeEndObject();
+            String path = symPath(def, parentDirs);
+            if (path.length() < MAX_PATH_LENGTH) {
+                json.writeStartObject();
+                json.writeStringField("sym", path);
+                json.writeStringField("file", ref.getFile());
+                json.writeNumberField("start", ref.start());
+                json.writeNumberField("end", ref.end());
+                json.writeBooleanField("builtin", binding.isBuiltin());
+                json.writeEndObject();
+            }
         }
     }
 
@@ -129,7 +143,7 @@ public class JSONDump {
         String path = symPath(def, parentDirs);
 //        Util.msg("def: " + def + ", docstring: " + def.docstring);
 
-        if (!path.isEmpty() && !seenDocs.contains(path)) {
+        if (!path.isEmpty() && path.length() < MAX_PATH_LENGTH && !seenDocs.contains(path)) {
             seenDocs.add(path);
 
             if (def.docstring != null) {
