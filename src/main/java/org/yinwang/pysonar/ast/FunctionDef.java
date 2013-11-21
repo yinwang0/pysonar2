@@ -137,11 +137,11 @@ public class FunctionDef extends Node {
     @Override
     public Type resolve(@NotNull Scope outer, int tag) {
         resolveList(decoratorList, outer, tag);   //XXX: not handling functional transformations yet
-        FunType cl = new FunType(this, outer.getForwarding());
-        cl.getTable().setParent(outer);
-        cl.getTable().setPath(outer.extendPath(getName().getId()));
-        cl.setDefaultTypes(resolveAndConstructList(defaults, outer, tag));
-        Indexer.idx.addUncalled(cl);
+        FunType fun = new FunType(this, outer.getForwarding());
+        fun.getTable().setParent(outer);
+        fun.getTable().setPath(outer.extendPath(getName().getId()));
+        fun.setDefaultTypes(resolveAndConstructList(defaults, outer, tag));
+        Indexer.idx.addUncalled(fun);
         Binding.Kind funkind;
 
         if (outer.getScopeType() == Scope.ScopeType.CLASS) {
@@ -156,10 +156,10 @@ public class FunctionDef extends Node {
 
         Type outType = outer.getType();
         if (outType != null && outType.isClassType()) {
-            cl.setCls(outType.asClassType());
+            fun.setCls(outType.asClassType());
         }
 
-        NameBinder.bind(outer, name, cl, funkind, tag);
+        NameBinder.bind(outer, name, fun, funkind, tag);
         return Indexer.idx.builtins.Cont;
     }
 
