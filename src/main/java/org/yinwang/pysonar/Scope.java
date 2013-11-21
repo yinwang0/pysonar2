@@ -149,9 +149,7 @@ public class Scope {
     @NotNull
     private Binding insertOrUpdate(@Nullable Binding binding, String id, @NotNull Node loc,
                                    @NotNull Type type, Binding.Kind kind, int tag) {
-        if (binding == null) {
-            binding = update(id, new Binding(id, loc, type, kind, tag));
-        } else if (tag == binding.tag) {
+        if (binding == null || tag == binding.tag) {
             binding = update(id, new Binding(id, loc, type, kind, tag));
         } else {
             binding.addDef(loc);
@@ -171,6 +169,7 @@ public class Scope {
     // direct update and replace the name with a binding
     @NotNull
     public Binding update(String id, @NotNull Binding b) {
+        b.setQname(extendPath(id));
         getInternalTable().put(id, b);
         return b;
     }
