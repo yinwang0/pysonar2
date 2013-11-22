@@ -107,17 +107,24 @@ public class JSONDump {
                     if (func != null) {
                         StringBuilder args = new StringBuilder();
                         args.append("(");
-                        int idx = 0;
+                        boolean first = true;
+
                         for (Node n : func.getArgs()) {
-                            if (idx != 0) {
+                            if (!first) {
                                 args.append(", ");
                             }
-                            idx++;
+                            first = false;
                             args.append(n.toDisplay());
                         }
 
-                        if (func.getKwarg() != null) args.append(", ").append(func.getKwarg().toDisplay());
-                        if (func.getVararg() != null) args.append(", ").append(func.getVararg().toDisplay());
+                        if (func.getKwarg() != null) {
+                            if (!first) args.append(", ");
+                            args.append(func.getKwarg().toDisplay());
+                        }
+                        if (func.getVararg() != null) {
+                            if (!first) args.append(", ");
+                            args.append("*" + func.getVararg().toDisplay());
+                        }
                         args.append(")");
 
                         argExpr = args.toString();

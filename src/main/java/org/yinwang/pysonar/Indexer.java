@@ -23,29 +23,19 @@ public class Indexer {
 
     public static Indexer idx;
 
-    @NotNull
     public Scope moduleTable = new Scope(null, Scope.ScopeType.GLOBAL);
-    @NotNull
+    public List<String> loadedFiles = new ArrayList<>();
     public Scope globaltable = new Scope(null, Scope.ScopeType.GLOBAL);
-    @NotNull
     public Map<String, List<Binding>> allBindings = new HashMap<>();
-    @NotNull
     private Map<Ref, List<Binding>> references = new HashMap<>();
-    @NotNull
     public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
-    @NotNull
     public Map<String, List<Diagnostic>> parseErrors = new HashMap<>();
-    @Nullable
     public String cwd = null;
     public int nCalled = 0;
     public boolean multilineFunType = false;
-    @NotNull
     public List<String> path = new ArrayList<>();
-    @NotNull
     private Set<FunType> uncalled = new HashSet<>();
-    @NotNull
     private Set<Object> callStack = new HashSet<>();
-    @NotNull
     private Set<Object> importStack = new HashSet<>();
 
 
@@ -70,8 +60,6 @@ public class Indexer {
      * library that are implemented in C and consequently have no Python source.
      */
     public Builtins builtins;
-
-    public int nLoadedFiles = 0;
     private Logger logger;
     private FancyProgress loadingProgress = null;
 
@@ -372,7 +360,7 @@ public class Indexer {
                 finer("resolving: " + file);
                 ModuleType mod = (ModuleType)ast.resolve(moduleTable, 0);
                 finer("[success]");
-                nLoadedFiles++;
+                loadedFiles.add(file);
                 return mod;
             }
         } catch (OutOfMemoryError e) {
@@ -669,7 +657,7 @@ public class Indexer {
 
         String duration = Util.timeString(System.currentTimeMillis() - stats.getInt("startTime"));
         sb.append("\n- total time: " + duration);
-        sb.append("\n- modules loaded: " + nLoadedFiles);
+        sb.append("\n- modules loaded: " + loadedFiles.size());
         sb.append("\n- unresolved modules: " + failedModules.size());
         sb.append("\n- semantic problems: " + semanticErrors.size());
         sb.append("\n- failed to parse: " + failedToParse.size());
@@ -707,7 +695,7 @@ public class Indexer {
     @NotNull
     public List<String> getLoadedFiles() {
         List<String> files = new ArrayList<>();
-        for (String file : moduleTable.keySet()) {
+        for (String file : loadedFiles) {
             if (file.endsWith(".py")) {
                 files.add(file);
             }
@@ -775,6 +763,6 @@ public class Indexer {
     @Override
     public String toString() {
         return "<Indexer:locs=" + references.size() + ":probs="
-                + semanticErrors.size() + ":files=" + nLoadedFiles + ">";
+                + semanticErrors.size() + ":files=" + loadedFiles.size() + ">";
     }
 }
