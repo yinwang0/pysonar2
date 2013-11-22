@@ -40,7 +40,7 @@ public class AstCache {
     private static AstCache INSTANCE;
 
     @NotNull
-    private static ProxyParser parser;
+    private static PythonParser parser;
 
     private AstCache() {
     }
@@ -49,7 +49,7 @@ public class AstCache {
         if (INSTANCE == null) {
             INSTANCE = new AstCache();
         }
-        parser = new ProxyParser();
+        parser = new PythonParser();
         return INSTANCE;
     }
 

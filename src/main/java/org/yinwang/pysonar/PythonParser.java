@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class ProxyParser {
+public class PythonParser {
     @Nullable
     Process python2Process;
     @Nullable
@@ -28,7 +28,7 @@ public class ProxyParser {
     private String pyStub;
 
 
-    public ProxyParser() {
+    public PythonParser() {
         String tmpDir = Util.getSystemTempDir();
         String sid = Util.newSessionId();
 
@@ -36,8 +36,25 @@ public class ProxyParser {
         endMark = Util.makePathString(tmpDir, "pysonar2", "end." + sid);
         pyStub = Util.makePathString(tmpDir, "pysonar2", "ast2json." + sid);
 
+        startPythonProcesses();
+    }
+
+
+    // start or restart python processes
+    private void startPythonProcesses() {
+        if (python2Process != null) python2Process.destroy();
+        if (python3Process != null) python3Process.destroy();
+
         python2Process = startPython(PYTHON2_EXE);
         python3Process = startPython(PYTHON3_EXE);
+
+        if (python2Process != null) {
+            Util.msg("Started: " + PYTHON2_EXE);
+        }
+
+        if (python3Process != null) {
+            Util.msg("Started: " + PYTHON3_EXE);
+        }
 
         if (python2Process == null && python3Process == null) {
             Util.die("You don't seem to have either of Python or Python3 on PATH");
@@ -603,10 +620,8 @@ public class ProxyParser {
             builder.redirectErrorStream(true);
             builder.environment().remove("PYTHONPATH");
             Process p =  builder.start();
-            Util.msg("Started process: " + pythonExe);
             return p;
         } catch (Exception e) {
-            Util.msg("Not found: " + pythonExe);
             return null;
         }
     }
@@ -633,7 +648,7 @@ public class ProxyParser {
 
     @Nullable
     public Node parseFileInner(String filename, @NotNull Process pythonProcess) {
-//        Util.msg("parsing: " + filename);
+//        Util.msg("parsing: " + filename + " using " + pythonProcess);
 
         File exchange = new File(exchangeFile);
         File marker = new File(endMark);
@@ -652,11 +667,23 @@ public class ProxyParser {
         }
 
 
+        long waitStart = System.currentTimeMillis();
+
         while (!marker.exists()) {
+            if (System.currentTimeMillis() - waitStart > 3000) {
+                Util.msg("\nTimed out while parsing: " + filename);
+                exchange.delete();
+                marker.delete();
+                startPythonProcesses();
+                return null;
+            }
+
             try {
                 Thread.sleep(1);
             } catch (Exception e) {
-                break;
+                exchange.delete();
+                marker.delete();
+                return null;
             }
         }
 
@@ -672,14 +699,8 @@ public class ProxyParser {
         exchange.delete();
         marker.delete();
 
-
-//            Util.msg("json: " + json);
-        if (json != null) {
-            Map<String, Object> map = deserialize(json);
-            return deJson(map);
-        } else {
-            return null;
-        }
+        Map<String, Object> map = deserialize(json);
+        return deJson(map);
     }
 
 }

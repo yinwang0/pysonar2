@@ -99,14 +99,6 @@ public class Attribute extends Node {
         } else {
             Indexer.idx.putRef(attr, b);
 
-            if (b.getType() == null) {
-                Util.msg("b.getType() is null!");
-            }
-
-            if (getParent() == null) {
-                Util.msg("parent is null!");
-            }
-
             if (getParent() != null && getParent().isCall() &&
                     b.getType().isFuncType() && targetType.isInstanceType()) {  // method call
                 b.getType().asFuncType().setSelfType(targetType);
