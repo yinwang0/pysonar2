@@ -310,8 +310,12 @@ public class Util {
 
     @NotNull
     public static String percent(long num, long total) {
-        int pct = (int) (num * 100 / total);
-        return String.format("%1$3d", pct) + "%";
+        if (total == 0) {
+            return "100%";
+        } else {
+            int pct = (int) (num * 100 / total);
+            return String.format("%1$3d", pct) + "%";
+        }
     }
 
 
@@ -332,6 +336,10 @@ public class Util {
 
 
     public static String format(Object n, int length) {
+        if (length == 0) {
+            length = 1;
+        }
+
         if (n instanceof Integer) {
             return String.format("%1$" + length + "d", (int) n);
         } else if (n instanceof Long) {

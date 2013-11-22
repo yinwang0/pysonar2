@@ -43,6 +43,12 @@ public class Keyword extends Node {
         return "<Keyword:" + arg + ":" + value + ">";
     }
 
+    @NotNull
+    @Override
+    public String toDisplay() {
+        return arg;
+    }
+
     @Override
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {

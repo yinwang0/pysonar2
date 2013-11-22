@@ -4,6 +4,8 @@ import java.text.DecimalFormat;
 
 public class FancyProgress {
 
+    private static final int MAX_SPEED_DIGITS = 5;
+
     long startTime;
     long lastTickTime;
     long lastCount;
@@ -71,7 +73,7 @@ public class FancyProgress {
             }
 
             lastRate = rate;
-            System.out.print("   speed: " + Util.format(rate, 3) + "/s");
+            System.out.print("   speed: " + Util.format(rate, MAX_SPEED_DIGITS) + "/s");
 
             long totalElapsed = System.currentTimeMillis() - startTime;
             int avgRate;
@@ -82,7 +84,8 @@ public class FancyProgress {
                 avgRate = lastAvgRate;
             }
             lastAvgRate = avgRate;
-            System.out.print("   avg speed: " + Util.format(avgRate, 3) + "/s");
+            System.out.print("   avg speed: " + Util.format(avgRate, MAX_SPEED_DIGITS) + "/s");
+            System.out.print("       ");      // overflow area
 
             lastTickTime = System.currentTimeMillis();
             lastCount = count;

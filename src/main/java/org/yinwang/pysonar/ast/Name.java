@@ -77,6 +77,12 @@ public class Name extends Node {
         return "<Name:" + start + ":" + id +  ">";
     }
 
+    @NotNull
+    @Override
+    public String toDisplay() {
+        return id;
+    }
+
     @Override
     public void visit(@NotNull NodeVisitor v) {
         v.visit(this);

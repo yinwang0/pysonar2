@@ -170,14 +170,8 @@ public class AstCache {
     }
 
 
+    @Nullable
     public DocstringInfo getModuleDocstringInfo(String path) {
-        if (!docstringCache.containsKey(path)) {
-            if (cache.containsKey(path)) {
-                return null;
-            } else {
-                Util.die("Should not ask for docstring before parsing module");
-            }
-        }
         return docstringCache.get(path);
     }
 

@@ -37,6 +37,14 @@ public class PythonParser {
         pyStub = Util.makePathString(tmpDir, "pysonar2", "ast2json." + sid);
 
         startPythonProcesses();
+
+        if (python2Process != null) {
+            Util.msg("Started: " + PYTHON2_EXE);
+        }
+
+        if (python3Process != null) {
+            Util.msg("Started: " + PYTHON3_EXE);
+        }
     }
 
 
@@ -47,14 +55,6 @@ public class PythonParser {
 
         python2Process = startPython(PYTHON2_EXE);
         python3Process = startPython(PYTHON3_EXE);
-
-        if (python2Process != null) {
-            Util.msg("Started: " + PYTHON2_EXE);
-        }
-
-        if (python3Process != null) {
-            Util.msg("Started: " + PYTHON3_EXE);
-        }
 
         if (python2Process == null && python3Process == null) {
             Util.die("You don't seem to have either of Python or Python3 on PATH");
@@ -670,7 +670,7 @@ public class PythonParser {
         long waitStart = System.currentTimeMillis();
 
         while (!marker.exists()) {
-            if (System.currentTimeMillis() - waitStart > 3000) {
+            if (System.currentTimeMillis() - waitStart > 5000) {
                 Util.msg("\nTimed out while parsing: " + filename);
                 exchange.delete();
                 marker.delete();

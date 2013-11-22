@@ -17,6 +17,9 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.ast.FunctionDef;
+import org.yinwang.pysonar.ast.Node;
+import org.yinwang.pysonar.types.Type;
 
 public class JSONDump {
 
@@ -111,9 +114,42 @@ public class JSONDump {
                     Binding.Kind.METHOD == binding.getKind() ||
                     Binding.Kind.CONSTRUCTOR == binding.getKind()) {
                 json.writeObjectFieldStart("funcData");
-                // TODO(bliu)
+
+                // get args expression
+                String argExpr = null;
+                Type t = def.getBinding().getType();
+
+                if (t.isUnionType()) {
+                    t = t.asUnionType().firstUseful();
+                }
+
+                if (t != null && t.isFuncType()) {
+                    FunctionDef func = t.asFuncType().getFunc();
+
+                    StringBuilder args = new StringBuilder();
+                    args.append("(");
+                    int idx = 0;
+                    for (Node n : func.getArgs()) {
+                        if (idx != 0) {
+                            args.append(", ");
+                        }
+                        idx++;
+                        args.append(n.toDisplay());
+                    }
+
+                    if (func.getKwarg() != null) args.append(", ").append(func.getKwarg().toDisplay());
+                    if (func.getVararg() != null) args.append(", ").append(func.getVararg().toDisplay());
+                    args.append(")");
+
+                    argExpr = args.toString();
+                }
+
+                String typeExpr = def.getBinding().getType().toString();
+
                 json.writeNullField("params");
-                json.writeStringField("signature", def.getBinding().getType().toString());
+
+                String signature = argExpr==null? "" : argExpr + "\n" + typeExpr;
+                json.writeStringField("signature", signature);
                 json.writeEndObject();
             }
 
@@ -186,22 +222,23 @@ public class JSONDump {
 			return qnamePath;
 		}
 
-		String modulePrefix = new File(file).getParent();
+        String modulePrefix;
+        if (file.endsWith("__init__.py")) {
+            modulePrefix = new File(file).getParentFile().getParent();
+        } else {
+            modulePrefix = new File(file).getParent();
+        }
 
 		for (String parent : parentDirs) {
-			if (modulePrefix.startsWith(parent + "/")) {
-				String relModulePrefix = modulePrefix.substring(parent.length() + 1);
-//				if (qnamePath.startsWith(relModulePrefix)) {
-					log.info("making symPath from parent " + parent + " and qnamePath " + qnamePath);
-					return modulePrefix + "/" + qnamePath;
-//				}
-			}
+            if (modulePrefix.startsWith(parent + "/")) {
+                return Util.makePathString(modulePrefix, qnamePath);
+            }
 		}
 
 		// We can get here if a module defines a new attribute on a builtin type.
 		// TODO(bliu): This may not be the correct thing to do.
 		String prefix = noExtension(file);
-		return prefix + "/" + qnamePath;
+		return Util.makePathString(prefix, qnamePath);
 	}
 
 	/*

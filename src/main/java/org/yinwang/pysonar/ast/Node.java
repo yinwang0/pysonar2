@@ -324,4 +324,8 @@ public abstract class Node implements java.io.Serializable {
         }
         return finder.getNode();
     }
+
+    public String toDisplay() {
+        return "";
+    }
 }
