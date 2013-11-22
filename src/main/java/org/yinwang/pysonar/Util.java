@@ -52,38 +52,20 @@ public class Util {
         return qname.substring(0, index);
     }
 
-    /**
-     * Determines the fully-qualified module name for the specified file.  A
-     * module's qname is a function of the module's absolute path and the sys
-     * path; it does not depend on how the module name may have been specified
-     * in import statements. The module qname is the relative path of the module
-     * under the load path, with slashes converted to dots.
-     *
-     * @param file absolute canonical path to a file (__init__.py for dirs)
-     * @return null if {@code file} is not somewhere under the load path
-     */
+
     @Nullable
     public static String moduleQname(@NotNull String file) {
         File f = new File(file);
-        boolean initpy = f.getName().equals("__init__.py");
 
-        if (initpy) {
-            file = f.getAbsolutePath();
+        if (f.getName().endsWith("__init__.py")) {
+            file = f.getParent();
         } else if (file.endsWith(".py")) {
             file = file.substring(0, file.length() - ".py".length());
         }
 
-        for (String root : Indexer.idx.getLoadPath()) {
-            if (file.startsWith(root)) {
-                if (file.contains("/")) {
-                    return file.substring(root.length() + 1).replace('/', '.');
-                } else if (file.contains("\\")) {
-                    return file.substring(root.length() + 1).replace('\\', '.');
-                }
-            }
-        }
-        return null;
+        return file.replace(".", "%20").replace('/', '.').replace('\\', '.');
     }
+
 
     @NotNull
     public static String arrayToString(@NotNull Collection<String> strings) {
