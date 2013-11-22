@@ -22,6 +22,7 @@ public interface NodeVisitor {
     public boolean visit(Block m);
     public boolean visit(BoolOp m);
     public boolean visit(Break m);
+    public boolean visit(Bytes m);
     public boolean visit(Call m);
     public boolean visit(ClassDef m);
     public boolean visit(Compare m);
@@ -69,5 +70,6 @@ public interface NodeVisitor {
     public boolean visit(With m);
     public boolean visit(Withitem m);
     public boolean visit(Yield m);
+    public boolean visit(YieldFrom m);
 	public boolean visit(Set s);
 }

@@ -81,7 +81,7 @@ public class JSONDump {
                 Binding.Kind.VARIABLE == binding.getKind() ||
                 Binding.Kind.PARAMETER == binding.getKind() ||
                 Binding.Kind.SCOPE == binding.getKind() ||
-                        Binding.Kind.ATTRIBUTE == binding.getKind() ||
+                Binding.Kind.ATTRIBUTE == binding.getKind() ||
                 (def.hasName() && (name.length() == 0 || name.charAt(0) == '_')));
 
 //        boolean isExported = (

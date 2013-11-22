@@ -47,10 +47,10 @@ public class Call extends Node {
 
         Type opType = resolveExpr(func, s, tag);
         List<Type> aTypes = resolveAndConstructList(args, s, tag);
-        Map<String, Type> kwTypes = new HashMap<String, Type>();
+        Map<String, Type> kwTypes = new HashMap<>();
 
         for (Keyword kw : keywords) {
-            kwTypes.put(kw.getArg(), kw.getValue().resolve(s, 0));
+            kwTypes.put(kw.getArg(), resolveExpr(kw.getValue(), s, 0));
         }
 
         Type kwargsType = kwargs == null ? null : resolveExpr(kwargs, s, tag);
@@ -70,7 +70,7 @@ public class Call extends Node {
     }
 
 
-    @Nullable
+    @NotNull
     private Type resolveCall(@NotNull Type rator, List<Type> aTypes, Map<String, Type> kwTypes, Type kwargsType, Type starargsType, int tag) {
         if (rator.isFuncType()) {
             FunType ft = rator.asFuncType();

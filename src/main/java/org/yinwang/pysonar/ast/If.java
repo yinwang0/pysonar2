@@ -8,12 +8,13 @@ import org.yinwang.pysonar.types.UnionType;
 
 public class If extends Node {
 
+    @NotNull
     public Node test;
     public Block body;
     public Block orelse;
 
 
-    public If(Node test, Block body, Block orelse, int start, int end) {
+    public If(@NotNull Node test, Block body, Block orelse, int start, int end) {
         super(start, end);
         this.test = test;
         this.body = body;

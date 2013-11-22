@@ -9,11 +9,12 @@ import java.util.List;
 
 public class Compare extends Node {
 
+    @NotNull
     public Node left;
     public List<Node> ops;
     public List<Node> comparators;
 
-    public Compare(Node left, List<Node> ops, List<Node> comparators, int start, int end) {
+    public Compare(@NotNull Node left, List<Node> ops, List<Node> comparators, int start, int end) {
         super(start, end);
         this.left = left;
         this.ops = ops;

@@ -11,10 +11,11 @@ import org.yinwang.pysonar.types.Type;
 public class Keyword extends Node {
 
     public String arg;
+    @NotNull
     public Node value;
 
 
-    public Keyword(String arg, Node value, int start, int end) {
+    public Keyword(String arg, @NotNull Node value, int start, int end) {
         super(start, end);
         this.arg = arg;
         this.value = value;
@@ -31,6 +32,7 @@ public class Keyword extends Node {
         return arg;
     }
 
+    @NotNull
     public Node getValue() {
         return value;
     }

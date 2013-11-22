@@ -27,6 +27,7 @@ public class ProxyParser {
     private String endMark;
     private String pyStub;
 
+
     public ProxyParser() {
         String tmpDir = Util.getSystemTempDir();
         String sid = Util.newSessionId();
@@ -260,6 +261,13 @@ public class ProxyParser {
             return new Break(start, end);
         }
 
+
+        if (type.equals("Bytes")) {
+            Object s = map.get("s");
+            return new Bytes(s, start, end);
+        }
+
+
         if (type.equals("Call")) {
             Node func = deJson(map.get("func"));
             List<Node> args = convertList(map.get("args"));
@@ -402,9 +410,9 @@ public class ProxyParser {
             return new Index(value, start, end);
         }
 
-        if (type.equals("Keyword")) {
+        if (type.equals("keyword")) {
             String arg = (String) map.get("arg");
-            Node value = deJson(map.get("op_node"));
+            Node value = deJson(map.get("value"));
             return new Keyword(arg, value, start, end);
         }
 
@@ -567,7 +575,12 @@ public class ProxyParser {
             return new Yield(value, start, end);
         }
 
-        // default
+        if (type.equals("YieldFrom")) {
+            Node value = deJson(map.get("value"));
+            return new Yield(value, start, end);
+        }
+
+        // Util.msg("unexpected ast node: " + o);
         return null;
     }
 
