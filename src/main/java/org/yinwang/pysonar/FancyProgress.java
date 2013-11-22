@@ -1,7 +1,5 @@
 package org.yinwang.pysonar;
 
-import java.text.DecimalFormat;
-
 public class FancyProgress {
 
     private static final int MAX_SPEED_DIGITS = 5;
@@ -43,7 +41,7 @@ public class FancyProgress {
 
         long elapsed = System.currentTimeMillis() - lastTickTime;
 
-        if (elapsed > 500 || count == total || count % segSize == 0) {
+        if (elapsed > 500 || count == total) {
             System.out.print("\r");
 
 //            int len = (int) Math.floor(width * count / total);
