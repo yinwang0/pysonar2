@@ -120,11 +120,13 @@ public class JSONDump {
 
                         if (func.getVararg() != null) {
                             if (!first) args.append(", ");
+                            first = false;
                             args.append("*" + func.getVararg().toDisplay());
                         }
 
                         if (func.getKwarg() != null) {
                             if (!first) args.append(", ");
+                            first = false;
                             args.append("**" + func.getKwarg().toDisplay());
                         }
 
