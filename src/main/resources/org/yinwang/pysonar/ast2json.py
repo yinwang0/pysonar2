@@ -299,7 +299,8 @@ def add_missing_names(node, s, idxmap):
             add_missing_names(n, s, idxmap)
 
     elif isinstance(node, ClassDef):
-        start = find_node_start(node, s, idxmap) + len('class')
+        head = find_node_start(node, s, idxmap)
+        start = s.find("class", head) + len("class")
         if start != None:
             node.name_node = str_to_name(s, start, idxmap)
             node._fields += ('name_node',)
