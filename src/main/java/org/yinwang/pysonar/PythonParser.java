@@ -657,7 +657,7 @@ public class PythonParser {
 
         try {
             OutputStreamWriter writer = new OutputStreamWriter(pythonProcess.getOutputStream());
-            writer.write("parse_file('" + filename + "', '" + exchangeFile + "', '" + endMark + "')\n");
+            writer.write("parse_dump('" + filename + "', '" + exchangeFile + "', '" + endMark + "')\n");
             writer.flush();
         } catch (Exception e) {
             Util.msg("\nFailed to send file to Python: " + filename);

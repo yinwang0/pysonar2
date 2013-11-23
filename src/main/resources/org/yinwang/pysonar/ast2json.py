@@ -11,7 +11,7 @@ from ast import *
 is_python3 = (sys.version_info.major == 3)
 
 
-class Encoder(JSONEncoder):
+class AstEncoder(JSONEncoder):
     def default(self, o):
         if hasattr(o, '__dict__'):
             d = o.__dict__
@@ -21,30 +21,14 @@ class Encoder(JSONEncoder):
             return str(o)
 
 
-if is_python3:
-    encoder = Encoder()
-else:
-    encoder = Encoder(encoding="latin1")
-
-
-def parse(filename):
-    f = open(filename)
-    lines = f.read()
-    f.close()
-    return parse_string(lines, filename)
-
-
-def parse_string(lines, filename=None):
-    tree = ast.parse(lines)
-    improve_ast(tree, lines)
-    if filename:
-        tree.filename = filename
-    return tree
-
-
-def parse_file(file, output, end_mark):
+def parse_dump(filename, output, end_mark):
     try:
-        tree = parse(file)
+        if is_python3:
+            encoder = AstEncoder()
+        else:
+            encoder = AstEncoder(encoding="latin1")
+
+        tree = parse_file(filename)
         encoded = encoder.encode(tree)
         f = open(output, "w")
         f.write(encoded)
@@ -55,8 +39,24 @@ def parse_file(file, output, end_mark):
         f.close()
 
 
-def p(file):
-    parse_file(file, "t1", "t2")
+def parse_file(filename):
+    f = open(filename)
+    lines = f.read()
+    f.close()
+    return parse_string(lines, filename)
+
+
+def parse_string(string, filename=None):
+    tree = ast.parse(string)
+    improve_ast(tree, string)
+    if filename:
+        tree.filename = filename
+    return tree
+
+
+# short function for experiments
+def p(filename):
+    parse_dump(filename, "json" + filename, "end" + filename)
 
 
 def detect_encoding(path):
@@ -66,12 +66,9 @@ def detect_encoding(path):
     return encs[0] if encs else 'utf8'
 
 
-## contents of improve_ast
-
 #-------------------------------------------------------------
 #                   improvements to the AST
 #-------------------------------------------------------------
-
 
 # Is it Python 3?
 is_python3 = (sys.version_info.major == 3)
@@ -96,7 +93,6 @@ def improve_node(node, s, idxmap):
 
         for f in node_fields(node):
             improve_node(f, s, idxmap)
-
 
 
 def find_node_start(node, s, idxmap):
@@ -138,7 +134,6 @@ def find_node_start(node, s, idxmap):
         node.node_start = ret
 
     return ret
-
 
 
 def find_node_end(node, s, idxmap):
@@ -294,10 +289,9 @@ def find_node_end(node, s, idxmap):
     return the_end
 
 
-
 def add_missing_names(node, s, idxmap):
 
-    if hasattr(node, 'extraAttribute'):
+    if hasattr(node, 'extra_attr'):
         return
 
     if isinstance(node, list):
@@ -387,8 +381,7 @@ def add_missing_names(node, s, idxmap):
     #        node.name_nodes = name_nodes
     #        node._fields += ('name_nodes',)
 
-    node.extraAttribute = True
-
+    node.extra_attr = True
 
 
 #-------------------------------------------------------------
@@ -403,14 +396,12 @@ def start_seq(s, pat, start):
         return len(s)
 
 
-
 # find a sequence in a string s, returning the end point
 def end_seq(s, pat, start):
     try:
         return s.index(pat, start) + len(pat)
     except ValueError:
         return len(s)
-
 
 
 # find matching close paren from start
@@ -431,7 +422,6 @@ def match_paren(s, open, close, start):
     return i
 
 
-
 # build table for lineno <-> index oonversion
 def build_index_map(s):
     line = 0
@@ -446,11 +436,9 @@ def build_index_map(s):
     return idxmap
 
 
-
 # convert (line, col) to offset index
 def map_idx(idxmap, line, col):
     return idxmap[line-1] + col
-
 
 
 # convert offset index into (line, col)
@@ -464,12 +452,11 @@ def map_line_col(idxmap, idx):
     return (line, col)
 
 
-
 # convert string to Name
 def str_to_name(s, start, idxmap):
     i = start;
     while i < len(s) and not is_alpha(s[i]):
-        i = i + 1
+        i += 1
     name_start = i
 
     ret = []
@@ -489,14 +476,13 @@ def str_to_name(s, start, idxmap):
         return name
 
 
-
 def convert_ops(ops, s, start, idxmap):
     syms = []
     for op in ops:
         if type(op) in ops_map:
             syms.append(ops_map[type(op)])
         else:
-            print("[WARNING] operator %s is missing from ops_map, " \
+            print("[WARNING] operator %s is missing from ops_map, "
                   "please report the bug on GitHub" % op)
 
     i = start
@@ -559,6 +545,7 @@ ops_map = {
     UAdd : '+',
 }
 
+
 # get list of fields from a node
 def node_fields(node):
     ret = []
@@ -566,7 +553,6 @@ def node_fields(node):
         if field != 'ctx' and hasattr(node, field):
             ret.append(getattr(node, field))
     return ret
-
 
 
 # get full source text where the node is from
@@ -577,19 +563,16 @@ def node_source(node):
         return None
 
 
-
 # utility for getting exact source code part of the node
 def src(node):
     return node.node_source[node.node_start: node.node_end]
 
 
-
 def node_start(node):
-    if (hasattr(node, 'node_start')):
+    if hasattr(node, 'node_start'):
         return node.node_start
     else:
         return 0
-
 
 
 def node_end(node):
