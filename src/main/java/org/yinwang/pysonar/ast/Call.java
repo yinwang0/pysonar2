@@ -13,6 +13,7 @@ import java.util.Set;
 
 import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
 import static org.yinwang.pysonar.Binding.Kind.CLASS;
+import static org.yinwang.pysonar.Binding.Kind.SCOPE;
 
 public class Call extends Node {
 
@@ -44,6 +45,16 @@ public class Call extends Node {
     @NotNull
     @Override
     public Type resolve(Scope s, int tag) {
+
+//// experiment with isinstance
+//        if (func.isName() && func.asName().id.equals("isinstance")) {
+//            if (args.size() == 2) {
+//                if (args.get(0).isName()) {
+//                    Type rType = resolveExpr(args.get(1), s, tag);
+//                    s.put(args.get(0).asName().id, args.get(0), rType, SCOPE, tag);
+//                }
+//            }
+//        }
 
         Type opType = resolveExpr(func, s, tag);
         List<Type> aTypes = resolveAndConstructList(args, s, tag);

@@ -459,6 +459,12 @@ public class PythonParser {
             return new Name(id, start, end);
         }
 
+        // another name for Name in Python3 func parameters?
+        if (type.equals("arg")) {
+            String id = (String) map.get("arg");
+            return new Name(id, start, end);
+        }
+
         if (type.equals("Num")) {
             Object n = map.get("n");
             return new Num(n, start, end);

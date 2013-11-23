@@ -56,7 +56,7 @@ def parse_string(string, filename=None):
 
 # short function for experiments
 def p(filename):
-    parse_dump(filename, "json" + filename, "end" + filename)
+    parse_dump(filename, "json1", "end1")
 
 
 def detect_encoding(path):
