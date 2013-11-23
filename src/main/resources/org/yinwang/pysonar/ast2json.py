@@ -311,7 +311,9 @@ def add_missing_names(node, s, idxmap):
             node._fields += ('name_node',)
 
     elif isinstance(node, FunctionDef):
-        start = find_node_start(node, s, idxmap) + len('def')
+        # skip to "def" because it may contain decorators like @property
+        head = find_node_start(node, s, idxmap)
+        start = s.find("def", head) + len("def")
         if start != None:
             node.name_node = str_to_name(s, start, idxmap)
             node._fields += ('name_node',)
@@ -550,7 +552,7 @@ ops_map = {
     Div  : '/',
     FloorDiv : '//',
     Mod  : '%',
-    Pow : '**',
+    Pow  : '**',
 
     # UnaryOp
     USub : '-',
