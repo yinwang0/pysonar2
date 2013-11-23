@@ -34,6 +34,7 @@ public class JSONDump {
 		for (String inclpath : inclpaths) {
 			idx.addPath(inclpath);
 		}
+
 		idx.loadFileRecursive(srcpath);
 		idx.finish();
 
@@ -117,14 +118,16 @@ public class JSONDump {
                             args.append(n.toDisplay());
                         }
 
-                        if (func.getKwarg() != null) {
-                            if (!first) args.append(", ");
-                            args.append(func.getKwarg().toDisplay());
-                        }
                         if (func.getVararg() != null) {
                             if (!first) args.append(", ");
                             args.append("*" + func.getVararg().toDisplay());
                         }
+
+                        if (func.getKwarg() != null) {
+                            if (!first) args.append(", ");
+                            args.append("**" + func.getKwarg().toDisplay());
+                        }
+
                         args.append(")");
 
                         argExpr = args.toString();
