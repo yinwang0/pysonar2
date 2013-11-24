@@ -70,7 +70,9 @@ public class AstCache {
             Util.deleteDirectory(new File(Indexer.idx.cacheDir));
             return true;
         } catch (Exception x) {
-            severe("Failed to clear disk cache: " + x);
+
+            LOG.log(Level.SEVERE, "Failed to clear disk cache: " + x);
+
             return false;
         }
     }
@@ -90,51 +92,6 @@ public class AstCache {
      */
     @Nullable
     public Module getAST(@NotNull String path) {
-        return fetch(path);
-    }
-
-    /**
-     * Returns the syntax tree for {@code path} with {@code contents}.
-     * Uses the memory cache but not the disk cache.
-     * This method exists primarily for unit testing.
-     *
-     * @param path     a name for the file.  Can be relative.
-     * @param contents the source to parse
-     */
-    @Nullable
-    public Module getAST(@NotNull String path, @NotNull String contents) {
-        // Cache stores null value if the parse failed.
-        if (cache.containsKey(path)) {
-            return cache.get(path);
-        }
-
-        Module mod = null;
-        try {
-            mod = parse(path, contents);
-            if (mod != null) {
-                try {
-                    mod.setFileAndMD5(path, Util.getMD5(contents.getBytes("UTF-8")));
-                } catch (Exception e) {
-                    return null;
-                }
-            }
-        } finally {
-            if (mod != null) {
-                cache.put(path, mod);
-                docstringCache.put(path, DocstringInfo.NewWithDocstringNode(mod.docstring()));
-            }
-        }
-        return mod;
-    }
-
-    /**
-     * Get or create an AST for {@code path}, checking and if necessary updating
-     * the disk and memory caches.
-     *
-     * @param path absolute source path
-     */
-    @Nullable
-    private Module fetch(String path) {
         // Cache stores null value if the parse failed.
         if (cache.containsKey(path)) {
             return cache.get(path);
@@ -143,7 +100,9 @@ public class AstCache {
         // Might be cached on disk but not in memory.
         Module mod = getSerializedModule(path);
         if (mod != null) {
-            fine("reusing " + path);
+
+            LOG.log(Level.FINE, "reusing " + path);
+
             cache.put(path, mod);
             Str docstring = mod.docstring();
             if (docstring != null) {
@@ -154,7 +113,8 @@ public class AstCache {
 
         mod = null;
         try {
-            mod = parse(path);
+            LOG.log(Level.FINE, "parsing " + path);
+            mod = (Module) parser.parseFile(path);
         } finally {
             cache.put(path, mod);  // may be null
             if (mod != null && mod.docstring() != null) {
@@ -173,23 +133,6 @@ public class AstCache {
     @Nullable
     public DocstringInfo getModuleDocstringInfo(String path) {
         return docstringCache.get(path);
-    }
-
-
-    /**
-     * Parse a file.  Does not look in the cache or cache the result.
-     */
-    private Module parse(String path) {
-        fine("parsing " + path);
-        return (Module) parser.parseFile(path);
-    }
-
-    /**
-     * Parse a string.  Does not look in the cache or cache the result.
-     */
-    private Module parse(String path, String contents) {
-        fine("parsing " + path);
-        return (Module) parser.parseFile(path);
     }
 
 
@@ -271,31 +214,5 @@ public class AstCache {
 
             }
         }
-    }
-
-    private void log(Level level, String msg) {
-        if (LOG.isLoggable(level)) {
-            LOG.log(level, msg);
-        }
-    }
-
-    private void severe(String msg) {
-        log(Level.SEVERE, msg);
-    }
-
-    private void warn(String msg) {
-        log(Level.WARNING, msg);
-    }
-
-    private void info(String msg) {
-        log(Level.INFO, msg);
-    }
-
-    private void fine(String msg) {
-        log(Level.FINE, msg);
-    }
-
-    private void finer(String msg) {
-        log(Level.FINER, msg);
     }
 }

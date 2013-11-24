@@ -196,7 +196,7 @@ public class Outliner {
      */
     @NotNull
     public List<Entry> generate(@NotNull Indexer idx, @NotNull String abspath) {
-        ModuleType mt = idx.getModuleForFile(abspath);
+        ModuleType mt = idx.loadFile(abspath);
         if (mt == null) {
             return new ArrayList<Entry>();
         }

@@ -25,8 +25,8 @@ public class Indexer {
     public Scope moduleTable = new Scope(null, Scope.ScopeType.GLOBAL);
     public List<String> loadedFiles = new ArrayList<>();
     public Scope globaltable = new Scope(null, Scope.ScopeType.GLOBAL);
-    public Map<String, List<Binding>> allBindings = new HashMap<>();
-    private Map<Ref, List<Binding>> references = new HashMap<>();
+    public Map<String, List<Binding>> allBindings = new LinkedHashMap<>();
+    private Map<Ref, List<Binding>> references = new LinkedHashMap<>();
     public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
     public Map<String, List<Diagnostic>> parseErrors = new HashMap<>();
     public String cwd = null;
@@ -173,21 +173,6 @@ public class Indexer {
         }
     }
 
-    /**
-     * Returns (loading/resolving if necessary) the module for a given source path.
-     * @param file absolute file path
-     */
-    @Nullable
-    public ModuleType getModuleForFile(String file) {
-        if (failedModules.contains(file)) {
-            return null;
-        }
-        ModuleType m = getCachedModule(file);
-        if (m != null) {
-            return m;
-        }
-        return loadFile(file);
-    }
 
     /**
      * Returns the list, possibly empty but never {@code null}, of
@@ -271,7 +256,8 @@ public class Indexer {
     public ModuleType loadFile(String path) {
 //        Util.msg("loading: " + path);
 
-        File f = new File(Util.unifyPath(path));
+        path = Util.unifyPath(path);
+        File f = new File(path);
 
         if (!f.canRead()) {
             finer("\nfile not not found or cannot be read: " + path);
@@ -283,7 +269,6 @@ public class Indexer {
             finer("\nusing cached module " + path + " [succeeded]");
             return module;
         }
-
 
         // detect circular import
         if (Indexer.idx.inImportStack(path)) {
@@ -311,6 +296,7 @@ public class Indexer {
         }
         return false;
     }
+
 
     @Nullable
     private ModuleType parseAndResolve(String file) {
@@ -370,13 +356,6 @@ public class Indexer {
         return getAstCache().getAST(file);
     }
 
-    /**
-     * Returns the syntax tree for {@code file}. <p>
-     */
-    @Nullable
-    public Module getAstForFile(String file, String contents) {
-        return getAstCache().getAST(file, contents);
-    }
 
     @Nullable
     public ModuleType getBuiltinModule(@NotNull String qname) {

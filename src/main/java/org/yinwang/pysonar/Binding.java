@@ -6,8 +6,7 @@ import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * An {@code NBinding} collects information about a fully qualified name (qname)
@@ -76,7 +75,6 @@ public class Binding implements Comparable<Object> {
     public Binding(@NotNull String id, Node node, @NotNull Type type, @NotNull Kind kind) {
         name = id;
         qname = type.getTable().getPath();
-        defs = new HashSet<>(DEF_SET_INITIAL_CAPACITY);
         addDef(node);
         this.type = type;
         this.kind = kind;
@@ -208,7 +206,7 @@ public class Binding implements Comparable<Object> {
      */
     public Set<Def> getDefs() {
         if (defs == null) {
-            defs = new HashSet<>(DEF_SET_INITIAL_CAPACITY);
+            defs = new LinkedHashSet<>(DEF_SET_INITIAL_CAPACITY);
         }
         return defs;
     }
@@ -242,7 +240,7 @@ public class Binding implements Comparable<Object> {
      */
     public Set<Ref> getRefs() {
         if (refs == null) {
-            refs = new HashSet<>(REF_SET_INITIAL_CAPACITY);
+            refs = new LinkedHashSet<>(REF_SET_INITIAL_CAPACITY);
         }
         return refs;
     }
