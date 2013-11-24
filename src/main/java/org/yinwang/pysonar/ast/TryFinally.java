@@ -20,10 +20,10 @@ public class TryFinally extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
+    public Type resolve(Scope s) {
         Type tFinal = Indexer.idx.builtins.unknown;
-        if (body != null) resolveExpr(body, s, tag);
-        if (finalbody != null) tFinal = resolveExpr(finalbody, s, tag);
+        if (body != null) resolveExpr(body, s);
+        if (finalbody != null) tFinal = resolveExpr(finalbody, s);
         return tFinal;
     }
 

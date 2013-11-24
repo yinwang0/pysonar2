@@ -24,17 +24,17 @@ public class BoolOp extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
+    public Type resolve(Scope s) {
         if (op.id.equals("and")) {
             Type last = null;
             for (Node e : values) {
-                last = resolveExpr(e, s, tag);
+                last = resolveExpr(e, s);
             }
             return (last == null ? Indexer.idx.builtins.unknown : last);
         }
 
         // OR
-        return resolveListAsUnion(values, s, tag);
+        return resolveListAsUnion(values, s);
     }
 
     @NotNull

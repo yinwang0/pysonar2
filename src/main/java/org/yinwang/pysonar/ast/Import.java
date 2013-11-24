@@ -22,13 +22,13 @@ public class Import extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s, int tag) {
+    public Type resolve(@NotNull Scope s) {
         for (Alias a : names) {
-            ModuleType mod = Indexer.idx.loadModule(a.name, s, tag);
+            ModuleType mod = Indexer.idx.loadModule(a.name, s);
             if (mod == null) {
                 Indexer.idx.putProblem(this, "Cannot load module");
             } else if (a.asname != null) {
-                s.put(a.asname.id, a.asname, mod, Binding.Kind.VARIABLE, tag);
+                s.put(a.asname.id, a.asname, mod, Binding.Kind.VARIABLE);
             }
         }
         return Indexer.idx.builtins.Cont;

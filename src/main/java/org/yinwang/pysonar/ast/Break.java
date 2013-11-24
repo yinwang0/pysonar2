@@ -24,7 +24,7 @@ public class Break extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
+    public Type resolve(Scope s) {
         return Indexer.idx.builtins.None;
     }
 }

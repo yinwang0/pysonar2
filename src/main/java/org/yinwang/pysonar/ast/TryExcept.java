@@ -27,17 +27,17 @@ public class TryExcept extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
+    public Type resolve(Scope s) {
         Type tp1 = Indexer.idx.builtins.unknown;
         Type tp2 = Indexer.idx.builtins.unknown;
         Type tph = Indexer.idx.builtins.unknown;
 
         for (ExceptHandler h: handlers) {
-            tph = UnionType.union(tph, resolveExpr(h, s, tag));
+            tph = UnionType.union(tph, resolveExpr(h, s));
         }
 
-        if (body != null) tp1 = resolveExpr(body, s, tag);
-        if (orelse != null) tp2 = resolveExpr(orelse, s, tag);
+        if (body != null) tp1 = resolveExpr(body, s);
+        if (orelse != null) tp2 = resolveExpr(orelse, s);
 
         return UnionType.union(tp1, UnionType.union(tp2, tph));
     }

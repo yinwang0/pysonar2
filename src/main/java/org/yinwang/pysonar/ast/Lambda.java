@@ -45,13 +45,13 @@ public class Lambda extends FunctionDef {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope outer, int tag) {
-        this.defaultTypes = resolveAndConstructList(defaults, outer, tag);
+    public Type resolve(@NotNull Scope outer) {
+        this.defaultTypes = resolveAndConstructList(defaults, outer);
         FunType cl = new FunType(this, outer.getForwarding());
         cl.getTable().setParent(outer);
         cl.getTable().setPath(outer.extendPath(getName().getId()));
-        NameBinder.bind(outer, getName(), cl, Binding.Kind.FUNCTION, tag);
-        cl.setDefaultTypes(resolveAndConstructList(defaults, outer, tag));
+        NameBinder.bind(outer, getName(), cl, Binding.Kind.FUNCTION);
+        cl.setDefaultTypes(resolveAndConstructList(defaults, outer));
         Indexer.idx.addUncalled(cl);
         return cl;
     }

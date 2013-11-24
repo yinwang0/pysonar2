@@ -30,10 +30,10 @@ public class DictComp extends Node {
      */
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
-        resolveList(generators, s, tag);
-        Type keyType = resolveExpr(key, s, tag);
-        Type valueType = resolveExpr(value, s, tag);
+    public Type resolve(Scope s) {
+        resolveList(generators, s);
+        Type keyType = resolveExpr(key, s);
+        Type valueType = resolveExpr(value, s);
         return new DictType(keyType, valueType);
     }
 

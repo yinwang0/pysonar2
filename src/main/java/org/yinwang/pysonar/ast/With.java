@@ -1,7 +1,6 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
@@ -24,14 +23,14 @@ public class With extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s, int tag) {
+    public Type resolve(@NotNull Scope s) {
         for (Withitem item : items) {
-            Type val = resolveExpr(item.context_expr, s, tag);
+            Type val = resolveExpr(item.context_expr, s);
             if (item.optional_vars != null) {
-                NameBinder.bind(s, item.optional_vars, val, tag);
+                NameBinder.bind(s, item.optional_vars, val);
             }
         }
-        return resolveExpr(body, s, tag);
+        return resolveExpr(body, s);
     }
 
     @NotNull

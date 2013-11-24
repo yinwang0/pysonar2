@@ -21,9 +21,9 @@ public class AugAssign extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
-        resolveExpr(target, s, tag);
-        resolveExpr(value, s, tag);
+    public Type resolve(Scope s) {
+        resolveExpr(target, s);
+        resolveExpr(value, s);
         return Indexer.idx.builtins.Cont;
     }
 

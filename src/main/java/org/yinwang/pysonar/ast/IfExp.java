@@ -23,17 +23,17 @@ public class IfExp extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
+    public Type resolve(Scope s) {
         Type type1, type2;
-        resolveExpr(test, s, tag);
-        int newTag = Indexer.idx.newThread();
+        resolveExpr(test, s);
+
         if (body != null) {
-            type1 = resolveExpr(body, s, newTag);
+            type1 = resolveExpr(body, s);
         } else {
             type1 = Indexer.idx.builtins.Cont;
         }
         if (orelse != null) {
-            type2 = resolveExpr(orelse, s, -newTag);
+            type2 = resolveExpr(orelse, s);
         } else {
             type2 = Indexer.idx.builtins.Cont;
         }

@@ -20,7 +20,7 @@ public class Global extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
+    public Type resolve(Scope s) {
         // Do nothing here because global names are processed by NBlock
         return Indexer.idx.builtins.Cont;
     }

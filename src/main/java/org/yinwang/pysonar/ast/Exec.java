@@ -22,10 +22,10 @@ public class Exec extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
-        if (body != null) resolveExpr(body, s, tag);
-        if (globals != null) resolveExpr(globals, s, tag);
-        if (locals != null) resolveExpr(locals, s, tag);
+    public Type resolve(Scope s) {
+        if (body != null) resolveExpr(body, s);
+        if (globals != null) resolveExpr(globals, s);
+        if (locals != null) resolveExpr(locals, s);
         return Indexer.idx.builtins.Cont;
     }
 

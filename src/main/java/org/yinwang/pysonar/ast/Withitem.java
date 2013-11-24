@@ -34,7 +34,7 @@ public class Withitem extends Node {
     // dummy, will never be called
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
+    public Type resolve(Scope s) {
         return Indexer.idx.builtins.unknown;
     }
 

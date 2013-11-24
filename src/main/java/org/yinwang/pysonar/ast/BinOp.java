@@ -23,13 +23,13 @@ public class BinOp extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
+    public Type resolve(Scope s) {
         Type ltype = null, rtype = null;
         if (left != null) {
-            ltype = resolveExpr(left, s, tag);
+            ltype = resolveExpr(left, s);
         }
         if (right != null) {
-            rtype = resolveExpr(right, s, tag);
+            rtype = resolveExpr(right, s);
         }
 
         // If either non-null operand is a string, assume the result is a string.

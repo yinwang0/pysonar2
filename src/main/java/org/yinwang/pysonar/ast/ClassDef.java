@@ -47,11 +47,11 @@ public class ClassDef extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s, int tag) {
+    public Type resolve(@NotNull Scope s) {
         ClassType classType = new ClassType(getName().getId(), s);
         List<Type> baseTypes = new ArrayList<>();
         for (Node base : bases) {
-            Type baseType = resolveExpr(base, s, tag);
+            Type baseType = resolveExpr(base, s);
             if (baseType.isClassType()) {
                 classType.addSuper(baseType);
             } else if (baseType.isUnionType()) {
@@ -76,8 +76,8 @@ public class ClassDef extends Node {
 
         // Bind ClassType to name here before resolving the body because the
         // methods need this type as self.
-        NameBinder.bind(s, name, classType, Binding.Kind.CLASS, tag);
-        resolveExpr(body, classType.getTable(), tag);
+        NameBinder.bind(s, name, classType, Binding.Kind.CLASS);
+        resolveExpr(body, classType.getTable());
         return Indexer.idx.builtins.Cont;
     }
 

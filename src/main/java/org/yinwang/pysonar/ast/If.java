@@ -24,19 +24,18 @@ public class If extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s, int tag) {
+    public Type resolve(@NotNull Scope s) {
         Type type1, type2;
-        resolveExpr(test, s, tag);
-        int newTag = Indexer.idx.newThread();
+        resolveExpr(test, s);
 
         if (body != null && !body.isEmpty()) {
-            type1 = resolveExpr(body, s, newTag);
+            type1 = resolveExpr(body, s);
         } else {
             type1 = Indexer.idx.builtins.Cont;
         }
 
         if (orelse != null && !orelse.isEmpty()) {
-            type2 = resolveExpr(orelse, s, -newTag);
+            type2 = resolveExpr(orelse, s);
         } else {
             type2 = Indexer.idx.builtins.Cont;
         }

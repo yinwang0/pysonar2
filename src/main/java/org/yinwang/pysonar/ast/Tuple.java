@@ -15,10 +15,10 @@ public class Tuple extends Sequence {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
+    public Type resolve(Scope s) {
         TupleType t = new TupleType();
         for (Node e : elts) {
-            t.add(resolveExpr(e, s, tag));
+            t.add(resolveExpr(e, s));
         }
         return t;
     }

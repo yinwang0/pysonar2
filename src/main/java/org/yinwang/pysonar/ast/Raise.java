@@ -22,10 +22,10 @@ public class Raise extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
-        if (exceptionType != null) resolveExpr(exceptionType, s, tag);
-        if (inst != null) resolveExpr(inst, s, tag);
-        if (traceback != null) resolveExpr(traceback, s, tag);
+    public Type resolve(Scope s) {
+        if (exceptionType != null) resolveExpr(exceptionType, s);
+        if (inst != null) resolveExpr(inst, s);
+        if (traceback != null) resolveExpr(traceback, s);
         return Indexer.idx.builtins.Cont;
     }
 

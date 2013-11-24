@@ -19,9 +19,9 @@ public class Assert extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
-        if (test != null) resolveExpr(test, s, tag);
-        if (msg != null) resolveExpr(msg, s, tag);
+    public Type resolve(Scope s) {
+        if (test != null) resolveExpr(test, s);
+        if (msg != null) resolveExpr(msg, s);
         return Indexer.idx.builtins.Cont;
     }
 

@@ -26,9 +26,9 @@ public class Compare extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
-        resolveExpr(left, s, tag);
-        resolveList(comparators, s, tag);
+    public Type resolve(Scope s) {
+        resolveExpr(left, s);
+        resolveList(comparators, s);
         return Indexer.idx.builtins.BaseNum;
     }
 

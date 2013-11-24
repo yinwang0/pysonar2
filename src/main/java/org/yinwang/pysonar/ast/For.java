@@ -32,17 +32,17 @@ public class For extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s, int tag) {
-        NameBinder.bindIter(s, target, iter, Binding.Kind.SCOPE, tag);
+    public Type resolve(@NotNull Scope s) {
+        NameBinder.bindIter(s, target, iter, Binding.Kind.SCOPE);
 
         Type ret;
         if (body == null) {
             ret = Indexer.idx.builtins.unknown;
         } else {
-            ret = resolveExpr(body, s, tag);
+            ret = resolveExpr(body, s);
         }
         if (orelse != null) {
-            ret = UnionType.union(ret, resolveExpr(orelse, s, tag));
+            ret = UnionType.union(ret, resolveExpr(orelse, s));
         }
         return ret;
     }

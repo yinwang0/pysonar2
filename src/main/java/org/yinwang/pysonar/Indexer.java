@@ -312,7 +312,7 @@ public class Indexer {
                 return null;
             } else {
                 finer("resolving: " + file);
-                ModuleType mod = (ModuleType)ast.resolve(moduleTable, 0);
+                ModuleType mod = (ModuleType)ast.resolve(moduleTable);
                 finer("[success]");
                 loadedFiles.add(file);
                 return mod;
@@ -406,7 +406,7 @@ public class Indexer {
 
 
     @Nullable
-    public ModuleType loadModule(@NotNull List<Name> name, @NotNull Scope scope, int tag) {
+    public ModuleType loadModule(@NotNull List<Name> name, @NotNull Scope scope) {
         if (name.isEmpty()) return null;
 
         String qname = makeQname(name);
@@ -439,10 +439,10 @@ public class Indexer {
                 if (mod == null) return null;
 
                 if (prev != null) {
-                    Binding b = prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE, tag);
+                    Binding b = prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                     Indexer.idx.putRef(name.get(i), b);
                 } else {
-                    Binding b = scope.put(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE, tag);
+                    Binding b = scope.put(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                     Indexer.idx.putRef(name.get(i), b);
                 }
 
@@ -454,10 +454,10 @@ public class Indexer {
                     ModuleType mod = loadFile(startFile.getPath());
                     if (mod == null) return null;
                     if (prev != null) {
-                        Binding b = prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE, tag);
+                        Binding b = prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                         Indexer.idx.putRef(name.get(i), b);
                     } else {
-                        Binding b = scope.put(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE, tag);
+                        Binding b = scope.put(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                         Indexer.idx.putRef(name.get(i), b);
                     }
                     prev = mod;
@@ -591,7 +591,7 @@ public class Indexer {
 
             for (FunType cl : uncalledDup) {
                 progress.tick();
-                Call.apply(cl, null, null, null, null, null, newThread());
+                Call.apply(cl, null, null, null, null, null);
             }
         }
     }

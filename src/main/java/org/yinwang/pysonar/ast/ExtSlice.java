@@ -19,9 +19,9 @@ public class ExtSlice extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
+    public Type resolve(Scope s) {
         for (Node d : dims) {
-            d.resolve(s, tag);
+            d.resolve(s);
         }
         return new ListType();
     }

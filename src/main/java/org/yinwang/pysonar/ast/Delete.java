@@ -20,9 +20,9 @@ public class Delete extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s, int tag) {
+    public Type resolve(@NotNull Scope s) {
         for (Node n : targets) {
-            resolveExpr(n, s, tag);
+            resolveExpr(n, s);
             if (n instanceof Name) {
                 s.remove(n.asName().getId());
             }

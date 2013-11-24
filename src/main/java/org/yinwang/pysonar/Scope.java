@@ -125,16 +125,16 @@ public class Scope {
 
 
     @Nullable
-    public Binding put(String id, Node loc, @NotNull Type type, Binding.Kind kind, int tag) {
+    public Binding put(String id, Node loc, @NotNull Type type, Binding.Kind kind) {
         Binding b = lookupScope(id);
-        return insertOrUpdate(b, id, loc, type, kind, tag);
+        return insertOrUpdate(b, id, loc, type, kind);
     }
 
 
     @Nullable
-    public Binding putAttr(String id, Node loc, @NotNull Type type, Binding.Kind kind, int tag) {
+    public Binding putAttr(String id, Node loc, @NotNull Type type, Binding.Kind kind) {
         Binding b = lookupAttr(id);
-        return insertOrUpdate(b, id, loc, type, kind, tag);
+        return insertOrUpdate(b, id, loc, type, kind);
     }
 
 
@@ -148,9 +148,9 @@ public class Scope {
     // helper for put and putAttr
     @NotNull
     private Binding insertOrUpdate(@Nullable Binding binding, String id, @NotNull Node node,
-                                   @NotNull Type type, Binding.Kind kind, int tag) {
-        if (binding == null || tag == binding.tag) {
-            Binding b = new Binding(id, node, type, kind, tag);
+                                   @NotNull Type type, Binding.Kind kind) {
+        if (binding == null) {
+            Binding b = new Binding(id, node, type, kind);
             b.setQname(extendPath(id));
             binding = update(id, b);
         } else {

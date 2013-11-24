@@ -1,7 +1,6 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -31,10 +30,10 @@ public class Comprehension extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s, int tag) {
-        NameBinder.bindIter(s, target, iter, Binding.Kind.SCOPE, tag);
-        resolveList(ifs, s, tag);
-        return resolveExpr(target, s, tag);
+    public Type resolve(@NotNull Scope s) {
+        NameBinder.bindIter(s, target, iter, Binding.Kind.SCOPE);
+        resolveList(ifs, s);
+        return resolveExpr(target, s);
     }
 
     @NotNull

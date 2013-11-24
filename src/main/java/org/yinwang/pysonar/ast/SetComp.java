@@ -1,7 +1,6 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.ListType;
 import org.yinwang.pysonar.types.Type;
@@ -25,9 +24,9 @@ public class SetComp extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
-        resolveList(generators, s, tag);
-        return new ListType(resolveExpr(elt, s, tag));
+    public Type resolve(Scope s) {
+        resolveList(generators, s);
+        return new ListType(resolveExpr(elt, s));
     }
 
     @NotNull

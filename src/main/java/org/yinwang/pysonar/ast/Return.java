@@ -1,7 +1,6 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -18,11 +17,11 @@ public class Return extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
+    public Type resolve(Scope s) {
         if (value == null) {
             return Indexer.idx.builtins.None;
         } else {
-            return resolveExpr(value, s, tag);
+            return resolveExpr(value, s);
         }
     }
 

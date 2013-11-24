@@ -1,7 +1,6 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
@@ -24,8 +23,8 @@ public class Keyword extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
-        return resolveExpr(value, s, tag);
+    public Type resolve(Scope s) {
+        return resolveExpr(value, s);
     }
 
     public String getArg() {

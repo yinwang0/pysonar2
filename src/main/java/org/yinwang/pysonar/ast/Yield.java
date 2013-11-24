@@ -1,7 +1,6 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.ListType;
@@ -20,9 +19,9 @@ public class Yield extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
+    public Type resolve(Scope s) {
         if (value != null) {
-            return new ListType(resolveExpr(value, s, tag));
+            return new ListType(resolveExpr(value, s));
         } else {
             return Indexer.idx.builtins.None;
         }

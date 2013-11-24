@@ -27,12 +27,12 @@ public class InstanceType extends Type {
         classType = c;
     }
     
-    public InstanceType(@NotNull Type c, Call call, List<Type> args, int tag) {
+    public InstanceType(@NotNull Type c, Call call, List<Type> args) {
         this(c);
         Type initFunc = this.getTable().lookupAttrType("__init__");
         if (initFunc != null && initFunc.isFuncType() && initFunc.asFuncType().getFunc() != null) {
             initFunc.asFuncType().setSelfType(this);
-            Call.apply(initFunc.asFuncType(), args, null, null, null, call, tag);
+            Call.apply(initFunc.asFuncType(), args, null, null, null, call);
             initFunc.asFuncType().setSelfType(null);
         }
     }

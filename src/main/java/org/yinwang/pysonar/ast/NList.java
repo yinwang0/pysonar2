@@ -15,14 +15,14 @@ public class NList extends Sequence {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
+    public Type resolve(Scope s) {
         if (elts.size() == 0) {
             return new ListType();  // list<unknown>
         }
 
         ListType listType = new ListType();
         for (Node elt : elts) {
-            listType.add(resolveExpr(elt, s, tag));
+            listType.add(resolveExpr(elt, s));
             if (elt instanceof Str) {
                 listType.addValue(((Str)elt).getStr());
             }

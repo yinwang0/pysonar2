@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Block extends Node {
 
-    @Nullable
+    @NotNull
     public List<Node> seq;
 
     public Block(@Nullable List<Node> seq, int start, int end) {
@@ -34,7 +34,7 @@ public class Block extends Node {
      */
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope scope, int tag) {
+    public Type resolve(@NotNull Scope scope) {
         // find global names and mark them
         for (Node n : seq) {
             if (n.isGlobal()) {
@@ -52,7 +52,7 @@ public class Block extends Node {
         Type retType = Indexer.idx.builtins.unknown;
 
         for (Node n : seq) {
-            Type t = resolveExpr(n, scope, tag);
+            Type t = resolveExpr(n, scope);
             if (!returned) {
                 retType = UnionType.union(retType, t);
                 if (!UnionType.contains(t, Indexer.idx.builtins.Cont)) {

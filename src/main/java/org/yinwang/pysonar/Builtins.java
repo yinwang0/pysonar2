@@ -223,7 +223,7 @@ public class Builtins {
             if (module == null) {
                 module = newModule(name);
                 table = module.getTable();
-                Indexer.idx.moduleTable.put(name, liburl(), module, MODULE, 0);
+                Indexer.idx.moduleTable.put(name, liburl(), module, MODULE);
             }
         }
 
@@ -749,7 +749,7 @@ public class Builtins {
         }
         @Override
         public void initBindings() {
-            Indexer.idx.moduleTable.put(name, liburl(), module, MODULE, 0);
+            Indexer.idx.moduleTable.put(name, liburl(), module, MODULE);
             table.addSuper(BaseModule.getTable());
 
             addClass("None", newLibUrl("constants"), None);
@@ -821,7 +821,7 @@ public class Builtins {
             addFunction("open", newTutUrl("inputoutput.html#reading-and-writing-files"), BaseFile);
             addFunction("__import__", newLibUrl("functions"), newModule("<?>"));
 
-            Indexer.idx.globaltable.put("__builtins__", liburl(), module, ATTRIBUTE, 0);
+            Indexer.idx.globaltable.put("__builtins__", liburl(), module, ATTRIBUTE);
             Indexer.idx.globaltable.putAll(table);
         }
     }

@@ -13,7 +13,6 @@ import java.util.Set;
 
 import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
 import static org.yinwang.pysonar.Binding.Kind.CLASS;
-import static org.yinwang.pysonar.Binding.Kind.SCOPE;
 
 public class Call extends Node {
 
@@ -44,50 +43,50 @@ public class Call extends Node {
      */
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
+    public Type resolve(Scope s) {
 
 //// experiment with isinstance
 //        if (func.isName() && func.asName().id.equals("isinstance")) {
 //            if (args.size() == 2) {
 //                if (args.get(0).isName()) {
-//                    Type rType = resolveExpr(args.get(1), s, tag);
-//                    s.put(args.get(0).asName().id, args.get(0), rType, SCOPE, tag);
+//                    Type rType = resolveExpr(args.get(1), s);
+//                    s.put(args.get(0).asName().id, args.get(0), rType, SCOPE);
 //                }
 //            }
 //        }
 
-        Type opType = resolveExpr(func, s, tag);
-        List<Type> aTypes = resolveAndConstructList(args, s, tag);
+        Type opType = resolveExpr(func, s);
+        List<Type> aTypes = resolveAndConstructList(args, s);
         Map<String, Type> kwTypes = new HashMap<>();
 
         for (Keyword kw : keywords) {
-            kwTypes.put(kw.getArg(), resolveExpr(kw.getValue(), s, 0));
+            kwTypes.put(kw.getArg(), resolveExpr(kw.getValue(), s));
         }
 
-        Type kwargsType = kwargs == null ? null : resolveExpr(kwargs, s, tag);
-        Type starargsType = starargs == null ? null : resolveExpr(starargs, s, tag);
+        Type kwargsType = kwargs == null ? null : resolveExpr(kwargs, s);
+        Type starargsType = starargs == null ? null : resolveExpr(starargs, s);
 
         if (opType.isUnionType()) {
             Set<Type> types = opType.asUnionType().getTypes();
             Type retType = Indexer.idx.builtins.unknown;
             for (Type funcType : types) {
-                Type t = resolveCall(funcType, aTypes, kwTypes, kwargsType, starargsType, tag);
+                Type t = resolveCall(funcType, aTypes, kwTypes, kwargsType, starargsType);
                 retType = UnionType.union(retType, t);
             }
             return retType;
         } else {
-            return resolveCall(opType, aTypes, kwTypes, kwargsType, starargsType, tag);
+            return resolveCall(opType, aTypes, kwTypes, kwargsType, starargsType);
         }
     }
 
 
     @NotNull
-    private Type resolveCall(@NotNull Type rator, List<Type> aTypes, Map<String, Type> kwTypes, Type kwargsType, Type starargsType, int tag) {
+    private Type resolveCall(@NotNull Type rator, List<Type> aTypes, Map<String, Type> kwTypes, Type kwargsType, Type starargsType) {
         if (rator.isFuncType()) {
             FunType ft = rator.asFuncType();
-            return apply(ft, aTypes, kwTypes, kwargsType, starargsType, this, tag);
+            return apply(ft, aTypes, kwTypes, kwargsType, starargsType, this);
         } else if (rator.isClassType()) {
-            return new InstanceType(rator, this, aTypes, tag);
+            return new InstanceType(rator, this, aTypes);
         } else {
             addWarning("calling non-function and non-class: " + rator);
             return Indexer.idx.builtins.unknown;
@@ -96,7 +95,7 @@ public class Call extends Node {
 
 
     @NotNull
-    public static Type apply(@NotNull FunType func, @Nullable List<Type> aTypes, Map<String, Type> kTypes, Type kwargsType, Type starargsType, @Nullable Node call, int tag) {
+    public static Type apply(@NotNull FunType func, @Nullable List<Type> aTypes, Map<String, Type> kTypes, Type kwargsType, Type starargsType, @Nullable Node call) {
 
         Indexer.idx.removeUncalled(func);
 
@@ -128,7 +127,7 @@ public class Call extends Node {
             argTypeList.addAll(aTypes);
         }
 
-        bindMethodAttrs(func, tag);
+        bindMethodAttrs(func);
 
         Scope funcTable = new Scope(func.getEnv(), Scope.ScopeType.FUNCTION);
 
@@ -140,14 +139,14 @@ public class Call extends Node {
 
         Type fromType = bindParams(call, funcTable, func.func.args,
                 func.func.vararg, func.func.kwarg,
-                argTypeList, func.defaultTypes, kTypes, kwargsType, starargsType, tag);
+                argTypeList, func.defaultTypes, kTypes, kwargsType, starargsType);
 
         Type cachedTo = func.getMapping(fromType);
         if (cachedTo != null) {
             func.setSelfType(null);
             return cachedTo;
         } else {
-            Type toType = resolveExpr(func.func.body, funcTable, tag);
+            Type toType = resolveExpr(func.func.body, funcTable);
             if (missingReturn(toType)) {
                 Indexer.idx.putProblem(func.func.name, "Function not always return a value");
 
@@ -165,7 +164,7 @@ public class Call extends Node {
     @NotNull
     static private Type bindParams(@Nullable Node call, @NotNull Scope funcTable, @NotNull List<Node> args, Name fvarargs, Name fkwargs,
                                    @Nullable List<Type> aTypes, @Nullable List<Type> dTypes, @Nullable Map<String, Type> kwTypes,
-                                   Type kwargsType, @Nullable Type starargsType, int tag) {
+                                   Type kwargsType, @Nullable Type starargsType) {
 
         TupleType fromType = new TupleType();
         int aSize = aTypes == null ? 0 : aTypes.size();
@@ -196,47 +195,47 @@ public class Call extends Node {
                     Indexer.idx.putProblem(args.get(i), "unable to bind argument:" + args.get(i));
                 }
             }
-            NameBinder.bind(funcTable, arg, aType, Binding.Kind.PARAMETER, tag);
+            NameBinder.bind(funcTable, arg, aType, Binding.Kind.PARAMETER);
             fromType.add(aType);
         }
 
         if (kwTypes != null && !kwTypes.isEmpty()) {
             Type kwValType = UnionType.newUnion(kwTypes.values());
             NameBinder.bind(funcTable, fkwargs, new DictType(Indexer.idx.builtins.BaseStr, kwValType),
-                    Binding.Kind.PARAMETER, tag);
+                    Binding.Kind.PARAMETER);
         } else {
             NameBinder.bind(funcTable, fkwargs, Indexer.idx.builtins.unknown,
-                    Binding.Kind.PARAMETER, tag);
+                    Binding.Kind.PARAMETER);
         }
 
         if (aTypes.size() > args.size()) {
             Type starType = new TupleType(aTypes.subList(args.size(), aTypes.size()));
-            NameBinder.bind(funcTable, fvarargs, starType, Binding.Kind.PARAMETER, tag);
+            NameBinder.bind(funcTable, fvarargs, starType, Binding.Kind.PARAMETER);
         } else {
-            NameBinder.bind(funcTable, fvarargs, Indexer.idx.builtins.unknown, Binding.Kind.PARAMETER, tag);
+            NameBinder.bind(funcTable, fvarargs, Indexer.idx.builtins.unknown, Binding.Kind.PARAMETER);
         }
 
         return fromType;
     }
 
 
-    static void bindMethodAttrs(@NotNull FunType cl, int tag) {
+    static void bindMethodAttrs(@NotNull FunType cl) {
         if (cl.getTable().getParent() != null) {
             Type cls = cl.getTable().getParent().getType();
             if (cls != null && cls.isClassType()) {
-                addReadOnlyAttr(cl, "im_class", cls, CLASS, tag);
-                addReadOnlyAttr(cl, "__class__", cls, CLASS, tag);
-                addReadOnlyAttr(cl, "im_self", cls, ATTRIBUTE, tag);
-                addReadOnlyAttr(cl, "__self__", cls, ATTRIBUTE, tag);
+                addReadOnlyAttr(cl, "im_class", cls, CLASS);
+                addReadOnlyAttr(cl, "__class__", cls, CLASS);
+                addReadOnlyAttr(cl, "im_self", cls, ATTRIBUTE);
+                addReadOnlyAttr(cl, "__self__", cls, ATTRIBUTE);
             }
         }
     }
 
     @Nullable
-    static Binding addReadOnlyAttr(@NotNull FunType cl, String name, @NotNull Type type, Binding.Kind kind, int tag) {
+    static Binding addReadOnlyAttr(@NotNull FunType cl, String name, @NotNull Type type, Binding.Kind kind) {
         Binding b = cl.getTable().put(name,
                 Builtins.newDataModelUrl("the-standard-type-hierarchy"),
-                type, kind, tag);
+                type, kind);
         b.markSynthetic();
         b.markStatic();
         b.markReadOnly();

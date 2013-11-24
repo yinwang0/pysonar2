@@ -27,16 +27,16 @@ public class ExceptHandler extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s, int tag) {
+    public Type resolve(@NotNull Scope s) {
         Type typeval = Indexer.idx.builtins.unknown;
         if (exceptionType != null) {
-            typeval = resolveExpr(exceptionType, s, tag);
+            typeval = resolveExpr(exceptionType, s);
         }
         if (name != null) {
-            NameBinder.bind(s, name, typeval, tag);
+            NameBinder.bind(s, name, typeval);
         }
         if (body != null) {
-            return resolveExpr(body, s, tag);
+            return resolveExpr(body, s);
         } else {
             return Indexer.idx.builtins.unknown;
         }

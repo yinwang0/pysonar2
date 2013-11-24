@@ -23,9 +23,9 @@ public class Print extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
-        if (dest != null) resolveExpr(dest, s, tag);
-        if (values != null) resolveList(values, s, tag);
+    public Type resolve(Scope s) {
+        if (dest != null) resolveExpr(dest, s);
+        if (values != null) resolveList(values, s);
         return Indexer.idx.builtins.Cont;
     }
 

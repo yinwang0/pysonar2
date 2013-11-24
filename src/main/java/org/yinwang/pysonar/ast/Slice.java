@@ -21,10 +21,10 @@ public class Slice extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
-        if (lower != null) resolveExpr(lower, s, tag);
-        if (step != null) resolveExpr(step, s, tag);
-        if (upper != null) resolveExpr(upper, s, tag);
+    public Type resolve(Scope s) {
+        if (lower != null) resolveExpr(lower, s);
+        if (step != null) resolveExpr(step, s);
+        if (upper != null) resolveExpr(upper, s);
         return new ListType();
     }
 

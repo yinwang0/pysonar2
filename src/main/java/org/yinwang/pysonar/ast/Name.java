@@ -40,7 +40,7 @@ public class Name extends Node {
     
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s, int tag) {
+    public Type resolve(@NotNull Scope s) {
         Binding b = s.lookup(id);
         if (b != null) {
             Indexer.idx.putRef(this, b);

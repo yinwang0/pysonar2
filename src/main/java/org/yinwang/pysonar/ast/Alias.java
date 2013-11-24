@@ -31,7 +31,7 @@ public class Alias extends Node {
      */
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
+    public Type resolve(Scope s) {
         return Indexer.idx.builtins.unknown;
     }
 

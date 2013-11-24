@@ -36,17 +36,17 @@ public class ImportFrom extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s, int tag) {
+    public Type resolve(@NotNull Scope s) {
         if (module == null) {
             return Indexer.idx.builtins.Cont;
         }
 
-        ModuleType mod = Indexer.idx.loadModule(module, s, tag);
+        ModuleType mod = Indexer.idx.loadModule(module, s);
 
         if (mod == null) {
             Indexer.idx.putProblem(this, "Cannot load module");
         } else if (isImportStar()) {
-            importStar(s, mod, tag);
+            importStar(s, mod);
         } else {
             for (Alias a : names) {
                 Name first = a.name.get(0);
@@ -62,12 +62,12 @@ public class ImportFrom extends Node {
                 } else {
                     List<Name> ext = new ArrayList<>(module);
                     ext.add(first);
-                    ModuleType mod2 = Indexer.idx.loadModule(ext, s, tag);
+                    ModuleType mod2 = Indexer.idx.loadModule(ext, s);
                     if (mod2 != null) {
                         if (a.asname != null) {
-                            s.put(a.asname.id, a.asname, mod2, Binding.Kind.VARIABLE, tag);
+                            s.put(a.asname.id, a.asname, mod2, Binding.Kind.VARIABLE);
                         } else {
-                            s.put(first.id, first, mod2, Binding.Kind.VARIABLE, tag);
+                            s.put(first.id, first, mod2, Binding.Kind.VARIABLE);
                         }
                     }
                 }
@@ -83,7 +83,7 @@ public class ImportFrom extends Node {
     }
 
 
-    private void importStar(@NotNull Scope s, @Nullable ModuleType mt, int tag) {
+    private void importStar(@NotNull Scope s, @Nullable ModuleType mt) {
         if (mt == null || mt.getFile() == null) {
             return;
         }
@@ -114,9 +114,9 @@ public class ImportFrom extends Node {
                 } else {
                     List<Name> m2 = new ArrayList<>(module);
                     m2.add(new Name(name));
-                    ModuleType mod2 = Indexer.idx.loadModule(m2, s, tag);
+                    ModuleType mod2 = Indexer.idx.loadModule(m2, s);
                     if (mod2 != null) {
-                        s.put(name, null, mod2, Binding.Kind.VARIABLE, tag);
+                        s.put(name, null, mod2, Binding.Kind.VARIABLE);
                     }
                 }
             }

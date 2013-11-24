@@ -24,33 +24,33 @@ public class Subscript extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
-        Type vt = resolveExpr(value, s, tag);
-        Type st = resolveExpr(slice, s, tag);
+    public Type resolve(Scope s) {
+        Type vt = resolveExpr(value, s);
+        Type st = resolveExpr(slice, s);
 
         if (vt.isUnionType()) {
             Type retType = Indexer.idx.builtins.unknown;
             for (Type t: vt.asUnionType().getTypes()) {
-                retType = UnionType.union(retType, getSubscript(t, st, s, tag));
+                retType = UnionType.union(retType, getSubscript(t, st, s));
             }
             return retType;
         } else {
-            return getSubscript(vt, st, s, tag);
+            return getSubscript(vt, st, s);
         }
     }
 
 
     @NotNull
-    private Type getSubscript(@NotNull Type vt, @NotNull Type st, Scope s, int tag) {
+    private Type getSubscript(@NotNull Type vt, @NotNull Type st, Scope s) {
         if (vt.isUnknownType()) {
             return Indexer.idx.builtins.unknown;
         } else if (vt.isListType()) {
-            return getListSubscript(vt, st, s, tag);
+            return getListSubscript(vt, st, s);
         } else if (vt.isTupleType()) {
-            return getListSubscript(vt.asTupleType().toListType(), st, s, tag);
+            return getListSubscript(vt.asTupleType().toListType(), st, s);
         } else if (vt.isDictType()) {
             ListType nl = new ListType(vt.asDictType().valueType);
-            return getListSubscript(nl, st, s, tag);
+            return getListSubscript(nl, st, s);
         } else if (vt.isStrType()) {
             if (st.isListType() || st.isNumType()) {
                 return vt;
@@ -64,7 +64,7 @@ public class Subscript extends Node {
     }
 
     @NotNull
-    private Type getListSubscript(@NotNull Type vt, @NotNull Type st, Scope s, int tag) {
+    private Type getListSubscript(@NotNull Type vt, @NotNull Type st, Scope s) {
         if (vt.isListType()) {
             if (st.isListType()) {
                 return vt;
@@ -76,7 +76,7 @@ public class Subscript extends Node {
                     addError("The type can't be sliced: " + vt);
                     return Indexer.idx.builtins.unknown;
                 } else if (sliceFunc.isFuncType()) {
-                    return Call.apply(sliceFunc.asFuncType(), null, null, null, null, this, tag);
+                    return Call.apply(sliceFunc.asFuncType(), null, null, null, null, this);
                 } else {
                     addError("The type's __getslice__ method is not a function: " + sliceFunc);
                     return Indexer.idx.builtins.unknown;

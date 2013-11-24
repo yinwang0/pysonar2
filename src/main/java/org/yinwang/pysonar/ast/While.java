@@ -23,16 +23,16 @@ public class While extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
-        resolveExpr(test, s, tag);
+    public Type resolve(Scope s) {
+        resolveExpr(test, s);
         Type t = Indexer.idx.builtins.unknown;
 
         if (body != null) {
-            t = resolveExpr(body, s, tag);
+            t = resolveExpr(body, s);
         }
 
         if (orelse != null) {
-            t = UnionType.union(t, resolveExpr(orelse, s, tag));
+            t = UnionType.union(t, resolveExpr(orelse, s));
         }
 
         return t;

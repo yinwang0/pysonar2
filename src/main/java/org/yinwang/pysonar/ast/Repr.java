@@ -17,8 +17,8 @@ public class Repr extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
-        if (value != null) resolveExpr(value, s, tag);
+    public Type resolve(Scope s) {
+        if (value != null) resolveExpr(value, s);
         return Indexer.idx.builtins.BaseStr;
     }
 

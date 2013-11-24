@@ -63,10 +63,10 @@ public class Module extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s, int tag) {
+    public Type resolve(@NotNull Scope s) {
         ModuleType mt = new ModuleType(Util.moduleNameFor(file), file, Indexer.idx.globaltable);
-        s.put(Util.moduleQname(file), this, mt, Binding.Kind.MODULE, tag);
-        resolveExpr(body, mt.getTable(), tag);
+        s.put(Util.moduleQname(file), this, mt, Binding.Kind.MODULE);
+        resolveExpr(body, mt.getTable());
         return mt;
     }
 

@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
-import org.yinwang.pysonar.Util;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
@@ -53,30 +52,30 @@ public class Attribute extends Node {
     }
 
 
-    public void setAttr(Scope s, @NotNull Type v, int tag) {
-        Type targetType = resolveExpr(target, s, tag);
+    public void setAttr(Scope s, @NotNull Type v) {
+        Type targetType = resolveExpr(target, s);
         if (targetType.isUnionType()) {
             Set<Type> types = targetType.asUnionType().getTypes();
             for (Type tp : types) {
-                setAttrType(tp, v, tag);
+                setAttrType(tp, v);
             }
         } else {
-            setAttrType(targetType, v, tag);
+            setAttrType(targetType, v);
         }
     }
 
-    private void setAttrType(@NotNull Type targetType, @NotNull Type v, int tag) {
+    private void setAttrType(@NotNull Type targetType, @NotNull Type v) {
         if (targetType.isUnknownType()) {
             Indexer.idx.putProblem(this, "Can't set attribute for UnknownType");
             return;
         }
-        targetType.getTable().putAttr(attr.getId(), attr, v, ATTRIBUTE, tag);
+        targetType.getTable().putAttr(attr.getId(), attr, v, ATTRIBUTE);
     }
 
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
-        Type targetType = resolveExpr(target, s, tag);
+    public Type resolve(Scope s) {
+        Type targetType = resolveExpr(target, s);
         if (targetType.isUnionType()) {
             Set<Type> types = targetType.asUnionType().getTypes();
             Type retType = Indexer.idx.builtins.unknown;

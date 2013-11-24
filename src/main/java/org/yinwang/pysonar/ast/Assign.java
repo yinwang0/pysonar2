@@ -27,13 +27,13 @@ public class Assign extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s, int tag) {
+    public Type resolve(@NotNull Scope s) {
         if (rvalue == null) {
             Indexer.idx.putProblem(this, "missing RHS of assignment");
         } else {
-            Type valueType = resolveExpr(rvalue, s, tag);
+            Type valueType = resolveExpr(rvalue, s);
             for (Node t : targets) {
-                NameBinder.bind(s, t, valueType, tag);
+                NameBinder.bind(s, t, valueType);
             }
         }
 
