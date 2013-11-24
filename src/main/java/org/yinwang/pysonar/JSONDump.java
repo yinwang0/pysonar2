@@ -152,7 +152,7 @@ public class JSONDump {
     private static void writeRefJson(Ref ref, Binding binding, JsonGenerator json) throws IOException {
         Def def = binding.getSingle();
         if (def.getFile() != null) {
-            String path = Util.moduleQname(def.getFile()).replace(".", "/").replace("%20", ".") + "/" + def.getName();
+            String path = binding.getQname().replace(".", "/").replace("%20", ".");
 
             if (def.getStart() >= 0 && ref.start() >= 0 && !binding.isBuiltin()) {
                 json.writeStartObject();
