@@ -370,18 +370,6 @@ def add_missing_names(node, s, idxmap):
             node.op_node = ops[0]
             node._fields += ('op_node',)
 
-    # elif isinstance(node, Import):
-    #    name_nodes = []
-    #    next = find_node_start(node, s, idxmap) + len('import')
-    #    if next is not None:
-    #        name = str_to_name(s, next, idxmap)
-    #        while name is not None and next < len(s) and s[next] != '\n':
-    #            name_nodes.append(name)
-    #            next = name.node_end
-    #            name = str_to_name(s, next, idxmap)
-    #        node.name_nodes = name_nodes
-    #        node._fields += ('name_nodes',)
-
     node.extra_attr = True
 
 

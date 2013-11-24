@@ -151,17 +151,18 @@ public class JSONDump {
 
     private static void writeRefJson(Ref ref, Binding binding, JsonGenerator json) throws IOException {
         Def def = binding.getSingle();
-        String path = binding.getQname().replace(".", "/").replace("%20", ".");
-//        Util.msg("path: " + path);
+        if (def.getFile() != null) {
+            String path = Util.moduleQname(def.getFile()).replace(".", "/").replace("%20", ".") + "/" + def.getName();
 
-        if (def.getStart() >= 0 && def.getFile() != null && ref.start() >= 0 && !binding.isBuiltin()) {
-            json.writeStartObject();
-            json.writeStringField("sym", path);
-            json.writeStringField("file", ref.getFile());
-            json.writeNumberField("start", ref.start());
-            json.writeNumberField("end", ref.end());
-            json.writeBooleanField("builtin", binding.isBuiltin());
-            json.writeEndObject();
+            if (def.getStart() >= 0 && ref.start() >= 0 && !binding.isBuiltin()) {
+                json.writeStartObject();
+                json.writeStringField("sym", path);
+                json.writeStringField("file", ref.getFile());
+                json.writeNumberField("start", ref.start());
+                json.writeNumberField("end", ref.end());
+                json.writeBooleanField("builtin", binding.isBuiltin());
+                json.writeEndObject();
+            }
         }
     }
 

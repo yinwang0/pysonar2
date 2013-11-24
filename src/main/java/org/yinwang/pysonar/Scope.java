@@ -169,7 +169,7 @@ public class Scope {
     // direct update and replace the name with a binding
     @NotNull
     public Binding update(String id, @NotNull Binding b) {
-        b.setQname(extendPath(id));
+//        b.setQname(extendPath(id));
         getInternalTable().put(id, b);
         return b;
     }

@@ -175,7 +175,7 @@ public class PythonParser {
 
 
     @NotNull
-    List<Name> segmentQname(@NotNull String qname, int start) {
+    List<Name> segmentQname(@NotNull String qname, int start, boolean hasLoc) {
         List<Name> result = new ArrayList<>();
 
         for (int i = 0; i < qname.length(); i++) {
@@ -192,7 +192,9 @@ public class PythonParser {
             }
 
             int nameStop = i;
-            result.add(new Name(name, start + nameStart, start + nameStop));
+            int nstart = hasLoc? start + nameStart : -1;
+            int nstop = hasLoc? start + nameStop : -1;
+            result.add(new Name(name, nstart, nstop));
         }
 
         return result;
@@ -228,7 +230,7 @@ public class PythonParser {
 
         if (type.equals("alias")) {         // lower case alias
             String qname = (String) map.get("name");
-            List<Name> names = segmentQname(qname, start + "import ".length());
+            List<Name> names = segmentQname(qname, start + "import ".length(), false);
             Name asname = map.get("asname") == null ? null : new Name((String) map.get("asname"));
             return new Alias(names, asname, start, end);
         }
@@ -416,7 +418,7 @@ public class PythonParser {
 
         if (type.equals("ImportFrom")) {
             String module = (String) map.get("module");
-            List<Name> moduleSeg = module == null ? null : segmentQname(module, start + "from ".length());
+            List<Name> moduleSeg = module == null ? null : segmentQname(module, start + "from ".length(), true);
             List<Alias> names = convertListAlias(map.get("names"));
             int level = ((Double) map.get("level")).intValue();
             return new ImportFrom(moduleSeg, names, level, start, end);

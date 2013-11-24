@@ -49,15 +49,26 @@ public class ImportFrom extends Node {
             importStar(s, mod, tag);
         } else {
             for (Alias a : names) {
-                Type t = mod.getTable().lookupType(a.name.get(0).id);
-                if (t == null) return Indexer.idx.builtins.Cont;
-
-                if (a.asname != null) {
-                    s.put(a.asname.id, a.asname, t, Binding.Kind.VARIABLE, tag);
+                Name first = a.name.get(0);
+                Binding b = mod.getTable().lookup(first.id);
+                if (b != null) {
+                    if (a.asname != null) {
+                        s.update(a.asname.id, b);
+                        Indexer.idx.putRef(a.asname, b);
+                    } else {
+                        s.update(first.id, b);
+                        Indexer.idx.putRef(first, b);
+                    }
                 } else {
-                    Binding b = mod.getTable().lookup(a.name.get(0).id);
-                    if (b != null) {
-                        s.update(a.name.get(0).id, b);
+                    List<Name> ext = new ArrayList<>(module);
+                    ext.add(first);
+                    ModuleType mod2 = Indexer.idx.loadModule(ext, s, tag);
+                    if (mod2 != null) {
+                        if (a.asname != null) {
+                            s.put(a.asname.id, a.asname, mod2, Binding.Kind.VARIABLE, tag);
+                        } else {
+                            s.put(first.id, first, mod2, Binding.Kind.VARIABLE, tag);
+                        }
                     }
                 }
             }
