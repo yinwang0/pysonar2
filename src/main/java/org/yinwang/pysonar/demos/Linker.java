@@ -89,7 +89,7 @@ class Linker {
             return;
         }
         StyleRun style = new StyleRun(StyleRun.Type.ANCHOR, def.getStart(), def.getLength());
-        style.message = binding.getQname() + " : " + binding.getType();
+        style.message = binding.getType().toString();
         style.url = binding.getQname();
         style.id = "" + Math.abs(def.hashCode());
 
@@ -110,12 +110,11 @@ class Linker {
 
         List<String> typings = new ArrayList<>();
         for (Binding b : bindings) {
-            typings.add(b.getQname() + " : " + b.getType());
+            typings.add(b.getType().toString());
         }
         link.message = Util.joinWithSep(typings, " | ", "{", "}");
 
         link.highlight = new ArrayList<>();
-
         for (Binding b : bindings) {
             for (Def d : b.getDefs()) {
                 link.highlight.add(Integer.toString(Math.abs(d.hashCode())));
