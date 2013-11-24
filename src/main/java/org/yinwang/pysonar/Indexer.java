@@ -6,7 +6,6 @@ import org.yinwang.pysonar.ast.*;
 import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
-import org.yinwang.pysonar.types.UnionType;
 
 import java.io.File;
 import java.util.*;
@@ -157,7 +156,7 @@ public class Indexer {
 
     @Nullable
     ModuleType getCachedModule(String file) {
-        Type t = moduleTable.lookupType(file);
+        Type t = moduleTable.lookupType(Util.moduleQname(file));
         if (t == null) {
             return null;
         } else if (t.isUnionType()) {
@@ -269,17 +268,6 @@ public class Indexer {
 
 
     @Nullable
-    public ModuleType loadString(String path, String contents) {
-        ModuleType module = getCachedModule(path);
-        if (module != null) {
-            finer("\nusing cached module " + path + " [succeeded]");
-            return module;
-        }
-        return parseAndResolve(path, contents);
-    }
-
-
-    @Nullable
     public ModuleType loadFile(String path) {
 //        Util.msg("loading: " + path);
 
@@ -327,32 +315,12 @@ public class Indexer {
     @Nullable
     private ModuleType parseAndResolve(String file) {
         finer("Indexing: " + file);
-//        progress.tick();
         loadingProgress.tick();
-        return parseAndResolve(file, null);
-    }
-
-    /**
-     * Parse a file or string and return its module parse tree.
-     * @param file the filename
-     * @param contents optional file contents.  If {@code null}, loads the
-     *        file contents from disk.
-     */
-    @Nullable
-    private ModuleType parseAndResolve(String file, @Nullable String contents) {
-        // Avoid infinite recursion if any caller forgets this check.  (Has happened.)
-        ModuleType cached = (ModuleType)moduleTable.lookupType(file);
-        if (cached != null) {
-            return cached;
-        }
 
         try {
             Module ast;
-            if (contents != null) {
-                ast = getAstForFile(file, contents);
-            } else {
-                ast = getAstForFile(file);
-            }
+            ast = getAstForFile(file);
+
             if (ast == null) {
                 failedModules.add(file);
                 return null;
