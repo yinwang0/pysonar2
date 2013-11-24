@@ -373,11 +373,7 @@ public class Util {
 
 
     public static String unifyPath(File file) {
-        try {
-            return file.getCanonicalPath();
-        } catch (Exception e) {
-            return null;
-        }
+        return file.getAbsolutePath();
     }
 
 
