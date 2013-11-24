@@ -252,7 +252,7 @@ public class Binding implements Comparable<Object> {
      *     or the first definition (if present), otherwise a string
      *     describing what is known about the binding's source.
      */
-    @Nullable
+    @NotNull
     public String getFirstFile() {
         Type bt = getType();
         if (bt instanceof ModuleType) {

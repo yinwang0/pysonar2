@@ -147,12 +147,14 @@ public class Scope {
 
     // helper for put and putAttr
     @NotNull
-    private Binding insertOrUpdate(@Nullable Binding binding, String id, @NotNull Node loc,
+    private Binding insertOrUpdate(@Nullable Binding binding, String id, @NotNull Node node,
                                    @NotNull Type type, Binding.Kind kind, int tag) {
         if (binding == null || tag == binding.tag) {
-            binding = update(id, new Binding(id, loc, type, kind, tag));
+            Binding b = new Binding(id, node, type, kind, tag);
+            b.setQname(extendPath(id));
+            binding = update(id, b);
         } else {
-            binding.addDef(loc);
+            binding.addDef(node);
             binding.setType(UnionType.union(type, binding.getType()));
         }
         return binding;
@@ -162,14 +164,15 @@ public class Scope {
     // direct update and replace the same name with a new binding
     @NotNull
     public Binding update(String id, Node node, Type type, Binding.Kind kind) {
-        return update(id, new Binding(id, node, type, kind));
+        Binding b = new Binding(id, node, type, kind);
+        b.setQname(extendPath(id));
+        return update(id, b);
     }
 
 
     // direct update and replace the name with a binding
     @NotNull
     public Binding update(String id, @NotNull Binding b) {
-//        b.setQname(extendPath(id));
         getInternalTable().put(id, b);
         return b;
     }
