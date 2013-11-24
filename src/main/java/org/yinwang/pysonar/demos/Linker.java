@@ -218,13 +218,9 @@ class Linker {
             return def.getURL();
         }
 
-        String destPath = null;
-
-        if (binding.getKind() == Binding.Kind.MODULE) {
-            ModuleType mtype = binding.getType().asModuleType();
-            if (mtype != null) {
-                destPath = mtype.getFile();
-            }
+        String destPath;
+        if (binding.getType().isModuleType()) {
+            destPath = binding.getType().asModuleType().getFile();
         } else {
             destPath = def.getFile();
         }
