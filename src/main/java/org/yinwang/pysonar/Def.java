@@ -3,7 +3,7 @@ package org.yinwang.pysonar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.*;
-import sun.jvm.hotspot.HotSpotAgent;
+
 
 /**
  * Encapsulates information about a binding definition site.
