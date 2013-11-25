@@ -26,6 +26,10 @@ class Linker
     private File outDir;  // where we're generating the output html
     private String rootPath;
 
+    // prevent duplication in def and ref links
+    Set<Integer> seenDef = new HashSet<>();
+    Set<Integer> seenRef = new HashSet<>();
+
 
     /**
      * Constructor.
@@ -97,12 +101,16 @@ class Linker
     }
 
 
-    private void processDef(@Nullable Def def, @NotNull Binding binding)
+    private void processDef(@NotNull Def def, @NotNull Binding binding)
     {
-        if (def == null || def.isURL() || def.getStart() < 0)
+        int hash = def.hashCode();
+
+        if (def.isURL() || def.getStart() < 0 || seenDef.contains(hash))
         {
             return;
         }
+
+        seenDef.add(hash);
         StyleRun style = new StyleRun(StyleRun.Type.ANCHOR, def.getStart(), def.getLength());
         style.message = binding.getType().toString();
         style.url = binding.getQname();
@@ -122,40 +130,46 @@ class Linker
 
     void processRef(@NotNull Ref ref, @NotNull List<Binding> bindings)
     {
-        StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start(), ref.length());
-        link.id = Integer.toString(Math.abs(ref.hashCode()));
+        int hash = ref.hashCode();
 
-        List<String> typings = new ArrayList<>();
-        for (Binding b : bindings)
+        if (!seenRef.contains(hash))
         {
-            typings.add(b.getQname() + ": " + b.getType().toString());
-        }
-        link.message = Util.joinWithSep(typings, " | ", "{", "}");
+            seenRef.add(hash);
 
-        link.highlight = new ArrayList<>();
-        for (Binding b : bindings)
-        {
-            for (Def d : b.getDefs())
+            StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start(), ref.length());
+            link.id = Integer.toString(Math.abs(hash));
+
+            List<String> typings = new ArrayList<>();
+            for (Binding b : bindings)
             {
-                link.highlight.add(Integer.toString(Math.abs(d.hashCode())));
+                typings.add(b.getQname() + ": " + b.getType().toString());
             }
-        }
+            link.message = Util.joinWithSep(typings, " | ", "{", "}");
 
-
-        // Currently jump to the first binding only. Should change to have a
-        // hover menu or something later.
-        String path = ref.getFile();
-        for (Binding b : bindings)
-        {
-            if (link.url == null)
+            link.highlight = new ArrayList<>();
+            for (Binding b : bindings)
             {
-                link.url = toURL(b, path);
+                for (Def d : b.getDefs())
+                {
+                    link.highlight.add(Integer.toString(Math.abs(d.hashCode())));
+                }
             }
 
-            if (link.url != null)
+            // Currently jump to the first binding only. Should change to have a
+            // hover menu or something later.
+            String path = ref.getFile();
+            for (Binding b : bindings)
             {
-                addFileStyle(path, link);
-                break;
+                if (link.url == null)
+                {
+                    link.url = toURL(b, path);
+                }
+
+                if (link.url != null)
+                {
+                    addFileStyle(path, link);
+                    break;
+                }
             }
         }
     }

@@ -22,7 +22,7 @@ public class Ref
     private int start;
     @Nullable
     private String file;
-    @Nullable
+    @NotNull
     private String name;
     private int flags;
 
@@ -64,24 +64,8 @@ public class Ref
     }
 
 
-    /**
-     * Constructor that provides a way for clients to add additional references
-     * not associated with an AST node (e.g. inside a comment or doc string).
-     *
-     * @param path   absolute path to the file containing the reference
-     * @param offset the 0-indexed file offset of the reference
-     * @param text   the text of the reference
-     */
-    public Ref(@Nullable String path, int offset, @Nullable String text)
+    public Ref(@NotNull String path, int offset, @NotNull String text)
     {
-        if (path == null)
-        {
-            throw new IllegalArgumentException("'path' cannot be null");
-        }
-        if (text == null)
-        {
-            throw new IllegalArgumentException("'text' cannot be null");
-        }
         file = path;
         start = offset;
         name = text;
@@ -101,7 +85,7 @@ public class Ref
     /**
      * Returns the text of the reference.
      */
-    @Nullable
+    @NotNull
     public String getName()
     {
         return name;
