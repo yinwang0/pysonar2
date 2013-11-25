@@ -53,15 +53,25 @@ public class If extends Node
             type2 = Indexer.idx.builtins.Cont;
         }
 
-        if (UnionType.contains(type1, Indexer.idx.builtins.Cont))
+        boolean cont1 = UnionType.contains(type1, Indexer.idx.builtins.Cont);
+        boolean cont2 = UnionType.contains(type2, Indexer.idx.builtins.Cont);
+
+        Scope ss;
+
+        if (cont1 && cont2)
         {
-            s.merge(s1);
+            ss = Scope.merge(s1, s2);
+        }
+        else if (cont1)
+        {
+            ss = s1;
+        }
+        else
+        {
+            ss = s2;
         }
 
-        if (UnionType.contains(type2, Indexer.idx.builtins.Cont))
-        {
-            s.merge(s2);
-        }
+        s.overwrite(ss);
 
         return UnionType.union(type1, type2);
     }

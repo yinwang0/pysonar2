@@ -72,6 +72,20 @@ public class Scope
     }
 
 
+    // erase and overwrite this to s's contents
+    public void overwrite(@NotNull Scope s)
+    {
+        this.table = s.table;
+        this.parent = s.parent;
+        this.scopeType = s.scopeType;
+        this.forwarding = s.forwarding;
+        this.supers = s.supers;
+        this.globalNames = s.globalNames;
+        this.type = s.type;
+        this.path = s.path;
+    }
+
+
     @NotNull
     public Scope copy()
     {
@@ -108,6 +122,14 @@ public class Scope
                 this.update(b2.getName(), b2);
             }
         }
+    }
+
+
+    public static Scope merge(Scope scope1, Scope scope2)
+    {
+        Scope ret = scope1.copy();
+        ret.merge(scope2);
+        return ret;
     }
 
 
