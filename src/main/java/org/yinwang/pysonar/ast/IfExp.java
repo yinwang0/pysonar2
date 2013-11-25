@@ -6,14 +6,17 @@ import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
-public class IfExp extends Node {
+
+public class IfExp extends Node
+{
 
     public Node test;
     public Node body;
     public Node orelse;
 
 
-    public IfExp(Node test, Node body, Node orelse, int start, int end) {
+    public IfExp(Node test, Node body, Node orelse, int start, int end)
+    {
         super(start, end);
         this.test = test;
         this.body = body;
@@ -21,34 +24,47 @@ public class IfExp extends Node {
         addChildren(test, body, orelse);
     }
 
+
     @NotNull
     @Override
-    public Type resolve(Scope s) {
+    public Type resolve(Scope s)
+    {
         Type type1, type2;
         resolveExpr(test, s);
 
-        if (body != null) {
+        if (body != null)
+        {
             type1 = resolveExpr(body, s);
-        } else {
+        }
+        else
+        {
             type1 = Indexer.idx.builtins.Cont;
         }
-        if (orelse != null) {
+        if (orelse != null)
+        {
             type2 = resolveExpr(orelse, s);
-        } else {
+        }
+        else
+        {
             type2 = Indexer.idx.builtins.Cont;
         }
         return UnionType.union(type1, type2);
     }
 
+
     @NotNull
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "<IfExp:" + start + ":" + test + ":" + body + ":" + orelse + ">";
     }
 
+
     @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
+    public void visit(@NotNull NodeVisitor v)
+    {
+        if (v.visit(this))
+        {
             visitNode(test, v);
             visitNode(body, v);
             visitNode(orelse, v);

@@ -6,20 +6,23 @@ import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 
 /**
  * An {@code NBinding} collects information about a fully qualified name (qname)
  * in the code graph.<p>
- *
+ * <p/>
  * Each qname has an associated {@link org.yinwang.pysonar.types.Type}.  When a particular qname is
  * assigned values of different types at different locations, its type is
  * represented as a {@link org.yinwang.pysonar.types.UnionType}. <p>
- *
+ * <p/>
  * Each qname has a set of one or more definitions, and a set of zero or
  * more references.  Definitions and references correspond to code locations. <p>
  */
-public class Binding implements Comparable<Object> {
+public class Binding implements Comparable<Object>
+{
 
     /**
      * In addition to its type, each binding has a {@link Kind} enumeration that
@@ -29,7 +32,8 @@ public class Binding implements Comparable<Object> {
      * IDEs with presentation decisions, and can be useful to expose to users as
      * a parameter for filtering queries on the graph.
      */
-    public enum Kind {
+    public enum Kind
+    {
         ATTRIBUTE,  // attr accessed with "." on some other object
         CLASS,  // class definition
         CONSTRUCTOR,  // __init__ functions in classes
@@ -40,12 +44,13 @@ public class Binding implements Comparable<Object> {
         SCOPE,  // top-level variable ("scope" means we assume it can have attrs)
         VARIABLE  // local variable
     }
-    
+
+
     // The indexer is heavily memory-constrained, so these sets are initially
     // small.  The vast majority of bindings have only one definition.
     private static final int DEF_SET_INITIAL_CAPACITY = 1;
     private static final int REF_SET_INITIAL_CAPACITY = 1;
-    
+
     // yinw: C-style bit-field changed to straightfoward booleans.
     // The compiler should compact the space unless it is stupid.
     private boolean isStatic = false;         // static fields/methods
@@ -65,8 +70,9 @@ public class Binding implements Comparable<Object> {
     private Set<Def> defs;   // definitions (may be multiple)
     private Set<Ref> refs;
 
-    
-    public Binding(@NotNull String id, Node node, @NotNull Type type, @NotNull Kind kind) {
+
+    public Binding(@NotNull String id, Node node, @NotNull Type type, @NotNull Kind kind)
+    {
         this.name = id;
         this.qname = type.getTable().getPath();
         this.type = type;
@@ -77,181 +83,243 @@ public class Binding implements Comparable<Object> {
         Indexer.idx.registerBinding(this);
     }
 
+
     /**
      * Returns the unqualified name.
      */
     @NotNull
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
+
 
     /**
      * Sets the binding's qualified name.  This should in general be the
      * same as {@code binding.getType().getTable().getPath()}.
      */
-    public void setQname(String qname) {
+    public void setQname(String qname)
+    {
         this.qname = qname;
     }
+
 
     /**
      * Returns the qualified name.
      */
     @NotNull
-    public String getQname() {
+    public String getQname()
+    {
         return qname;
     }
 
 
-    public void addDef(@Nullable Node node) {
-        if (node != null) {
+    public void addDef(@Nullable Node node)
+    {
+        if (node != null)
+        {
             Def def = new Def(node, this);
             addDef(def);
         }
     }
 
 
-    public void addDef(Def def) {
+    public void addDef(Def def)
+    {
         def.setBinding(this);
 
         Set<Def> defs = getDefs();
         defs.add(def);
-        if (def.isURL()) {
+        if (def.isURL())
+        {
             markBuiltin();
         }
     }
 
 
-    public void addRef(Ref ref) {
+    public void addRef(Ref ref)
+    {
         getRefs().add(ref);
     }
 
 
     // Returns one definition (even if there are many)
     @NotNull
-    public Def getSingle() {
+    public Def getSingle()
+    {
         return getDefs().iterator().next();
     }
 
 
-    public void setType(Type type) {
+    public void setType(Type type)
+    {
         this.type = type;
     }
 
-    public Type getType() {
+
+    public Type getType()
+    {
         return type;
     }
 
-    public void setKind(Kind kind) {
+
+    public void setKind(Kind kind)
+    {
         this.kind = kind;
     }
 
-    public Kind getKind() {
+
+    public Kind getKind()
+    {
         return kind;
     }
 
-    public void markStatic() {
+
+    public void markStatic()
+    {
         isStatic = true;
     }
 
-    public boolean isStatic() {
+
+    public boolean isStatic()
+    {
         return isStatic;
     }
 
-    public void markSynthetic() {
+
+    public void markSynthetic()
+    {
         isSynthetic = true;
     }
 
-    public boolean isSynthetic() {
+
+    public boolean isSynthetic()
+    {
         return isSynthetic;
     }
 
-    public void markReadOnly() {
+
+    public void markReadOnly()
+    {
         isReadonly = true;
     }
 
-    public boolean isReadOnly() {
+
+    public boolean isReadOnly()
+    {
         return isReadonly;
     }
 
-    public boolean isDeprecated() {
+
+    public boolean isDeprecated()
+    {
         return isDeprecated;
     }
 
-    public void markDeprecated() {
+
+    public void markDeprecated()
+    {
         isDeprecated = true;
     }
 
-    public boolean isBuiltin() {
+
+    public boolean isBuiltin()
+    {
         return isBuiltin;
     }
 
-    public void markBuiltin() {
+
+    public void markBuiltin()
+    {
         isBuiltin = true;
     }
+
 
     /**
      * Bindings can be sorted by their location for outlining purposes.
      */
-    public int compareTo(@NotNull Object o) {
-        return getSingle().getStart() - ((Binding)o).getSingle().getStart();
+    public int compareTo(@NotNull Object o)
+    {
+        return getSingle().getStart() - ((Binding) o).getSingle().getStart();
     }
-    
+
+
     /**
      * Return the (possibly empty) set of definitions for this binding.
+     *
      * @return the defs
      */
-    public Set<Def> getDefs() {
+    public Set<Def> getDefs()
+    {
         return defs;
     }
-    
+
+
     @NotNull
-    public Def getDef() {
+    public Def getDef()
+    {
         return defs.iterator().next();
     }
+
 
     /**
      * Returns the number of definitions found for this binding.
      */
-    public int getNumDefs() {
+    public int getNumDefs()
+    {
         return defs == null ? 0 : defs.size();
     }
 
-    public boolean hasRefs() {
+
+    public boolean hasRefs()
+    {
         return refs == null ? false : !refs.isEmpty();
     }
 
-    public int getNumRefs() {
+
+    public int getNumRefs()
+    {
         return refs == null ? 0 : refs.size();
     }
+
 
     /**
      * Returns the set of references to this binding.
      */
-    public Set<Ref> getRefs() {
-        if (refs == null) {
+    public Set<Ref> getRefs()
+    {
+        if (refs == null)
+        {
             refs = new LinkedHashSet<>(REF_SET_INITIAL_CAPACITY);
         }
         return refs;
     }
 
+
     /**
      * Returns a filename associated with this binding, for debug
      * messages.
+     *
      * @return the filename associated with the type (if present)
-     *     or the first definition (if present), otherwise a string
-     *     describing what is known about the binding's source.
+     *         or the first definition (if present), otherwise a string
+     *         describing what is known about the binding's source.
      */
     @NotNull
-    public String getFirstFile() {
+    public String getFirstFile()
+    {
         Type bt = getType();
-        if (bt instanceof ModuleType) {
+        if (bt instanceof ModuleType)
+        {
             String file = bt.asModuleType().getFile();
             return file != null ? file : "<built-in module>";
         }
-        if (defs != null) {
-            for (Def def : defs) {
+        if (defs != null)
+        {
+            for (Def def : defs)
+            {
                 String file = def.getFile();
-                if (file != null) {
+                if (file != null)
+                {
                     return file;
                 }
             }
@@ -260,28 +328,34 @@ public class Binding implements Comparable<Object> {
         return "<unknown source>";
     }
 
+
     @NotNull
     @Override
-    public String toString() {
-        StringBuilder sb =  new StringBuilder();
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
         sb.append("<Binding:");
         sb.append(":qname=").append(qname);
         sb.append(":type=").append(type);
         sb.append(":kind=").append(kind);
         sb.append(":defs=").append(defs);
         sb.append(":refs=");
-        if (getRefs().size() > 10) {
+        if (getRefs().size() > 10)
+        {
             sb.append("[");
             sb.append(refs.iterator().next());
             sb.append(", ...(");
             sb.append(refs.size() - 1);
             sb.append(" more)]");
-        } else {
+        }
+        else
+        {
             sb.append(refs);
         }
         sb.append(">");
         return sb.toString();
     }
+
 
     /*
      * Multiple bindings can exist for the same qname, but they should appear at
@@ -289,10 +363,13 @@ public class Binding implements Comparable<Object> {
      * method of NBinding.
      */
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof Binding) {
+    public boolean equals(Object o)
+    {
+        if (o instanceof Binding)
+        {
             Binding other = (Binding) o;
-            if (other.getDef() != null) {
+            if (other.getDef() != null)
+            {
                 return other.getDef().equals(getDef());
             }
         }

@@ -8,7 +8,9 @@ import org.yinwang.pysonar.types.UnionType;
 
 import java.util.List;
 
-public class TryExcept extends Node {
+
+public class TryExcept extends Node
+{
 
     public List<ExceptHandler> handlers;
     public Block body;
@@ -16,7 +18,8 @@ public class TryExcept extends Node {
 
 
     public TryExcept(List<ExceptHandler> handlers, Block body, Block orelse,
-                     int start, int end) {
+                     int start, int end)
+    {
         super(start, end);
         this.handlers = handlers;
         this.body = body;
@@ -25,32 +28,46 @@ public class TryExcept extends Node {
         addChildren(body, orelse);
     }
 
+
     @NotNull
     @Override
-    public Type resolve(Scope s) {
+    public Type resolve(Scope s)
+    {
         Type tp1 = Indexer.idx.builtins.unknown;
         Type tp2 = Indexer.idx.builtins.unknown;
         Type tph = Indexer.idx.builtins.unknown;
 
-        for (ExceptHandler h: handlers) {
+        for (ExceptHandler h : handlers)
+        {
             tph = UnionType.union(tph, resolveExpr(h, s));
         }
 
-        if (body != null) tp1 = resolveExpr(body, s);
-        if (orelse != null) tp2 = resolveExpr(orelse, s);
+        if (body != null)
+        {
+            tp1 = resolveExpr(body, s);
+        }
+        if (orelse != null)
+        {
+            tp2 = resolveExpr(orelse, s);
+        }
 
         return UnionType.union(tp1, UnionType.union(tp2, tph));
     }
 
+
     @NotNull
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "<TryExcept:" + handlers + ":" + body + ":" + orelse + ">";
     }
 
+
     @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
+    public void visit(@NotNull NodeVisitor v)
+    {
+        if (v.visit(this))
+        {
             visitNodeList(handlers, v);
             visitNode(body, v);
             visitNode(orelse, v);

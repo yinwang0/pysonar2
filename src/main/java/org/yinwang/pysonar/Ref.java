@@ -7,10 +7,12 @@ import org.yinwang.pysonar.ast.Name;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Str;
 
+
 /**
  * Encapsulates information about a binding reference.
  */
-public class Ref {
+public class Ref
+{
 
     private static final int ATTRIBUTE = 0x1;
     private static final int CALL = 0x2;  // function/method call
@@ -24,46 +26,60 @@ public class Ref {
     private String name;
     private int flags;
 
-    public Ref(@NotNull Node node) {
+
+    public Ref(@NotNull Node node)
+    {
         file = node.getFile();
         start = node.start;
 
-        if (node instanceof Name) {
-            Name n = ((Name)node);
+        if (node instanceof Name)
+        {
+            Name n = ((Name) node);
             name = n.getId();
-            if (n.isCall()) {
+            if (n.isCall())
+            {
                 // We don't always have enough information at this point to know
                 // if it's a constructor call or a regular function/method call,
                 // so we just determine if it looks like a call or not, and the
                 // indexer will convert constructor-calls to NEW in a later pass.
                 markAsCall();
             }
-        } else if (node instanceof Str) {
+        }
+        else if (node instanceof Str)
+        {
             markAsString();
-            name = ((Str)node).getStr();
-        } else {
+            name = ((Str) node).getStr();
+        }
+        else
+        {
             throw new IllegalArgumentException("I don't know what " + node + " is.");
         }
 
         Node parent = node.getParent();
         if ((parent instanceof Attribute)
-            && node == ((Attribute)parent).attr) {
+                && node == ((Attribute) parent).attr)
+        {
             markAsAttribute();
         }
     }
 
+
     /**
      * Constructor that provides a way for clients to add additional references
      * not associated with an AST node (e.g. inside a comment or doc string).
-     * @param path absolute path to the file containing the reference
+     *
+     * @param path   absolute path to the file containing the reference
      * @param offset the 0-indexed file offset of the reference
-     * @param text the text of the reference
+     * @param text   the text of the reference
      */
-    public Ref(@Nullable String path, int offset, @Nullable String text) {
-        if (path == null) {
+    public Ref(@Nullable String path, int offset, @Nullable String text)
+    {
+        if (path == null)
+        {
             throw new IllegalArgumentException("'path' cannot be null");
         }
-        if (text == null) {
+        if (text == null)
+        {
             throw new IllegalArgumentException("'text' cannot be null");
         }
         file = path;
@@ -71,61 +87,78 @@ public class Ref {
         name = text;
     }
 
+
     /**
      * Returns the file containing the reference.
      */
     @Nullable
-    public String getFile() {
+    public String getFile()
+    {
         return file;
     }
+
 
     /**
      * Returns the text of the reference.
      */
     @Nullable
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
+
 
     /**
      * Returns the starting file offset of the reference.
      */
-    public int start() {
+    public int start()
+    {
         return start;
     }
+
 
     /**
      * Returns the ending file offset of the reference.
      */
-    public int end() {
+    public int end()
+    {
         return start + length();
     }
+
 
     /**
      * Returns the length of the reference text.
      */
-    public int length() {
+    public int length()
+    {
         return isString() ? name.length() + 2 : name.length();
     }
+
 
     /**
      * Returns {@code true} if this reference was unquoted name.
      */
-    public boolean isName() {
+    public boolean isName()
+    {
         return !isString();
     }
+
 
     /**
      * Returns {@code true} if this reference was an attribute
      * of some other node.
      */
-    public boolean isAttribute() {
+    public boolean isAttribute()
+    {
         return (flags & ATTRIBUTE) != 0;
     }
 
-    public void markAsAttribute() {
+
+    public void markAsAttribute()
+    {
         flags |= ATTRIBUTE;
     }
+
 
     /**
      * Returns {@code true} if this reference was a quoted name.
@@ -133,53 +166,73 @@ public class Ref {
      * of the opening and closing quotes, but {@link #isName} returns the
      * text within the quotes.
      */
-    public boolean isString() {
+    public boolean isString()
+    {
         return (flags & STRING) != 0;
     }
 
-    public void markAsString() {
+
+    public void markAsString()
+    {
         flags |= STRING;
     }
+
 
     /**
      * Returns {@code true} if this reference is a function or method call.
      */
-    public boolean isCall() {
+    public boolean isCall()
+    {
         return (flags & CALL) != 0;
     }
+
 
     /**
      * Returns {@code true} if this reference is a class instantiation.
      */
-    public void markAsCall() {
+    public void markAsCall()
+    {
         flags |= CALL;
         flags &= ~NEW;
     }
 
-    public boolean isNew() {
+
+    public boolean isNew()
+    {
         return (flags & NEW) != 0;
     }
 
-    public void markAsNew() {
+
+    public void markAsNew()
+    {
         flags |= NEW;
         flags &= ~CALL;
     }
 
-    public boolean isRef() {
+
+    public boolean isRef()
+    {
         return !(isCall() || isNew());
     }
 
+
     @NotNull
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "<Ref:" + file + ":" + name + ":" + start + ">";
     }
 
+
     @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Ref)) {
+    public boolean equals(Object obj)
+    {
+        if (!(obj instanceof Ref))
+        {
             return false;
-        } else {
+        }
+        else
+        {
             Ref ref = (Ref) obj;
             return (start == ref.start &&
                     (file == null && ref.file == null) ||
@@ -187,8 +240,10 @@ public class Ref {
         }
     }
 
+
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return ("" + file + start).hashCode();
     }
 }

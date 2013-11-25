@@ -7,37 +7,49 @@ import org.yinwang.pysonar.types.Type;
 
 import java.util.List;
 
-public class Global extends Node {
+
+public class Global extends Node
+{
 
     private List<Name> names;
 
 
-    public Global(List<Name> names, int start, int end) {
+    public Global(List<Name> names, int start, int end)
+    {
         super(start, end);
         this.names = names;
         addChildren(names);
     }
 
+
     @NotNull
     @Override
-    public Type resolve(Scope s) {
+    public Type resolve(Scope s)
+    {
         // Do nothing here because global names are processed by NBlock
         return Indexer.idx.builtins.Cont;
     }
 
-    public List<Name> getNames() {
+
+    public List<Name> getNames()
+    {
         return names;
     }
-    
+
+
     @NotNull
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "<Global:" + names + ">";
     }
 
+
     @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
+    public void visit(@NotNull NodeVisitor v)
+    {
+        if (v.visit(this))
+        {
             visitNodeList(names, v);
         }
     }

@@ -14,59 +14,70 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class JSONDump {
+
+public class JSONDump
+{
 
     private static final int MAX_PATH_LENGTH = 900;
 
-	private static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     private static Set<String> seenDef = new HashSet<>();
     private static Set<String> seenRef = new HashSet<>();
     private static Set<String> seenDocs = new HashSet<>();
 
-	private static String dirname(String path) {
-		return new File(path).getParent();
-	}
+
+    private static String dirname(String path)
+    {
+        return new File(path).getParent();
+    }
 
 
-	private static Indexer newIndexer(String srcpath, String[] inclpaths) throws Exception {
-		Indexer idx = new Indexer();
-		for (String inclpath : inclpaths) {
-			idx.addPath(inclpath);
-		}
+    private static Indexer newIndexer(String srcpath, String[] inclpaths) throws Exception
+    {
+        Indexer idx = new Indexer();
+        for (String inclpath : inclpaths)
+        {
+            idx.addPath(inclpath);
+        }
 
-		idx.loadFileRecursive(srcpath);
-		idx.finish();
+        idx.loadFileRecursive(srcpath);
+        idx.finish();
 
-		if (idx.semanticErrors.size() > 0) {
-			log.info("Indexer errors:");
-			for (Entry<String, List<Diagnostic>> entry : idx.semanticErrors.entrySet()) {
-				String k = entry.getKey();
-				log.info("  Key: " + k);
-				List<Diagnostic> diagnostics = entry.getValue();
-				for (Diagnostic d : diagnostics) {
-					log.info("    " + d);
-				}
-			}
-		}
+        if (idx.semanticErrors.size() > 0)
+        {
+            log.info("Indexer errors:");
+            for (Entry<String, List<Diagnostic>> entry : idx.semanticErrors.entrySet())
+            {
+                String k = entry.getKey();
+                log.info("  Key: " + k);
+                List<Diagnostic> diagnostics = entry.getValue();
+                for (Diagnostic d : diagnostics)
+                {
+                    log.info("    " + d);
+                }
+            }
+        }
 
-		return idx;
-	}
+        return idx;
+    }
 
 
-	private static void writeSymJson(Def def, JsonGenerator json) throws IOException {
-		Binding binding = def.getBinding();
-        if (def.getStart() < 0) {
+    private static void writeSymJson(Def def, JsonGenerator json) throws IOException
+    {
+        Binding binding = def.getBinding();
+        if (def.getStart() < 0)
+        {
             return;
         }
 
         String name = def.getName();
-		boolean isExported = !(
+        boolean isExported = !(
                 Binding.Kind.VARIABLE == binding.getKind() ||
-                Binding.Kind.PARAMETER == binding.getKind() ||
-                Binding.Kind.SCOPE == binding.getKind() ||
-                Binding.Kind.ATTRIBUTE == binding.getKind() ||
-                (def.hasName() && (name.length() == 0 || name.charAt(0) == '_' || name.startsWith("lambda%"))));
+                        Binding.Kind.PARAMETER == binding.getKind() ||
+                        Binding.Kind.SCOPE == binding.getKind() ||
+                        Binding.Kind.ATTRIBUTE == binding.getKind() ||
+                        (def.hasName() && (name.length() == 0 || name.charAt(0) == '_' || name.startsWith("lambda%"))));
 
 //        boolean isExported = true;
 
@@ -76,7 +87,8 @@ public class JSONDump {
 //            Util.msg("module! path: " + path);
 //        }
 
-        if (!seenDef.contains(path)) {
+        if (!seenDef.contains(path))
+        {
             seenDef.add(path);
             json.writeStartObject();
             json.writeStringField("name", name);
@@ -91,41 +103,55 @@ public class JSONDump {
 
             if (Binding.Kind.FUNCTION == binding.getKind() ||
                     Binding.Kind.METHOD == binding.getKind() ||
-                    Binding.Kind.CONSTRUCTOR == binding.getKind()) {
+                    Binding.Kind.CONSTRUCTOR == binding.getKind())
+            {
                 json.writeObjectFieldStart("funcData");
 
                 // get args expression
                 String argExpr = null;
                 Type t = def.getBinding().getType();
 
-                if (t.isUnionType()) {
+                if (t.isUnionType())
+                {
                     t = t.asUnionType().firstUseful();
                 }
 
-                if (t != null && t.isFuncType()) {
+                if (t != null && t.isFuncType())
+                {
                     FunctionDef func = t.asFuncType().getFunc();
 
-                    if (func != null) {
+                    if (func != null)
+                    {
                         StringBuilder args = new StringBuilder();
                         args.append("(");
                         boolean first = true;
 
-                        for (Node n : func.getArgs()) {
-                            if (!first) {
+                        for (Node n : func.getArgs())
+                        {
+                            if (!first)
+                            {
                                 args.append(", ");
                             }
                             first = false;
                             args.append(n.toDisplay());
                         }
 
-                        if (func.getVararg() != null) {
-                            if (!first) args.append(", ");
+                        if (func.getVararg() != null)
+                        {
+                            if (!first)
+                            {
+                                args.append(", ");
+                            }
                             first = false;
                             args.append("*" + func.getVararg().toDisplay());
                         }
 
-                        if (func.getKwarg() != null) {
-                            if (!first) args.append(", ");
+                        if (func.getKwarg() != null)
+                        {
+                            if (!first)
+                            {
+                                args.append(", ");
+                            }
                             first = false;
                             args.append("**" + func.getKwarg().toDisplay());
                         }
@@ -140,7 +166,7 @@ public class JSONDump {
 
                 json.writeNullField("params");
 
-                String signature = argExpr==null? "" : argExpr + "\n" + typeExpr;
+                String signature = argExpr == null ? "" : argExpr + "\n" + typeExpr;
                 json.writeStringField("signature", signature);
                 json.writeEndObject();
             }
@@ -149,12 +175,16 @@ public class JSONDump {
         }
     }
 
-    private static void writeRefJson(Ref ref, Binding binding, JsonGenerator json) throws IOException {
+
+    private static void writeRefJson(Ref ref, Binding binding, JsonGenerator json) throws IOException
+    {
         Def def = binding.getSingle();
-        if (def.getFile() != null) {
+        if (def.getFile() != null)
+        {
             String path = binding.getQname().replace(".", "/").replace("%20", ".");
 
-            if (def.getStart() >= 0 && ref.start() >= 0 && !binding.isBuiltin()) {
+            if (def.getStart() >= 0 && ref.start() >= 0 && !binding.isBuiltin())
+            {
                 json.writeStartObject();
                 json.writeStringField("sym", path);
                 json.writeStringField("file", ref.getFile());
@@ -167,24 +197,30 @@ public class JSONDump {
     }
 
 
-    private static void writeDocJson(Def def, Indexer idx, JsonGenerator json) throws Exception {
+    private static void writeDocJson(Def def, Indexer idx, JsonGenerator json) throws Exception
+    {
         String path = def.getBinding().getQname().replace('.', '/').replace("%20", ".");
 //        Util.msg("path: " + path);
 
-        if (!seenDocs.contains(path)) {
+        if (!seenDocs.contains(path))
+        {
             seenDocs.add(path);
 
-            if (def.docstring != null) {
+            if (def.docstring != null)
+            {
                 json.writeStartObject();
-    			json.writeStringField("sym", path);
+                json.writeStringField("sym", path);
                 json.writeStringField("file", def.getFileOrUrl());
                 json.writeStringField("body", def.docstring);
                 json.writeNumberField("start", def.docstringStart);
                 json.writeNumberField("end", def.docstringEnd);
                 json.writeEndObject();
-            } else if (def.getBinding().getKind() == Binding.Kind.MODULE) {
+            }
+            else if (def.getBinding().getKind() == Binding.Kind.MODULE)
+            {
                 AstCache.DocstringInfo info = idx.getModuleDocstringInfoForFile(def.getFileOrUrl());
-                if (info != null) {
+                if (info != null)
+                {
                     json.writeStartObject();
                     json.writeStringField("sym", path);
                     json.writeStringField("file", def.getFileOrUrl());
@@ -198,59 +234,73 @@ public class JSONDump {
     }
 
 
-    private static boolean shouldEmit(@NotNull String pathToMaybeEmit, String srcpath) {
-		return Util.unifyPath(pathToMaybeEmit).startsWith(Util.unifyPath(srcpath));
-	}
+    private static boolean shouldEmit(@NotNull String pathToMaybeEmit, String srcpath)
+    {
+        return Util.unifyPath(pathToMaybeEmit).startsWith(Util.unifyPath(srcpath));
+    }
 
 
-	/*
-	 * Precondition: srcpath and inclpaths are absolute paths
-	 */
-	private static void graph(String srcpath,
+    /*
+     * Precondition: srcpath and inclpaths are absolute paths
+     */
+    private static void graph(String srcpath,
                               String[] inclpaths,
                               OutputStream symOut,
                               OutputStream refOut,
-                              OutputStream docOut) throws Exception {
-		// Compute parent dirs, sort by length so potential prefixes show up first
-		List<String> parentDirs = Lists.newArrayList(inclpaths);
-		parentDirs.add(dirname(srcpath));
-		Collections.sort(parentDirs, new Comparator<String>() {
-			@Override
-			public int compare(String s1, String s2) {
-				int diff = s1.length() - s2.length();
-				if (0 == diff) {
-					return s1.compareTo(s2);
-				}
-				return diff;
-			}
-		});
+                              OutputStream docOut) throws Exception
+    {
+        // Compute parent dirs, sort by length so potential prefixes show up first
+        List<String> parentDirs = Lists.newArrayList(inclpaths);
+        parentDirs.add(dirname(srcpath));
+        Collections.sort(parentDirs, new Comparator<String>()
+        {
+            @Override
+            public int compare(String s1, String s2)
+            {
+                int diff = s1.length() - s2.length();
+                if (0 == diff)
+                {
+                    return s1.compareTo(s2);
+                }
+                return diff;
+            }
+        });
 
-		Indexer idx = newIndexer(srcpath, inclpaths);
+        Indexer idx = newIndexer(srcpath, inclpaths);
         idx.multilineFunType = true;
-		JsonFactory jsonFactory = new JsonFactory();
-		JsonGenerator symJson = jsonFactory.createGenerator(symOut);
-		JsonGenerator refJson = jsonFactory.createGenerator(refOut);
-		JsonGenerator docJson = jsonFactory.createGenerator(docOut);
-		JsonGenerator[] allJson = {symJson, refJson, docJson};
-		for (JsonGenerator json : allJson) {
+        JsonFactory jsonFactory = new JsonFactory();
+        JsonGenerator symJson = jsonFactory.createGenerator(symOut);
+        JsonGenerator refJson = jsonFactory.createGenerator(refOut);
+        JsonGenerator docJson = jsonFactory.createGenerator(docOut);
+        JsonGenerator[] allJson = {symJson, refJson, docJson};
+        for (JsonGenerator json : allJson)
+        {
             json.writeStartArray();
         }
 
-        for (List<Binding> bindings : idx.getAllBindings().values()) {
-            for (Binding b : bindings) {
-                for (Def def : b.getDefs()) {
-                    if (def.getFile() != null) {
-                        if (shouldEmit(def.getFile(), srcpath)) {
+        for (List<Binding> bindings : idx.getAllBindings().values())
+        {
+            for (Binding b : bindings)
+            {
+                for (Def def : b.getDefs())
+                {
+                    if (def.getFile() != null)
+                    {
+                        if (shouldEmit(def.getFile(), srcpath))
+                        {
                             writeSymJson(def, symJson);
                             writeDocJson(def, idx, docJson);
                         }
                     }
                 }
 
-                for (Ref ref : b.getRefs()) {
-                    if (ref.getFile() != null) {
+                for (Ref ref : b.getRefs())
+                {
+                    if (ref.getFile() != null)
+                    {
                         String key = ref.getFile() + ":" + ref.start();
-                        if (!seenRef.contains(key) && shouldEmit(ref.getFile(), srcpath)) {
+                        if (!seenRef.contains(key) && shouldEmit(ref.getFile(), srcpath))
+                        {
                             writeRefJson(ref, b, refJson);
                             seenRef.add(key);
                         }
@@ -259,68 +309,85 @@ public class JSONDump {
             }
         }
 
-        for (JsonGenerator json : allJson) {
-			json.writeEndArray();
-			json.close();
-		}
-	}
+        for (JsonGenerator json : allJson)
+        {
+            json.writeEndArray();
+            json.close();
+        }
+    }
 
-    private static void info(Object msg) {
+
+    private static void info(Object msg)
+    {
         System.out.println(msg);
     }
 
-	private static void usage() {
-		info("Usage: java org.yinwang.pysonar.dump <source-path> <include-paths> <out-root> [verbose]");
-		info("  <source-path> is path to source unit (package directory or module file) that will be graphed");
-		info("  <include-paths> are colon-separated paths to included libs");
-		info("  <out-root> is the prefix of the output files.  There are 3 output files: <out-root>-doc, <out-root>-sym, <out-root>-ref");
-		info("  [verbose] if set, then verbose logging is used (optional)");
-	}
 
-	public static void main(String[] args) throws Exception {
-		if (args.length < 3 || args.length > 4) {
-			usage();
-			return;
-		}
+    private static void usage()
+    {
+        info("Usage: java org.yinwang.pysonar.dump <source-path> <include-paths> <out-root> [verbose]");
+        info("  <source-path> is path to source unit (package directory or module file) that will be graphed");
+        info("  <include-paths> are colon-separated paths to included libs");
+        info("  <out-root> is the prefix of the output files.  There are 3 output files: <out-root>-doc, <out-root>-sym, <out-root>-ref");
+        info("  [verbose] if set, then verbose logging is used (optional)");
+    }
 
-		log.setLevel(Level.SEVERE);
-		if (args.length >= 4) {
-			log.setLevel(Level.ALL);
-			log.info("LOGGING VERBOSE");
-			log.info("ARGS: " + Arrays.toString(args));
-		}
 
-		String srcpath = args[0];
-		String[] inclpaths = args[1].split(":");
-		String outroot = args[2];
+    public static void main(String[] args) throws Exception
+    {
+        if (args.length < 3 || args.length > 4)
+        {
+            usage();
+            return;
+        }
 
-		String symFilename = outroot + "-sym";
-		String refFilename = outroot + "-ref";
-		String docFilename = outroot + "-doc";
-		OutputStream symOut = null, refOut = null, docOut = null;
-		try {
-			docOut = new BufferedOutputStream(new FileOutputStream(docFilename));
-			symOut = new BufferedOutputStream(new FileOutputStream(symFilename));
-			refOut = new BufferedOutputStream(new FileOutputStream(refFilename));
+        log.setLevel(Level.SEVERE);
+        if (args.length >= 4)
+        {
+            log.setLevel(Level.ALL);
+            log.info("LOGGING VERBOSE");
+            log.info("ARGS: " + Arrays.toString(args));
+        }
+
+        String srcpath = args[0];
+        String[] inclpaths = args[1].split(":");
+        String outroot = args[2];
+
+        String symFilename = outroot + "-sym";
+        String refFilename = outroot + "-ref";
+        String docFilename = outroot + "-doc";
+        OutputStream symOut = null, refOut = null, docOut = null;
+        try
+        {
+            docOut = new BufferedOutputStream(new FileOutputStream(docFilename));
+            symOut = new BufferedOutputStream(new FileOutputStream(symFilename));
+            refOut = new BufferedOutputStream(new FileOutputStream(refFilename));
             Util.msg("graphing: " + srcpath);
             graph(srcpath, inclpaths, symOut, refOut, docOut);
-			docOut.flush();
-			symOut.flush();
-			refOut.flush();
-		} catch (FileNotFoundException e) {
-			System.err.println("Could not find file: " + e);
-			return;
-		} finally {
-			if (docOut != null) {
-				docOut.close();
-			}
-			if (symOut != null) {
-				symOut.close();
-			}
-			if (refOut != null) {
-				refOut.close();
-			}
-		}
-		log.info("SUCCESS");
-	}
+            docOut.flush();
+            symOut.flush();
+            refOut.flush();
+        }
+        catch (FileNotFoundException e)
+        {
+            System.err.println("Could not find file: " + e);
+            return;
+        }
+        finally
+        {
+            if (docOut != null)
+            {
+                docOut.close();
+            }
+            if (symOut != null)
+            {
+                symOut.close();
+            }
+            if (refOut != null)
+            {
+                refOut.close();
+            }
+        }
+        log.info("SUCCESS");
+    }
 }

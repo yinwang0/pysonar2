@@ -7,57 +7,80 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TupleType extends Type {
+
+public class TupleType extends Type
+{
 
     private List<Type> eltTypes;
 
-    public TupleType() {
+
+    public TupleType()
+    {
         this.eltTypes = new ArrayList<>();
         getTable().addSuper(Indexer.idx.builtins.BaseTuple.getTable());
         getTable().setPath(Indexer.idx.builtins.BaseTuple.getTable().getPath());
     }
 
-    public TupleType(List<Type> eltTypes) {
+
+    public TupleType(List<Type> eltTypes)
+    {
         this();
         this.eltTypes = eltTypes;
     }
 
-    public TupleType(Type elt0) {
+
+    public TupleType(Type elt0)
+    {
         this();
         this.eltTypes.add(elt0);
     }
 
-    public TupleType(Type elt0, Type elt1) {
+
+    public TupleType(Type elt0, Type elt1)
+    {
         this();
         this.eltTypes.add(elt0);
         this.eltTypes.add(elt1);
     }
 
-    public TupleType(Type... types) {
+
+    public TupleType(Type... types)
+    {
         this();
         Collections.addAll(this.eltTypes, types);
     }
 
-    public void setElementTypes(List<Type> eltTypes) {
+
+    public void setElementTypes(List<Type> eltTypes)
+    {
         this.eltTypes = eltTypes;
     }
 
-    public List<Type> getElementTypes() {
+
+    public List<Type> getElementTypes()
+    {
         return eltTypes;
     }
 
-    public void add(Type elt) {
+
+    public void add(Type elt)
+    {
         eltTypes.add(elt);
     }
 
-    public Type get(int i) {
+
+    public Type get(int i)
+    {
         return eltTypes.get(i);
     }
 
+
     @NotNull
-    public ListType toListType() {
+    public ListType toListType()
+    {
         ListType t = new ListType();
-        for (Type e : eltTypes) {
+        for (Type e : eltTypes)
+        {
             t.add(e);
         }
         return t;
@@ -65,62 +88,89 @@ public class TupleType extends Type {
 
 
     @Override
-    public boolean equals(Object other) {
-        if (typeStack.contains(this, other)) {
+    public boolean equals(Object other)
+    {
+        if (typeStack.contains(this, other))
+        {
             return true;
-        } else if (other instanceof TupleType) {
+        }
+        else if (other instanceof TupleType)
+        {
             List<Type> types1 = getElementTypes();
             List<Type> types2 = ((TupleType) other).getElementTypes();
 
-            if (types1.size() == types2.size()) {
+            if (types1.size() == types2.size())
+            {
                 typeStack.push(this, other);
-                for (int i = 0; i < types1.size(); i++) {
-                    if (!types1.get(i).equals(types2.get(i))) {
+                for (int i = 0; i < types1.size(); i++)
+                {
+                    if (!types1.get(i).equals(types2.get(i)))
+                    {
                         typeStack.pop(this, other);
                         return false;
                     }
                 }
                 typeStack.pop(this, other);
                 return true;
-            } else {
+            }
+            else
+            {
                 return false;
             }
 
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
 
+
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return "TupleType".hashCode();
     }
 
+
     @Override
-    protected String printType(@NotNull CyclicTypeRecorder ctr) {
+    protected String printType(@NotNull CyclicTypeRecorder ctr)
+    {
         StringBuilder sb = new StringBuilder();
 
         Integer num = ctr.visit(this);
-        if (num != null) {
+        if (num != null)
+        {
             sb.append("#").append(num);
-        } else {
+        }
+        else
+        {
             int newNum = ctr.push(this);
             boolean first = true;
-            if (getElementTypes().size() != 1) sb.append("(");
+            if (getElementTypes().size() != 1)
+            {
+                sb.append("(");
+            }
 
-            for (Type t : getElementTypes()) {
-                if (!first) {
+            for (Type t : getElementTypes())
+            {
+                if (!first)
+                {
                     sb.append(", ");
                 }
                 sb.append(t.printType(ctr));
                 first = false;
             }
 
-            if (ctr.isUsed(this)) {
+            if (ctr.isUsed(this))
+            {
                 sb.append("=#").append(newNum).append(":");
             }
 
-            if (getElementTypes().size() != 1) sb.append(")");
+            if (getElementTypes().size() != 1)
+            {
+                sb.append(")");
+            }
             ctr.pop(this);
         }
         return sb.toString();

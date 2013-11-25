@@ -5,256 +5,377 @@ package org.yinwang.pysonar.ast;
  * Subclasses can override specific node visiting methods
  * and decide whether to visit the children.
  */
-public class DefaultNodeVisitor implements NodeVisitor {
+public class DefaultNodeVisitor implements NodeVisitor
+{
 
     protected boolean traverseIntoNodes = true;
+
 
     /**
      * Once this is called, all {@code visit} methods will return {@code false}.
      * If the current node's children are being visited, all remaining top-level
      * children of the node will be visited (without visiting their children),
      * and then tree traversal halts. <p>
-     *
+     * <p/>
      * If the traversal should be halted immediately without visiting any further
      * nodes, the visitor can throw a {@link StopIterationException}.
      */
-    public void stopTraversal() {
+    public void stopTraversal()
+    {
         traverseIntoNodes = false;
     }
 
-    public boolean visit(Alias n) {
+
+    public boolean visit(Alias n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Assert n) {
+
+    public boolean visit(Assert n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Assign n) {
+
+    public boolean visit(Assign n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Attribute n) {
+
+    public boolean visit(Attribute n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(AugAssign n) {
+
+    public boolean visit(AugAssign n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(BinOp n) {
+
+    public boolean visit(BinOp n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Block n) {
+
+    public boolean visit(Block n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(BoolOp n) {
+
+    public boolean visit(BoolOp n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Break n) {
+
+    public boolean visit(Break n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Bytes n) {
+
+    public boolean visit(Bytes n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Call n) {
+
+    public boolean visit(Call n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(ClassDef n) {
+
+    public boolean visit(ClassDef n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Compare n) {
+
+    public boolean visit(Compare n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Comprehension n) {
+
+    public boolean visit(Comprehension n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Continue n) {
+
+    public boolean visit(Continue n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Delete n) {
+
+    public boolean visit(Delete n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Dict n) {
+
+    public boolean visit(Dict n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Ellipsis n) {
+
+    public boolean visit(Ellipsis n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(ExceptHandler n) {
+
+    public boolean visit(ExceptHandler n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Exec n) {
+
+    public boolean visit(Exec n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Expr n) {
+
+    public boolean visit(Expr n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(ExtSlice n) {
+
+    public boolean visit(ExtSlice n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(For n) {
+
+    public boolean visit(For n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(FunctionDef n) {
+
+    public boolean visit(FunctionDef n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(GeneratorExp n) {
+
+    public boolean visit(GeneratorExp n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Global n) {
+
+    public boolean visit(Global n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(If n) {
+
+    public boolean visit(If n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(IfExp n) {
+
+    public boolean visit(IfExp n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Import n) {
+
+    public boolean visit(Import n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(ImportFrom n) {
+
+    public boolean visit(ImportFrom n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Index n) {
+
+    public boolean visit(Index n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Keyword n) {
+
+    public boolean visit(Keyword n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Lambda n) {
+
+    public boolean visit(Lambda n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(NList n) {
+
+    public boolean visit(NList n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Set n) {
+
+    public boolean visit(Set n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(ListComp n) {
+
+    public boolean visit(ListComp n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(SetComp n) {
+
+    public boolean visit(SetComp n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(DictComp n) {
+
+    public boolean visit(DictComp n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Module n) {
+
+    public boolean visit(Module n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Name n) {
+
+    public boolean visit(Name n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Num n) {
+
+    public boolean visit(Num n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Pass n) {
+
+    public boolean visit(Pass n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Print n) {
+
+    public boolean visit(Print n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Raise n) {
+
+    public boolean visit(Raise n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Repr n) {
+
+    public boolean visit(Repr n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Return n) {
+
+    public boolean visit(Return n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Slice n) {
+
+    public boolean visit(Slice n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Str n) {
+
+    public boolean visit(Str n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Subscript n) {
+
+    public boolean visit(Subscript n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(TryExcept n) {
+
+    public boolean visit(TryExcept n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(TryFinally n) {
+
+    public boolean visit(TryFinally n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Tuple n) {
+
+    public boolean visit(Tuple n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(UnaryOp n) {
+
+    public boolean visit(UnaryOp n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Url n) {
+
+    public boolean visit(Url n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(While n) {
+
+    public boolean visit(While n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(With n) {
+
+    public boolean visit(With n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Withitem n) {
+
+    public boolean visit(Withitem n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(Yield n) {
+
+    public boolean visit(Yield n)
+    {
         return traverseIntoNodes;
     }
 
-    public boolean visit(YieldFrom n) {
+
+    public boolean visit(YieldFrom n)
+    {
         return traverseIntoNodes;
     }
 }

@@ -6,49 +6,65 @@ import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
-public class Name extends Node {
+
+public class Name extends Node
+{
 
     @NotNull
     public final String id;  // identifier
 
-    public Name(String id) {
+
+    public Name(String id)
+    {
         this(id, -1, -1);
     }
 
-    public Name(@NotNull String id, int start, int end) {
+
+    public Name(@NotNull String id, int start, int end)
+    {
         super(start, end);
         this.id = id;
     }
-    
+
+
     /**
      * Returns {@code true} if this name is structurally in a call position.
      */
     @Override
-    public boolean isCall() {
+    public boolean isCall()
+    {
         // foo(...)
-        if (parent != null && parent.isCall() && this == ((Call)parent).func) {
+        if (parent != null && parent.isCall() && this == ((Call) parent).func)
+        {
             return true;
         }
 
         // <expr>.foo(...)
         Node gramps;
         return parent instanceof Attribute
-                && this == ((Attribute)parent).attr
+                && this == ((Attribute) parent).attr
                 && (gramps = parent.parent) instanceof Call
-                && parent == ((Call)gramps).func;
+                && parent == ((Call) gramps).func;
     }
-    
+
+
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s) {
+    public Type resolve(@NotNull Scope s)
+    {
         Binding b = s.lookup(id);
-        if (b != null) {
+        if (b != null)
+        {
             Indexer.idx.putRef(this, b);
             Indexer.idx.stats.inc("resolved");
             return b.getType();
-        } else if (id.equals("True") || id.equals("False")) {
+        }
+        else if (id.equals("True") || id.equals("False"))
+        {
             return Indexer.idx.builtins.BaseBool;
-        } else {
+        }
+        else
+        {
             Indexer.idx.putProblem(this, "unbound variable " + getId());
             Indexer.idx.stats.inc("unresolved");
             Type t = Indexer.idx.builtins.unknown;
@@ -57,34 +73,44 @@ public class Name extends Node {
         }
     }
 
+
     /**
      * Returns {@code true} if this name node is the {@code attr} child
      * (i.e. the attribute being accessed) of an {@link Attribute} node.
      */
-    public boolean isAttribute() {
+    public boolean isAttribute()
+    {
         return parent instanceof Attribute
-                && ((Attribute)parent).getAttr() == this;
+                && ((Attribute) parent).getAttr() == this;
     }
-    
+
+
     @NotNull
-    public String getId() {
+    public String getId()
+    {
         return id;
     }
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "<Name:" + start + ":" + id +  ">";
-    }
 
     @NotNull
     @Override
-    public String toDisplay() {
+    public String toString()
+    {
+        return "<Name:" + start + ":" + id + ">";
+    }
+
+
+    @NotNull
+    @Override
+    public String toDisplay()
+    {
         return id;
     }
 
+
     @Override
-    public void visit(@NotNull NodeVisitor v) {
+    public void visit(@NotNull NodeVisitor v)
+    {
         v.visit(this);
     }
 }

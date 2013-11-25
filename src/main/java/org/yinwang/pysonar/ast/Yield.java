@@ -6,36 +6,49 @@ import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.ListType;
 import org.yinwang.pysonar.types.Type;
 
-public class Yield extends Node {
+
+public class Yield extends Node
+{
 
     public Node value;
 
 
-    public Yield(Node n, int start, int end) {
+    public Yield(Node n, int start, int end)
+    {
         super(start, end);
         this.value = n;
         addChildren(n);
     }
 
+
     @NotNull
     @Override
-    public Type resolve(Scope s) {
-        if (value != null) {
+    public Type resolve(Scope s)
+    {
+        if (value != null)
+        {
             return new ListType(resolveExpr(value, s));
-        } else {
+        }
+        else
+        {
             return Indexer.idx.builtins.None;
         }
     }
 
+
     @NotNull
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "<Yield:" + start + ":" + value + ">";
     }
 
+
     @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
+    public void visit(@NotNull NodeVisitor v)
+    {
+        if (v.visit(this))
+        {
             visitNode(value, v);
         }
     }

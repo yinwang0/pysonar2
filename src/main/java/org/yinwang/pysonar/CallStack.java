@@ -8,13 +8,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class CallStack {
+public class CallStack
+{
 
     //    private Map<Node, Set<Type>> stack = new HashMap<Node, Set<Type>>();
     @NotNull
     private Set<Node> stack = new HashSet<Node>();
 
-    public void push(Node call, Type type) {
+
+    public void push(Node call, Type type)
+    {
 //        Set<Type> inner = stack.get(call);
 //        if (inner != null) {
 //            inner.add(type);
@@ -27,7 +30,8 @@ public class CallStack {
     }
 
 
-    public void pop(Node call, Type type) {
+    public void pop(Node call, Type type)
+    {
 //        Set<Type> inner = stack.get(call);
 //        if (inner != null) {
 //            inner.remove(type);
@@ -39,7 +43,8 @@ public class CallStack {
     }
 
 
-    public boolean contains(Node call, Type type) {
+    public boolean contains(Node call, Type type)
+    {
 //        Set<Type> inner = stack.get(call);
 //        if (inner != null) {
 //            return inner.contains(type);

@@ -9,12 +9,13 @@ import java.io.File;
 import java.util.List;
 
 
-public class Demo {
+public class Demo
+{
 
     private static File OUTPUT_DIR;
 
     private static final String CSS =
-                    "body { color: #666666; } \n" +
+            "body { color: #666666; } \n" +
                     "a {text-decoration: none; color: #5A82F7}\n" +
                     "table, th, td { border: 1px solid lightgrey; padding: 5px; corner: rounded; }\n" +
                     ".builtin {color: #B17E41;}\n" +
@@ -35,8 +36,8 @@ public class Demo {
                     ".type-name {color: #4682b4;}\n" +
                     ".warning {border-bottom: 1px dotted orange;}\n";
 
-    private  static final String JS =
-                    "<script language=\"JavaScript\" type=\"text/javascript\">\n" +
+    private static final String JS =
+            "<script language=\"JavaScript\" type=\"text/javascript\">\n" +
                     "var highlighted = new Array();\n" +
                     "function highlight()\n" +
                     "{\n" +
@@ -62,18 +63,26 @@ public class Demo {
     private String rootPath;
     private Linker linker;
 
-    private void makeOutputDir() {
-        if (!OUTPUT_DIR.exists()) {
+
+    private void makeOutputDir()
+    {
+        if (!OUTPUT_DIR.exists())
+        {
             OUTPUT_DIR.mkdirs();
             Util.msg("Created directory: " + OUTPUT_DIR.getAbsolutePath());
         }
     }
 
-    private void start(@NotNull File fileOrDir) throws Exception {
+
+    private void start(@NotNull File fileOrDir) throws Exception
+    {
         File rootDir = fileOrDir.isFile() ? fileOrDir.getParentFile() : fileOrDir;
-        try {
+        try
+        {
             rootPath = Util.unifyPath(rootDir);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             Util.die("File not found: " + fileOrDir);
         }
 
@@ -87,7 +96,8 @@ public class Demo {
     }
 
 
-    private void generateHtml() {
+    private void generateHtml()
+    {
         Util.msg("\nGenerating HTML");
         makeOutputDir();
 
@@ -98,24 +108,31 @@ public class Demo {
         Util.msg("\nGenerating HTML");
 
         int total = 0;
-        for (String path : indexer.getLoadedFiles()) {
-            if (path.startsWith(rootPath)) {
+        for (String path : indexer.getLoadedFiles())
+        {
+            if (path.startsWith(rootPath))
+            {
                 total++;
             }
         }
 
         FancyProgress progress = new FancyProgress(total, 50);
 
-        for (String path : indexer.getLoadedFiles()) {
-            if (path.startsWith(rootPath)) {
+        for (String path : indexer.getLoadedFiles())
+        {
+            if (path.startsWith(rootPath))
+            {
                 progress.tick();
                 File destFile = Util.joinPath(OUTPUT_DIR, path.substring(rootLength));
                 destFile.getParentFile().mkdirs();
                 String destPath = destFile.getAbsolutePath() + ".html";
                 String html = markup(path);
-                try {
+                try
+                {
                     Util.writeFile(destPath, html);
-                } catch (Exception e) {
+                }
+                catch (Exception e)
+                {
                     Util.msg("Failed to write: " + destPath);
                 }
             }
@@ -124,13 +141,18 @@ public class Demo {
         Util.msg("\nWrote " + indexer.getLoadedFiles().size() + " files to " + OUTPUT_DIR);
     }
 
+
     @NotNull
-    private String markup(String path) {
+    private String markup(String path)
+    {
         String source;
 
-        try {
+        try
+        {
             source = Util.readFile(path);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             Util.die("Failed to read file: " + path);
             return "";
         }
@@ -154,11 +176,14 @@ public class Demo {
         return sb.toString();
     }
 
+
     @NotNull
-    private String addLineNumbers(@NotNull String source) {
-        StringBuilder result = new StringBuilder((int)(source.length() * 1.2));
+    private String addLineNumbers(@NotNull String source)
+    {
+        StringBuilder result = new StringBuilder((int) (source.length() * 1.2));
         int count = 1;
-        for (String line : source.split("\n")) {
+        for (String line : source.split("\n"))
+        {
             result.append("<span class='lineno'>");
             result.append(count++);
             result.append("</span> ");
@@ -169,25 +194,31 @@ public class Demo {
     }
 
 
-    private static void usage() {
+    private static void usage()
+    {
         Util.msg("Usage:  java -jar pysonar-2.0-SNAPSHOT.jar <file-or-dir> <output-dir>");
         Util.msg("Example that generates an index for Python 2.7 standard library:");
         Util.msg(" java -jar pysonar-2.0-SNAPSHOT.jar /usr/lib/python2.7 ./html");
         System.exit(0);
     }
 
+
     @NotNull
-    private static File checkFile(String path) {
+    private static File checkFile(String path)
+    {
         File f = new File(path);
-        if (!f.canRead()) {
+        if (!f.canRead())
+        {
             Util.die("Path not found or not readable: " + path);
         }
         return f;
     }
 
 
-    public static void main(@NotNull String[] args) throws Exception {
-        if (args.length != 2) {
+    public static void main(@NotNull String[] args) throws Exception
+    {
+        if (args.length != 2)
+        {
             usage();
         }
 
@@ -196,7 +227,7 @@ public class Demo {
 
         new Demo().start(fileOrDir);
 
-        Util.msg(Util.printGCStats());
+        Util.msg(Util.getGCStats());
 
     }
 }
