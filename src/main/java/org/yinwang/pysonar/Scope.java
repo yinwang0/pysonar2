@@ -10,9 +10,10 @@ import java.util.*;
 import java.util.Map.Entry;
 
 
-public class Scope {
-
-    public enum ScopeType {
+public class Scope
+{
+    public enum ScopeType
+    {
         CLASS,
         INSTANCE,
         FUNCTION,
@@ -25,8 +26,9 @@ public class Scope {
     @Nullable
     private Map<String, Binding> table;  // stays null for most scopes (mem opt)
     @Nullable
-    public Scope parent;
-    private Scope forwarding;       // link to the closest non-class scope, for lifting functions out
+    public Scope parent;      // all are non-null except global table
+    @Nullable
+    private Scope forwarding; // link to the closest non-class scope, for lifting functions out
     @Nullable
     private List<Scope> supers;
     @Nullable
@@ -37,21 +39,28 @@ public class Scope {
     private String path = "";
 
 
-    public Scope(@Nullable Scope parent, ScopeType type) {
+    public Scope(@Nullable Scope parent, ScopeType type)
+    {
         this.parent = parent;
         this.scopeType = type;
 
-        if (type == ScopeType.CLASS) {
-            this.forwarding = parent.getForwarding();
-        } else {
+        if (type == ScopeType.CLASS)
+        {
+            this.forwarding = parent == null ? null : parent.getForwarding();
+        }
+        else
+        {
             this.forwarding = this;
         }
     }
 
 
-    public Scope(@NotNull Scope s) {
-        if (s.table != null) {
-            this.table = new HashMap<>(s.table);
+    public Scope(@NotNull Scope s)
+    {
+        if (s.table != null)
+        {
+            this.table = new HashMap<>();
+            this.table.putAll(s.table);
         }
         this.parent = s.parent;
         this.scopeType = s.scopeType;
@@ -63,176 +72,216 @@ public class Scope {
     }
 
 
-    public void setParent(@Nullable Scope parent) {
+    @NotNull
+    public Scope copy()
+    {
+        return new Scope(this);
+    }
+
+
+    public void merge(Scope other)
+    {
+        for (Map.Entry<String, Binding> e1 : getInternalTable().entrySet())
+        {
+            Binding b1 = e1.getValue();
+            Binding b2 = other.getInternalTable().get(e1.getKey());
+
+            // both branch have the same name, need merge
+            if (b2 != null && b1 != b2)
+            {
+                Def d1 = b1.getDef();
+                Def d2 = b2.getDef();
+                Type t = UnionType.union(b1.getType(), b2.getType());
+                Binding b = this.insert(e1.getKey(), d1.getNode(), t, b1.getKind());
+                b.addDef(d2);
+            }
+        }
+
+        for (Map.Entry<String, Binding> e2 : other.getInternalTable().entrySet())
+        {
+            Binding b1 = getInternalTable().get(e2.getKey());
+            Binding b2 = e2.getValue();
+
+            // both branch have the same name, need merge
+            if (b1 == null && b1 != b2)
+            {
+                this.update(b2.getName(), b2);
+            }
+        }
+    }
+
+
+    public void setParent(@Nullable Scope parent)
+    {
         this.parent = parent;
     }
 
+
     @Nullable
-    public Scope getParent() {
+    public Scope getParent()
+    {
         return parent;
     }
 
-    public Scope getForwarding() {
-        if (forwarding != null) {
+
+    public Scope getForwarding()
+    {
+        if (forwarding != null)
+        {
             return forwarding;
-        } else {
+        }
+        else
+        {
             return this;
         }
     }
 
-    public void addSuper(Scope sup) {
-        if (supers == null) {
-            supers = new ArrayList<Scope>();
+
+    public void addSuper(Scope sup)
+    {
+        if (supers == null)
+        {
+            supers = new ArrayList<>();
         }
         supers.add(sup);
     }
 
-    public void setScopeType(ScopeType type) {
+
+    public void setScopeType(ScopeType type)
+    {
         this.scopeType = type;
     }
 
-    public ScopeType getScopeType() {
+
+    public ScopeType getScopeType()
+    {
         return scopeType;
     }
 
-    /**
-     * Mark a name as being global (i.e. module scoped) for name-binding and
-     * name-lookup operations in this code block and any nested scopes.
-     */
-    public void addGlobalName(@Nullable String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("name shouldn't be null");
-        }
-        if (globalNames == null) {
+
+    public void addGlobalName(@NotNull String name)
+    {
+        if (globalNames == null)
+        {
             globalNames = new HashSet<>();
         }
         globalNames.add(name);
     }
 
-    /**
-     * Returns {@code true} if {@code name} appears in a {@code global}
-     * statement in this scope or any enclosing scope.
-     */
-    public boolean isGlobalName(String name) {
-        if (globalNames != null) {
+
+    public boolean isGlobalName(String name)
+    {
+        if (globalNames != null)
+        {
             return globalNames.contains(name);
-        } else if (parent != null) {
+        }
+        else if (parent != null)
+        {
             return parent.isGlobalName(name);
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
 
 
-    @Nullable
-    public Binding put(String id, Node loc, @NotNull Type type, Binding.Kind kind, int tag) {
-        Binding b = lookupScope(id);
-        return insertOrUpdate(b, id, loc, type, kind, tag);
-    }
-
-
-    @Nullable
-    public Binding putAttr(String id, Node loc, @NotNull Type type, Binding.Kind kind, int tag) {
-        Binding b = lookupAttr(id);
-        return insertOrUpdate(b, id, loc, type, kind, tag);
-    }
-
-
-    public void remove(String id) {
-        if (table != null) {
+    public void remove(String id)
+    {
+        if (table != null)
+        {
             table.remove(id);
         }
     }
 
 
-    // helper for put and putAttr
+    // create new binding and insert
     @NotNull
-    private Binding insertOrUpdate(@Nullable Binding binding, String id, @NotNull Node node,
-                                   @NotNull Type type, Binding.Kind kind, int tag) {
-        if (binding == null || tag == binding.tag) {
-            Binding b = new Binding(id, node, type, kind, tag);
-            b.setQname(extendPath(id));
-            binding = update(id, b);
-        } else {
-            binding.addDef(node);
-            binding.setType(UnionType.union(type, binding.getType()));
-        }
-        return binding;
-    }
-
-
-    // direct update and replace the same name with a new binding
-    @NotNull
-    public Binding update(String id, Node node, Type type, Binding.Kind kind) {
+    public Binding insert(String id, Node node, Type type, Binding.Kind kind)
+    {
         Binding b = new Binding(id, node, type, kind);
         b.setQname(extendPath(id));
         return update(id, b);
     }
 
 
-    // direct update and replace the name with a binding
+    // directly insert a given binding
     @NotNull
-    public Binding update(String id, @NotNull Binding b) {
+    public Binding update(String id, @NotNull Binding b)
+    {
         getInternalTable().put(id, b);
         return b;
     }
 
 
-    @NotNull
-    public Scope copy(ScopeType tableType) {
-        Scope ret = new Scope(null, tableType);
-        if (table != null) {
-            ret.getInternalTable().putAll(table);
-        }
-        return ret;
-    }
-
-    public void setPath(@NotNull String path) {
+    public void setPath(@NotNull String path)
+    {
         this.path = path;
     }
 
+
     @NotNull
-    public String getPath() {
+    public String getPath()
+    {
         return path;
     }
 
-    public Type getType() {
+
+    public Type getType()
+    {
         return type;
     }
 
-    public void setType(Type type) {
+
+    public void setType(Type type)
+    {
         this.type = type;
     }
+
 
     /**
      * Look up a name in the current symbol table only. Don't recurse on the
      * parent table.
      */
     @Nullable
-    public Binding lookupLocal(String name) {
-        if (table == null) {
+    public Binding lookupLocal(String name)
+    {
+        if (table == null)
+        {
             return null;
-        } else {
+        }
+        else
+        {
             return table.get(name);
         }
     }
+
 
     /**
      * Look up a name (String) in the current symbol table.  If not found,
      * recurse on the parent table.
      */
     @Nullable
-    public Binding lookup(String name) {
+    public Binding lookup(String name)
+    {
         Binding b = getModuleBindingIfGlobal(name);
-        if (b != null) {
+        if (b != null)
+        {
             return b;
-        } else {
+        }
+        else
+        {
             Binding ent = lookupLocal(name);
-            if (ent != null) {
+            if (ent != null)
+            {
                 return ent;
-            } else if (getParent() != null) {
+            }
+            else if (getParent() != null)
+            {
                 return getParent().lookup(name);
-            } else {
+            }
+            else
+            {
                 return null;
             }
         }
@@ -244,11 +293,15 @@ public class Scope {
      * it up locally.
      */
     @Nullable
-    public Binding lookupScope(String name) {
+    public Binding lookupScope(String name)
+    {
         Binding b = getModuleBindingIfGlobal(name);
-        if (b != null) {
+        if (b != null)
+        {
             return b;
-        } else {
+        }
+        else
+        {
             return lookupLocal(name);
         }
     }
@@ -264,55 +317,78 @@ public class Scope {
     @NotNull
     private static Set<Scope> looked = new HashSet<>();    // circularity prevention
 
+
     @Nullable
-    public Binding lookupAttr(String attr) {
-        if (looked.contains(this)) {
+    public Binding lookupAttr(String attr)
+    {
+        if (looked.contains(this))
+        {
             return null;
-        } else {
+        }
+        else
+        {
             Binding b = lookupLocal(attr);
-            if (b != null) {
+            if (b != null)
+            {
                 return b;
-            } else {
-                if (supers != null && !supers.isEmpty()) {
+            }
+            else
+            {
+                if (supers != null && !supers.isEmpty())
+                {
                     looked.add(this);
-                    for (Scope p : supers) {
+                    for (Scope p : supers)
+                    {
                         b = p.lookupAttr(attr);
-                        if (b != null) {
+                        if (b != null)
+                        {
                             looked.remove(this);
                             return b;
                         }
                     }
                     looked.remove(this);
                     return null;
-                } else {
+                }
+                else
+                {
                     return null;
                 }
             }
         }
     }
 
+
     /**
      * Look for a binding named {@code name} and if found, return its type.
      */
     @Nullable
-    public Type lookupType(String name) {
+    public Type lookupType(String name)
+    {
         Binding b = lookup(name);
-        if (b == null) {
+        if (b == null)
+        {
             return null;
-        } else {
+        }
+        else
+        {
             return b.getType();
         }
     }
+
 
     /**
      * Look for a attribute named {@code attr} and if found, return its type.
      */
     @Nullable
-    public Type lookupAttrType(String attr) {
+    public Type lookupAttrType(String attr)
+    {
         Binding b = lookupAttr(attr);
-        if (b == null) {
+        if (b == null)
+        {
             return null;
-        } else {
+        }
+        else
+        {
             return b.getType();
         }
     }
@@ -322,38 +398,53 @@ public class Scope {
      * Find a symbol table of a certain type in the enclosing scopes.
      */
     @Nullable
-    private Scope getSymtabOfType(ScopeType type) {
-        if (scopeType == type) {
+    private Scope getSymtabOfType(ScopeType type)
+    {
+        if (scopeType == type)
+        {
             return this;
-        } else if (parent == null) {
+        }
+        else if (parent == null)
+        {
             return null;
-        } else {
+        }
+        else
+        {
             return parent.getSymtabOfType(type);
         }
     }
+
 
     /**
      * Returns the global scope (i.e. the module scope for the current module).
      */
     @NotNull
-    public Scope getGlobalTable() {
+    public Scope getGlobalTable()
+    {
         Scope result = getSymtabOfType(ScopeType.MODULE);
-        if (result != null) {
+        if (result != null)
+        {
             return result;
-        } else {
+        }
+        else
+        {
             Util.die("Couldn't find global table. Shouldn't happen");
             return this;
         }
     }
 
+
     /**
      * If {@code name} is declared as a global, return the module binding.
      */
     @Nullable
-    private Binding getModuleBindingIfGlobal(String name) {
-        if (isGlobalName(name)) {
+    private Binding getModuleBindingIfGlobal(String name)
+    {
+        if (isGlobalName(name))
+        {
             Scope module = getGlobalTable();
-            if (module != this) {
+            if (module != this)
+            {
                 return module.lookupLocal(name);
             }
         }
@@ -361,24 +452,31 @@ public class Scope {
     }
 
 
-    public void putAll(@NotNull Scope other) {
+    public void putAll(@NotNull Scope other)
+    {
         getInternalTable().putAll(other.getInternalTable());
     }
 
 
     @NotNull
-    public Set<String> keySet() {
-        if (table != null) {
+    public Set<String> keySet()
+    {
+        if (table != null)
+        {
             return table.keySet();
-        } else {
+        }
+        else
+        {
             return Collections.emptySet();
         }
     }
 
 
     @NotNull
-    public Collection<Binding> values() {
-        if (table != null) {
+    public Collection<Binding> values()
+    {
+        if (table != null)
+        {
             return table.values();
         }
         return Collections.emptySet();
@@ -386,30 +484,38 @@ public class Scope {
 
 
     @NotNull
-    public Set<Entry<String, Binding>> entrySet() {
-        if (table != null) {
+    public Set<Entry<String, Binding>> entrySet()
+    {
+        if (table != null)
+        {
             return table.entrySet();
         }
         return Collections.emptySet();
     }
 
-    public boolean isEmpty() {
+
+    public boolean isEmpty()
+    {
         return table == null || table.isEmpty();
     }
 
 
     @Nullable
-    public String extendPath(@NotNull String name) {
-        if (name.endsWith(".py")) {
+    public String extendPath(@NotNull String name)
+    {
+        if (name.endsWith(".py"))
+        {
             name = Util.moduleNameFor(name);
         }
 
-        if (path.equals("")) {
+        if (path.equals(""))
+        {
             return name;
         }
 
         String sep;
-        switch (scopeType) {
+        switch (scopeType)
+        {
             case MODULE:
             case CLASS:
             case INSTANCE:
@@ -429,8 +535,10 @@ public class Scope {
 
 
     @NotNull
-    private Map<String, Binding> getInternalTable() {
-        if (this.table == null) {
+    private Map<String, Binding> getInternalTable()
+    {
+        if (this.table == null)
+        {
             this.table = new HashMap<>();
         }
         return this.table;
@@ -439,8 +547,9 @@ public class Scope {
 
     @NotNull
     @Override
-    public String toString() {
-        return "<Scope:" + getScopeType() + ":" + path + ":" +
+    public String toString()
+    {
+        return "<Scope:" + getScopeType() + ":" +
                 (table == null ? "{}" : table.keySet()) + ">";
     }
 

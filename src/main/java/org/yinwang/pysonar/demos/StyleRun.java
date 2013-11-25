@@ -5,12 +5,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+
 /**
  * Represents a simple style run for purposes of source highlighting.
  */
-public class StyleRun implements Comparable<StyleRun> {
+public class StyleRun implements Comparable<StyleRun>
+{
 
-    public enum Type {
+    public enum Type
+    {
         KEYWORD,
         COMMENT,
         STRING,
@@ -35,6 +38,7 @@ public class StyleRun implements Comparable<StyleRun> {
         INFO
     }
 
+
     public Type type;
     private int offset;  // file offset
     private int length;  // style run length
@@ -46,31 +50,41 @@ public class StyleRun implements Comparable<StyleRun> {
     public String id;   // for hover highlight
     public List<String> highlight;   // for hover highlight
 
-    public StyleRun(Type type, int offset, int length) {
+
+    public StyleRun(Type type, int offset, int length)
+    {
         this.type = type;
         this.offset = offset;
         this.length = length;
     }
 
 
-    public int start() {
+    public int start()
+    {
         return offset;
     }
 
-    public int end() {
+
+    public int end()
+    {
         return offset + length;
     }
 
-    public int length() {
+
+    public int length()
+    {
         return length;
     }
 
+
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof StyleRun)) {
+    public boolean equals(Object o)
+    {
+        if (!(o instanceof StyleRun))
+        {
             return false;
         }
-        StyleRun other = (StyleRun)o;
+        StyleRun other = (StyleRun) o;
         return other.type == this.type
                 && other.offset == this.offset
                 && other.length == this.length
@@ -78,30 +92,42 @@ public class StyleRun implements Comparable<StyleRun> {
                 && equalFields(other.url, this.url);
     }
 
-    private boolean equalFields(@Nullable Object o1, @Nullable Object o2) {
-        if (o1 == null) {
+
+    private boolean equalFields(@Nullable Object o1, @Nullable Object o2)
+    {
+        if (o1 == null)
+        {
             return o2 == null;
-        } else {
+        }
+        else
+        {
             return o1.equals(o2);
         }
     }
 
-    public int compareTo(@NotNull StyleRun other) {
-        if (this.equals(other)) {
+
+    public int compareTo(@NotNull StyleRun other)
+    {
+        if (this.equals(other))
+        {
             return 0;
         }
-        if (this.offset < other.offset) {
+        if (this.offset < other.offset)
+        {
             return -1;
         }
-        if (other.offset < this.offset) {
+        if (other.offset < this.offset)
+        {
             return 1;
         }
         return this.hashCode() - other.hashCode();
     }
 
+
     @NotNull
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "[" + type + " beg=" + offset + " len=" + length + "]";
     }
 }

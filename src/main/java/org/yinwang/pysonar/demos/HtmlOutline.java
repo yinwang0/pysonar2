@@ -9,19 +9,23 @@ import org.yinwang.pysonar.Util;
 import java.util.List;
 
 
-class HtmlOutline {
+class HtmlOutline
+{
 
     private Indexer indexer;
     @Nullable
     private StringBuilder buffer;
 
-    public HtmlOutline(Indexer idx) {
+
+    public HtmlOutline(Indexer idx)
+    {
         this.indexer = idx;
     }
 
 
     @NotNull
-    public String generate(String path) {
+    public String generate(String path)
+    {
         buffer = new StringBuilder(1024);
         List<Outliner.Entry> entries = generateOutline(indexer, path);
         addOutline(entries);
@@ -32,24 +36,30 @@ class HtmlOutline {
 
 
     @NotNull
-    public List<Outliner.Entry> generateOutline(Indexer indexer, @NotNull String file) {
+    public List<Outliner.Entry> generateOutline(Indexer indexer, @NotNull String file)
+    {
         return new Outliner().generate(indexer, file);
     }
 
 
-    private void addOutline(@NotNull List<Outliner.Entry> entries) {
+    private void addOutline(@NotNull List<Outliner.Entry> entries)
+    {
         add("<ul>\n");
-        for (Outliner.Entry e : entries) {
+        for (Outliner.Entry e : entries)
+        {
             addEntry(e);
         }
         add("</ul>\n");
     }
 
-    private void addEntry(@NotNull Outliner.Entry e) {
+
+    private void addEntry(@NotNull Outliner.Entry e)
+    {
         add("<li>");
 
         String style = null;
-        switch (e.getKind()) {
+        switch (e.getKind())
+        {
             case FUNCTION:
             case METHOD:
             case CONSTRUCTOR:
@@ -69,27 +79,32 @@ class HtmlOutline {
 
         add("<a href='#");
         add(e.getQname());
-        add("', onmouseover='highlight(\"" + Util.escapeQname_(e.getQname()) + "\")'>");
+        add("', onmouseover='highlight(\"" + Util.escapeQname(e.getQname()) + "\")'>");
 
-        if (style != null) {
+        if (style != null)
+        {
             add("<span class='");
             add(style);
             add("'>");
         }
         add(e.getName());
-        if (style != null) {
+        if (style != null)
+        {
             add("</span>");
         }
 
         add("</a>");
 
-        if (e.isBranch()) {
+        if (e.isBranch())
+        {
             addOutline(e.getChildren());
         }
         add("</li>");
     }
 
-    private void add(String text) {
+
+    private void add(String text)
+    {
         buffer.append(text);
     }
 }

@@ -5,36 +5,49 @@ import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
+
 /**
  * Expression statement.
  */
-public class Expr extends Node {
+public class Expr extends Node
+{
 
     public Node value;
 
 
-    public Expr(Node n, int start, int end) {
+    public Expr(Node n, int start, int end)
+    {
         super(start, end);
         this.value = n;
         addChildren(n);
     }
 
+
     @NotNull
     @Override
-    public Type resolve(Scope s, int tag) {
-        if (value != null) resolveExpr(value, s, tag);
+    public Type resolve(Scope s)
+    {
+        if (value != null)
+        {
+            resolveExpr(value, s);
+        }
         return Indexer.idx.builtins.Cont;
     }
 
+
     @NotNull
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "<Expr:" + value + ">";
     }
 
+
     @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
+    public void visit(@NotNull NodeVisitor v)
+    {
+        if (v.visit(this))
+        {
             visitNode(value, v);
         }
     }

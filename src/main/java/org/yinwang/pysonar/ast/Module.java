@@ -10,7 +10,9 @@ import org.yinwang.pysonar.types.Type;
 
 import java.io.File;
 
-public class Module extends Node {
+
+public class Module extends Node
+{
 
     public String name;
     public Block body;
@@ -19,72 +21,95 @@ public class Module extends Node {
     private String sha1;   // input source file sha1
 
 
-    public Module(Block body, int start, int end) {
+    public Module(Block body, int start, int end)
+    {
         super(start, end);
         this.body = body;
         addChildren(this.body);
     }
 
-    public void setFile(String file) {
+
+    public void setFile(String file)
+    {
         this.file = file;
         this.name = Util.moduleNameFor(file);
         this.sha1 = Util.getSHA1(new File(file));
     }
 
-    public void setFile(@NotNull File path) {
-        try {
+
+    public void setFile(@NotNull File path)
+    {
+        try
+        {
             file = Util.unifyPath(path);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             Util.msg("invalid path: " + path);
         }
         name = Util.moduleNameFor(file);
         sha1 = Util.getSHA1(path);
     }
 
+
     /**
      * Used when module is parsed from an in-memory string.
+     *
      * @param path file path
-     * @param md5 sha1 message digest for source contents
+     * @param md5  sha1 message digest for source contents
      */
-    public void setFileAndMD5(String path, String md5) {
+    public void setFileAndMD5(String path, String md5)
+    {
         file = path;
         name = Util.moduleNameFor(file);
         this.sha1 = md5;
     }
 
+
     @Override
-    public String getFile() {
+    public String getFile()
+    {
         return file;
     }
 
-    public String getMD5() {
+
+    public String getMD5()
+    {
         return sha1;
     }
 
+
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s, int tag) {
+    public Type resolve(@NotNull Scope s)
+    {
         ModuleType mt = new ModuleType(Util.moduleNameFor(file), file, Indexer.idx.globaltable);
-        s.put(Util.moduleQname(file), this, mt, Binding.Kind.MODULE, tag);
-        resolveExpr(body, mt.getTable(), tag);
+        s.insert(Util.moduleQname(file), this, mt, Binding.Kind.MODULE);
+        resolveExpr(body, mt.getTable());
         return mt;
     }
 
 
     @NotNull
-    public String toLongString() {
+    public String toLongString()
+    {
         return "<Module:" + body + ">";
     }
 
+
     @NotNull
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "<Module:" + file + ">";
     }
 
+
     @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
+    public void visit(@NotNull NodeVisitor v)
+    {
+        if (v.visit(this))
+        {
             visitNode(body, v);
         }
     }

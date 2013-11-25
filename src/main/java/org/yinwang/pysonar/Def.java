@@ -4,10 +4,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.*;
 
+
 /**
  * Encapsulates information about a binding definition site.
  */
-public class Def {
+public class Def
+{
 
     // Being frugal with fields here is good for memory usage.
     private int start = -1;
@@ -25,23 +27,32 @@ public class Def {
     private String fileOrUrl;
     @Nullable
     private String name;
+    @NotNull
     private Node node;
 
 
-    public Def(Node node, @NotNull Binding binding) {
+    public Def(@NotNull Node node, @NotNull Binding binding)
+    {
         this.node = node;
         this.binding = binding;
 
-        if (node instanceof Url) {
+        if (node instanceof Url)
+        {
             String url = ((Url) node).getURL();
-            if (url.startsWith("file://")) {
+            if (url.startsWith("file://"))
+            {
                 fileOrUrl = url.substring("file://".length());
-            } else {
+            }
+            else
+            {
                 fileOrUrl = url;
             }
-        } else {
+        }
+        else
+        {
             fileOrUrl = node.getFile();
-            if (node instanceof Name) {
+            if (node instanceof Name)
+            {
                 name = node.asName().getId();
             }
         }
@@ -50,22 +61,27 @@ public class Def {
     }
 
 
-    private void initLocationInfo(Node node) {
+    private void initLocationInfo(Node node)
+    {
         start = node.start;
         end = node.end;
 
         Node parent = node.getParent();
-        if ((parent instanceof FunctionDef && ((FunctionDef)parent).name == node) ||
-                (parent instanceof ClassDef && ((ClassDef)parent).name == node)) {
+        if ((parent instanceof FunctionDef && ((FunctionDef) parent).name == node) ||
+                (parent instanceof ClassDef && ((ClassDef) parent).name == node))
+        {
             bodyStart = parent.start;
             bodyEnd = parent.end;
             Str docstring = parent.docstring();
-            if (docstring != null ) {
+            if (docstring != null)
+            {
                 this.docstring = docstring.getStr();
                 this.docstringStart = docstring.start;
                 this.docstringEnd = docstring.end;
             }
-        } else if (node instanceof Module) {
+        }
+        else if (node instanceof Module)
+        {
             name = ((Module) node).name;
             start = 0;
             end = 0;
@@ -73,12 +89,15 @@ public class Def {
             bodyEnd = node.end;
 
             Str docstring = node.docstring();
-            if (docstring != null ) {
+            if (docstring != null)
+            {
                 this.docstring = docstring.getStr();
                 this.docstringStart = docstring.start;
                 this.docstringEnd = docstring.end;
             }
-        } else {
+        }
+        else
+        {
             bodyStart = node.start;
             bodyEnd = node.end;
         }
@@ -87,6 +106,7 @@ public class Def {
 
     }
 
+
     /**
      * Returns the name of the node.  Only applies if the definition coincides
      * with a {@link org.yinwang.pysonar.ast.Name} node.
@@ -94,109 +114,150 @@ public class Def {
      * @return the name, or null
      */
     @Nullable
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
+
 
     /**
      * Returns the file if this node is from a source file, else {@code null}.
      */
     @Nullable
-    public String getFile() {
+    public String getFile()
+    {
         return isURL() ? null : fileOrUrl;
     }
+
 
     /**
      * Returns the URL if this node is from a URL, else {@code null}.
      */
     @Nullable
-    public String getURL() {
+    public String getURL()
+    {
         return isURL() ? fileOrUrl : null;
     }
+
 
     /**
      * Returns the file if from a source file, else the URL.
      */
     @Nullable
-    public String getFileOrUrl() {
+    public String getFileOrUrl()
+    {
         return fileOrUrl;
     }
+
 
     /**
      * Returns {@code true} if this node is from a URL.
      */
-    public boolean isURL() {
+    public boolean isURL()
+    {
         return fileOrUrl != null && fileOrUrl.startsWith("http://");
     }
 
-    public boolean isModule() {
+
+    public boolean isModule()
+    {
         return binding.getKind() == Binding.Kind.MODULE;
     }
 
-    public int getStart() {
+
+    public int getStart()
+    {
         return start;
     }
 
-    public int getEnd() {
+
+    public int getEnd()
+    {
         return end;
     }
 
-    public int getLength() {
+
+    public int getLength()
+    {
         return end - start;
     }
 
-    public int getBodyStart() {
+
+    public int getBodyStart()
+    {
         return bodyStart;
     }
 
-    public int getBodyEnd() {
+
+    public int getBodyEnd()
+    {
         return bodyEnd;
     }
 
-    public boolean hasName() {
+
+    public boolean hasName()
+    {
         return name != null;
     }
 
-    void setBinding(Binding b) {
+
+    void setBinding(Binding b)
+    {
         binding = b;
     }
 
+
     @NotNull
-    public Binding getBinding() {
+    public Binding getBinding()
+    {
         return binding;
     }
 
-    public Node getNode() {
+
+    @NotNull
+    public Node getNode()
+    {
         return node;
     }
 
-    public void setNode(Node node) {
+
+    public void setNode(Node node)
+    {
         this.node = node;
     }
 
+
     @NotNull
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "<Def:" + (name == null ? "" : name) +
-               ":" + Util.baseFileName(fileOrUrl) + ":" + start + ">";
+                ":" + Util.baseFileName(fileOrUrl) + ":" + start + ">";
     }
 
+
     @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Def)) {
+    public boolean equals(Object obj)
+    {
+        if (!(obj instanceof Def))
+        {
             return false;
-        } else {
+        }
+        else
+        {
             Def def = (Def) obj;
             return (start == def.start
                     && end == def.end
                     && ((fileOrUrl == null && def.fileOrUrl == null)
-                       || (fileOrUrl != null && def.fileOrUrl != null &&
-                           fileOrUrl.equals(def.fileOrUrl))));
+                    || (fileOrUrl != null && def.fileOrUrl != null &&
+                    fileOrUrl.equals(def.fileOrUrl))));
         }
     }
 
+
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return ("" + fileOrUrl + start).hashCode();
     }
 

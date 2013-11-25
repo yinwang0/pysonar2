@@ -3,44 +3,59 @@ package org.yinwang.pysonar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Stats {
+
+public class Stats
+{
     Map<String, Object> contents = new HashMap<>();
 
-    public void putInt(String key, long value) {
+
+    public void putInt(String key, long value)
+    {
         contents.put(key, value);
     }
 
 
-    public void inc(String key, long x) {
+    public void inc(String key, long x)
+    {
         Long old = getInt(key);
 
-        if (old == null) {
+        if (old == null)
+        {
             contents.put(key, 1);
-        } else {
+        }
+        else
+        {
             contents.put(key, old + x);
         }
     }
 
 
-    public void inc(String key) {
+    public void inc(String key)
+    {
         inc(key, 1);
     }
 
 
-    public Long getInt(String key) {
+    public Long getInt(String key)
+    {
         Long ret = (Long) contents.get(key);
-        if (ret == null) {
+        if (ret == null)
+        {
             return 0L;
-        } else {
+        }
+        else
+        {
             return ret;
         }
     }
 
 
-    public String print() {
+    public String print()
+    {
         StringBuilder sb = new StringBuilder();
 
-        for (Map.Entry<String, Object> e : contents.entrySet()) {
+        for (Map.Entry<String, Object> e : contents.entrySet())
+        {
             sb.append("\n- " + e.getKey() + ": " + e.getValue());
         }
 
