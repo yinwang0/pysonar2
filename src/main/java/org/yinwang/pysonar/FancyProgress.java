@@ -28,11 +28,6 @@ public class FancyProgress {
     }
 
 
-    public void setTotal(long total) {
-        this.total = total;
-    }
-
-
     public void tick(int n) {
         count += n;
         if (count > total) {
@@ -43,22 +38,7 @@ public class FancyProgress {
 
         if (elapsed > 500 || count == total) {
             System.out.print("\r");
-
-//            int len = (int) Math.floor(width * count / total);
-//            System.out.print("[");
-//
-//            for (int i = 0; i < len; i++) {
-//                System.out.print("=");
-//            }
-//
-//            for (int j = len; j < width; j++) {
-//                System.out.print(" ");
-//            }
-//
-//            System.out.print("]  ");
-
             int dlen = (int) Math.ceil(Math.log10((double) total));
-
             System.out.print(Util.percent(count, total) + " (" +
                     Util.format(count, dlen) +
                     " of " + Util.format(total, dlen) + ")");

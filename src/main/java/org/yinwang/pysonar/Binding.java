@@ -60,24 +60,20 @@ public class Binding implements Comparable<Object> {
     private String qname;   // qualified name
     private Type type;     // inferred type
     public Kind kind;      // name usage context
-    public int tag;        // control-flow tag
 
+    @NotNull
     private Set<Def> defs;   // definitions (may be multiple)
     private Set<Ref> refs;
 
     
-    public Binding(@NotNull String id, Node node, Type type, Kind kind, int tag) {
-        this(id, node, type, kind);
-        this.tag = tag;
-    }
-
-
     public Binding(@NotNull String id, Node node, @NotNull Type type, @NotNull Kind kind) {
-        name = id;
-        qname = type.getTable().getPath();
-        addDef(node);
+        this.name = id;
+        this.qname = type.getTable().getPath();
         this.type = type;
         this.kind = kind;
+        this.defs = new LinkedHashSet<>(DEF_SET_INITIAL_CAPACITY);
+        addDef(node);
+
         Indexer.idx.registerBinding(this);
     }
 
@@ -205,19 +201,12 @@ public class Binding implements Comparable<Object> {
      * @return the defs
      */
     public Set<Def> getDefs() {
-        if (defs == null) {
-            defs = new LinkedHashSet<>(DEF_SET_INITIAL_CAPACITY);
-        }
         return defs;
     }
     
-    @Nullable
+    @NotNull
     public Def getDef() {
-        if (defs == null || defs.isEmpty()) {
-            return null;
-        } else {
-            return defs.iterator().next();
-        }
+        return defs.iterator().next();
     }
 
     /**

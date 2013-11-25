@@ -3,6 +3,7 @@ package org.yinwang.pysonar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.*;
+import sun.jvm.hotspot.HotSpotAgent;
 
 /**
  * Encapsulates information about a binding definition site.
@@ -25,10 +26,11 @@ public class Def {
     private String fileOrUrl;
     @Nullable
     private String name;
+    @NotNull
     private Node node;
 
 
-    public Def(Node node, @NotNull Binding binding) {
+    public Def(@NotNull Node node, @NotNull Binding binding) {
         this.node = node;
         this.binding = binding;
 
@@ -166,6 +168,7 @@ public class Def {
         return binding;
     }
 
+    @NotNull
     public Node getNode() {
         return node;
     }

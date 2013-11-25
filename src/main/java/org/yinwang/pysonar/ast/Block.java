@@ -25,13 +25,7 @@ public class Block extends Node {
         addChildren(seq);
     }
 
-    /**
-     * First mark all the global names then resolve each statement in the sequence. 
-     * Notice that we don't distinguish class and function definitions here. 
-     * Their statements will return None type and bind the names themselves in the scope.
-     * If the sequence contains escaping control-flow, None type will appear in the return type.
-     * This can be used to generate warnings such as "This function may not return a value."
-     */
+
     @NotNull
     @Override
     public Type resolve(@NotNull Scope scope) {
@@ -55,7 +49,8 @@ public class Block extends Node {
             Type t = resolveExpr(n, scope);
             if (!returned) {
                 retType = UnionType.union(retType, t);
-                if (!UnionType.contains(t, Indexer.idx.builtins.Cont)) {
+                if (!UnionType.contains(t, Indexer.idx.builtins.Cont))
+                {
                     returned = true;
                     retType = UnionType.remove(retType, Indexer.idx.builtins.Cont);
                 }
@@ -67,10 +62,12 @@ public class Block extends Node {
 
         return retType;
     }
-    
+
+
     public boolean isEmpty() {
         return seq.isEmpty();
     }
+
 
     @NotNull
     @Override

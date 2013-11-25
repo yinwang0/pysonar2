@@ -65,9 +65,9 @@ public class ImportFrom extends Node {
                     ModuleType mod2 = Indexer.idx.loadModule(ext, s);
                     if (mod2 != null) {
                         if (a.asname != null) {
-                            s.put(a.asname.id, a.asname, mod2, Binding.Kind.VARIABLE);
+                            s.insert(a.asname.id, a.asname, mod2, Binding.Kind.VARIABLE);
                         } else {
-                            s.put(first.id, first, mod2, Binding.Kind.VARIABLE);
+                            s.insert(first.id, first, mod2, Binding.Kind.VARIABLE);
                         }
                     }
                 }
@@ -116,7 +116,7 @@ public class ImportFrom extends Node {
                     m2.add(new Name(name));
                     ModuleType mod2 = Indexer.idx.loadModule(m2, s);
                     if (mod2 != null) {
-                        s.put(name, null, mod2, Binding.Kind.VARIABLE);
+                        s.insert(name, null, mod2, Binding.Kind.VARIABLE);
                     }
                 }
             }

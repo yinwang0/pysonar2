@@ -87,10 +87,10 @@ public class NameBinder {
         Binding b;
 
         if (s.isGlobalName(name.getId())) {
-            b = s.getGlobalTable().put(name.getId(), name, rvalue, kind);
+            b = s.getGlobalTable().insert(name.getId(), name, rvalue, kind);
             Indexer.idx.putRef(name, b);
         } else {
-            b = s.put(name.getId(), name, rvalue, kind);
+            b = s.insert(name.getId(), name, rvalue, kind);
         }
 
         Type nameType = b.getType();

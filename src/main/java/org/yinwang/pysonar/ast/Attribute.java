@@ -69,7 +69,7 @@ public class Attribute extends Node {
             Indexer.idx.putProblem(this, "Can't set attribute for UnknownType");
             return;
         }
-        targetType.getTable().putAttr(attr.getId(), attr, v, ATTRIBUTE);
+        targetType.getTable().insert(attr.getId(), attr, v, ATTRIBUTE);
     }
 
     @NotNull

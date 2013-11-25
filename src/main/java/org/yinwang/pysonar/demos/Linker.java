@@ -110,7 +110,7 @@ class Linker {
 
         List<String> typings = new ArrayList<>();
         for (Binding b : bindings) {
-            typings.add(b.getType().toString());
+            typings.add(b.getQname() + ": " + b.getType().toString());
         }
         link.message = Util.joinWithSep(typings, " | ", "{", "}");
 

@@ -65,7 +65,7 @@ public class Module extends Node {
     @Override
     public Type resolve(@NotNull Scope s) {
         ModuleType mt = new ModuleType(Util.moduleNameFor(file), file, Indexer.idx.globaltable);
-        s.put(Util.moduleQname(file), this, mt, Binding.Kind.MODULE);
+        s.insert(Util.moduleQname(file), this, mt, Binding.Kind.MODULE);
         resolveExpr(body, mt.getTable());
         return mt;
     }

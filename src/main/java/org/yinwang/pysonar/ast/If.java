@@ -27,21 +27,34 @@ public class If extends Node {
     public Type resolve(@NotNull Scope s) {
         Type type1, type2;
         resolveExpr(test, s);
+        Scope s1 = s.copy();
+        Scope s2 = s.copy();
 
         if (body != null && !body.isEmpty()) {
-            type1 = resolveExpr(body, s);
+            type1 = resolveExpr(body, s1);
         } else {
             type1 = Indexer.idx.builtins.Cont;
         }
 
         if (orelse != null && !orelse.isEmpty()) {
-            type2 = resolveExpr(orelse, s);
+            type2 = resolveExpr(orelse, s2);
         } else {
             type2 = Indexer.idx.builtins.Cont;
         }
 
+        if (UnionType.contains(type1, Indexer.idx.builtins.Cont))
+        {
+            s.merge(s1);
+        }
+
+        if (UnionType.contains(type2, Indexer.idx.builtins.Cont))
+        {
+            s.merge(s2);
+        }
+
         return UnionType.union(type1, type2);
     }
+
 
     @NotNull
     @Override

@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 public class Scope {
 
+
     public enum ScopeType {
         CLASS,
         INSTANCE,
@@ -25,8 +26,9 @@ public class Scope {
     @Nullable
     private Map<String, Binding> table;  // stays null for most scopes (mem opt)
     @Nullable
-    public Scope parent;
-    private Scope forwarding;       // link to the closest non-class scope, for lifting functions out
+    public Scope parent;      // all are non-null except global table
+    @Nullable
+    private Scope forwarding; // link to the closest non-class scope, for lifting functions out
     @Nullable
     private List<Scope> supers;
     @Nullable
@@ -42,7 +44,7 @@ public class Scope {
         this.scopeType = type;
 
         if (type == ScopeType.CLASS) {
-            this.forwarding = parent.getForwarding();
+            this.forwarding = parent==null? null : parent.getForwarding();
         } else {
             this.forwarding = this;
         }
@@ -51,7 +53,8 @@ public class Scope {
 
     public Scope(@NotNull Scope s) {
         if (s.table != null) {
-            this.table = new HashMap<>(s.table);
+            this.table = new HashMap<>();
+            this.table.putAll(s.table);
         }
         this.parent = s.parent;
         this.scopeType = s.scopeType;
@@ -60,6 +63,44 @@ public class Scope {
         this.globalNames = s.globalNames;
         this.type = s.type;
         this.path = s.path;
+    }
+
+
+    @NotNull
+    public Scope copy() {
+        return new Scope(this);
+    }
+
+
+    @NotNull
+    public void merge(Scope other) {
+        for (Map.Entry<String, Binding> e1 : getInternalTable().entrySet())
+        {
+            Binding b1 = e1.getValue();
+            Binding b2 = other.getInternalTable().get(e1.getKey());
+
+            // both branch have the same name, need merge
+            if (b2 != null && b1 != b2)
+            {
+                Def d1 = b1.getDef();
+                Def d2 = b2.getDef();
+                Type t = UnionType.union(b1.getType(), b2.getType());
+                Binding b = this.insert(e1.getKey(), d1.getNode(), t, b1.getKind());
+                b.addDef(d2);
+            }
+        }
+
+        for (Map.Entry<String, Binding> e2 : other.getInternalTable().entrySet())
+        {
+            Binding b1 = getInternalTable().get(e2.getKey());
+            Binding b2 = e2.getValue();
+
+            // both branch have the same name, need merge
+            if (b1 == null && b1 != b2)
+            {
+                this.update(b2.getName(), b2);
+            }
+        }
     }
 
 
@@ -99,15 +140,13 @@ public class Scope {
      * Mark a name as being global (i.e. module scoped) for name-binding and
      * name-lookup operations in this code block and any nested scopes.
      */
-    public void addGlobalName(@Nullable String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("name shouldn't be null");
-        }
+    public void addGlobalName(@NotNull String name) {
         if (globalNames == null) {
             globalNames = new HashSet<>();
         }
         globalNames.add(name);
     }
+
 
     /**
      * Returns {@code true} if {@code name} appears in a {@code global}
@@ -124,20 +163,6 @@ public class Scope {
     }
 
 
-    @Nullable
-    public Binding put(String id, Node loc, @NotNull Type type, Binding.Kind kind) {
-        Binding b = lookupScope(id);
-        return insertOrUpdate(b, id, loc, type, kind);
-    }
-
-
-    @Nullable
-    public Binding putAttr(String id, Node loc, @NotNull Type type, Binding.Kind kind) {
-        Binding b = lookupAttr(id);
-        return insertOrUpdate(b, id, loc, type, kind);
-    }
-
-
     public void remove(String id) {
         if (table != null) {
             table.remove(id);
@@ -145,46 +170,20 @@ public class Scope {
     }
 
 
-    // helper for put and putAttr
+    // create new binding and insert
     @NotNull
-    private Binding insertOrUpdate(@Nullable Binding binding, String id, @NotNull Node node,
-                                   @NotNull Type type, Binding.Kind kind) {
-        if (binding == null) {
-            Binding b = new Binding(id, node, type, kind);
-            b.setQname(extendPath(id));
-            binding = update(id, b);
-        } else {
-            binding.addDef(node);
-            binding.setType(UnionType.union(type, binding.getType()));
-        }
-        return binding;
-    }
-
-
-    // direct update and replace the same name with a new binding
-    @NotNull
-    public Binding update(String id, Node node, Type type, Binding.Kind kind) {
+    public Binding insert(String id, Node node, Type type, Binding.Kind kind) {
         Binding b = new Binding(id, node, type, kind);
         b.setQname(extendPath(id));
         return update(id, b);
     }
 
 
-    // direct update and replace the name with a binding
+    // directly insert a given binding
     @NotNull
     public Binding update(String id, @NotNull Binding b) {
         getInternalTable().put(id, b);
         return b;
-    }
-
-
-    @NotNull
-    public Scope copy(ScopeType tableType) {
-        Scope ret = new Scope(null, tableType);
-        if (table != null) {
-            ret.getInternalTable().putAll(table);
-        }
-        return ret;
     }
 
     public void setPath(@NotNull String path) {
@@ -440,7 +439,7 @@ public class Scope {
     @NotNull
     @Override
     public String toString() {
-        return "<Scope:" + getScopeType() + ":" + path + ":" +
+        return "<Scope:" + getScopeType() + ":" +
                 (table == null ? "{}" : table.keySet()) + ">";
     }
 

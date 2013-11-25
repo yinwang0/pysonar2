@@ -413,7 +413,7 @@ public class Indexer {
 
         ModuleType mt = getBuiltinModule(qname);
         if (mt != null) {
-            scope.update(name.get(0).id,
+            scope.insert(name.get(0).id,
                     new Url(Builtins.LIBRARY_URL + mt.getTable().getPath() + ".html"),
                     mt, Binding.Kind.SCOPE);
             return mt;
@@ -439,10 +439,10 @@ public class Indexer {
                 if (mod == null) return null;
 
                 if (prev != null) {
-                    Binding b = prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+                    Binding b = prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                     Indexer.idx.putRef(name.get(i), b);
                 } else {
-                    Binding b = scope.put(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+                    Binding b = scope.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                     Indexer.idx.putRef(name.get(i), b);
                 }
 
@@ -454,10 +454,10 @@ public class Indexer {
                     ModuleType mod = loadFile(startFile.getPath());
                     if (mod == null) return null;
                     if (prev != null) {
-                        Binding b = prev.getTable().put(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+                        Binding b = prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                         Indexer.idx.putRef(name.get(i), b);
                     } else {
-                        Binding b = scope.put(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+                        Binding b = scope.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                         Indexer.idx.putRef(name.get(i), b);
                     }
                     prev = mod;
