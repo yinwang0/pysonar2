@@ -107,14 +107,14 @@ public class NameBinder {
             bind(s, target, iterType.asTupleType().toListType().getElementType(), kind);
         } else {
             List<Binding> ents = iterType.getTable().lookupAttr("__iter__");
-            for (Binding ent : ents) {
-                if (ent == null || !ent.getType().isFuncType()) {
-                    if (!iterType.isUnknownType()) {
+            if (ents != null) {
+                for (Binding ent : ents) {
+                    if (ent.getType().isFuncType()) {
+                        bind(s, target, ent.getType().asFuncType().getReturnType(), kind);
+                    } else {
                         iter.addWarning("not an iterable type: " + iterType);
+                        bind(s, target, Indexer.idx.builtins.unknown, kind);
                     }
-                    bind(s, target, Indexer.idx.builtins.unknown, kind);
-                } else {
-                    bind(s, target, ent.getType().asFuncType().getReturnType(), kind);
                 }
             }
         }
