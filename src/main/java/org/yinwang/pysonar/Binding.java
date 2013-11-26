@@ -10,7 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 
-public class Binding
+public class Binding implements Comparable<Object>
 {
     public enum Kind
     {
@@ -249,6 +249,15 @@ public class Binding
         }
 
         return "<built-in binding>";
+    }
+
+
+    /**
+     * Bindings can be sorted by their location for outlining purposes.
+     */
+    public int compareTo(@NotNull Object o)
+    {
+        return getSingle().getStart() - ((Binding) o).getSingle().getStart();
     }
 
 
