@@ -250,14 +250,12 @@ public class Call extends Node {
 
 
     @Nullable
-    static Binding addReadOnlyAttr(@NotNull FunType cl, String name, @NotNull Type type, Binding.Kind kind) {
-        Binding b = cl.getTable().insert(name,
-                Builtins.newDataModelUrl("the-standard-type-hierarchy"),
-                type, kind);
+    static void addReadOnlyAttr(@NotNull FunType cl, String name, @NotNull Type type, Binding.Kind kind) {
+        Binding b = new Binding(name, Builtins.newDataModelUrl("the-standard-type-hierarchy"), type, kind);
+        cl.getTable().update(name, b);
         b.markSynthetic();
         b.markStatic();
         b.markReadOnly();
-        return b;
     }
 
 

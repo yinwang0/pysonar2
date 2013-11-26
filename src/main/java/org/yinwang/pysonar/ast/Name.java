@@ -6,6 +6,8 @@ import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
+import java.util.List;
+
 
 public class Name extends Node {
 
@@ -50,11 +52,11 @@ public class Name extends Node {
     @NotNull
     @Override
     public Type resolve(@NotNull Scope s) {
-        Binding b = s.lookup(id);
+        List<Binding> b = s.lookup(id);
         if (b != null) {
             Indexer.idx.putRef(this, b);
             Indexer.idx.stats.inc("resolved");
-            return b.getType();
+            return Scope.makeUnion(b);
         } else if (id.equals("True") || id.equals("False")) {
             return Indexer.idx.builtins.BaseBool;
         } else {

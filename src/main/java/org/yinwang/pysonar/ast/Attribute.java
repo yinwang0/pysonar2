@@ -8,6 +8,7 @@ import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
@@ -97,22 +98,24 @@ public class Attribute extends Node {
 
 
     private Type getAttrType(@NotNull Type targetType) {
-        Binding b = targetType.getTable().lookupAttr(attr.getId());
-        if (b == null) {
+        List<Binding> bs = targetType.getTable().lookupAttr(attr.getId());
+        if (bs == null) {
             Indexer.idx.putProblem(attr, "attribute not found in type: " + targetType);
             Type t = Indexer.idx.builtins.unknown;
             t.getTable().setPath(targetType.getTable().extendPath(attr.getId()));
             return t;
         } else {
-            Indexer.idx.putRef(attr, b);
+            Indexer.idx.putRef(attr, bs);
 
-            if (getParent() != null && getParent().isCall() &&
-                    b.getType().isFuncType() && targetType.isInstanceType())
-            {  // method call
-                b.getType().asFuncType().setSelfType(targetType);
+            for (Binding b : bs) {
+                if (getParent() != null && getParent().isCall() &&
+                        b.getType().isFuncType() && targetType.isInstanceType())
+                {  // method call
+                    b.getType().asFuncType().setSelfType(targetType);
+                }
             }
 
-            return b.getType();
+            return Scope.makeUnion(bs);
         }
     }
 

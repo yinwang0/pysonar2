@@ -85,23 +85,16 @@ public class NameBinder {
 
 
     @Nullable
-    public static Binding bindName(@NotNull Scope s, @NotNull Name name, @NotNull Type rvalue,
-                                   Binding.Kind kind)
+    public static void bindName(@NotNull Scope s, @NotNull Name name, @NotNull Type rvalue,
+                                Binding.Kind kind)
     {
-        Binding b;
-
         if (s.isGlobalName(name.getId())) {
-            b = s.getGlobalTable().insert(name.getId(), name, rvalue, kind);
+            Binding b = new Binding(name.getId(), name, rvalue, kind);
+            s.getGlobalTable().update(name.getId(), b);
             Indexer.idx.putRef(name, b);
         } else {
-            b = s.insert(name.getId(), name, rvalue, kind);
+            s.insert(name.getId(), name, rvalue, kind);
         }
-
-        Type nameType = b.getType();
-        if (nameType.isUnknownType()) {
-            nameType.getTable().setPath(b.getQname());
-        }
-        return b;
     }
 
 
@@ -113,14 +106,16 @@ public class NameBinder {
         } else if (iterType.isTupleType()) {
             bind(s, target, iterType.asTupleType().toListType().getElementType(), kind);
         } else {
-            Binding ent = iterType.getTable().lookupAttr("__iter__");
-            if (ent == null || !ent.getType().isFuncType()) {
-                if (!iterType.isUnknownType()) {
-                    iter.addWarning("not an iterable type: " + iterType);
+            List<Binding> ents = iterType.getTable().lookupAttr("__iter__");
+            for (Binding ent : ents) {
+                if (ent == null || !ent.getType().isFuncType()) {
+                    if (!iterType.isUnknownType()) {
+                        iter.addWarning("not an iterable type: " + iterType);
+                    }
+                    bind(s, target, Indexer.idx.builtins.unknown, kind);
+                } else {
+                    bind(s, target, ent.getType().asFuncType().getReturnType(), kind);
                 }
-                bind(s, target, Indexer.idx.builtins.unknown, kind);
-            } else {
-                bind(s, target, ent.getType().asFuncType().getReturnType(), kind);
             }
         }
     }

@@ -31,7 +31,7 @@ public class Block extends Node {
             if (n.isGlobal()) {
                 for (Name name : n.asGlobal().getNames()) {
                     scope.addGlobalName(name.getId());
-                    Binding nb = scope.lookup(name.getId());
+                    List<Binding> nb = scope.lookup(name.getId());
                     if (nb != null) {
                         Indexer.idx.putRef(name, nb);
                     }

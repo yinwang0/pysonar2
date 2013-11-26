@@ -171,8 +171,8 @@ public class Indexer {
     }
 
 
-    public void putRef(@Nullable Node node, @Nullable Binding b) {
-        if (node == null || node instanceof Url || b == null) {
+    public void putRef(@Nullable Node node, @Nullable List<Binding> bs) {
+        if (node == null || node instanceof Url || bs == null) {
             return;
         }
         Ref ref = new Ref(node);
@@ -181,10 +181,19 @@ public class Indexer {
             bindings = new ArrayList<>(1);
             references.put(ref, bindings);
         }
-        if (!bindings.contains(b)) {
-            bindings.add(b);
+        for (Binding b : bs) {
+            if (!bindings.contains(b)) {
+                bindings.add(b);
+            }
+            b.addRef(ref);
         }
-        b.addRef(ref);
+    }
+
+
+    public void putRef(@Nullable Node node, @Nullable Binding b) {
+        List<Binding> bs = new ArrayList<>();
+        bs.add(b);
+        putRef(node, bs);
     }
 
 
@@ -425,11 +434,9 @@ public class Indexer {
                 }
 
                 if (prev != null) {
-                    Binding b = prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
-                    Indexer.idx.putRef(name.get(i), b);
+                    prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                 } else {
-                    Binding b = scope.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
-                    Indexer.idx.putRef(name.get(i), b);
+                    scope.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                 }
 
                 prev = mod;
@@ -442,11 +449,9 @@ public class Indexer {
                         return null;
                     }
                     if (prev != null) {
-                        Binding b = prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
-                        Indexer.idx.putRef(name.get(i), b);
+                        prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                     } else {
-                        Binding b = scope.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
-                        Indexer.idx.putRef(name.get(i), b);
+                        scope.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                     }
                     prev = mod;
                 } else {
