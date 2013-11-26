@@ -1,7 +1,6 @@
 package org.yinwang.pysonar;
 
-public class Progress
-{
+public class Progress {
 
     long startTime;
     long total;
@@ -12,8 +11,7 @@ public class Progress
     long mark;
 
 
-    public Progress(long dotInterval, long width, long total)
-    {
+    public Progress(long dotInterval, long width, long total) {
         this.startTime = System.currentTimeMillis();
         this.dotInterval = dotInterval;
         this.reportInterval = width * dotInterval;
@@ -24,8 +22,7 @@ public class Progress
     }
 
 
-    public Progress(long dotInterval, long width)
-    {
+    public Progress(long dotInterval, long width) {
         this.startTime = System.currentTimeMillis();
         this.dotInterval = dotInterval;
         this.reportInterval = width * dotInterval;
@@ -36,47 +33,39 @@ public class Progress
     }
 
 
-    public void tick(int n)
-    {
+    public void tick(int n) {
         long oldCount = count;
         count += n;
 
-        if (count % dotInterval == 0)
-        {
+        if (count % dotInterval == 0) {
             System.out.print(".");
         }
 
         // if the count goes cross the mark, report interval speed etc.
-        if (oldCount < mark && count >= mark)
-        {
+        if (oldCount < mark && count >= mark) {
             mark += reportInterval;
             intervalReport();
         }
     }
 
 
-    public void tick()
-    {
+    public void tick() {
         tick(1);
     }
 
 
-    public void end()
-    {
+    public void end() {
         intervalReport();
         System.out.println();
     }
 
 
-    public void intervalReport()
-    {
-        if (count % reportInterval == 0)
-        {
+    public void intervalReport() {
+        if (count % reportInterval == 0) {
             long endTime = System.currentTimeMillis();
             long totalTime = endTime - startTime;
             long seconds = totalTime / 1000;
-            if (seconds == 0)
-            {
+            if (seconds == 0) {
                 seconds = 1;
             }
             long rate = count / seconds;
@@ -85,8 +74,7 @@ public class Progress
                     ", time: " + _.formatTime(totalTime) +
                     ", rate: " + count / seconds);
 
-            if (total > 0)
-            {
+            if (total > 0) {
                 long rest = total - count;
                 long eta = rest / rate;
                 _.msg("ETA: " + _.formatTime(eta * 1000));

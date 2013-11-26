@@ -13,8 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public abstract class Type
-{
+public abstract class Type {
 
     @Nullable
     public Scope table;
@@ -24,22 +23,18 @@ public abstract class Type
     protected static TypeStack typeStack = new TypeStack();
 
 
-    public Type()
-    {
+    public Type() {
     }
 
 
-    public void setTable(@NotNull Scope table)
-    {
+    public void setTable(@NotNull Scope table) {
         this.table = table;
     }
 
 
     @NotNull
-    public Scope getTable()
-    {
-        if (table == null)
-        {
+    public Scope getTable() {
+        if (table == null) {
             table = new Scope(null, Scope.ScopeType.SCOPE);
         }
         return table;
@@ -50,137 +45,112 @@ public abstract class Type
      * Returns {@code true} if this Python type is implemented in native code
      * (i.e., C, Java, C# or some other host language.)
      */
-    public boolean isNative()
-    {
+    public boolean isNative() {
         return Indexer.idx.builtins.isNative(this);
     }
 
 
-    public boolean isClassType()
-    {
+    public boolean isClassType() {
         return this instanceof ClassType;
     }
 
 
-    public boolean isDictType()
-    {
+    public boolean isDictType() {
         return this instanceof DictType;
     }
 
 
-    public boolean isFuncType()
-    {
+    public boolean isFuncType() {
         return this instanceof FunType;
     }
 
 
-    public boolean isInstanceType()
-    {
+    public boolean isInstanceType() {
         return this instanceof InstanceType;
     }
 
 
-    public boolean isListType()
-    {
+    public boolean isListType() {
         return this instanceof ListType;
     }
 
 
-    public boolean isModuleType()
-    {
+    public boolean isModuleType() {
         return this instanceof ModuleType;
     }
 
 
-    public boolean isNumType()
-    {
+    public boolean isNumType() {
         return (this == Indexer.idx.builtins.BaseNum ||
                 this == Indexer.idx.builtins.BaseFloat ||
                 this == Indexer.idx.builtins.BaseComplex);
     }
 
 
-    public boolean isStrType()
-    {
+    public boolean isStrType() {
         return this == Indexer.idx.builtins.BaseStr;
     }
 
 
-    public boolean isTupleType()
-    {
+    public boolean isTupleType() {
         return this instanceof TupleType;
     }
 
 
-    public boolean isUnionType()
-    {
+    public boolean isUnionType() {
         return this instanceof UnionType;
     }
 
 
-    public boolean isUnknownType()
-    {
+    public boolean isUnknownType() {
         return this == Indexer.idx.builtins.unknown;
     }
 
 
     @NotNull
-    public ClassType asClassType()
-    {
+    public ClassType asClassType() {
         return (ClassType) this;
     }
 
 
     @NotNull
-    public DictType asDictType()
-    {
+    public DictType asDictType() {
         return (DictType) this;
     }
 
 
     @NotNull
-    public FunType asFuncType()
-    {
+    public FunType asFuncType() {
         return (FunType) this;
     }
 
 
     @NotNull
-    public InstanceType asInstanceType()
-    {
+    public InstanceType asInstanceType() {
         return (InstanceType) this;
     }
 
 
     @NotNull
-    public ListType asListType()
-    {
+    public ListType asListType() {
         return (ListType) this;
     }
 
 
     @NotNull
-    public ModuleType asModuleType()
-    {
-        if (this.isUnionType())
-        {
-            for (Type t : this.asUnionType().getTypes())
-            {
-                if (t.isModuleType())
-                {
+    public ModuleType asModuleType() {
+        if (this.isUnionType()) {
+            for (Type t : this.asUnionType().getTypes()) {
+                if (t.isModuleType()) {
                     return t.asModuleType();
                 }
             }
             _.die("Not containing a ModuleType");
             // can't get here, just to make the @NotNull annotation happy
             return new ModuleType(null, null, null);
-        }
-        else if (this.isModuleType())
-        {
+        } else if (this.isModuleType()) {
             return (ModuleType) this;
-        }
-        else
-        {
+        } else {
             _.die("Not a ModuleType");
             // can't get here, just to make the @NotNull annotation happy
             return new ModuleType(null, null, null);
@@ -189,15 +159,13 @@ public abstract class Type
 
 
     @NotNull
-    public TupleType asTupleType()
-    {
+    public TupleType asTupleType() {
         return (TupleType) this;
     }
 
 
     @NotNull
-    public UnionType asUnionType()
-    {
+    public UnionType asUnionType() {
         return (UnionType) this;
     }
 
@@ -205,8 +173,7 @@ public abstract class Type
     /**
      * Internal class to support printing in the presence of type-graph cycles.
      */
-    protected class CyclicTypeRecorder
-    {
+    protected class CyclicTypeRecorder {
         int count = 0;
         @NotNull
         private Map<Type, Integer> elements = new HashMap<>();
@@ -214,34 +181,29 @@ public abstract class Type
         private Set<Type> used = new HashSet<>();
 
 
-        public Integer push(Type t)
-        {
+        public Integer push(Type t) {
             count += 1;
             elements.put(t, count);
             return count;
         }
 
 
-        public void pop(Type t)
-        {
+        public void pop(Type t) {
             elements.remove(t);
             used.remove(t);
         }
 
 
-        public Integer visit(Type t)
-        {
+        public Integer visit(Type t) {
             Integer i = elements.get(t);
-            if (i != null)
-            {
+            if (i != null) {
                 used.add(t);
             }
             return i;
         }
 
 
-        public boolean isUsed(Type t)
-        {
+        public boolean isUsed(Type t) {
             return used.contains(t);
         }
     }
@@ -254,8 +216,7 @@ public abstract class Type
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return printType(new CyclicTypeRecorder());
     }
 

@@ -8,8 +8,7 @@ import org.yinwang.pysonar.types.Type;
 import java.util.List;
 
 
-public class Compare extends Node
-{
+public class Compare extends Node {
 
     @NotNull
     public Node left;
@@ -17,8 +16,7 @@ public class Compare extends Node
     public List<Node> comparators;
 
 
-    public Compare(@NotNull Node left, List<Node> ops, List<Node> comparators, int start, int end)
-    {
+    public Compare(@NotNull Node left, List<Node> ops, List<Node> comparators, int start, int end) {
         super(start, end);
         this.left = left;
         this.ops = ops;
@@ -31,8 +29,7 @@ public class Compare extends Node
 
     @NotNull
     @Override
-    public Type resolve(Scope s)
-    {
+    public Type resolve(Scope s) {
         resolveExpr(left, s);
         resolveList(comparators, s);
         return Indexer.idx.builtins.BaseNum;
@@ -41,17 +38,14 @@ public class Compare extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<Compare:" + left + ":" + ops + ":" + comparators + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNode(left, v);
             visitNodeList(ops, v);
             visitNodeList(comparators, v);

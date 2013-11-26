@@ -9,30 +9,25 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class UnionType extends Type
-{
+public class UnionType extends Type {
 
     private Set<Type> types;
 
 
-    public UnionType()
-    {
+    public UnionType() {
         this.types = new HashSet<>();
     }
 
 
-    public UnionType(@NotNull Type... initialTypes)
-    {
+    public UnionType(@NotNull Type... initialTypes) {
         this();
-        for (Type nt : initialTypes)
-        {
+        for (Type nt : initialTypes) {
             addType(nt);
         }
     }
 
 
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return types.isEmpty();
     }
 
@@ -40,98 +35,71 @@ public class UnionType extends Type
     /**
      * Returns true if t1 == t2 or t1 is a union type that contains t2.
      */
-    static public boolean contains(Type t1, Type t2)
-    {
-        if (t1 instanceof UnionType)
-        {
+    static public boolean contains(Type t1, Type t2) {
+        if (t1 instanceof UnionType) {
             return ((UnionType) t1).contains(t2);
-        }
-        else
-        {
+        } else {
             return t1.equals(t2);
         }
     }
 
 
-    static public Type remove(Type t1, Type t2)
-    {
-        if (t1 instanceof UnionType)
-        {
+    static public Type remove(Type t1, Type t2) {
+        if (t1 instanceof UnionType) {
             Set<Type> types = new HashSet<Type>(((UnionType) t1).getTypes());
             types.remove(t2);
             return UnionType.newUnion(types);
-        }
-        else if (t1 == t2)
-        {
+        } else if (t1 == t2) {
             return Indexer.idx.builtins.unknown;
-        }
-        else
-        {
+        } else {
             return t1;
         }
     }
 
 
     @NotNull
-    static public Type newUnion(@NotNull Collection<Type> types)
-    {
+    static public Type newUnion(@NotNull Collection<Type> types) {
         Type t = Indexer.idx.builtins.unknown;
-        for (Type nt : types)
-        {
+        for (Type nt : types) {
             t = union(t, nt);
         }
         return t;
     }
 
 
-    public void setTypes(Set<Type> types)
-    {
+    public void setTypes(Set<Type> types) {
         this.types = types;
     }
 
 
-    public Set<Type> getTypes()
-    {
+    public Set<Type> getTypes() {
         return types;
     }
 
 
-    public void addType(@NotNull Type t)
-    {
-        if (t.isUnionType())
-        {
+    public void addType(@NotNull Type t) {
+        if (t.isUnionType()) {
             types.addAll(t.asUnionType().types);
-        }
-        else
-        {
+        } else {
             types.add(t);
         }
     }
 
 
-    public boolean contains(Type t)
-    {
+    public boolean contains(Type t) {
         return types.contains(t);
     }
 
 
     @NotNull
-    public static Type union(@NotNull Type u, @NotNull Type v)
-    {
-        if (u.equals(v))
-        {
+    public static Type union(@NotNull Type u, @NotNull Type v) {
+        if (u.equals(v)) {
             return u;
-        }
-        else if (u.isUnknownType())
-        {
+        } else if (u.isUnknownType()) {
             return v;
-        }
-        else if (v.isUnknownType())
-        {
+        } else if (v.isUnknownType()) {
             return u;
-        }
-        else
-        {
+        } else {
             return new UnionType(u, v);
         }
     }
@@ -144,12 +112,9 @@ public class UnionType extends Type
      * @return the first non-unknown, non-{@code None} alternate, or {@code null} if none found
      */
     @Nullable
-    public Type firstUseful()
-    {
-        for (Type type : types)
-        {
-            if (!type.isUnknownType() && type != Indexer.idx.builtins.None)
-            {
+    public Type firstUseful() {
+        for (Type type : types) {
+            if (!type.isUnknownType() && type != Indexer.idx.builtins.None) {
                 return type;
             }
         }
@@ -158,35 +123,24 @@ public class UnionType extends Type
 
 
     @Override
-    public boolean equals(Object other)
-    {
-        if (typeStack.contains(this, other))
-        {
+    public boolean equals(Object other) {
+        if (typeStack.contains(this, other)) {
             return true;
-        }
-        else if (other instanceof UnionType)
-        {
+        } else if (other instanceof UnionType) {
             Set<Type> types1 = getTypes();
             Set<Type> types2 = ((UnionType) other).getTypes();
-            if (types1.size() != types2.size())
-            {
+            if (types1.size() != types2.size()) {
                 return false;
-            }
-            else
-            {
+            } else {
                 typeStack.push(this, other);
-                for (Type t : types2)
-                {
-                    if (!types1.contains(t))
-                    {
+                for (Type t : types2) {
+                    if (!types1.contains(t)) {
                         typeStack.pop(this, other);
                         return false;
                     }
                 }
-                for (Type t : types1)
-                {
-                    if (!types2.contains(t))
-                    {
+                for (Type t : types1) {
+                    if (!types2.contains(t)) {
                         typeStack.pop(this, other);
                         return false;
                     }
@@ -194,49 +148,39 @@ public class UnionType extends Type
                 typeStack.pop(this, other);
                 return true;
             }
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return "UnionType".hashCode();
     }
 
 
     @Override
-    protected String printType(@NotNull CyclicTypeRecorder ctr)
-    {
+    protected String printType(@NotNull CyclicTypeRecorder ctr) {
         StringBuilder sb = new StringBuilder();
 
         Integer num = ctr.visit(this);
-        if (num != null)
-        {
+        if (num != null) {
             sb.append("#").append(num);
-        }
-        else
-        {
+        } else {
             int newNum = ctr.push(this);
             boolean first = true;
             sb.append("{");
 
-            for (Type t : types)
-            {
-                if (!first)
-                {
+            for (Type t : types) {
+                if (!first) {
                     sb.append(" | ");
                 }
                 sb.append(t.printType(ctr));
                 first = false;
             }
 
-            if (ctr.isUsed(this))
-            {
+            if (ctr.isUsed(this)) {
                 sb.append("=#").append(newNum).append(":");
             }
 

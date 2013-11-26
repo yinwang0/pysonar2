@@ -9,8 +9,7 @@ import java.io.File;
 import java.util.List;
 
 
-public class Demo
-{
+public class Demo {
 
     private static File OUTPUT_DIR;
 
@@ -64,25 +63,20 @@ public class Demo
     private Linker linker;
 
 
-    private void makeOutputDir()
-    {
-        if (!OUTPUT_DIR.exists())
-        {
+    private void makeOutputDir() {
+        if (!OUTPUT_DIR.exists()) {
             OUTPUT_DIR.mkdirs();
             _.msg("Created directory: " + OUTPUT_DIR.getAbsolutePath());
         }
     }
 
 
-    private void start(@NotNull File fileOrDir) throws Exception
-    {
+    private void start(@NotNull File fileOrDir) throws Exception {
         File rootDir = fileOrDir.isFile() ? fileOrDir.getParentFile() : fileOrDir;
-        try
-        {
+        try {
             rootPath = _.unifyPath(rootDir);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             _.die("File not found: " + fileOrDir);
         }
 
@@ -96,8 +90,7 @@ public class Demo
     }
 
 
-    private void generateHtml()
-    {
+    private void generateHtml() {
         _.msg("\nGenerating HTML");
         makeOutputDir();
 
@@ -108,31 +101,25 @@ public class Demo
         _.msg("\nGenerating HTML");
 
         int total = 0;
-        for (String path : indexer.getLoadedFiles())
-        {
-            if (path.startsWith(rootPath))
-            {
+        for (String path : indexer.getLoadedFiles()) {
+            if (path.startsWith(rootPath)) {
                 total++;
             }
         }
 
         FancyProgress progress = new FancyProgress(total, 50);
 
-        for (String path : indexer.getLoadedFiles())
-        {
-            if (path.startsWith(rootPath))
-            {
+        for (String path : indexer.getLoadedFiles()) {
+            if (path.startsWith(rootPath)) {
                 progress.tick();
                 File destFile = _.joinPath(OUTPUT_DIR, path.substring(rootLength));
                 destFile.getParentFile().mkdirs();
                 String destPath = destFile.getAbsolutePath() + ".html";
                 String html = markup(path);
-                try
-                {
+                try {
                     _.writeFile(destPath, html);
                 }
-                catch (Exception e)
-                {
+                catch (Exception e) {
                     _.msg("Failed to write: " + destPath);
                 }
             }
@@ -143,16 +130,13 @@ public class Demo
 
 
     @NotNull
-    private String markup(String path)
-    {
+    private String markup(String path) {
         String source;
 
-        try
-        {
+        try {
             source = _.readFile(path);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             _.die("Failed to read file: " + path);
             return "";
         }
@@ -178,12 +162,10 @@ public class Demo
 
 
     @NotNull
-    private String addLineNumbers(@NotNull String source)
-    {
+    private String addLineNumbers(@NotNull String source) {
         StringBuilder result = new StringBuilder((int) (source.length() * 1.2));
         int count = 1;
-        for (String line : source.split("\n"))
-        {
+        for (String line : source.split("\n")) {
             result.append("<span class='lineno'>");
             result.append(count++);
             result.append("</span> ");
@@ -194,8 +176,7 @@ public class Demo
     }
 
 
-    private static void usage()
-    {
+    private static void usage() {
         _.msg("Usage:  java -jar pysonar-2.0-SNAPSHOT.jar <file-or-dir> <output-dir>");
         _.msg("Example that generates an index for Python 2.7 standard library:");
         _.msg(" java -jar pysonar-2.0-SNAPSHOT.jar /usr/lib/python2.7 ./html");
@@ -204,21 +185,17 @@ public class Demo
 
 
     @NotNull
-    private static File checkFile(String path)
-    {
+    private static File checkFile(String path) {
         File f = new File(path);
-        if (!f.canRead())
-        {
+        if (!f.canRead()) {
             _.die("Path not found or not readable: " + path);
         }
         return f;
     }
 
 
-    public static void main(@NotNull String[] args) throws Exception
-    {
-        if (args.length != 2)
-        {
+    public static void main(@NotNull String[] args) throws Exception {
+        if (args.length != 2) {
             usage();
         }
 

@@ -7,8 +7,7 @@ import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
 
-public class If extends Node
-{
+public class If extends Node {
 
     @NotNull
     public Node test;
@@ -16,8 +15,7 @@ public class If extends Node
     public Block orelse;
 
 
-    public If(@NotNull Node test, Block body, Block orelse, int start, int end)
-    {
+    public If(@NotNull Node test, Block body, Block orelse, int start, int end) {
         super(start, end);
         this.test = test;
         this.body = body;
@@ -28,28 +26,21 @@ public class If extends Node
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s)
-    {
+    public Type resolve(@NotNull Scope s) {
         Type type1, type2;
         resolveExpr(test, s);
         Scope s1 = s.copy();
         Scope s2 = s.copy();
 
-        if (body != null && !body.isEmpty())
-        {
+        if (body != null && !body.isEmpty()) {
             type1 = resolveExpr(body, s1);
-        }
-        else
-        {
+        } else {
             type1 = Indexer.idx.builtins.Cont;
         }
 
-        if (orelse != null && !orelse.isEmpty())
-        {
+        if (orelse != null && !orelse.isEmpty()) {
             type2 = resolveExpr(orelse, s2);
-        }
-        else
-        {
+        } else {
             type2 = Indexer.idx.builtins.Cont;
         }
 
@@ -58,16 +49,11 @@ public class If extends Node
 
         Scope ss;
 
-        if (cont1 && cont2)
-        {
+        if (cont1 && cont2) {
             ss = Scope.merge(s1, s2);
-        }
-        else if (cont1)
-        {
+        } else if (cont1) {
             ss = s1;
-        }
-        else
-        {
+        } else {
             ss = s2;
         }
 
@@ -79,17 +65,14 @@ public class If extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<If:" + start + ":" + test + ":" + body + ":" + orelse + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNode(test, v);
             visitNode(body, v);
             visitNode(orelse, v);

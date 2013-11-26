@@ -8,14 +8,12 @@ import org.yinwang.pysonar.types.Type;
 import java.util.List;
 
 
-public class ExtSlice extends Node
-{
+public class ExtSlice extends Node {
 
     public List<Node> dims;
 
 
-    public ExtSlice(List<Node> dims, int start, int end)
-    {
+    public ExtSlice(List<Node> dims, int start, int end) {
         super(start, end);
         this.dims = dims;
         addChildren(dims);
@@ -24,10 +22,8 @@ public class ExtSlice extends Node
 
     @NotNull
     @Override
-    public Type resolve(Scope s)
-    {
-        for (Node d : dims)
-        {
+    public Type resolve(Scope s) {
+        for (Node d : dims) {
             d.resolve(s);
         }
         return new ListType();
@@ -36,19 +32,15 @@ public class ExtSlice extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<ExtSlice:" + dims + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
-            for (Node d : dims)
-            {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
+            for (Node d : dims) {
                 visitNode(d, v);
             }
         }

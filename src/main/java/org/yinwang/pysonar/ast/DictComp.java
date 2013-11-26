@@ -8,16 +8,14 @@ import org.yinwang.pysonar.types.Type;
 import java.util.List;
 
 
-public class DictComp extends Node
-{
+public class DictComp extends Node {
 
     public Node key;
     public Node value;
     public List<Comprehension> generators;
 
 
-    public DictComp(Node key, Node value, List<Comprehension> generators, int start, int end)
-    {
+    public DictComp(Node key, Node value, List<Comprehension> generators, int start, int end) {
         super(start, end);
         this.key = key;
         this.value = value;
@@ -34,8 +32,7 @@ public class DictComp extends Node
      */
     @NotNull
     @Override
-    public Type resolve(Scope s)
-    {
+    public Type resolve(Scope s) {
         resolveList(generators, s);
         Type keyType = resolveExpr(key, s);
         Type valueType = resolveExpr(value, s);
@@ -45,17 +42,14 @@ public class DictComp extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<DictComp:" + start + ":" + key + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNode(key, v);
             visitNodeList(generators, v);
         }

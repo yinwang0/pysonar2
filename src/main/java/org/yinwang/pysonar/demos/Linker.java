@@ -14,8 +14,7 @@ import java.util.regex.Pattern;
  * Collects per-file hyperlinks, as well as styles that require the
  * symbol table to resolve properly.
  */
-class Linker
-{
+class Linker {
 
     private static final Pattern CONSTANT = Pattern.compile("[A-Z_][A-Z0-9_]*");
 
@@ -37,34 +36,27 @@ class Linker
      * @param root   the root of the directory tree being indexed
      * @param outdir the html output directory
      */
-    public Linker(String root, File outdir)
-    {
+    public Linker(String root, File outdir) {
         rootPath = root;
         outDir = outdir;
     }
 
 
-    public void findLinks(@NotNull Indexer indexer)
-    {
+    public void findLinks(@NotNull Indexer indexer) {
         _.msg("Adding xref links");
 
         int ndef = 0;
-        for (List<Binding> bindings : indexer.getAllBindings().values())
-        {
-            for (Binding b : bindings)
-            {
+        for (List<Binding> bindings : indexer.getAllBindings().values()) {
+            for (Binding b : bindings) {
                 ndef += b.getDefs().size();
             }
         }
 
         FancyProgress progress = new FancyProgress(ndef, 50);
-        for (List<Binding> bindings : indexer.getAllBindings().values())
-        {
-            for (Binding b : bindings)
-            {
+        for (List<Binding> bindings : indexer.getAllBindings().values()) {
+            for (Binding b : bindings) {
                 addSemanticStyles(b);
-                for (Def def : b.getDefs())
-                {
+                for (Def def : b.getDefs()) {
                     processDef(def, b);
                     progress.tick();
                 }
@@ -75,8 +67,7 @@ class Linker
         _.msg("\nAdding ref links");
         progress = new FancyProgress(indexer.getReferences().size(), 50);
 
-        for (Entry<Ref, List<Binding>> e : indexer.getReferences().entrySet())
-        {
+        for (Entry<Ref, List<Binding>> e : indexer.getReferences().entrySet()) {
             processRef(e.getKey(), e.getValue());
             progress.tick();
         }
@@ -96,12 +87,10 @@ class Linker
     }
 
 
-    private void processDef(@NotNull Def def, @NotNull Binding binding)
-    {
+    private void processDef(@NotNull Def def, @NotNull Binding binding) {
         int hash = def.hashCode();
 
-        if (def.isURL() || def.getStart() < 0 || seenDef.contains(hash))
-        {
+        if (def.isURL() || def.getStart() < 0 || seenDef.contains(hash)) {
             return;
         }
 
@@ -115,37 +104,31 @@ class Linker
         style.highlight = new ArrayList<>();
 
 
-        for (Ref r : refs)
-        {
+        for (Ref r : refs) {
             style.highlight.add(Integer.toString(Math.abs(r.hashCode())));
         }
         addFileStyle(def.getFile(), style);
     }
 
 
-    void processRef(@NotNull Ref ref, @NotNull List<Binding> bindings)
-    {
+    void processRef(@NotNull Ref ref, @NotNull List<Binding> bindings) {
         int hash = ref.hashCode();
 
-        if (!seenRef.contains(hash))
-        {
+        if (!seenRef.contains(hash)) {
             seenRef.add(hash);
 
             StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start(), ref.length());
             link.id = Integer.toString(Math.abs(hash));
 
             List<String> typings = new ArrayList<>();
-            for (Binding b : bindings)
-            {
+            for (Binding b : bindings) {
                 typings.add(b.getType().toString());
             }
             link.message = _.joinWithSep(typings, " | ", "{", "}");
 
             link.highlight = new ArrayList<>();
-            for (Binding b : bindings)
-            {
-                for (Def d : b.getDefs())
-                {
+            for (Binding b : bindings) {
+                for (Def d : b.getDefs()) {
                     link.highlight.add(Integer.toString(Math.abs(d.hashCode())));
                 }
             }
@@ -153,15 +136,12 @@ class Linker
             // Currently jump to the first binding only. Should change to have a
             // hover menu or something later.
             String path = ref.getFile();
-            for (Binding b : bindings)
-            {
-                if (link.url == null)
-                {
+            for (Binding b : bindings) {
+                if (link.url == null) {
                     link.url = toURL(b, path);
                 }
 
-                if (link.url != null)
-                {
+                if (link.url != null) {
                     addFileStyle(path, link);
                     break;
                 }
@@ -176,17 +156,14 @@ class Linker
      * @param path an absolute source path
      * @return a possibly-empty list of styles for that path
      */
-    public List<StyleRun> getStyles(String path)
-    {
+    public List<StyleRun> getStyles(String path) {
         return stylesForFile(path);
     }
 
 
-    private List<StyleRun> stylesForFile(String path)
-    {
+    private List<StyleRun> stylesForFile(String path) {
         List<StyleRun> styles = fileStyles.get(path);
-        if (styles == null)
-        {
+        if (styles == null) {
             styles = new ArrayList<StyleRun>();
             fileStyles.put(path, styles);
         }
@@ -194,8 +171,7 @@ class Linker
     }
 
 
-    private void addFileStyle(String path, StyleRun style)
-    {
+    private void addFileStyle(String path, StyleRun style) {
         stylesForFile(path).add(style);
     }
 
@@ -204,20 +180,16 @@ class Linker
      * Add additional highlighting styles based on information not evident from
      * the AST.
      */
-    private void addSemanticStyles(@NotNull Binding nb)
-    {
+    private void addSemanticStyles(@NotNull Binding nb) {
         Def def = nb.getSingle();
-        if (def == null || !def.hasName())
-        {
+        if (def == null || !def.hasName()) {
             return;
         }
 
         boolean isConst = CONSTANT.matcher(def.getName()).matches();
-        switch (nb.getKind())
-        {
+        switch (nb.getKind()) {
             case SCOPE:
-                if (isConst)
-                {
+                if (isConst) {
                     addSemanticStyle(def, StyleRun.Type.CONSTANT);
                 }
                 break;
@@ -234,18 +206,15 @@ class Linker
     }
 
 
-    private void addSemanticStyle(@NotNull Def def, StyleRun.Type type)
-    {
+    private void addSemanticStyle(@NotNull Def def, StyleRun.Type type) {
         String path = def.getFile();
-        if (path != null)
-        {
+        if (path != null) {
             addFileStyle(path, new StyleRun(type, def.getStart(), def.getLength()));
         }
     }
 
 
-    private void processDiagnostic(@NotNull Diagnostic d)
-    {
+    private void processDiagnostic(@NotNull Diagnostic d) {
         StyleRun style = new StyleRun(StyleRun.Type.WARNING, d.start, d.end - d.start);
         style.message = d.msg;
         style.url = d.file;
@@ -260,59 +229,43 @@ class Linker
      * @param filename the path containing the reference, or null if there was an error
      */
     @Nullable
-    private String toURL(@NotNull Binding binding, String filename)
-    {
+    private String toURL(@NotNull Binding binding, String filename) {
         Def def = binding.getSingle();
 
-        if (binding.isBuiltin())
-        {
+        if (binding.isBuiltin()) {
             return def.getURL();
         }
 
         String destPath;
-        if (binding.getType().isModuleType())
-        {
+        if (binding.getType().isModuleType()) {
             destPath = binding.getType().asModuleType().getFile();
-        }
-        else
-        {
+        } else {
             destPath = def.getFile();
         }
 
-        if (destPath == null)
-        {
+        if (destPath == null) {
             return null;
         }
 
         String anchor = "#" + binding.getQname();
-        if (binding.getFirstFile().equals(filename))
-        {
+        if (binding.getFirstFile().equals(filename)) {
             return anchor;
         }
 
-        if (destPath.startsWith(rootPath))
-        {
+        if (destPath.startsWith(rootPath)) {
             String relpath;
-            if (filename != null)
-            {
+            if (filename != null) {
                 relpath = _.relPath(filename, destPath);
-            }
-            else
-            {
+            } else {
                 relpath = destPath;
             }
 
-            if (relpath != null)
-            {
+            if (relpath != null) {
                 return relpath + ".html" + anchor;
-            }
-            else
-            {
+            } else {
                 return anchor;
             }
-        }
-        else
-        {
+        } else {
             return "file://" + destPath + anchor;
         }
     }

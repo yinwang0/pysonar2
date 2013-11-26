@@ -8,15 +8,13 @@ import org.yinwang.pysonar.types.Type;
 import java.util.List;
 
 
-public class Assign extends Node
-{
+public class Assign extends Node {
 
     public List<Node> targets;
     public Node rvalue;
 
 
-    public Assign(List<Node> targets, Node rvalue, int start, int end)
-    {
+    public Assign(List<Node> targets, Node rvalue, int start, int end) {
         super(start, end);
         this.targets = targets;
         this.rvalue = rvalue;
@@ -26,25 +24,19 @@ public class Assign extends Node
 
 
     @Override
-    public boolean bindsName()
-    {
+    public boolean bindsName() {
         return true;
     }
 
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s)
-    {
-        if (rvalue == null)
-        {
+    public Type resolve(@NotNull Scope s) {
+        if (rvalue == null) {
             Indexer.idx.putProblem(this, "missing RHS of assignment");
-        }
-        else
-        {
+        } else {
             Type valueType = resolveExpr(rvalue, s);
-            for (Node t : targets)
-            {
+            for (Node t : targets) {
                 NameBinder.bind(s, t, valueType);
             }
         }
@@ -55,17 +47,14 @@ public class Assign extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<Assign:" + targets + "=" + rvalue + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNodeList(targets, v);
             visitNode(rvalue, v);
         }

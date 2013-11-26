@@ -10,10 +10,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 
-public class Binding implements Comparable<Object>
-{
-    public enum Kind
-    {
+public class Binding implements Comparable<Object> {
+    public enum Kind {
         ATTRIBUTE,    // attr accessed with "." on some other object
         CLASS,        // class definition
         CONSTRUCTOR,  // __init__ functions in classes
@@ -44,8 +42,7 @@ public class Binding implements Comparable<Object>
     private Set<Ref> refs;
 
 
-    public Binding(@NotNull String id, Node node, @NotNull Type type, @NotNull Kind kind)
-    {
+    public Binding(@NotNull String id, Node node, @NotNull Type type, @NotNull Kind kind) {
         this.name = id;
         this.qname = type.getTable().getPath();
         this.type = type;
@@ -58,164 +55,137 @@ public class Binding implements Comparable<Object>
 
 
     @NotNull
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
 
-    public void setQname(@NotNull String qname)
-    {
+    public void setQname(@NotNull String qname) {
         this.qname = qname;
     }
 
 
     @NotNull
-    public String getQname()
-    {
+    public String getQname() {
         return qname;
     }
 
 
-    public void addDef(@Nullable Node node)
-    {
-        if (node != null)
-        {
+    public void addDef(@Nullable Node node) {
+        if (node != null) {
             Def def = new Def(node, this);
             addDef(def);
         }
     }
 
 
-    public void addDef(Def def)
-    {
+    public void addDef(Def def) {
         def.setBinding(this);
 
         Set<Def> defs = getDefs();
         defs.add(def);
-        if (def.isURL())
-        {
+        if (def.isURL()) {
             markBuiltin();
         }
     }
 
 
-    public void addRef(Ref ref)
-    {
+    public void addRef(Ref ref) {
         getRefs().add(ref);
     }
 
 
     // Returns one definition (even if there are many)
     @NotNull
-    public Def getSingle()
-    {
+    public Def getSingle() {
         return getDefs().iterator().next();
     }
 
 
-    public void setType(Type type)
-    {
+    public void setType(Type type) {
         this.type = type;
     }
 
 
-    public Type getType()
-    {
+    public Type getType() {
         return type;
     }
 
 
-    public void setKind(Kind kind)
-    {
+    public void setKind(Kind kind) {
         this.kind = kind;
     }
 
 
-    public Kind getKind()
-    {
+    public Kind getKind() {
         return kind;
     }
 
 
-    public void markStatic()
-    {
+    public void markStatic() {
         isStatic = true;
     }
 
 
-    public boolean isStatic()
-    {
+    public boolean isStatic() {
         return isStatic;
     }
 
 
-    public void markSynthetic()
-    {
+    public void markSynthetic() {
         isSynthetic = true;
     }
 
 
-    public boolean isSynthetic()
-    {
+    public boolean isSynthetic() {
         return isSynthetic;
     }
 
 
-    public void markReadOnly()
-    {
+    public void markReadOnly() {
         isReadonly = true;
     }
 
 
-    public boolean isReadOnly()
-    {
+    public boolean isReadOnly() {
         return isReadonly;
     }
 
 
-    public boolean isDeprecated()
-    {
+    public boolean isDeprecated() {
         return isDeprecated;
     }
 
 
-    public void markDeprecated()
-    {
+    public void markDeprecated() {
         isDeprecated = true;
     }
 
 
-    public boolean isBuiltin()
-    {
+    public boolean isBuiltin() {
         return isBuiltin;
     }
 
 
-    public void markBuiltin()
-    {
+    public void markBuiltin() {
         isBuiltin = true;
     }
 
 
     @NotNull
-    public Set<Def> getDefs()
-    {
+    public Set<Def> getDefs() {
         return defs;
     }
 
 
     @NotNull
-    public Def getDef()
-    {
+    public Def getDef() {
         return defs.iterator().next();
     }
 
 
-    public Set<Ref> getRefs()
-    {
-        if (refs == null)
-        {
+    public Set<Ref> getRefs() {
+        if (refs == null) {
             refs = new LinkedHashSet<>(1);
         }
         return refs;
@@ -223,20 +193,16 @@ public class Binding implements Comparable<Object>
 
 
     @NotNull
-    public String getFirstFile()
-    {
+    public String getFirstFile() {
         Type bt = getType();
-        if (bt instanceof ModuleType)
-        {
+        if (bt instanceof ModuleType) {
             String file = bt.asModuleType().getFile();
             return file != null ? file : "<built-in module>";
         }
 
-        for (Def def : defs)
-        {
+        for (Def def : defs) {
             String file = def.getFile();
-            if (file != null)
-            {
+            if (file != null) {
                 return file;
             }
         }
@@ -248,16 +214,14 @@ public class Binding implements Comparable<Object>
     /**
      * Bindings can be sorted by their location for outlining purposes.
      */
-    public int compareTo(@NotNull Object o)
-    {
+    public int compareTo(@NotNull Object o) {
         return getSingle().getStart() - ((Binding) o).getSingle().getStart();
     }
 
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("<Binding:");
         sb.append(":qname=").append(qname);
@@ -265,16 +229,13 @@ public class Binding implements Comparable<Object>
         sb.append(":kind=").append(kind);
         sb.append(":defs=").append(defs);
         sb.append(":refs=");
-        if (getRefs().size() > 10)
-        {
+        if (getRefs().size() > 10) {
             sb.append("[");
             sb.append(refs.iterator().next());
             sb.append(", ...(");
             sb.append(refs.size() - 1);
             sb.append(" more)]");
-        }
-        else
-        {
+        } else {
             sb.append(refs);
         }
         sb.append(">");

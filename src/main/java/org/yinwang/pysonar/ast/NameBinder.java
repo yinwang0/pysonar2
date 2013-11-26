@@ -15,43 +15,28 @@ import java.util.List;
 /**
  * Handles binding names to scopes, including destructuring assignment.
  */
-public class NameBinder
-{
+public class NameBinder {
 
-    public static void bind(@NotNull Scope s, Node target, @NotNull Type rvalue, Binding.Kind kind)
-    {
-        if (target instanceof Name)
-        {
+    public static void bind(@NotNull Scope s, Node target, @NotNull Type rvalue, Binding.Kind kind) {
+        if (target instanceof Name) {
             bindName(s, (Name) target, rvalue, kind);
-        }
-        else if (target instanceof Tuple)
-        {
+        } else if (target instanceof Tuple) {
             bind(s, ((Tuple) target).elts, rvalue, kind);
-        }
-        else if (target instanceof NList)
-        {
+        } else if (target instanceof NList) {
             bind(s, ((NList) target).elts, rvalue, kind);
-        }
-        else if (target instanceof Attribute)
-        {
+        } else if (target instanceof Attribute) {
             ((Attribute) target).setAttr(s, rvalue);
-        }
-        else if (target instanceof Subscript)
-        {
+        } else if (target instanceof Subscript) {
             Subscript sub = (Subscript) target;
             Type valueType = Node.resolveExpr(sub.value, s);
-            if (sub.slice != null)
-            {
+            if (sub.slice != null) {
                 Node.resolveExpr(sub.slice, s);
             }
-            if (valueType instanceof ListType)
-            {
+            if (valueType instanceof ListType) {
                 ListType t = (ListType) valueType;
                 t.setElementType(UnionType.union(t.getElementType(), rvalue));
             }
-        }
-        else if (target != null)
-        {
+        } else if (target != null) {
             Indexer.idx.putProblem(target, "invalid location for assignment");
         }
     }
@@ -61,55 +46,36 @@ public class NameBinder
      * Without specifying a kind, bind determines the kind according to the type
      * of the scope.
      */
-    public static void bind(@NotNull Scope s, Node target, @NotNull Type rvalue)
-    {
+    public static void bind(@NotNull Scope s, Node target, @NotNull Type rvalue) {
         Binding.Kind kind;
-        if (s.getScopeType() == Scope.ScopeType.FUNCTION)
-        {
+        if (s.getScopeType() == Scope.ScopeType.FUNCTION) {
             kind = Binding.Kind.VARIABLE;
-        }
-        else
-        {
+        } else {
             kind = Binding.Kind.SCOPE;
         }
         bind(s, target, rvalue, kind);
     }
 
 
-    public static void bind(@NotNull Scope s, @NotNull List<Node> xs, @NotNull Type rvalue, Binding.Kind kind)
-    {
-        if (rvalue.isTupleType())
-        {
+    public static void bind(@NotNull Scope s, @NotNull List<Node> xs, @NotNull Type rvalue, Binding.Kind kind) {
+        if (rvalue.isTupleType()) {
             List<Type> vs = rvalue.asTupleType().getElementTypes();
-            if (xs.size() != vs.size())
-            {
+            if (xs.size() != vs.size()) {
                 reportUnpackMismatch(xs, vs.size());
-            }
-            else
-            {
-                for (int i = 0; i < xs.size(); i++)
-                {
+            } else {
+                for (int i = 0; i < xs.size(); i++) {
                     bind(s, xs.get(i), vs.get(i), kind);
                 }
             }
-        }
-        else if (rvalue.isListType())
-        {
+        } else if (rvalue.isListType()) {
             bind(s, xs, rvalue.asListType().toTupleType(xs.size()), kind);
-        }
-        else if (rvalue.isDictType())
-        {
+        } else if (rvalue.isDictType()) {
             bind(s, xs, rvalue.asDictType().toTupleType(xs.size()), kind);
-        }
-        else if (rvalue.isUnknownType())
-        {
-            for (Node x : xs)
-            {
+        } else if (rvalue.isUnknownType()) {
+            for (Node x : xs) {
                 bind(s, x, Indexer.idx.builtins.unknown, kind);
             }
-        }
-        else
-        {
+        } else {
             Indexer.idx.putProblem(xs.get(0).getFile(),
                     xs.get(0).start,
                     xs.get(xs.size() - 1).end,
@@ -124,69 +90,51 @@ public class NameBinder
     {
         Binding b;
 
-        if (s.isGlobalName(name.getId()))
-        {
+        if (s.isGlobalName(name.getId())) {
             b = s.getGlobalTable().insert(name.getId(), name, rvalue, kind);
             Indexer.idx.putRef(name, b);
-        }
-        else
-        {
+        } else {
             b = s.insert(name.getId(), name, rvalue, kind);
         }
 
         Type nameType = b.getType();
-        if (nameType.isUnknownType())
-        {
+        if (nameType.isUnknownType()) {
             nameType.getTable().setPath(b.getQname());
         }
         return b;
     }
 
 
-    public static void bindIter(@NotNull Scope s, Node target, @NotNull Node iter, Binding.Kind kind)
-    {
+    public static void bindIter(@NotNull Scope s, Node target, @NotNull Node iter, Binding.Kind kind) {
         Type iterType = Node.resolveExpr(iter, s);
 
-        if (iterType.isListType())
-        {
+        if (iterType.isListType()) {
             bind(s, target, iterType.asListType().getElementType(), kind);
-        }
-        else if (iterType.isTupleType())
-        {
+        } else if (iterType.isTupleType()) {
             bind(s, target, iterType.asTupleType().toListType().getElementType(), kind);
-        }
-        else
-        {
+        } else {
             Binding ent = iterType.getTable().lookupAttr("__iter__");
-            if (ent == null || !ent.getType().isFuncType())
-            {
-                if (!iterType.isUnknownType())
-                {
+            if (ent == null || !ent.getType().isFuncType()) {
+                if (!iterType.isUnknownType()) {
                     iter.addWarning("not an iterable type: " + iterType);
                 }
                 bind(s, target, Indexer.idx.builtins.unknown, kind);
-            }
-            else
-            {
+            } else {
                 bind(s, target, ent.getType().asFuncType().getReturnType(), kind);
             }
         }
     }
 
 
-    private static void reportUnpackMismatch(@NotNull List<Node> xs, int vsize)
-    {
+    private static void reportUnpackMismatch(@NotNull List<Node> xs, int vsize) {
         int xsize = xs.size();
         int beg = xs.get(0).start;
         int end = xs.get(xs.size() - 1).end;
         int diff = xsize - vsize;
         String msg;
-        if (diff > 0)
-        {
+        if (diff > 0) {
             msg = "ValueError: need more than " + vsize + " values to unpack";
-        }
-        else
-        {
+        } else {
             msg = "ValueError: too many values to unpack";
         }
         Indexer.idx.putProblem(xs.get(0).getFile(), beg, end, msg);

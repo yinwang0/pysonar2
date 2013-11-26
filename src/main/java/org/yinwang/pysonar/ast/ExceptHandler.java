@@ -6,16 +6,14 @@ import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
 
-public class ExceptHandler extends Node
-{
+public class ExceptHandler extends Node {
 
     public Node name;
     public Node exceptionType;
     public Block body;
 
 
-    public ExceptHandler(Node name, Node exceptionType, Block body, int start, int end)
-    {
+    public ExceptHandler(Node name, Node exceptionType, Block body, int start, int end) {
         super(start, end);
         this.name = name;
         this.exceptionType = exceptionType;
@@ -25,31 +23,24 @@ public class ExceptHandler extends Node
 
 
     @Override
-    public boolean bindsName()
-    {
+    public boolean bindsName() {
         return true;
     }
 
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s)
-    {
+    public Type resolve(@NotNull Scope s) {
         Type typeval = Indexer.idx.builtins.unknown;
-        if (exceptionType != null)
-        {
+        if (exceptionType != null) {
             typeval = resolveExpr(exceptionType, s);
         }
-        if (name != null)
-        {
+        if (name != null) {
             NameBinder.bind(s, name, typeval);
         }
-        if (body != null)
-        {
+        if (body != null) {
             return resolveExpr(body, s);
-        }
-        else
-        {
+        } else {
             return Indexer.idx.builtins.unknown;
         }
     }
@@ -57,17 +48,14 @@ public class ExceptHandler extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<ExceptHandler:" + start + ":" + name + ":" + exceptionType + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNode(name, v);
             visitNode(exceptionType, v);
             visitNode(body, v);

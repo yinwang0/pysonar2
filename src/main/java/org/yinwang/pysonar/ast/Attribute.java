@@ -13,8 +13,7 @@ import java.util.Set;
 import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
 
 
-public class Attribute extends Node
-{
+public class Attribute extends Node {
 
     @NotNull
     public Node target;
@@ -22,8 +21,7 @@ public class Attribute extends Node
     public Name attr;
 
 
-    public Attribute(@NotNull Node target, @NotNull Name attr, int start, int end)
-    {
+    public Attribute(@NotNull Node target, @NotNull Name attr, int start, int end) {
         super(start, end);
         this.target = target;
         this.attr = attr;
@@ -32,60 +30,48 @@ public class Attribute extends Node
 
 
     @Nullable
-    public String getAttributeName()
-    {
+    public String getAttributeName() {
         return attr.getId();
     }
 
 
-    public void setAttr(@NotNull Name attr)
-    {
+    public void setAttr(@NotNull Name attr) {
         this.attr = attr;
     }
 
 
     @NotNull
-    public Name getAttr()
-    {
+    public Name getAttr() {
         return attr;
     }
 
 
-    public void setTarget(@NotNull Node target)
-    {
+    public void setTarget(@NotNull Node target) {
         this.target = target;
     }
 
 
     @Nullable
-    public Node getTarget()
-    {
+    public Node getTarget() {
         return target;
     }
 
 
-    public void setAttr(Scope s, @NotNull Type v)
-    {
+    public void setAttr(Scope s, @NotNull Type v) {
         Type targetType = resolveExpr(target, s);
-        if (targetType.isUnionType())
-        {
+        if (targetType.isUnionType()) {
             Set<Type> types = targetType.asUnionType().getTypes();
-            for (Type tp : types)
-            {
+            for (Type tp : types) {
                 setAttrType(tp, v);
             }
-        }
-        else
-        {
+        } else {
             setAttrType(targetType, v);
         }
     }
 
 
-    private void setAttrType(@NotNull Type targetType, @NotNull Type v)
-    {
-        if (targetType.isUnknownType())
-        {
+    private void setAttrType(@NotNull Type targetType, @NotNull Type v) {
+        if (targetType.isUnknownType()) {
             Indexer.idx.putProblem(this, "Can't set attribute for UnknownType");
             return;
         }
@@ -95,38 +81,29 @@ public class Attribute extends Node
 
     @NotNull
     @Override
-    public Type resolve(Scope s)
-    {
+    public Type resolve(Scope s) {
         Type targetType = resolveExpr(target, s);
-        if (targetType.isUnionType())
-        {
+        if (targetType.isUnionType()) {
             Set<Type> types = targetType.asUnionType().getTypes();
             Type retType = Indexer.idx.builtins.unknown;
-            for (Type tt : types)
-            {
+            for (Type tt : types) {
                 retType = UnionType.union(retType, getAttrType(tt));
             }
             return retType;
-        }
-        else
-        {
+        } else {
             return getAttrType(targetType);
         }
     }
 
 
-    private Type getAttrType(@NotNull Type targetType)
-    {
+    private Type getAttrType(@NotNull Type targetType) {
         Binding b = targetType.getTable().lookupAttr(attr.getId());
-        if (b == null)
-        {
+        if (b == null) {
             Indexer.idx.putProblem(attr, "attribute not found in type: " + targetType);
             Type t = Indexer.idx.builtins.unknown;
             t.getTable().setPath(targetType.getTable().extendPath(attr.getId()));
             return t;
-        }
-        else
-        {
+        } else {
             Indexer.idx.putRef(attr, b);
 
             if (getParent() != null && getParent().isCall() &&
@@ -142,17 +119,14 @@ public class Attribute extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<Attribute:" + start + ":" + target + "." + getAttributeName() + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNode(target, v);
             visitNode(attr, v);
         }

@@ -8,16 +8,14 @@ import org.yinwang.pysonar.types.Type;
 import java.util.List;
 
 
-public class Comprehension extends Node
-{
+public class Comprehension extends Node {
 
     public Node target;
     public Node iter;
     public List<Node> ifs;
 
 
-    public Comprehension(Node target, Node iter, List<Node> ifs, int start, int end)
-    {
+    public Comprehension(Node target, Node iter, List<Node> ifs, int start, int end) {
         super(start, end);
         this.target = target;
         this.iter = iter;
@@ -28,16 +26,14 @@ public class Comprehension extends Node
 
 
     @Override
-    public boolean bindsName()
-    {
+    public boolean bindsName() {
         return true;
     }
 
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s)
-    {
+    public Type resolve(@NotNull Scope s) {
         NameBinder.bindIter(s, target, iter, Binding.Kind.SCOPE);
         resolveList(ifs, s);
         return resolveExpr(target, s);
@@ -46,17 +42,14 @@ public class Comprehension extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<Comprehension:" + start + ":" + target + ":" + iter + ":" + ifs + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNode(target, v);
             visitNode(iter, v);
             visitNodeList(ifs, v);

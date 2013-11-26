@@ -16,18 +16,15 @@ import java.util.logging.Logger;
  * Provides a factory for python source ASTs.  Maintains configurable on-disk and
  * in-memory caches to avoid re-parsing files during analysis.
  */
-public class AstCache
-{
+public class AstCache {
 
-    public static class DocstringInfo
-    {
+    public static class DocstringInfo {
         public String docstring;
         public int start;
         public int end;
 
 
-        public static DocstringInfo NewWithDocstringNode(@NotNull Str docstringNode)
-        {
+        public static DocstringInfo NewWithDocstringNode(@NotNull Str docstringNode) {
             DocstringInfo d = new DocstringInfo();
             d.docstring = docstringNode.getStr();
             d.start = docstringNode.start;
@@ -49,15 +46,12 @@ public class AstCache
     private static PythonParser parser;
 
 
-    private AstCache()
-    {
+    private AstCache() {
     }
 
 
-    public static AstCache get()
-    {
-        if (INSTANCE == null)
-        {
+    public static AstCache get() {
+        if (INSTANCE == null) {
             INSTANCE = new AstCache();
         }
         parser = new PythonParser();
@@ -68,8 +62,7 @@ public class AstCache
     /**
      * Clears the memory cache.
      */
-    public void clear()
-    {
+    public void clear() {
         cache.clear();
     }
 
@@ -79,15 +72,12 @@ public class AstCache
      *
      * @return {@code true} if all cached AST files were removed
      */
-    public boolean clearDiskCache()
-    {
-        try
-        {
+    public boolean clearDiskCache() {
+        try {
             _.deleteDirectory(new File(Indexer.idx.cacheDir));
             return true;
         }
-        catch (Exception x)
-        {
+        catch (Exception x) {
 
             LOG.log(Level.SEVERE, "Failed to clear disk cache: " + x);
 
@@ -96,8 +86,7 @@ public class AstCache
     }
 
 
-    public void close()
-    {
+    public void close() {
         parser.close();
 //        clearDiskCache();
     }
@@ -111,47 +100,39 @@ public class AstCache
      * @return the AST, or {@code null} if the parse failed for any reason
      */
     @Nullable
-    public Module getAST(@NotNull String path)
-    {
+    public Module getAST(@NotNull String path) {
         // Cache stores null value if the parse failed.
-        if (cache.containsKey(path))
-        {
+        if (cache.containsKey(path)) {
             return cache.get(path);
         }
 
         // Might be cached on disk but not in memory.
         Module mod = getSerializedModule(path);
-        if (mod != null)
-        {
+        if (mod != null) {
 
             LOG.log(Level.FINE, "reusing " + path);
 
             cache.put(path, mod);
             Str docstring = mod.docstring();
-            if (docstring != null)
-            {
+            if (docstring != null) {
                 docstringCache.put(path, DocstringInfo.NewWithDocstringNode(docstring));
             }
             return mod;
         }
 
         mod = null;
-        try
-        {
+        try {
             LOG.log(Level.FINE, "parsing " + path);
             mod = (Module) parser.parseFile(path);
         }
-        finally
-        {
+        finally {
             cache.put(path, mod);  // may be null
-            if (mod != null && mod.docstring() != null)
-            {
+            if (mod != null && mod.docstring() != null) {
                 docstringCache.put(path, DocstringInfo.NewWithDocstringNode(mod.docstring())); // may be null
             }
         }
 
-        if (mod != null)
-        {
+        if (mod != null) {
             serialize(mod);
         }
 
@@ -160,8 +141,7 @@ public class AstCache
 
 
     @Nullable
-    public DocstringInfo getModuleDocstringInfo(String path)
-    {
+    public DocstringInfo getModuleDocstringInfo(String path) {
         return docstringCache.get(path);
     }
 
@@ -172,50 +152,39 @@ public class AstCache
      * file's base name is included for ease of debugging.
      */
     @NotNull
-    public String getCachePath(@NotNull File sourcePath)
-    {
+    public String getCachePath(@NotNull File sourcePath) {
         return getCachePath(_.getSHA1(sourcePath), sourcePath.getName());
     }
 
 
     @NotNull
-    public String getCachePath(String md5, String name)
-    {
+    public String getCachePath(String md5, String name) {
         return _.makePathString(Indexer.idx.cacheDir, name + md5 + ".ast");
     }
 
 
     // package-private for testing
-    void serialize(@NotNull Module ast)
-    {
+    void serialize(@NotNull Module ast) {
         String path = getCachePath(ast.getMD5(), new File(ast.getFile()).getName());
         ObjectOutputStream oos = null;
         FileOutputStream fos = null;
-        try
-        {
+        try {
             fos = new FileOutputStream(path);
             oos = new ObjectOutputStream(fos);
             oos.writeObject(ast);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             _.msg("Failed to serialize: " + path);
         }
-        finally
-        {
-            try
-            {
-                if (oos != null)
-                {
+        finally {
+            try {
+                if (oos != null) {
                     oos.close();
-                }
-                else if (fos != null)
-                {
+                } else if (fos != null) {
                     fos.close();
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
             }
         }
     }
@@ -223,16 +192,13 @@ public class AstCache
 
     // package-private for testing
     @Nullable
-    Module getSerializedModule(String sourcePath)
-    {
+    Module getSerializedModule(String sourcePath) {
         File sourceFile = new File(sourcePath);
-        if (sourceFile == null || !sourceFile.canRead())
-        {
+        if (sourceFile == null || !sourceFile.canRead()) {
             return null;
         }
         File cached = new File(getCachePath(sourceFile));
-        if (!cached.canRead())
-        {
+        if (!cached.canRead()) {
             return null;
         }
         return deserialize(sourceFile);
@@ -241,13 +207,11 @@ public class AstCache
 
     // package-private for testing
     @Nullable
-    Module deserialize(@NotNull File sourcePath)
-    {
+    Module deserialize(@NotNull File sourcePath) {
         String cachePath = getCachePath(sourcePath);
         FileInputStream fis = null;
         ObjectInputStream ois = null;
-        try
-        {
+        try {
             fis = new FileInputStream(cachePath);
             ois = new ObjectInputStream(fis);
             Module mod = (Module) ois.readObject();
@@ -255,25 +219,18 @@ public class AstCache
             mod.setFile(sourcePath);
             return mod;
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             return null;
         }
-        finally
-        {
-            try
-            {
-                if (ois != null)
-                {
+        finally {
+            try {
+                if (ois != null) {
                     ois.close();
-                }
-                else if (fis != null)
-                {
+                } else if (fis != null) {
                     fis.close();
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
 
             }
         }

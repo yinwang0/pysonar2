@@ -10,8 +10,7 @@ import org.yinwang.pysonar.types.Type;
 /**
  * A name alias.  Used for the components of import and import-from statements.
  */
-public class Withitem extends Node
-{
+public class Withitem extends Node {
 
     @Nullable
     public Node optional_vars;
@@ -19,8 +18,7 @@ public class Withitem extends Node
     public Node context_expr;
 
 
-    public Withitem(@NotNull Node context_expr, @Nullable Node optional_vars, int start, int end)
-    {
+    public Withitem(@NotNull Node context_expr, @Nullable Node optional_vars, int start, int end) {
         super(start, end);
         this.context_expr = context_expr;
         this.optional_vars = optional_vars;
@@ -30,8 +28,7 @@ public class Withitem extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<withitem:" + context_expr + " as " + optional_vars + ">";
     }
 
@@ -39,17 +36,14 @@ public class Withitem extends Node
     // dummy, will never be called
     @NotNull
     @Override
-    public Type resolve(Scope s)
-    {
+    public Type resolve(Scope s) {
         return Indexer.idx.builtins.unknown;
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNode(context_expr, v);
             visitNode(optional_vars, v);
         }

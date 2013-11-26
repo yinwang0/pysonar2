@@ -10,14 +10,12 @@ import org.yinwang.pysonar.types.Type;
 import java.util.List;
 
 
-public class Import extends Node
-{
+public class Import extends Node {
 
     public List<Alias> names;
 
 
-    public Import(List<Alias> names, int start, int end)
-    {
+    public Import(List<Alias> names, int start, int end) {
         super(start, end);
         this.names = names;
         addChildren(names);
@@ -26,17 +24,12 @@ public class Import extends Node
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s)
-    {
-        for (Alias a : names)
-        {
+    public Type resolve(@NotNull Scope s) {
+        for (Alias a : names) {
             ModuleType mod = Indexer.idx.loadModule(a.name, s);
-            if (mod == null)
-            {
+            if (mod == null) {
                 Indexer.idx.putProblem(this, "Cannot load module");
-            }
-            else if (a.asname != null)
-            {
+            } else if (a.asname != null) {
                 s.insert(a.asname.id, a.asname, mod, Binding.Kind.VARIABLE);
             }
         }
@@ -46,17 +39,14 @@ public class Import extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<Import:" + names + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNodeList(names, v);
         }
     }

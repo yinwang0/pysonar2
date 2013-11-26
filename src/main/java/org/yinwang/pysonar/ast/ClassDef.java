@@ -14,8 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ClassDef extends Node
-{
+public class ClassDef extends Node {
 
     @NotNull
     public Name name;
@@ -23,8 +22,7 @@ public class ClassDef extends Node
     public Block body;
 
 
-    public ClassDef(@NotNull Name name, List<Node> bases, Block body, int start, int end)
-    {
+    public ClassDef(@NotNull Name name, List<Node> bases, Block body, int start, int end) {
         super(start, end);
         this.name = name;
         this.bases = bases;
@@ -35,49 +33,38 @@ public class ClassDef extends Node
 
 
     @Override
-    public boolean isClassDef()
-    {
+    public boolean isClassDef() {
         return true;
     }
 
 
     @NotNull
-    public Name getName()
-    {
+    public Name getName() {
         return name;
     }
 
 
     @Override
-    public boolean bindsName()
-    {
+    public boolean bindsName() {
         return true;
     }
 
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s)
-    {
+    public Type resolve(@NotNull Scope s) {
         ClassType classType = new ClassType(getName().getId(), s);
         List<Type> baseTypes = new ArrayList<>();
-        for (Node base : bases)
-        {
+        for (Node base : bases) {
             Type baseType = resolveExpr(base, s);
-            if (baseType.isClassType())
-            {
+            if (baseType.isClassType()) {
                 classType.addSuper(baseType);
-            }
-            else if (baseType.isUnionType())
-            {
-                for (Type b : baseType.asUnionType().getTypes())
-                {
+            } else if (baseType.isUnionType()) {
+                for (Type b : baseType.asUnionType().getTypes()) {
                     classType.addSuper(b);
                     break;
                 }
-            }
-            else
-            {
+            } else {
                 Indexer.idx.putProblem(base, base + " is not a class");
             }
             baseTypes.add(baseType);
@@ -100,8 +87,7 @@ public class ClassDef extends Node
     }
 
 
-    private void addSpecialAttribute(@NotNull Scope s, String name, Type proptype)
-    {
+    private void addSpecialAttribute(@NotNull Scope s, String name, Type proptype) {
         Binding b = s.insert(name, Builtins.newTutUrl("classes.html"), proptype, Binding.Kind.ATTRIBUTE);
         b.markSynthetic();
         b.markStatic();
@@ -111,17 +97,14 @@ public class ClassDef extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<ClassDef:" + name.getId() + ":" + start + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNode(name, v);
             visitNodeList(bases, v);
             visitNode(body, v);

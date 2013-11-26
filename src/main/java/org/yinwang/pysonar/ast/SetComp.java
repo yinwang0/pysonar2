@@ -8,15 +8,13 @@ import org.yinwang.pysonar.types.Type;
 import java.util.List;
 
 
-public class SetComp extends Node
-{
+public class SetComp extends Node {
 
     public Node elt;
     public List<Comprehension> generators;
 
 
-    public SetComp(Node elt, List<Comprehension> generators, int start, int end)
-    {
+    public SetComp(Node elt, List<Comprehension> generators, int start, int end) {
         super(start, end);
         this.elt = elt;
         this.generators = generators;
@@ -27,8 +25,7 @@ public class SetComp extends Node
 
     @NotNull
     @Override
-    public Type resolve(Scope s)
-    {
+    public Type resolve(Scope s) {
         resolveList(generators, s);
         return new ListType(resolveExpr(elt, s));
     }
@@ -36,17 +33,14 @@ public class SetComp extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<NSetComp:" + start + ":" + elt + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNode(elt, v);
             visitNodeList(generators, v);
         }

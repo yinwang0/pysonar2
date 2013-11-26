@@ -11,8 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public abstract class Node implements java.io.Serializable
-{
+public abstract class Node implements java.io.Serializable {
 
     public int start = -1;
     public int end = -1;
@@ -21,69 +20,56 @@ public abstract class Node implements java.io.Serializable
     protected Node parent = null;
 
 
-    public Node()
-    {
+    public Node() {
     }
 
 
-    public Node(int start, int end)
-    {
+    public Node(int start, int end) {
         this.start = start;
         this.end = end;
     }
 
 
-    public void setParent(Node parent)
-    {
+    public void setParent(Node parent) {
         this.parent = parent;
     }
 
 
     @Nullable
-    public Node getParent()
-    {
+    public Node getParent() {
         return parent;
     }
 
 
     @NotNull
-    public Node getAstRoot()
-    {
-        if (parent == null)
-        {
+    public Node getAstRoot() {
+        if (parent == null) {
             return this;
         }
         return parent.getAstRoot();
     }
 
 
-    public int length()
-    {
+    public int length() {
         return end - start;
     }
 
 
-    public boolean bindsName()
-    {
+    public boolean bindsName() {
         return false;
     }
 
 
     @Nullable
-    public String getFile()
-    {
+    public String getFile() {
         return parent != null ? parent.getFile() : null;
     }
 
 
-    public void addChildren(@Nullable Node... nodes)
-    {
-        if (nodes != null)
-        {
-            for (Node n : nodes)
-            {
-                if (n != null)
-                {
+    public void addChildren(@Nullable Node... nodes) {
+        if (nodes != null) {
+            for (Node n : nodes) {
+                if (n != null) {
                     n.setParent(this);
                 }
             }
@@ -91,14 +77,10 @@ public abstract class Node implements java.io.Serializable
     }
 
 
-    public void addChildren(@Nullable List<? extends Node> nodes)
-    {
-        if (nodes != null)
-        {
-            for (Node n : nodes)
-            {
-                if (n != null)
-                {
+    public void addChildren(@Nullable List<? extends Node> nodes) {
+        if (nodes != null) {
+            for (Node n : nodes) {
+                if (n != null) {
                     n.setParent(this);
                 }
             }
@@ -107,30 +89,21 @@ public abstract class Node implements java.io.Serializable
 
 
     @Nullable
-    public Str docstring()
-    {
+    public Str docstring() {
         Node body = null;
-        if (this instanceof FunctionDef)
-        {
+        if (this instanceof FunctionDef) {
             body = ((FunctionDef) this).body;
-        }
-        else if (this instanceof ClassDef)
-        {
+        } else if (this instanceof ClassDef) {
             body = ((ClassDef) this).body;
-        }
-        else if (this instanceof Module)
-        {
+        } else if (this instanceof Module) {
             body = ((Module) this).body;
         }
 
-        if (body instanceof Block && ((Block) body).seq.size() >= 1)
-        {
+        if (body instanceof Block && ((Block) body).seq.size() >= 1) {
             Node firstExpr = ((Block) body).seq.get(0);
-            if (firstExpr instanceof Expr)
-            {
+            if (firstExpr instanceof Expr) {
                 Node docstrNode = ((Expr) firstExpr).value;
-                if (docstrNode != null && docstrNode instanceof Str)
-                {
+                if (docstrNode != null && docstrNode instanceof Str) {
                     return (Str) docstrNode;
                 }
             }
@@ -140,8 +113,7 @@ public abstract class Node implements java.io.Serializable
 
 
     @NotNull
-    public static Type resolveExpr(@NotNull Node n, Scope s)
-    {
+    public static Type resolveExpr(@NotNull Node n, Scope s) {
         return n.resolve(s);
     }
 
@@ -150,105 +122,89 @@ public abstract class Node implements java.io.Serializable
     abstract public Type resolve(Scope s);
 
 
-    public boolean isCall()
-    {
+    public boolean isCall() {
         return this instanceof Call;
     }
 
 
-    public boolean isModule()
-    {
+    public boolean isModule() {
         return this instanceof Module;
     }
 
 
-    public boolean isClassDef()
-    {
+    public boolean isClassDef() {
         return false;
     }
 
 
-    public boolean isFunctionDef()
-    {
+    public boolean isFunctionDef() {
         return false;
     }
 
 
-    public boolean isLambda()
-    {
+    public boolean isLambda() {
         return false;
     }
 
 
-    public boolean isName()
-    {
+    public boolean isName() {
         return this instanceof Name;
     }
 
 
-    public boolean isGlobal()
-    {
+    public boolean isGlobal() {
         return this instanceof Global;
     }
 
 
     @NotNull
-    public Call asCall()
-    {
+    public Call asCall() {
         return (Call) this;
     }
 
 
     @NotNull
-    public Module asModule()
-    {
+    public Module asModule() {
         return (Module) this;
     }
 
 
     @NotNull
-    public ClassDef asClassDef()
-    {
+    public ClassDef asClassDef() {
         return (ClassDef) this;
     }
 
 
     @NotNull
-    public FunctionDef asFunctionDef()
-    {
+    public FunctionDef asFunctionDef() {
         return (FunctionDef) this;
     }
 
 
     @NotNull
-    public Lambda asLambda()
-    {
+    public Lambda asLambda() {
         return (Lambda) this;
     }
 
 
     @NotNull
-    public Name asName()
-    {
+    public Name asName() {
         return (Name) this;
     }
 
 
     @NotNull
-    public Global asGlobal()
-    {
+    public Global asGlobal() {
         return (Global) this;
     }
 
 
-    protected void addWarning(String msg)
-    {
+    protected void addWarning(String msg) {
         Indexer.idx.putProblem(this, msg);
     }
 
 
-    protected void addError(String msg)
-    {
+    protected void addError(String msg) {
         Indexer.idx.putProblem(this, msg);
     }
 
@@ -259,16 +215,13 @@ public abstract class Node implements java.io.Serializable
      * {@code null}, returns a new {@link org.yinwang.pysonar.types.UnknownType}.
      */
     @NotNull
-    protected Type resolveListAsUnion(@Nullable List<? extends Node> nodes, Scope s)
-    {
-        if (nodes == null || nodes.isEmpty())
-        {
+    protected Type resolveListAsUnion(@Nullable List<? extends Node> nodes, Scope s) {
+        if (nodes == null || nodes.isEmpty()) {
             return Indexer.idx.builtins.unknown;
         }
 
         Type result = Indexer.idx.builtins.unknown;
-        for (Node node : nodes)
-        {
+        for (Node node : nodes) {
             Type nodeType = resolveExpr(node, s);
             result = UnionType.union(result, nodeType);
         }
@@ -280,12 +233,9 @@ public abstract class Node implements java.io.Serializable
      * Resolves each element of a node list in the passed scope.
      * Node list may be empty or {@code null}.
      */
-    static protected void resolveList(@Nullable List<? extends Node> nodes, Scope s)
-    {
-        if (nodes != null)
-        {
-            for (Node n : nodes)
-            {
+    static protected void resolveList(@Nullable List<? extends Node> nodes, Scope s) {
+        if (nodes != null) {
+            for (Node n : nodes) {
                 resolveExpr(n, s);
             }
         }
@@ -293,17 +243,12 @@ public abstract class Node implements java.io.Serializable
 
 
     @Nullable
-    static protected List<Type> resolveAndConstructList(@Nullable List<? extends Node> nodes, Scope s)
-    {
-        if (nodes == null)
-        {
+    static protected List<Type> resolveAndConstructList(@Nullable List<? extends Node> nodes, Scope s) {
+        if (nodes == null) {
             return null;
-        }
-        else
-        {
+        } else {
             List<Type> typeList = new ArrayList<>();
-            for (Node n : nodes)
-            {
+            for (Node n : nodes) {
                 typeList.add(resolveExpr(n, s));
             }
             return typeList;
@@ -311,8 +256,7 @@ public abstract class Node implements java.io.Serializable
     }
 
 
-    public String toDisplay()
-    {
+    public String toDisplay() {
         return "";
     }
 
@@ -320,23 +264,17 @@ public abstract class Node implements java.io.Serializable
     public abstract void visit(NodeVisitor visitor);
 
 
-    protected void visitNode(@Nullable Node n, NodeVisitor v)
-    {
-        if (n != null)
-        {
+    protected void visitNode(@Nullable Node n, NodeVisitor v) {
+        if (n != null) {
             n.visit(v);
         }
     }
 
 
-    protected void visitNodeList(@Nullable List<? extends Node> nodes, NodeVisitor v)
-    {
-        if (nodes != null)
-        {
-            for (Node n : nodes)
-            {
-                if (n != null)
-                {
+    protected void visitNodeList(@Nullable List<? extends Node> nodes, NodeVisitor v) {
+        if (nodes != null) {
+            for (Node n : nodes) {
+                if (n != null) {
                     n.visit(v);
                 }
             }

@@ -8,15 +8,13 @@ import org.yinwang.pysonar.types.Type;
 import java.util.List;
 
 
-public class ListComp extends Node
-{
+public class ListComp extends Node {
 
     public Node elt;
     public List<Comprehension> generators;
 
 
-    public ListComp(Node elt, List<Comprehension> generators, int start, int end)
-    {
+    public ListComp(Node elt, List<Comprehension> generators, int start, int end) {
         super(start, end);
         this.elt = elt;
         this.generators = generators;
@@ -32,8 +30,7 @@ public class ListComp extends Node
      */
     @NotNull
     @Override
-    public Type resolve(Scope s)
-    {
+    public Type resolve(Scope s) {
         resolveList(generators, s);
         return new ListType(resolveExpr(elt, s));
     }
@@ -41,17 +38,14 @@ public class ListComp extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<NListComp:" + start + ":" + elt + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNode(elt, v);
             visitNodeList(generators, v);
         }

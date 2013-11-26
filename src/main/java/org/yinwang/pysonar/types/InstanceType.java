@@ -8,20 +8,17 @@ import org.yinwang.pysonar.ast.Call;
 import java.util.List;
 
 
-public class InstanceType extends Type
-{
+public class InstanceType extends Type {
 
     private Type classType;
 
 
-    public InstanceType()
-    {
+    public InstanceType() {
         classType = Indexer.idx.builtins.unknown;
     }
 
 
-    public InstanceType(@NotNull Type c)
-    {
+    public InstanceType(@NotNull Type c) {
         this.getTable().setScopeType(Scope.ScopeType.INSTANCE);
         this.getTable().addSuper(c.getTable());
         this.getTable().setPath(c.getTable().getPath());
@@ -29,12 +26,10 @@ public class InstanceType extends Type
     }
 
 
-    public InstanceType(@NotNull Type c, Call call, List<Type> args)
-    {
+    public InstanceType(@NotNull Type c, Call call, List<Type> args) {
         this(c);
         Type initFunc = this.getTable().lookupAttrType("__init__");
-        if (initFunc != null && initFunc.isFuncType() && initFunc.asFuncType().getFunc() != null)
-        {
+        if (initFunc != null && initFunc.isFuncType() && initFunc.asFuncType().getFunc() != null) {
             initFunc.asFuncType().setSelfType(this);
             Call.apply(initFunc.asFuncType(), args, null, null, null, call);
             initFunc.asFuncType().setSelfType(null);
@@ -42,8 +37,7 @@ public class InstanceType extends Type
     }
 
 
-    public Type getClassType()
-    {
+    public Type getClassType() {
         return classType;
     }
 
@@ -55,10 +49,8 @@ public class InstanceType extends Type
      *     or one of them is the canonical instance for the class.
      */
     @Override
-    public boolean equals(Object other)
-    {
-        if (other instanceof InstanceType)
-        {
+    public boolean equals(Object other) {
+        if (other instanceof InstanceType) {
             InstanceType type2 = (InstanceType) other;
             return type2.getClassType().equals(getClassType());
 //            if (type2.getClassType().equals(getClassType())) {
@@ -67,24 +59,20 @@ public class InstanceType extends Type
 //            } else {
 //                return false;
 //            }
-        }
-        else
-        {
+        } else {
             return this == other;
         }
     }
 
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return "InstanceType".hashCode();
     }
 
 
     @Override
-    protected String printType(CyclicTypeRecorder ctr)
-    {
+    protected String printType(CyclicTypeRecorder ctr) {
         return getClassType().asClassType().getName();
     }
 

@@ -8,8 +8,7 @@ import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
 
-public class For extends Node
-{
+public class For extends Node {
 
     public Node target;
     public Node iter;
@@ -30,29 +29,23 @@ public class For extends Node
 
 
     @Override
-    public boolean bindsName()
-    {
+    public boolean bindsName() {
         return true;
     }
 
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s)
-    {
+    public Type resolve(@NotNull Scope s) {
         NameBinder.bindIter(s, target, iter, Binding.Kind.SCOPE);
 
         Type ret;
-        if (body == null)
-        {
+        if (body == null) {
             ret = Indexer.idx.builtins.unknown;
-        }
-        else
-        {
+        } else {
             ret = resolveExpr(body, s);
         }
-        if (orelse != null)
-        {
+        if (orelse != null) {
             ret = UnionType.union(ret, resolveExpr(orelse, s));
         }
         return ret;
@@ -61,17 +54,14 @@ public class For extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<For:" + target + ":" + iter + ":" + body + ":" + orelse + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNode(target, v);
             visitNode(iter, v);
             visitNode(body, v);

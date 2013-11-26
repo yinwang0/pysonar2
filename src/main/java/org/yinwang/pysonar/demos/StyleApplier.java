@@ -11,8 +11,7 @@ import java.util.TreeSet;
 /**
  * Turns a list of {@link StyleRun}s into HTML spans.
  */
-class StyleApplier
-{
+class StyleApplier {
 
     // Empirically, adding the span tags multiplies length by 6 or more.
     private static final int SOURCE_BUF_MULTIPLIER = 6;
@@ -28,62 +27,50 @@ class StyleApplier
     private int sourceOffset = 0;
 
 
-    abstract class Tag implements Comparable<Tag>
-    {
+    abstract class Tag implements Comparable<Tag> {
         int offset;
         StyleRun style;
 
 
         @Override
-        public int compareTo(@NotNull Tag other)
-        {
-            if (this == other)
-            {
+        public int compareTo(@NotNull Tag other) {
+            if (this == other) {
                 return 0;
             }
-            if (this.offset < other.offset)
-            {
+            if (this.offset < other.offset) {
                 return -1;
             }
-            if (other.offset < this.offset)
-            {
+            if (other.offset < this.offset) {
                 return 1;
             }
             return this.hashCode() - other.hashCode();
         }
 
 
-        void insert()
-        {
+        void insert() {
             // Copy source code up through this tag.
-            if (offset > sourceOffset)
-            {
+            if (offset > sourceOffset) {
                 copySource(sourceOffset, offset);
             }
         }
     }
 
 
-    class StartTag extends Tag
-    {
-        public StartTag(@NotNull StyleRun style)
-        {
+    class StartTag extends Tag {
+        public StartTag(@NotNull StyleRun style) {
             offset = style.start();
             this.style = style;
         }
 
 
         @Override
-        void insert()
-        {
+        void insert() {
             super.insert();
-            switch (style.type)
-            {
+            switch (style.type) {
                 case ANCHOR:
                     buffer.append("<a name='" + style.url + "'");
                     buffer.append(", id ='" + style.id + "'");
-                    if (style.highlight != null && !style.highlight.isEmpty())
-                    {
+                    if (style.highlight != null && !style.highlight.isEmpty()) {
                         String ids = _.joinWithSep(style.highlight, "\",\"", "\"", "\"");
                         buffer.append(", onmouseover='highlight(").append(ids).append(")'");
                     }
@@ -91,8 +78,7 @@ class StyleApplier
                 case LINK:
                     buffer.append("<a href='" + style.url + "'");
                     buffer.append(", id ='" + style.id + "'");
-                    if (style.highlight != null && !style.highlight.isEmpty())
-                    {
+                    if (style.highlight != null && !style.highlight.isEmpty()) {
                         String ids = _.joinWithSep(style.highlight, "\",\"", "\"", "\"");
                         buffer.append(", onmouseover='highlight(").append(ids).append(")'");
                     }
@@ -102,8 +88,7 @@ class StyleApplier
                     buffer.append(toCSS(style)).append("'");
                     break;
             }
-            if (style.message != null)
-            {
+            if (style.message != null) {
                 buffer.append(", title='");
                 buffer.append(style.message);
                 buffer.append("'");
@@ -113,21 +98,17 @@ class StyleApplier
     }
 
 
-    class EndTag extends Tag
-    {
-        public EndTag(@NotNull StyleRun style)
-        {
+    class EndTag extends Tag {
+        public EndTag(@NotNull StyleRun style) {
             offset = style.end();
             this.style = style;
         }
 
 
         @Override
-        void insert()
-        {
+        void insert() {
             super.insert();
-            switch (style.type)
-            {
+            switch (style.type) {
                 case ANCHOR:
                 case LINK:
                     buffer.append("</a>");
@@ -140,11 +121,9 @@ class StyleApplier
     }
 
 
-    public StyleApplier(String path, String src, @NotNull List<StyleRun> runs)
-    {
+    public StyleApplier(String path, String src, @NotNull List<StyleRun> runs) {
         source = src;
-        for (StyleRun run : runs)
-        {
+        for (StyleRun run : runs) {
             tags.add(new StartTag(run));
             tags.add(new EndTag(run));
         }
@@ -155,17 +134,14 @@ class StyleApplier
      * @return the html
      */
     @NotNull
-    public String apply()
-    {
+    public String apply() {
         buffer = new StringBuilder(source.length() * SOURCE_BUF_MULTIPLIER);
 
-        for (Tag tag : tags)
-        {
+        for (Tag tag : tags) {
             tag.insert();
         }
         // Copy in remaining source beyond last tag.
-        if (sourceOffset < source.length())
-        {
+        if (sourceOffset < source.length()) {
             copySource(sourceOffset, source.length());
         }
         return buffer.toString();
@@ -178,18 +154,15 @@ class StyleApplier
      * @param begin the starting source offset
      * @param end   the end offset, or -1 to go to end of file
      */
-    private void copySource(int begin, int end)
-    {
+    private void copySource(int begin, int end) {
         // Be robust if the analyzer gives us bad offsets.
-        try
-        {
+        try {
             String src = escape((end == -1)
                     ? source.substring(begin)
                     : source.substring(begin, end));
             buffer.append(src);
         }
-        catch (RuntimeException x)
-        {
+        catch (RuntimeException x) {
             // This can happen with files with weird encodings
             // Igore them because of the rareness
         }
@@ -197,8 +170,7 @@ class StyleApplier
     }
 
 
-    private String escape(@NotNull String s)
-    {
+    private String escape(@NotNull String s) {
         return s.replace("&", "&amp;")
                 .replace("'", "&#39;")
                 .replace("\"", "&quot;")
@@ -207,8 +179,7 @@ class StyleApplier
     }
 
 
-    private String toCSS(@NotNull StyleRun style)
-    {
+    private String toCSS(@NotNull StyleRun style) {
         return style.type.toString().toLowerCase().replace("_", "-");
     }
 }

@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FunctionDef extends Node
-{
+public class FunctionDef extends Node {
 
     public Name name;
     public List<Node> args;
@@ -45,17 +44,14 @@ public class FunctionDef extends Node
     }
 
 
-    public void setDecoratorList(List<Node> decoratorList)
-    {
+    public void setDecoratorList(List<Node> decoratorList) {
         this.decoratorList = decoratorList;
         addChildren(decoratorList);
     }
 
 
-    public List<Node> getDecoratorList()
-    {
-        if (decoratorList == null)
-        {
+    public List<Node> getDecoratorList() {
+        if (decoratorList == null) {
             decoratorList = new ArrayList<Node>();
         }
         return decoratorList;
@@ -63,15 +59,13 @@ public class FunctionDef extends Node
 
 
     @Override
-    public boolean isFunctionDef()
-    {
+    public boolean isFunctionDef() {
         return true;
     }
 
 
     @Override
-    public boolean bindsName()
-    {
+    public boolean bindsName() {
         return true;
     }
 
@@ -81,39 +75,33 @@ public class FunctionDef extends Node
      * Lambdas will return a generated name.
      */
     @Nullable
-    protected String getBindingName(Scope s)
-    {
+    protected String getBindingName(Scope s) {
         return name.getId();
     }
 
 
-    public List<Node> getArgs()
-    {
+    public List<Node> getArgs() {
         return args;
     }
 
 
-    public List<Node> getDefaults()
-    {
+    public List<Node> getDefaults() {
         return defaults;
     }
 
 
     @Nullable
-    public List<Type> getDefaultTypes()
-    {
+    public List<Type> getDefaultTypes() {
         return defaultTypes;
     }
 
 
-    public Node getBody()
-    {
+    public Node getBody() {
         return body;
     }
 
 
-    public Name getName()
-    {
+    public Name getName() {
         return name;
     }
 
@@ -121,8 +109,7 @@ public class FunctionDef extends Node
     /**
      * @return the vararg
      */
-    public Name getVararg()
-    {
+    public Name getVararg() {
         return vararg;
     }
 
@@ -130,8 +117,7 @@ public class FunctionDef extends Node
     /**
      * @param vararg the vararg to set
      */
-    public void setVararg(Name vararg)
-    {
+    public void setVararg(Name vararg) {
         this.vararg = vararg;
     }
 
@@ -139,8 +125,7 @@ public class FunctionDef extends Node
     /**
      * @return the kwarg
      */
-    public Name getKwarg()
-    {
+    public Name getKwarg() {
         return kwarg;
     }
 
@@ -148,8 +133,7 @@ public class FunctionDef extends Node
     /**
      * @param kwarg the kwarg to set
      */
-    public void setKwarg(Name kwarg)
-    {
+    public void setKwarg(Name kwarg) {
         this.kwarg = kwarg;
     }
 
@@ -167,8 +151,7 @@ public class FunctionDef extends Node
      */
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope outer)
-    {
+    public Type resolve(@NotNull Scope outer) {
         resolveList(decoratorList, outer);   //XXX: not handling functional transformations yet
         FunType fun = new FunType(this, outer.getForwarding());
         fun.getTable().setParent(outer);
@@ -177,25 +160,18 @@ public class FunctionDef extends Node
         Indexer.idx.addUncalled(fun);
         Binding.Kind funkind;
 
-        if (outer.getScopeType() == Scope.ScopeType.CLASS)
-        {
-            if ("__init__".equals(name.getId()))
-            {
+        if (outer.getScopeType() == Scope.ScopeType.CLASS) {
+            if ("__init__".equals(name.getId())) {
                 funkind = Binding.Kind.CONSTRUCTOR;
-            }
-            else
-            {
+            } else {
                 funkind = Binding.Kind.METHOD;
             }
-        }
-        else
-        {
+        } else {
             funkind = Binding.Kind.FUNCTION;
         }
 
         Type outType = outer.getType();
-        if (outType != null && outType.isClassType())
-        {
+        if (outType != null && outType.isClassType()) {
             fun.setCls(outType.asClassType());
         }
 
@@ -206,17 +182,14 @@ public class FunctionDef extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<Function:" + start + ":" + name + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNode(name, v);
             visitNodeList(args, v);
             visitNodeList(defaults, v);
@@ -228,15 +201,11 @@ public class FunctionDef extends Node
 
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (obj instanceof FunctionDef)
-        {
+    public boolean equals(Object obj) {
+        if (obj instanceof FunctionDef) {
             FunctionDef fo = (FunctionDef) obj;
             return (fo.getFile().equals(getFile()) && fo.start == start);
-        }
-        else
-        {
+        } else {
             return false;
         }
     }

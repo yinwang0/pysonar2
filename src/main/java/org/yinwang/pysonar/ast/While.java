@@ -7,16 +7,14 @@ import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
 
-public class While extends Node
-{
+public class While extends Node {
 
     public Node test;
     public Block body;
     public Block orelse;
 
 
-    public While(Node test, Block body, Block orelse, int start, int end)
-    {
+    public While(Node test, Block body, Block orelse, int start, int end) {
         super(start, end);
         this.test = test;
         this.body = body;
@@ -27,18 +25,15 @@ public class While extends Node
 
     @NotNull
     @Override
-    public Type resolve(Scope s)
-    {
+    public Type resolve(Scope s) {
         resolveExpr(test, s);
         Type t = Indexer.idx.builtins.unknown;
 
-        if (body != null)
-        {
+        if (body != null) {
             t = resolveExpr(body, s);
         }
 
-        if (orelse != null)
-        {
+        if (orelse != null) {
             t = UnionType.union(t, resolveExpr(orelse, s));
         }
 
@@ -48,17 +43,14 @@ public class While extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<While:" + test + ":" + body + ":" + orelse + ":" + start + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNode(test, v);
             visitNode(body, v);
             visitNode(orelse, v);

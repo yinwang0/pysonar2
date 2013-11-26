@@ -15,8 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class JSONDump
-{
+public class JSONDump {
 
     private static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
@@ -25,33 +24,27 @@ public class JSONDump
     private static Set<String> seenDocs = new HashSet<>();
 
 
-    private static String dirname(String path)
-    {
+    private static String dirname(String path) {
         return new File(path).getParent();
     }
 
 
-    private static Indexer newIndexer(String srcpath, String[] inclpaths) throws Exception
-    {
+    private static Indexer newIndexer(String srcpath, String[] inclpaths) throws Exception {
         Indexer idx = new Indexer();
-        for (String inclpath : inclpaths)
-        {
+        for (String inclpath : inclpaths) {
             idx.addPath(inclpath);
         }
 
         idx.loadFileRecursive(srcpath);
         idx.finish();
 
-        if (idx.semanticErrors.size() > 0)
-        {
+        if (idx.semanticErrors.size() > 0) {
             log.info("Indexer errors:");
-            for (Entry<String, List<Diagnostic>> entry : idx.semanticErrors.entrySet())
-            {
+            for (Entry<String, List<Diagnostic>> entry : idx.semanticErrors.entrySet()) {
                 String k = entry.getKey();
                 log.info("  Key: " + k);
                 List<Diagnostic> diagnostics = entry.getValue();
-                for (Diagnostic d : diagnostics)
-                {
+                for (Diagnostic d : diagnostics) {
                     log.info("    " + d);
                 }
             }
@@ -61,11 +54,9 @@ public class JSONDump
     }
 
 
-    private static void writeSymJson(Def def, JsonGenerator json) throws IOException
-    {
+    private static void writeSymJson(Def def, JsonGenerator json) throws IOException {
         Binding binding = def.getBinding();
-        if (def.getStart() < 0)
-        {
+        if (def.getStart() < 0) {
             return;
         }
 
@@ -79,8 +70,7 @@ public class JSONDump
 
         String path = binding.getQname().replace('.', '/').replace("%20", ".");
 
-        if (!seenDef.contains(path))
-        {
+        if (!seenDef.contains(path)) {
             seenDef.add(path);
             json.writeStartObject();
             json.writeStringField("name", name);
@@ -103,45 +93,36 @@ public class JSONDump
                 String argExpr = null;
                 Type t = def.getBinding().getType();
 
-                if (t.isUnionType())
-                {
+                if (t.isUnionType()) {
                     t = t.asUnionType().firstUseful();
                 }
 
-                if (t != null && t.isFuncType())
-                {
+                if (t != null && t.isFuncType()) {
                     FunctionDef func = t.asFuncType().getFunc();
 
-                    if (func != null)
-                    {
+                    if (func != null) {
                         StringBuilder args = new StringBuilder();
                         args.append("(");
                         boolean first = true;
 
-                        for (Node n : func.getArgs())
-                        {
-                            if (!first)
-                            {
+                        for (Node n : func.getArgs()) {
+                            if (!first) {
                                 args.append(", ");
                             }
                             first = false;
                             args.append(n.toDisplay());
                         }
 
-                        if (func.getVararg() != null)
-                        {
-                            if (!first)
-                            {
+                        if (func.getVararg() != null) {
+                            if (!first) {
                                 args.append(", ");
                             }
                             first = false;
                             args.append("*" + func.getVararg().toDisplay());
                         }
 
-                        if (func.getKwarg() != null)
-                        {
-                            if (!first)
-                            {
+                        if (func.getKwarg() != null) {
+                            if (!first) {
                                 args.append(", ");
                             }
                             first = false;
@@ -168,15 +149,12 @@ public class JSONDump
     }
 
 
-    private static void writeRefJson(Ref ref, Binding binding, JsonGenerator json) throws IOException
-    {
+    private static void writeRefJson(Ref ref, Binding binding, JsonGenerator json) throws IOException {
         Def def = binding.getSingle();
-        if (def.getFile() != null)
-        {
+        if (def.getFile() != null) {
             String path = binding.getQname().replace(".", "/").replace("%20", ".");
 
-            if (def.getStart() >= 0 && ref.start() >= 0 && !binding.isBuiltin())
-            {
+            if (def.getStart() >= 0 && ref.start() >= 0 && !binding.isBuiltin()) {
                 json.writeStartObject();
                 json.writeStringField("sym", path);
                 json.writeStringField("file", ref.getFile());
@@ -189,16 +167,13 @@ public class JSONDump
     }
 
 
-    private static void writeDocJson(Def def, Indexer idx, JsonGenerator json) throws Exception
-    {
+    private static void writeDocJson(Def def, Indexer idx, JsonGenerator json) throws Exception {
         String path = def.getBinding().getQname().replace('.', '/').replace("%20", ".");
 
-        if (!seenDocs.contains(path))
-        {
+        if (!seenDocs.contains(path)) {
             seenDocs.add(path);
 
-            if (def.docstring != null)
-            {
+            if (def.docstring != null) {
                 json.writeStartObject();
                 json.writeStringField("sym", path);
                 json.writeStringField("file", def.getFileOrUrl());
@@ -206,12 +181,9 @@ public class JSONDump
                 json.writeNumberField("start", def.docstringStart);
                 json.writeNumberField("end", def.docstringEnd);
                 json.writeEndObject();
-            }
-            else if (def.getBinding().getKind() == Binding.Kind.MODULE)
-            {
+            } else if (def.getBinding().getKind() == Binding.Kind.MODULE) {
                 AstCache.DocstringInfo info = idx.getModuleDocstringInfoForFile(def.getFileOrUrl());
-                if (info != null)
-                {
+                if (info != null) {
                     json.writeStartObject();
                     json.writeStringField("sym", path);
                     json.writeStringField("file", def.getFileOrUrl());
@@ -225,8 +197,7 @@ public class JSONDump
     }
 
 
-    private static boolean shouldEmit(@NotNull String pathToMaybeEmit, String srcpath)
-    {
+    private static boolean shouldEmit(@NotNull String pathToMaybeEmit, String srcpath) {
         return _.unifyPath(pathToMaybeEmit).startsWith(_.unifyPath(srcpath));
     }
 
@@ -243,14 +214,11 @@ public class JSONDump
         // Compute parent dirs, sort by length so potential prefixes show up first
         List<String> parentDirs = Lists.newArrayList(inclpaths);
         parentDirs.add(dirname(srcpath));
-        Collections.sort(parentDirs, new Comparator<String>()
-        {
+        Collections.sort(parentDirs, new Comparator<String>() {
             @Override
-            public int compare(String s1, String s2)
-            {
+            public int compare(String s1, String s2) {
                 int diff = s1.length() - s2.length();
-                if (0 == diff)
-                {
+                if (0 == diff) {
                     return s1.compareTo(s2);
                 }
                 return diff;
@@ -264,34 +232,25 @@ public class JSONDump
         JsonGenerator refJson = jsonFactory.createGenerator(refOut);
         JsonGenerator docJson = jsonFactory.createGenerator(docOut);
         JsonGenerator[] allJson = {symJson, refJson, docJson};
-        for (JsonGenerator json : allJson)
-        {
+        for (JsonGenerator json : allJson) {
             json.writeStartArray();
         }
 
-        for (List<Binding> bindings : idx.getAllBindings().values())
-        {
-            for (Binding b : bindings)
-            {
-                for (Def def : b.getDefs())
-                {
-                    if (def.getFile() != null)
-                    {
-                        if (shouldEmit(def.getFile(), srcpath))
-                        {
+        for (List<Binding> bindings : idx.getAllBindings().values()) {
+            for (Binding b : bindings) {
+                for (Def def : b.getDefs()) {
+                    if (def.getFile() != null) {
+                        if (shouldEmit(def.getFile(), srcpath)) {
                             writeSymJson(def, symJson);
                             writeDocJson(def, idx, docJson);
                         }
                     }
                 }
 
-                for (Ref ref : b.getRefs())
-                {
-                    if (ref.getFile() != null)
-                    {
+                for (Ref ref : b.getRefs()) {
+                    if (ref.getFile() != null) {
                         String key = ref.getFile() + ":" + ref.start();
-                        if (!seenRef.contains(key) && shouldEmit(ref.getFile(), srcpath))
-                        {
+                        if (!seenRef.contains(key) && shouldEmit(ref.getFile(), srcpath)) {
                             writeRefJson(ref, b, refJson);
                             seenRef.add(key);
                         }
@@ -300,22 +259,19 @@ public class JSONDump
             }
         }
 
-        for (JsonGenerator json : allJson)
-        {
+        for (JsonGenerator json : allJson) {
             json.writeEndArray();
             json.close();
         }
     }
 
 
-    private static void info(Object msg)
-    {
+    private static void info(Object msg) {
         System.out.println(msg);
     }
 
 
-    private static void usage()
-    {
+    private static void usage() {
         info("Usage: java org.yinwang.pysonar.dump <source-path> <include-paths> <out-root> [verbose]");
         info("  <source-path> is path to source unit (package directory or module file) that will be graphed");
         info("  <include-paths> are colon-separated paths to included libs");
@@ -324,17 +280,14 @@ public class JSONDump
     }
 
 
-    public static void main(String[] args) throws Exception
-    {
-        if (args.length < 3 || args.length > 4)
-        {
+    public static void main(String[] args) throws Exception {
+        if (args.length < 3 || args.length > 4) {
             usage();
             return;
         }
 
         log.setLevel(Level.SEVERE);
-        if (args.length >= 4)
-        {
+        if (args.length >= 4) {
             log.setLevel(Level.ALL);
             log.info("LOGGING VERBOSE");
             log.info("ARGS: " + Arrays.toString(args));
@@ -348,8 +301,7 @@ public class JSONDump
         String refFilename = outroot + "-ref";
         String docFilename = outroot + "-doc";
         OutputStream symOut = null, refOut = null, docOut = null;
-        try
-        {
+        try {
             docOut = new BufferedOutputStream(new FileOutputStream(docFilename));
             symOut = new BufferedOutputStream(new FileOutputStream(symFilename));
             refOut = new BufferedOutputStream(new FileOutputStream(refFilename));
@@ -359,23 +311,18 @@ public class JSONDump
             symOut.flush();
             refOut.flush();
         }
-        catch (FileNotFoundException e)
-        {
+        catch (FileNotFoundException e) {
             System.err.println("Could not find file: " + e);
             return;
         }
-        finally
-        {
-            if (docOut != null)
-            {
+        finally {
+            if (docOut != null) {
                 docOut.close();
             }
-            if (symOut != null)
-            {
+            if (symOut != null) {
                 symOut.close();
             }
-            if (refOut != null)
-            {
+            if (refOut != null) {
                 refOut.close();
             }
         }

@@ -8,15 +8,13 @@ import org.yinwang.pysonar.types.Type;
 import java.util.List;
 
 
-public class GeneratorExp extends Node
-{
+public class GeneratorExp extends Node {
 
     public Node elt;
     public List<Comprehension> generators;
 
 
-    public GeneratorExp(Node elt, List<Comprehension> generators, int start, int end)
-    {
+    public GeneratorExp(Node elt, List<Comprehension> generators, int start, int end) {
         super(start, end);
         this.elt = elt;
         this.generators = generators;
@@ -31,8 +29,7 @@ public class GeneratorExp extends Node
      */
     @NotNull
     @Override
-    public Type resolve(Scope s)
-    {
+    public Type resolve(Scope s) {
         resolveList(generators, s);
         return new ListType(resolveExpr(elt, s));
     }
@@ -40,17 +37,14 @@ public class GeneratorExp extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<GeneratorExp:" + start + ":" + elt + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNode(elt, v);
             visitNodeList(generators, v);
         }

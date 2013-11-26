@@ -8,15 +8,13 @@ import org.yinwang.pysonar.types.Type;
 import java.util.List;
 
 
-public class Print extends Node
-{
+public class Print extends Node {
 
     public Node dest;
     public List<Node> values;
 
 
-    public Print(Node dest, List<Node> elts, int start, int end)
-    {
+    public Print(Node dest, List<Node> elts, int start, int end) {
         super(start, end);
         this.dest = dest;
         this.values = elts;
@@ -27,14 +25,11 @@ public class Print extends Node
 
     @NotNull
     @Override
-    public Type resolve(Scope s)
-    {
-        if (dest != null)
-        {
+    public Type resolve(Scope s) {
+        if (dest != null) {
             resolveExpr(dest, s);
         }
-        if (values != null)
-        {
+        if (values != null) {
             resolveList(values, s);
         }
         return Indexer.idx.builtins.Cont;
@@ -43,17 +38,14 @@ public class Print extends Node
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<Print:" + values + ">";
     }
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v)
-    {
-        if (v.visit(this))
-        {
+    public void visit(@NotNull NodeVisitor v) {
+        if (v.visit(this)) {
             visitNode(dest, v);
             visitNodeList(values, v);
         }

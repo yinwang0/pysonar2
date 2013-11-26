@@ -3,10 +3,8 @@ package org.yinwang.pysonar;
 import org.jetbrains.annotations.NotNull;
 
 
-public class Diagnostic
-{
-    public enum Category
-    {
+public class Diagnostic {
+    public enum Category {
         INFO, WARNING, ERROR
     }
 
@@ -18,8 +16,7 @@ public class Diagnostic
     public String msg;
 
 
-    public Diagnostic(String file, Category category, int start, int end, String msg)
-    {
+    public Diagnostic(String file, Category category, int start, int end, String msg) {
         this.category = category;
         this.file = file;
         this.start = start;
@@ -30,8 +27,7 @@ public class Diagnostic
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<Diagnostic:" + file + ":" + category + ":" + msg + ">";
     }
 }

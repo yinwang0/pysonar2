@@ -3,17 +3,14 @@ package org.yinwang.pysonar.ast;
 /**
  * Preorder-traversal node visitor interface.
  */
-public interface NodeVisitor
-{
+public interface NodeVisitor {
     /**
      * Convenience exception for subclasses.  The caller that initiates
      * the visit should catch this exception if the subclass is expected
      * to throw it.
      */
-    public static final class StopIterationException extends RuntimeException
-    {
-        public StopIterationException()
-        {
+    public static final class StopIterationException extends RuntimeException {
+        public StopIterationException() {
         }
     }
 

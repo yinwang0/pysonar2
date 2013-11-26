@@ -11,8 +11,7 @@ import org.yinwang.pysonar.ast.Str;
 /**
  * Encapsulates information about a binding reference.
  */
-public class Ref
-{
+public class Ref {
 
     private static final int ATTRIBUTE = 0x1;
     private static final int CALL = 0x2;    // function/method call
@@ -27,27 +26,20 @@ public class Ref
     private int flags;
 
 
-    public Ref(@NotNull Node node)
-    {
+    public Ref(@NotNull Node node) {
         file = node.getFile();
         start = node.start;
 
-        if (node instanceof Name)
-        {
+        if (node instanceof Name) {
             Name n = ((Name) node);
             name = n.getId();
-            if (n.isCall())
-            {
+            if (n.isCall()) {
                 markAsCall();
             }
-        }
-        else if (node instanceof Str)
-        {
+        } else if (node instanceof Str) {
             markAsString();
             name = ((Str) node).getStr();
-        }
-        else
-        {
+        } else {
             throw new IllegalArgumentException("I don't know what " + node + " is.");
         }
 
@@ -60,8 +52,7 @@ public class Ref
     }
 
 
-    public Ref(@NotNull String path, int offset, @NotNull String text)
-    {
+    public Ref(@NotNull String path, int offset, @NotNull String text) {
         file = path;
         start = offset;
         name = text;
@@ -72,8 +63,7 @@ public class Ref
      * Returns the file containing the reference.
      */
     @Nullable
-    public String getFile()
-    {
+    public String getFile() {
         return file;
     }
 
@@ -82,20 +72,17 @@ public class Ref
      * Returns the text of the reference.
      */
     @NotNull
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
 
-    public int start()
-    {
+    public int start() {
         return start;
     }
 
 
-    public int end()
-    {
+    public int end() {
         return start + length();
     }
 
@@ -103,8 +90,7 @@ public class Ref
     /**
      * Returns the length of the reference text.
      */
-    public int length()
-    {
+    public int length() {
         return isString() ? name.length() + 2 : name.length();
     }
 
@@ -112,8 +98,7 @@ public class Ref
     /**
      * Returns {@code true} if this reference was unquoted name.
      */
-    public boolean isName()
-    {
+    public boolean isName() {
         return !isString();
     }
 
@@ -122,14 +107,12 @@ public class Ref
      * Returns {@code true} if this reference was an attribute
      * of some other node.
      */
-    public boolean isAttribute()
-    {
+    public boolean isAttribute() {
         return (flags & ATTRIBUTE) != 0;
     }
 
 
-    public void markAsAttribute()
-    {
+    public void markAsAttribute() {
         flags |= ATTRIBUTE;
     }
 
@@ -140,14 +123,12 @@ public class Ref
      * of the opening and closing quotes, but {@link #isName} returns the
      * text within the quotes.
      */
-    public boolean isString()
-    {
+    public boolean isString() {
         return (flags & STRING) != 0;
     }
 
 
-    public void markAsString()
-    {
+    public void markAsString() {
         flags |= STRING;
     }
 
@@ -155,8 +136,7 @@ public class Ref
     /**
      * Returns {@code true} if this reference is a function or method call.
      */
-    public boolean isCall()
-    {
+    public boolean isCall() {
         return (flags & CALL) != 0;
     }
 
@@ -164,49 +144,40 @@ public class Ref
     /**
      * Returns {@code true} if this reference is a class instantiation.
      */
-    public void markAsCall()
-    {
+    public void markAsCall() {
         flags |= CALL;
         flags &= ~NEW;
     }
 
 
-    public boolean isNew()
-    {
+    public boolean isNew() {
         return (flags & NEW) != 0;
     }
 
 
-    public void markAsNew()
-    {
+    public void markAsNew() {
         flags |= NEW;
         flags &= ~CALL;
     }
 
 
-    public boolean isRef()
-    {
+    public boolean isRef() {
         return !(isCall() || isNew());
     }
 
 
     @NotNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "<Ref:" + file + ":" + name + ":" + start + ">";
     }
 
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (!(obj instanceof Ref))
-        {
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Ref)) {
             return false;
-        }
-        else
-        {
+        } else {
             Ref ref = (Ref) obj;
             return (start == ref.start &&
                     (file == null && ref.file == null) ||
@@ -216,8 +187,7 @@ public class Ref
 
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return ("" + file + start).hashCode();
     }
 }
