@@ -8,7 +8,7 @@ import org.yinwang.pysonar.ast.*;
 /**
  * Encapsulates information about a binding definition site.
  */
-public class Def {
+public class Def implements Comparable<Object> {
 
     // Being frugal with fields here is good for memory usage.
     private int start = -1;
@@ -214,6 +214,16 @@ public class Def {
                     && ((fileOrUrl == null && def.fileOrUrl == null)
                     || (fileOrUrl != null && def.fileOrUrl != null &&
                     fileOrUrl.equals(def.fileOrUrl))));
+        }
+    }
+
+
+    @Override
+    public int compareTo(@NotNull Object o) {
+        if (o instanceof Def) {
+            return start - ((Def) o).start;
+        } else {
+            return -1;
         }
     }
 

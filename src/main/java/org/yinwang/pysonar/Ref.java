@@ -11,7 +11,7 @@ import org.yinwang.pysonar.ast.Str;
 /**
  * Encapsulates information about a binding reference.
  */
-public class Ref {
+public class Ref implements Comparable<Object> {
 
     private static final int ATTRIBUTE = 0x1;
     private static final int CALL = 0x2;    // function/method call
@@ -182,6 +182,16 @@ public class Ref {
             return (start == ref.start &&
                     (file == null && ref.file == null) ||
                     (file != null && ref.file != null && file.equals(ref.file)));
+        }
+    }
+
+
+    @Override
+    public int compareTo(@NotNull Object o) {
+        if (o instanceof Ref) {
+            return start - ((Ref) o).start;
+        } else {
+            return -1;
         }
     }
 

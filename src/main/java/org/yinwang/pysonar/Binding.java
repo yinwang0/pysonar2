@@ -6,8 +6,9 @@ import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 
 public class Binding implements Comparable<Object> {
@@ -38,8 +39,8 @@ public class Binding implements Comparable<Object> {
     public Kind kind;        // name usage context
 
     @NotNull
-    private Set<Def> defs;   // definitions (may be multiple)
-    private Set<Ref> refs;
+    private SortedSet<Def> defs;   // definitions (may be multiple)
+    private SortedSet<Ref> refs;
 
 
     public Binding(@NotNull String id, Node node, @NotNull Type type, @NotNull Kind kind) {
@@ -47,7 +48,7 @@ public class Binding implements Comparable<Object> {
         this.qname = type.getTable().getPath();
         this.type = type;
         this.kind = kind;
-        this.defs = new LinkedHashSet<>(1);
+        this.defs = new TreeSet<>();
         addDef(node);
 
         Indexer.idx.registerBinding(this);
@@ -98,7 +99,7 @@ public class Binding implements Comparable<Object> {
     // Returns one definition (even if there are many)
     @NotNull
     public Def getSingle() {
-        return getDefs().iterator().next();
+        return defs.first();
     }
 
 
@@ -186,7 +187,7 @@ public class Binding implements Comparable<Object> {
 
     public Set<Ref> getRefs() {
         if (refs == null) {
-            refs = new LinkedHashSet<>(1);
+            refs = new TreeSet<>();
         }
         return refs;
     }
@@ -214,6 +215,7 @@ public class Binding implements Comparable<Object> {
     /**
      * Bindings can be sorted by their location for outlining purposes.
      */
+    @Override
     public int compareTo(@NotNull Object o) {
         return getSingle().getStart() - ((Binding) o).getSingle().getStart();
     }
