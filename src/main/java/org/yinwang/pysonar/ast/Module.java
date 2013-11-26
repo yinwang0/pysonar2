@@ -17,7 +17,7 @@ public class Module extends Node
     public String name;
     public Block body;
 
-    private String file;  // input source file path
+    private String file;   // input source file path
     private String sha1;   // input source file sha1
 
 
@@ -32,22 +32,15 @@ public class Module extends Node
     public void setFile(String file)
     {
         this.file = file;
-        this.name = _.moduleNameFor(file);
+        this.name = _.moduleName(file);
         this.sha1 = _.getSHA1(new File(file));
     }
 
 
     public void setFile(@NotNull File path)
     {
-        try
-        {
-            file = _.unifyPath(path);
-        }
-        catch (Exception e)
-        {
-            _.msg("invalid path: " + path);
-        }
-        name = _.moduleNameFor(file);
+        file = _.unifyPath(path);
+        name = _.moduleName(file);
         sha1 = _.getSHA1(path);
     }
 
@@ -61,7 +54,7 @@ public class Module extends Node
     public void setFileAndMD5(String path, String md5)
     {
         file = path;
-        name = _.moduleNameFor(file);
+        name = _.moduleName(file);
         this.sha1 = md5;
     }
 
@@ -83,17 +76,10 @@ public class Module extends Node
     @Override
     public Type resolve(@NotNull Scope s)
     {
-        ModuleType mt = new ModuleType(_.moduleNameFor(file), file, Indexer.idx.globaltable);
+        ModuleType mt = new ModuleType(_.moduleName(file), file, Indexer.idx.globaltable);
         s.insert(_.moduleQname(file), this, mt, Binding.Kind.MODULE);
         resolveExpr(body, mt.getTable());
         return mt;
-    }
-
-
-    @NotNull
-    public String toLongString()
-    {
-        return "<Module:" + body + ">";
     }
 
 

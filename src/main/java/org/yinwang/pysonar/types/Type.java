@@ -29,7 +29,7 @@ public abstract class Type
     }
 
 
-    public void setTable(Scope table)
+    public void setTable(@NotNull Scope table)
     {
         this.table = table;
     }

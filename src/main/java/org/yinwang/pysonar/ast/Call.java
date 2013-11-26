@@ -91,7 +91,11 @@ public class Call extends Node
 
 
     @NotNull
-    private Type resolveCall(@NotNull Type rator, List<Type> aTypes, Map<String, Type> kwTypes, Type kwargsType, Type starargsType)
+    private Type resolveCall(@NotNull Type rator,
+                             List<Type> aTypes,
+                             Map<String, Type> kwTypes,
+                             Type kwargsType,
+                             Type starargsType)
     {
         if (rator.isFuncType())
         {
@@ -111,9 +115,13 @@ public class Call extends Node
 
 
     @NotNull
-    public static Type apply(@NotNull FunType func, @Nullable List<Type> aTypes, Map<String, Type> kTypes, Type kwargsType, Type starargsType, @Nullable Node call)
+    public static Type apply(@NotNull FunType func,
+                             @Nullable List<Type> aTypes,
+                             Map<String, Type> kTypes,
+                             Type kwargsType,
+                             Type starargsType,
+                             @Nullable Node call)
     {
-
         Indexer.idx.removeUncalled(func);
 
         if (func.func != null && !func.func.called)

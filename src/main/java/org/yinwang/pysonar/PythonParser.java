@@ -28,6 +28,8 @@ public class PythonParser
     private String endMark;
     private String pyStub;
 
+    private static final int TIMEOUT = 5000;
+
 
     public PythonParser()
     {
@@ -831,7 +833,7 @@ public class PythonParser
 
         while (!marker.exists())
         {
-            if (System.currentTimeMillis() - waitStart > 5000)
+            if (System.currentTimeMillis() - waitStart > TIMEOUT)
             {
                 _.msg("\nTimed out while parsing: " + filename);
                 exchange.delete();

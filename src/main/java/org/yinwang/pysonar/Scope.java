@@ -525,34 +525,12 @@ public class Scope
     @NotNull
     public String extendPath(@NotNull String name)
     {
-        if (name.endsWith(".py"))
-        {
-            name = _.moduleNameFor(name);
-        }
-
+        name = _.moduleName(name);
         if (path.equals(""))
         {
             return name;
         }
-
-        String sep;
-        switch (scopeType)
-        {
-            case MODULE:
-            case CLASS:
-            case INSTANCE:
-            case SCOPE:
-                sep = ".";
-                break;
-            case FUNCTION:
-                sep = ".";
-                break;
-            default:
-                _.msg("unsupported context for extendPath: " + scopeType);
-                return path;
-        }
-
-        return path + sep + name;
+        return path + "." + name;
     }
 
 
