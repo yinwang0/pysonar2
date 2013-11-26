@@ -10,28 +10,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 
-/**
- * An {@code NBinding} collects information about a fully qualified name (qname)
- * in the code graph.<p>
- * <p/>
- * Each qname has an associated {@link org.yinwang.pysonar.types.Type}.  When a particular qname is
- * assigned values of different types at different locations, its type is
- * represented as a {@link org.yinwang.pysonar.types.UnionType}. <p>
- * <p/>
- * Each qname has a set of one or more definitions, and a set of zero or
- * more references.  Definitions and references correspond to code locations. <p>
- */
-public class Binding implements Comparable<Object>
+public class Binding
 {
-
-    /**
-     * In addition to its type, each binding has a {@link Kind} enumeration that
-     * attempts to represent the structural role the name plays in the code.
-     * This is a rough categorization that takes into account type information,
-     * structural (AST) information, and possibly other semantics.  It can help
-     * IDEs with presentation decisions, and can be useful to expose to users as
-     * a parameter for filtering queries on the graph.
-     */
     public enum Kind
     {
         ATTRIBUTE,  // attr accessed with "." on some other object
@@ -84,9 +64,6 @@ public class Binding implements Comparable<Object>
     }
 
 
-    /**
-     * Returns the unqualified name.
-     */
     @NotNull
     public String getName()
     {
@@ -94,19 +71,12 @@ public class Binding implements Comparable<Object>
     }
 
 
-    /**
-     * Sets the binding's qualified name.  This should in general be the
-     * same as {@code binding.getType().getTable().getPath()}.
-     */
     public void setQname(String qname)
     {
         this.qname = qname;
     }
 
 
-    /**
-     * Returns the qualified name.
-     */
     @NotNull
     public String getQname()
     {
@@ -235,20 +205,7 @@ public class Binding implements Comparable<Object>
     }
 
 
-    /**
-     * Bindings can be sorted by their location for outlining purposes.
-     */
-    public int compareTo(@NotNull Object o)
-    {
-        return getSingle().getStart() - ((Binding) o).getSingle().getStart();
-    }
-
-
-    /**
-     * Return the (possibly empty) set of definitions for this binding.
-     *
-     * @return the defs
-     */
+    @NotNull
     public Set<Def> getDefs()
     {
         return defs;
@@ -262,30 +219,6 @@ public class Binding implements Comparable<Object>
     }
 
 
-    /**
-     * Returns the number of definitions found for this binding.
-     */
-    public int getNumDefs()
-    {
-        return defs == null ? 0 : defs.size();
-    }
-
-
-    public boolean hasRefs()
-    {
-        return refs == null ? false : !refs.isEmpty();
-    }
-
-
-    public int getNumRefs()
-    {
-        return refs == null ? 0 : refs.size();
-    }
-
-
-    /**
-     * Returns the set of references to this binding.
-     */
     public Set<Ref> getRefs()
     {
         if (refs == null)
@@ -296,14 +229,6 @@ public class Binding implements Comparable<Object>
     }
 
 
-    /**
-     * Returns a filename associated with this binding, for debug
-     * messages.
-     *
-     * @return the filename associated with the type (if present)
-     *         or the first definition (if present), otherwise a string
-     *         describing what is known about the binding's source.
-     */
     @NotNull
     public String getFirstFile()
     {
@@ -313,19 +238,17 @@ public class Binding implements Comparable<Object>
             String file = bt.asModuleType().getFile();
             return file != null ? file : "<built-in module>";
         }
-        if (defs != null)
+
+        for (Def def : defs)
         {
-            for (Def def : defs)
+            String file = def.getFile();
+            if (file != null)
             {
-                String file = def.getFile();
-                if (file != null)
-                {
-                    return file;
-                }
+                return file;
             }
-            return "<built-in binding>";
         }
-        return "<unknown source>";
+
+        return "<built-in binding>";
     }
 
 
@@ -354,27 +277,6 @@ public class Binding implements Comparable<Object>
         }
         sb.append(">");
         return sb.toString();
-    }
-
-
-    /*
-     * Multiple bindings can exist for the same qname, but they should appear at
-     * different locations. Otherwise they are considered the same by the equals
-     * method of NBinding.
-     */
-    @Override
-    public boolean equals(Object o)
-    {
-        if (o instanceof Binding)
-        {
-            Binding other = (Binding) o;
-            if (other.getDef() != null)
-            {
-                return other.getDef().equals(getDef());
-            }
-        }
-
-        return false;
     }
 
 }

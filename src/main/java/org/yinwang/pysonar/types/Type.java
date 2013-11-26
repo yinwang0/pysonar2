@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.TypeStack;
+import org.yinwang.pysonar.Util;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -158,7 +159,7 @@ public abstract class Type
     }
 
 
-    @Nullable
+    @NotNull
     public ModuleType asModuleType()
     {
         if (this.isUnionType())
@@ -170,7 +171,8 @@ public abstract class Type
                     return t.asModuleType();
                 }
             }
-            return null;
+            Util.die("Not containing a ModuleType");
+            return new ModuleType(null, null, null);  // can't get here
         }
         else if (this.isModuleType())
         {
@@ -178,7 +180,8 @@ public abstract class Type
         }
         else
         {
-            return null;
+            Util.die("Not a ModuleType");
+            return new ModuleType(null, null, null);  // can't get here
         }
     }
 

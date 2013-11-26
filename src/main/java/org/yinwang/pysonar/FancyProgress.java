@@ -62,7 +62,7 @@ public class FancyProgress
             }
 
             lastRate = rate;
-            System.out.print("   SPD: " + Util.formatNumber(rate, MAX_SPEED_DIGITS) + "/s");
+            System.out.print("   SPEED: " + Util.formatNumber(rate, MAX_SPEED_DIGITS) + "/s");
 
             long totalElapsed = System.currentTimeMillis() - startTime;
             int avgRate;
@@ -75,8 +75,9 @@ public class FancyProgress
             {
                 avgRate = lastAvgRate;
             }
+            avgRate = avgRate == 0 ? 1 : avgRate;
 
-            System.out.print("   AVG SPD: " + Util.formatNumber(avgRate, MAX_SPEED_DIGITS) + "/s");
+            System.out.print("   AVG SPEED: " + Util.formatNumber(avgRate, MAX_SPEED_DIGITS) + "/s");
 
             long remain = total - count;
             long remainTime = remain / avgRate * 1000;
