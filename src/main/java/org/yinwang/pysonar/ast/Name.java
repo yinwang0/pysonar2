@@ -29,6 +29,10 @@ public class Name extends Node
 
     /**
      * Returns {@code true} if this name is structurally in a call position.
+     * We don't always have enough information at this point to know
+     * if it's a constructor call or a regular function/method call,
+     * so we just determine if it looks like a call or not, and the
+     * indexer will convert constructor-calls to NEW in a later pass.
      */
     @Override
     public boolean isCall()

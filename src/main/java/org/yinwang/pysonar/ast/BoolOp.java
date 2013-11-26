@@ -8,9 +8,6 @@ import org.yinwang.pysonar.types.Type;
 import java.util.List;
 
 
-/**
- * Represents the "and"/"or" operators.
- */
 public class BoolOp extends Node
 {
 

@@ -63,23 +63,12 @@ public abstract class Node implements java.io.Serializable
     }
 
 
-    /**
-     * Returns {@code true} if this is a name-binding node.
-     * Includes functions/lambdas, function/lambda params, classes,
-     * assignments, imports, and implicit assignment via for statements
-     * and except clauses.
-     *
-     * @see "http://www.python.org/dev/peps/pep-0227"
-     */
     public boolean bindsName()
     {
         return false;
     }
 
 
-    /**
-     * @return the path to the code that generated this AST
-     */
     @Nullable
     public String getFile()
     {
@@ -269,7 +258,7 @@ public abstract class Node implements java.io.Serializable
      * return the union of their types.  If {@code nodes} is empty or
      * {@code null}, returns a new {@link org.yinwang.pysonar.types.UnknownType}.
      */
-    @Nullable
+    @NotNull
     protected Type resolveListAsUnion(@Nullable List<? extends Node> nodes, Scope s)
     {
         if (nodes == null || nodes.isEmpty())
@@ -277,18 +266,11 @@ public abstract class Node implements java.io.Serializable
             return Indexer.idx.builtins.unknown;
         }
 
-        Type result = null;
+        Type result = Indexer.idx.builtins.unknown;
         for (Node node : nodes)
         {
             Type nodeType = resolveExpr(node, s);
-            if (result == null)
-            {
-                result = nodeType;
-            }
-            else
-            {
-                result = UnionType.union(result, nodeType);
-            }
+            result = UnionType.union(result, nodeType);
         }
         return result;
     }

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.TypeStack;
-import org.yinwang.pysonar.Util;
+import org.yinwang.pysonar._;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -171,8 +171,9 @@ public abstract class Type
                     return t.asModuleType();
                 }
             }
-            Util.die("Not containing a ModuleType");
-            return new ModuleType(null, null, null);  // can't get here
+            _.die("Not containing a ModuleType");
+            // can't get here, just to make the @NotNull annotation happy
+            return new ModuleType(null, null, null);
         }
         else if (this.isModuleType())
         {
@@ -180,8 +181,9 @@ public abstract class Type
         }
         else
         {
-            Util.die("Not a ModuleType");
-            return new ModuleType(null, null, null);  // can't get here
+            _.die("Not a ModuleType");
+            // can't get here, just to make the @NotNull annotation happy
+            return new ModuleType(null, null, null);
         }
     }
 
@@ -254,7 +256,6 @@ public abstract class Type
     @Override
     public String toString()
     {
-//        return "?";
         return printType(new CyclicTypeRecorder());
     }
 

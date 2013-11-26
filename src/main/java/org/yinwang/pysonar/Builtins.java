@@ -13,12 +13,6 @@ import java.util.Set;
 import static org.yinwang.pysonar.Binding.Kind.*;
 
 
-/**
- * Initializes the built-in types, functions and modules.
- * This approach was easy (if tedious) to implement, but longer-term
- * it would be better to define these type signatures in python
- * "externs files", using a standard type annotation syntax.
- */
 public class Builtins
 {
 

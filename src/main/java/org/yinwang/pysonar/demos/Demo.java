@@ -3,7 +3,7 @@ package org.yinwang.pysonar.demos;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.FancyProgress;
 import org.yinwang.pysonar.Indexer;
-import org.yinwang.pysonar.Util;
+import org.yinwang.pysonar._;
 
 import java.io.File;
 import java.util.List;
@@ -69,7 +69,7 @@ public class Demo
         if (!OUTPUT_DIR.exists())
         {
             OUTPUT_DIR.mkdirs();
-            Util.msg("Created directory: " + OUTPUT_DIR.getAbsolutePath());
+            _.msg("Created directory: " + OUTPUT_DIR.getAbsolutePath());
         }
     }
 
@@ -79,16 +79,16 @@ public class Demo
         File rootDir = fileOrDir.isFile() ? fileOrDir.getParentFile() : fileOrDir;
         try
         {
-            rootPath = Util.unifyPath(rootDir);
+            rootPath = _.unifyPath(rootDir);
         }
         catch (Exception e)
         {
-            Util.die("File not found: " + fileOrDir);
+            _.die("File not found: " + fileOrDir);
         }
 
         indexer = new Indexer();
-        Util.msg("Loading and analyzing files");
-        indexer.loadFileRecursive(Util.unifyPath(fileOrDir));
+        _.msg("Loading and analyzing files");
+        indexer.loadFileRecursive(_.unifyPath(fileOrDir));
         indexer.finish();
 
         generateHtml();
@@ -98,14 +98,14 @@ public class Demo
 
     private void generateHtml()
     {
-        Util.msg("\nGenerating HTML");
+        _.msg("\nGenerating HTML");
         makeOutputDir();
 
         linker = new Linker(rootPath, OUTPUT_DIR);
         linker.findLinks(indexer);
 
         int rootLength = rootPath.length();
-        Util.msg("\nGenerating HTML");
+        _.msg("\nGenerating HTML");
 
         int total = 0;
         for (String path : indexer.getLoadedFiles())
@@ -123,22 +123,22 @@ public class Demo
             if (path.startsWith(rootPath))
             {
                 progress.tick();
-                File destFile = Util.joinPath(OUTPUT_DIR, path.substring(rootLength));
+                File destFile = _.joinPath(OUTPUT_DIR, path.substring(rootLength));
                 destFile.getParentFile().mkdirs();
                 String destPath = destFile.getAbsolutePath() + ".html";
                 String html = markup(path);
                 try
                 {
-                    Util.writeFile(destPath, html);
+                    _.writeFile(destPath, html);
                 }
                 catch (Exception e)
                 {
-                    Util.msg("Failed to write: " + destPath);
+                    _.msg("Failed to write: " + destPath);
                 }
             }
         }
 
-        Util.msg("\nWrote " + indexer.getLoadedFiles().size() + " files to " + OUTPUT_DIR);
+        _.msg("\nWrote " + indexer.getLoadedFiles().size() + " files to " + OUTPUT_DIR);
     }
 
 
@@ -149,11 +149,11 @@ public class Demo
 
         try
         {
-            source = Util.readFile(path);
+            source = _.readFile(path);
         }
         catch (Exception e)
         {
-            Util.die("Failed to read file: " + path);
+            _.die("Failed to read file: " + path);
             return "";
         }
 
@@ -196,9 +196,9 @@ public class Demo
 
     private static void usage()
     {
-        Util.msg("Usage:  java -jar pysonar-2.0-SNAPSHOT.jar <file-or-dir> <output-dir>");
-        Util.msg("Example that generates an index for Python 2.7 standard library:");
-        Util.msg(" java -jar pysonar-2.0-SNAPSHOT.jar /usr/lib/python2.7 ./html");
+        _.msg("Usage:  java -jar pysonar-2.0-SNAPSHOT.jar <file-or-dir> <output-dir>");
+        _.msg("Example that generates an index for Python 2.7 standard library:");
+        _.msg(" java -jar pysonar-2.0-SNAPSHOT.jar /usr/lib/python2.7 ./html");
         System.exit(0);
     }
 
@@ -209,7 +209,7 @@ public class Demo
         File f = new File(path);
         if (!f.canRead())
         {
-            Util.die("Path not found or not readable: " + path);
+            _.die("Path not found or not readable: " + path);
         }
         return f;
     }
@@ -227,7 +227,7 @@ public class Demo
 
         new Demo().start(fileOrDir);
 
-        Util.msg(Util.getGCStats());
+        _.msg(_.getGCStats());
 
     }
 }

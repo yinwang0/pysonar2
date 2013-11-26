@@ -9,10 +9,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-/**
- * A union type is a set of several other types. During a union operation,
- * destructuring happens and unknown types are unified.
- */
 public class UnionType extends Type
 {
 

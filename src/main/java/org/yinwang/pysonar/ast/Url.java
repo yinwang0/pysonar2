@@ -7,7 +7,7 @@ import org.yinwang.pysonar.types.Type;
 
 
 /**
- * Non-AST node used to represent virtual source locations for builtins
+ * virtual-AST node used to represent virtual source locations for builtins
  * as external urls.
  */
 public class Url extends Node

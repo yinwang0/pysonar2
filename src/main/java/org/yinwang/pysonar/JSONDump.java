@@ -18,8 +18,6 @@ import java.util.logging.Logger;
 public class JSONDump
 {
 
-    private static final int MAX_PATH_LENGTH = 900;
-
     private static Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     private static Set<String> seenDef = new HashSet<>();
@@ -79,13 +77,7 @@ public class JSONDump
                         Binding.Kind.ATTRIBUTE == binding.getKind() ||
                         (def.hasName() && (name.length() == 0 || name.charAt(0) == '_' || name.startsWith("lambda%"))));
 
-//        boolean isExported = true;
-
         String path = binding.getQname().replace('.', '/').replace("%20", ".");
-
-//        if (binding.getKind() == Binding.Kind.MODULE) {
-//            Util.msg("module! path: " + path);
-//        }
 
         if (!seenDef.contains(path))
         {
@@ -200,7 +192,6 @@ public class JSONDump
     private static void writeDocJson(Def def, Indexer idx, JsonGenerator json) throws Exception
     {
         String path = def.getBinding().getQname().replace('.', '/').replace("%20", ".");
-//        Util.msg("path: " + path);
 
         if (!seenDocs.contains(path))
         {
@@ -236,7 +227,7 @@ public class JSONDump
 
     private static boolean shouldEmit(@NotNull String pathToMaybeEmit, String srcpath)
     {
-        return Util.unifyPath(pathToMaybeEmit).startsWith(Util.unifyPath(srcpath));
+        return _.unifyPath(pathToMaybeEmit).startsWith(_.unifyPath(srcpath));
     }
 
 
@@ -362,7 +353,7 @@ public class JSONDump
             docOut = new BufferedOutputStream(new FileOutputStream(docFilename));
             symOut = new BufferedOutputStream(new FileOutputStream(symFilename));
             refOut = new BufferedOutputStream(new FileOutputStream(refFilename));
-            Util.msg("graphing: " + srcpath);
+            _.msg("graphing: " + srcpath);
             graph(srcpath, inclpaths, symOut, refOut, docOut);
             docOut.flush();
             symOut.flush();

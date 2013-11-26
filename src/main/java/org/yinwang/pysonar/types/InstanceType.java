@@ -8,11 +8,6 @@ import org.yinwang.pysonar.ast.Call;
 import java.util.List;
 
 
-/**
- * Represents an instance of a class.  Currently there is nothing in
- * the indexer that needs to distinguish instances from classes -- both
- * classes and their instances are merged into a single type.
- */
 public class InstanceType extends Type
 {
 

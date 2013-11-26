@@ -8,9 +8,6 @@ import org.yinwang.pysonar.types.Type;
 import java.util.List;
 
 
-/**
- * A name alias.  Used for the components of import and import-from statements.
- */
 public class Alias extends Node
 {
 
@@ -28,12 +25,6 @@ public class Alias extends Node
     }
 
 
-    /**
-     * Resolves and returns the referenced
-     * {@link org.yinwang.pysonar.types.ModuleType} in an import or
-     * or import-from statement.  NImportFrom statements manually
-     * resolve their child NAliases.
-     */
     @NotNull
     @Override
     public Type resolve(Scope s)

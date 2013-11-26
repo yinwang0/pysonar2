@@ -12,9 +12,9 @@ public class ListType extends Type
 
     private Type eltType;
     @NotNull
-    public List<Type> positional = new ArrayList<Type>();
+    public List<Type> positional = new ArrayList<>();
     @NotNull
-    public List<Object> values = new ArrayList<Object>();
+    public List<Object> values = new ArrayList<>();
 
 
     public ListType()
@@ -37,10 +37,6 @@ public class ListType extends Type
     }
 
 
-    /**
-     * Returns the type of the elements.  You should wrap the result
-     * with {@link UnknownType#follow} to get to the actual type.
-     */
     public Type getElementType()
     {
         return eltType;

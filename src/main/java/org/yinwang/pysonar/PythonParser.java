@@ -31,23 +31,23 @@ public class PythonParser
 
     public PythonParser()
     {
-        String tmpDir = Util.getSystemTempDir();
-        String sid = Util.newSessionId();
+        String tmpDir = _.getSystemTempDir();
+        String sid = _.newSessionId();
 
-        exchangeFile = Util.makePathString(tmpDir, "pysonar2", "json." + sid);
-        endMark = Util.makePathString(tmpDir, "pysonar2", "end." + sid);
-        pyStub = Util.makePathString(tmpDir, "pysonar2", "ast2json." + sid);
+        exchangeFile = _.makePathString(tmpDir, "pysonar2", "json." + sid);
+        endMark = _.makePathString(tmpDir, "pysonar2", "end." + sid);
+        pyStub = _.makePathString(tmpDir, "pysonar2", "ast2json." + sid);
 
         startPythonProcesses();
 
         if (python2Process != null)
         {
-            Util.msg("Started: " + PYTHON2_EXE);
+            _.msg("Started: " + PYTHON2_EXE);
         }
 
         if (python3Process != null)
         {
-            Util.msg("Started: " + PYTHON3_EXE);
+            _.msg("Started: " + PYTHON3_EXE);
         }
     }
 
@@ -69,7 +69,7 @@ public class PythonParser
 
         if (python2Process == null && python3Process == null)
         {
-            Util.die("You don't seem to have either of Python or Python3 on PATH");
+            _.die("You don't seem to have either of Python or Python3 on PATH");
         }
     }
 
@@ -289,7 +289,7 @@ public class PythonParser
             Module m = new Module(b, start, end);
             try
             {
-                m.setFile(Util.unifyPath((String) map.get("filename")));
+                m.setFile(_.unifyPath((String) map.get("filename")));
             }
             catch (Exception e)
             {
@@ -756,7 +756,7 @@ public class PythonParser
         try
         {
             InputStream jsonize = Thread.currentThread().getContextClassLoader().getResourceAsStream("org/yinwang/pysonar/ast2json.py");
-            String jsonizeStr = Util.readWholeStream(jsonize);
+            String jsonizeStr = _.readWholeStream(jsonize);
             FileWriter fw = new FileWriter(pyStub);
             fw.write(jsonizeStr);
             fw.close();
@@ -819,7 +819,7 @@ public class PythonParser
         }
         catch (Exception e)
         {
-            Util.msg("\nFailed to send file to Python: " + filename);
+            _.msg("\nFailed to send file to Python: " + filename);
             exchange.delete();
             marker.delete();
             return null;
@@ -832,7 +832,7 @@ public class PythonParser
         {
             if (System.currentTimeMillis() - waitStart > 5000)
             {
-                Util.msg("\nTimed out while parsing: " + filename);
+                _.msg("\nTimed out while parsing: " + filename);
                 exchange.delete();
                 marker.delete();
                 startPythonProcesses();
@@ -854,7 +854,7 @@ public class PythonParser
         String json;
         try
         {
-            json = Util.readFile(exchangeFile);
+            json = _.readFile(exchangeFile);
         }
         catch (Exception e)
         {

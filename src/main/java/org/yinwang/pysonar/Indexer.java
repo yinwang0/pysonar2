@@ -39,31 +39,11 @@ public class Indexer
     private Set<Object> callStack = new HashSet<>();
     private Set<Object> importStack = new HashSet<>();
 
-
-    private int threadCounter = 0;
-
-
-    public int newThread()
-    {
-        threadCounter++;
-        return threadCounter;
-    }
-
-
     private AstCache astCache;
     public String cacheDir;
-
-    @NotNull
     public Set<String> failedModules = new HashSet<>();
-    @NotNull
     public Set<String> failedToParse = new HashSet<>();
-    @NotNull
     public Stats stats = new Stats();
-
-    /**
-     * Manages the built-in modules -- that is, modules from the standard Python
-     * library that are implemented in C and consequently have no Python source.
-     */
     public Builtins builtins;
     private Logger logger;
     private FancyProgress loadingProgress = null;
@@ -86,7 +66,7 @@ public class Indexer
     {
         if (cd != null)
         {
-            cwd = Util.unifyPath(cd);
+            cwd = _.unifyPath(cd);
         }
     }
 
@@ -102,7 +82,7 @@ public class Indexer
 
     public void addPath(String p)
     {
-        path.add(Util.unifyPath(p));
+        path.add(_.unifyPath(p));
     }
 
 
@@ -127,9 +107,6 @@ public class Indexer
     }
 
 
-    /**
-     * Returns the module search path. Put cwd on top.
-     */
     @NotNull
     public List<String> getLoadPath()
     {
@@ -189,7 +166,7 @@ public class Indexer
     @Nullable
     ModuleType getCachedModule(String file)
     {
-        Type t = moduleTable.lookupType(Util.moduleQname(file));
+        Type t = moduleTable.lookupType(_.moduleQname(file));
         if (t == null)
         {
             return null;
@@ -216,10 +193,6 @@ public class Indexer
     }
 
 
-    /**
-     * Returns the list, possibly empty but never {@code null}, of
-     * errors and warnings generated in the file.
-     */
     public List<Diagnostic> getDiagnosticsForFile(String file)
     {
         List<Diagnostic> errs = semanticErrors.get(file);
@@ -231,12 +204,6 @@ public class Indexer
     }
 
 
-    /**
-     * Add a reference to binding {@code b} at AST node {@code node}.
-     *
-     * @param node a node referring to a name binding.  Typically a
-     *             {@link org.yinwang.pysonar.ast.Name}, {@link org.yinwang.pysonar.ast.Str} or {@link org.yinwang.pysonar.ast.Url}.
-     */
     public void putRef(@Nullable Node node, @Nullable Binding b)
     {
         if (node == null || node instanceof Url || b == null)
@@ -247,10 +214,6 @@ public class Indexer
         List<Binding> bindings = references.get(ref);
         if (bindings == null)
         {
-            // The indexer is heavily memory-constrained, so we need small overhead.
-            // Empirically using a capacity-1 ArrayList for the binding set
-            // uses about 1/2 the memory of a LinkedList, and 1/4 the memory
-            // of a default HashSet.
             bindings = new ArrayList<>(1);
             references.put(ref, bindings);
         }
@@ -319,7 +282,7 @@ public class Indexer
     {
 //        Util.msg("loading: " + path);
 
-        path = Util.unifyPath(path);
+        path = _.unifyPath(path);
         File f = new File(path);
 
         if (!f.canRead())
@@ -406,15 +369,15 @@ public class Indexer
 
     private void createCacheDir()
     {
-        cacheDir = Util.makePathString(Util.getSystemTempDir(), "pysonar2", "ast_cache");
+        cacheDir = _.makePathString(_.getSystemTempDir(), "pysonar2", "ast_cache");
         File f = new File(cacheDir);
-        Util.msg("AST cache is at: " + cacheDir);
+        _.msg("AST cache is at: " + cacheDir);
 
         if (!f.exists())
         {
             if (!f.mkdirs())
             {
-                Util.die("Failed to create tmp directory: " + cacheDir +
+                _.die("Failed to create tmp directory: " + cacheDir +
                         ".Please check permissions");
             }
         }
@@ -480,7 +443,7 @@ public class Indexer
         for (String p : loadPath)
         {
             File startDir = new File(p, headName);
-            File initFile = new File(Util.joinPath(startDir, "__init__.py").getPath());
+            File initFile = new File(_.joinPath(startDir, "__init__.py").getPath());
 
             if (initFile.exists())
             {
@@ -532,7 +495,7 @@ public class Indexer
         for (int i = 0; i < name.size(); i++)
         {
             path = new File(path, name.get(i).id);
-            File initFile = new File(Util.joinPath(path, "__init__.py").getPath());
+            File initFile = new File(_.joinPath(path, "__init__.py").getPath());
 
             if (initFile.exists())
             {
@@ -647,8 +610,8 @@ public class Indexer
     public void finish()
     {
 //        progress.end();
-        Util.msg("\nFinished loading files. " + nCalled + " functions were called.");
-        Util.msg("Analyzing uncalled functions");
+        _.msg("\nFinished loading files. " + nCalled + " functions were called.");
+        _.msg("Analyzing uncalled functions");
         applyUncalled();
 
         // mark unused variables
@@ -674,7 +637,7 @@ public class Indexer
             convertCallToNew(ent.getKey(), ent.getValue());
         }
 
-        Util.msg(getAnalysisSummary());
+        _.msg(getAnalysisSummary());
     }
 
 
@@ -751,9 +714,9 @@ public class Indexer
     public String getAnalysisSummary()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("\n" + Util.banner("analysis summary"));
+        sb.append("\n" + _.banner("analysis summary"));
 
-        String duration = Util.formatTime(System.currentTimeMillis() - stats.getInt("startTime"));
+        String duration = _.formatTime(System.currentTimeMillis() - stats.getInt("startTime"));
         sb.append("\n- total time: " + duration);
         sb.append("\n- modules loaded: " + loadedFiles.size());
         sb.append("\n- unresolved modules: " + failedModules.size());
@@ -779,8 +742,8 @@ public class Indexer
         long unresolved = stats.getInt("unresolved");
         sb.append("\n- resolved names: " + resolved);
         sb.append("\n- unresolved names: " + unresolved);
-        sb.append("\n- name resolve rate: " + Util.percent(resolved, resolved + unresolved));
-        sb.append("\n" + Util.getGCStats());
+        sb.append("\n- name resolve rate: " + _.percent(resolved, resolved + unresolved));
+        sb.append("\n" + _.getGCStats());
 
         return sb.toString();
     }

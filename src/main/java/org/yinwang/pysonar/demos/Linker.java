@@ -44,14 +44,9 @@ class Linker
     }
 
 
-    /**
-     * Process all bindings across all files and record per-file semantic styles.
-     * Should be called once per index.
-     */
-
     public void findLinks(@NotNull Indexer indexer)
     {
-        Util.msg("Adding xref links");
+        _.msg("Adding xref links");
 
         int ndef = 0;
         for (List<Binding> bindings : indexer.getAllBindings().values())
@@ -77,7 +72,7 @@ class Linker
         }
 
         // highlight definitions
-        Util.msg("\nAdding ref links");
+        _.msg("\nAdding ref links");
         progress = new FancyProgress(indexer.getReferences().size(), 50);
 
         for (Entry<Ref, List<Binding>> e : indexer.getReferences().entrySet())
@@ -144,7 +139,7 @@ class Linker
             {
                 typings.add(b.getType().toString());
             }
-            link.message = Util.joinWithSep(typings, " | ", "{", "}");
+            link.message = _.joinWithSep(typings, " | ", "{", "}");
 
             link.highlight = new ArrayList<>();
             for (Binding b : bindings)
@@ -300,7 +295,7 @@ class Linker
             String relpath;
             if (filename != null)
             {
-                relpath = Util.relPath(filename, destPath);
+                relpath = _.relPath(filename, destPath);
             }
             else
             {

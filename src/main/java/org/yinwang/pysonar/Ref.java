@@ -15,9 +15,9 @@ public class Ref
 {
 
     private static final int ATTRIBUTE = 0x1;
-    private static final int CALL = 0x2;  // function/method call
-    private static final int NEW = 0x4;  // instantiation
-    private static final int STRING = 0x8; // source node is a String
+    private static final int CALL = 0x2;    // function/method call
+    private static final int NEW = 0x4;     // instantiation
+    private static final int STRING = 0x8;  // source node is a String
 
     private int start;
     @Nullable
@@ -38,10 +38,6 @@ public class Ref
             name = n.getId();
             if (n.isCall())
             {
-                // We don't always have enough information at this point to know
-                // if it's a constructor call or a regular function/method call,
-                // so we just determine if it looks like a call or not, and the
-                // indexer will convert constructor-calls to NEW in a later pass.
                 markAsCall();
             }
         }
@@ -92,18 +88,12 @@ public class Ref
     }
 
 
-    /**
-     * Returns the starting file offset of the reference.
-     */
     public int start()
     {
         return start;
     }
 
 
-    /**
-     * Returns the ending file offset of the reference.
-     */
     public int end()
     {
         return start + length();

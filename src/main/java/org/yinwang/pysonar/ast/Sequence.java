@@ -19,10 +19,4 @@ public abstract class Sequence extends Node
         addChildren(elts);
     }
 
-
-    @NotNull
-    public List<Node> getElements()
-    {
-        return elts;
-    }
 }

@@ -13,12 +13,6 @@ public class ClassType extends Type
     private Type superclass;
 
 
-    public ClassType()
-    {
-        this("<unknown>", null);
-    }
-
-
     public ClassType(@NotNull String name, @Nullable Scope parent)
     {
         this.name = name;
@@ -94,13 +88,6 @@ public class ClassType extends Type
             return this == other;
         }
     }
-
-
-    // XXX: Type equality for ClassType is now object identity, because classes
-    // can have have multiple definition sites so they shouldn't be considered
-    // identical even if they have the
-    // same path name (qname). NInstance type equality is now rigorously
-    // defined.
 
 
     @Override

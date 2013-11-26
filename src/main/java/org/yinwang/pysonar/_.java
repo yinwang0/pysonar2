@@ -12,7 +12,10 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 
-public class Util
+/**
+ * unsorted utility class
+ */
+public class _
 {
 
     public static final Charset UTF_8 = Charset.forName("UTF-8");
@@ -110,7 +113,7 @@ public class Util
     @NotNull
     public static String arrayToSortedStringSet(Collection<String> strings)
     {
-        Set<String> sorter = new TreeSet<String>();
+        Set<String> sorter = new TreeSet<>();
         sorter.addAll(strings);
         return arrayToString(sorter);
     }
@@ -225,16 +228,7 @@ public class Util
     public static String getSHA1(@NotNull File path)
     {
         byte[] bytes = getBytesFromFile(path);
-        if (bytes == null)
-        {
-            Util.msg("getSHA1: failed to read from file: " + path);
-            System.exit(2);
-            return "";
-        }
-        else
-        {
-            return getMD5(bytes);
-        }
+        return getMD5(bytes);
     }
 
 
@@ -249,7 +243,7 @@ public class Util
         }
         catch (Exception e)
         {
-            Util.die("getSHA1: failed to get MD5, shouldn't happen");
+            _.die("getSHA1: failed to get MD5, shouldn't happen");
             return "";
         }
 
@@ -257,9 +251,9 @@ public class Util
         algorithm.update(fileContents);
         byte messageDigest[] = algorithm.digest();
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < messageDigest.length; i++)
+        for (byte aMessageDigest : messageDigest)
         {
-            sb.append(String.format("%02x", 0xFF & messageDigest[i]));
+            sb.append(String.format("%02x", 0xFF & aMessageDigest));
         }
         return sb.toString();
     }
@@ -590,7 +584,7 @@ public class Util
         sb.append("\n- total collection time: " + formatTime(gcTime));
 
         Runtime runtime = Runtime.getRuntime();
-        sb.append("\n- total memory: " + Util.printMem(runtime.totalMemory()));
+        sb.append("\n- total memory: " + _.printMem(runtime.totalMemory()));
 
         return sb.toString();
     }

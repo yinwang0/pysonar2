@@ -19,13 +19,9 @@ public class Block extends Node
     public List<Node> seq;
 
 
-    public Block(@Nullable List<Node> seq, int start, int end)
+    public Block(@NotNull List<Node> seq, int start, int end)
     {
         super(start, end);
-        if (seq == null)
-        {
-            seq = new ArrayList<Node>();
-        }
         this.seq = seq;
         addChildren(seq);
     }

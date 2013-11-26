@@ -21,18 +21,18 @@ public class StyleRun implements Comparable<StyleRun>
         IDENTIFIER,
         BUILTIN,
         NUMBER,
-        CONSTANT,  // ALL_CAPS identifier
-        FUNCTION,  // function name
-        PARAMETER,  // function parameter
-        LOCAL,  // local variable
-        DECORATOR,  // function decorator
-        CLASS,  // class name
-        ATTRIBUTE,  // object attribute
-        LINK,  // hyperlink
-        ANCHOR,  // name anchor
+        CONSTANT,       // ALL_CAPS identifier
+        FUNCTION,       // function name
+        PARAMETER,      // function parameter
+        LOCAL,          // local variable
+        DECORATOR,      // function decorator
+        CLASS,          // class name
+        ATTRIBUTE,      // object attribute
+        LINK,           // hyperlink
+        ANCHOR,         // name anchor
         DELIMITER,
-        TYPE_NAME,  // reference to a type (e.g. function or class name)
-        // diagnostics
+        TYPE_NAME,      // reference to a type (e.g. function or class name)
+
         ERROR,
         WARNING,
         INFO
@@ -40,14 +40,14 @@ public class StyleRun implements Comparable<StyleRun>
 
 
     public Type type;
-    private int offset;  // file offset
-    private int length;  // style run length
+    private int offset;     // file offset
+    private int length;     // style run length
 
     public String message;  // optional hover text
     @Nullable
-    public String url;  // internal or external link
+    public String url;      // internal or external link
     @Nullable
-    public String id;   // for hover highlight
+    public String id;       // for hover highlight
     public List<String> highlight;   // for hover highlight
 
 

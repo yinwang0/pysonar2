@@ -81,15 +81,15 @@ public class Progress
             }
             long rate = count / seconds;
 
-            Util.msg("\n" + count + " items processed" +
-                    ", time: " + Util.formatTime(totalTime) +
+            _.msg("\n" + count + " items processed" +
+                    ", time: " + _.formatTime(totalTime) +
                     ", rate: " + count / seconds);
 
             if (total > 0)
             {
                 long rest = total - count;
                 long eta = rest / rate;
-                Util.msg("ETA: " + Util.formatTime(eta * 1000));
+                _.msg("ETA: " + _.formatTime(eta * 1000));
             }
         }
     }

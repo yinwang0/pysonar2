@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.demos;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Util;
+import org.yinwang.pysonar._;
 
 import java.util.List;
 import java.util.SortedSet;
@@ -84,7 +84,7 @@ class StyleApplier
                     buffer.append(", id ='" + style.id + "'");
                     if (style.highlight != null && !style.highlight.isEmpty())
                     {
-                        String ids = Util.joinWithSep(style.highlight, "\",\"", "\"", "\"");
+                        String ids = _.joinWithSep(style.highlight, "\",\"", "\"", "\"");
                         buffer.append(", onmouseover='highlight(").append(ids).append(")'");
                     }
                     break;
@@ -93,7 +93,7 @@ class StyleApplier
                     buffer.append(", id ='" + style.id + "'");
                     if (style.highlight != null && !style.highlight.isEmpty())
                     {
-                        String ids = Util.joinWithSep(style.highlight, "\",\"", "\"", "\"");
+                        String ids = _.joinWithSep(style.highlight, "\",\"", "\"", "\"");
                         buffer.append(", onmouseover='highlight(").append(ids).append(")'");
                     }
                     break;

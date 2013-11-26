@@ -14,25 +14,18 @@ public class Binding implements Comparable<Object>
 {
     public enum Kind
     {
-        ATTRIBUTE,  // attr accessed with "." on some other object
-        CLASS,  // class definition
+        ATTRIBUTE,    // attr accessed with "." on some other object
+        CLASS,        // class definition
         CONSTRUCTOR,  // __init__ functions in classes
-        FUNCTION,  // plain function
-        METHOD,  // static or instance method
-        MODULE,  // file
-        PARAMETER,  // function param
-        SCOPE,  // top-level variable ("scope" means we assume it can have attrs)
-        VARIABLE  // local variable
+        FUNCTION,     // plain function
+        METHOD,       // static or instance method
+        MODULE,       // file
+        PARAMETER,    // function param
+        SCOPE,        // top-level variable ("scope" means we assume it can have attrs)
+        VARIABLE      // local variable
     }
 
 
-    // The indexer is heavily memory-constrained, so these sets are initially
-    // small.  The vast majority of bindings have only one definition.
-    private static final int DEF_SET_INITIAL_CAPACITY = 1;
-    private static final int REF_SET_INITIAL_CAPACITY = 1;
-
-    // yinw: C-style bit-field changed to straightfoward booleans.
-    // The compiler should compact the space unless it is stupid.
     private boolean isStatic = false;         // static fields/methods
     private boolean isSynthetic = false;      // auto-generated bindings
     private boolean isReadonly = false;       // non-writable attributes
@@ -40,11 +33,11 @@ public class Binding implements Comparable<Object>
     private boolean isBuiltin = false;        // not from a source file
 
     @NotNull
-    private String name;    // unqualified name
+    private String name;     // unqualified name
     @NotNull
-    private String qname;   // qualified name
-    private Type type;     // inferred type
-    public Kind kind;      // name usage context
+    private String qname;    // qualified name
+    private Type type;       // inferred type
+    public Kind kind;        // name usage context
 
     @NotNull
     private Set<Def> defs;   // definitions (may be multiple)
@@ -57,7 +50,7 @@ public class Binding implements Comparable<Object>
         this.qname = type.getTable().getPath();
         this.type = type;
         this.kind = kind;
-        this.defs = new LinkedHashSet<>(DEF_SET_INITIAL_CAPACITY);
+        this.defs = new LinkedHashSet<>(1);
         addDef(node);
 
         Indexer.idx.registerBinding(this);
@@ -71,7 +64,7 @@ public class Binding implements Comparable<Object>
     }
 
 
-    public void setQname(String qname)
+    public void setQname(@NotNull String qname)
     {
         this.qname = qname;
     }
@@ -223,7 +216,7 @@ public class Binding implements Comparable<Object>
     {
         if (refs == null)
         {
-            refs = new LinkedHashSet<>(REF_SET_INITIAL_CAPACITY);
+            refs = new LinkedHashSet<>(1);
         }
         return refs;
     }

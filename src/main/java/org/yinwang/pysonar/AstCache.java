@@ -83,7 +83,7 @@ public class AstCache
     {
         try
         {
-            Util.deleteDirectory(new File(Indexer.idx.cacheDir));
+            _.deleteDirectory(new File(Indexer.idx.cacheDir));
             return true;
         }
         catch (Exception x)
@@ -174,14 +174,14 @@ public class AstCache
     @NotNull
     public String getCachePath(@NotNull File sourcePath)
     {
-        return getCachePath(Util.getSHA1(sourcePath), sourcePath.getName());
+        return getCachePath(_.getSHA1(sourcePath), sourcePath.getName());
     }
 
 
     @NotNull
     public String getCachePath(String md5, String name)
     {
-        return Util.makePathString(Indexer.idx.cacheDir, name + md5 + ".ast");
+        return _.makePathString(Indexer.idx.cacheDir, name + md5 + ".ast");
     }
 
 
@@ -199,7 +199,7 @@ public class AstCache
         }
         catch (Exception e)
         {
-            Util.msg("Failed to serialize: " + path);
+            _.msg("Failed to serialize: " + path);
         }
         finally
         {

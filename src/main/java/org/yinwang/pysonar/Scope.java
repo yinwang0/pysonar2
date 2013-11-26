@@ -450,7 +450,7 @@ public class Scope
         }
         else
         {
-            Util.die("Couldn't find global table. Shouldn't happen");
+            _.die("Couldn't find global table. Shouldn't happen");
             return this;
         }
     }
@@ -522,12 +522,12 @@ public class Scope
     }
 
 
-    @Nullable
+    @NotNull
     public String extendPath(@NotNull String name)
     {
         if (name.endsWith(".py"))
         {
-            name = Util.moduleNameFor(name);
+            name = _.moduleNameFor(name);
         }
 
         if (path.equals(""))
@@ -548,7 +548,7 @@ public class Scope
                 sep = ".";
                 break;
             default:
-                Util.msg("unsupported context for extendPath: " + scopeType);
+                _.msg("unsupported context for extendPath: " + scopeType);
                 return path;
         }
 

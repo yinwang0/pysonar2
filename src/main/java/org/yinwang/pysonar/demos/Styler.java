@@ -30,14 +30,14 @@ class Styler extends DefaultNodeVisitor
     private String source;
     private String path;
     @NotNull
-    private List<StyleRun> styles = new ArrayList<StyleRun>();
+    private List<StyleRun> styles = new ArrayList<>();
     private Linker linker;
 
     /**
      * Offsets of doc strings found by node visitor.
      */
     @NotNull
-    private Set<Integer> docOffsets = new HashSet<Integer>();
+    private Set<Integer> docOffsets = new HashSet<>();
 
 
     public Styler(Indexer idx, Linker linker)

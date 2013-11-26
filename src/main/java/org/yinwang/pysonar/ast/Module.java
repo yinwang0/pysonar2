@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
-import org.yinwang.pysonar.Util;
+import org.yinwang.pysonar._;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 
@@ -32,8 +32,8 @@ public class Module extends Node
     public void setFile(String file)
     {
         this.file = file;
-        this.name = Util.moduleNameFor(file);
-        this.sha1 = Util.getSHA1(new File(file));
+        this.name = _.moduleNameFor(file);
+        this.sha1 = _.getSHA1(new File(file));
     }
 
 
@@ -41,14 +41,14 @@ public class Module extends Node
     {
         try
         {
-            file = Util.unifyPath(path);
+            file = _.unifyPath(path);
         }
         catch (Exception e)
         {
-            Util.msg("invalid path: " + path);
+            _.msg("invalid path: " + path);
         }
-        name = Util.moduleNameFor(file);
-        sha1 = Util.getSHA1(path);
+        name = _.moduleNameFor(file);
+        sha1 = _.getSHA1(path);
     }
 
 
@@ -61,7 +61,7 @@ public class Module extends Node
     public void setFileAndMD5(String path, String md5)
     {
         file = path;
-        name = Util.moduleNameFor(file);
+        name = _.moduleNameFor(file);
         this.sha1 = md5;
     }
 
@@ -83,8 +83,8 @@ public class Module extends Node
     @Override
     public Type resolve(@NotNull Scope s)
     {
-        ModuleType mt = new ModuleType(Util.moduleNameFor(file), file, Indexer.idx.globaltable);
-        s.insert(Util.moduleQname(file), this, mt, Binding.Kind.MODULE);
+        ModuleType mt = new ModuleType(_.moduleNameFor(file), file, Indexer.idx.globaltable);
+        s.insert(_.moduleQname(file), this, mt, Binding.Kind.MODULE);
         resolveExpr(body, mt.getTable());
         return mt;
     }
