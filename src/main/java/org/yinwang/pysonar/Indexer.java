@@ -41,7 +41,6 @@ public class Indexer
 
     private AstCache astCache;
     public String cacheDir;
-    public Set<String> failedModules = new HashSet<>();
     public Set<String> failedToParse = new HashSet<>();
     public Stats stats = new Stats();
     public Builtins builtins;
@@ -343,7 +342,7 @@ public class Indexer
 
             if (ast == null)
             {
-                failedModules.add(file);
+                failedToParse.add(file);
                 return null;
             }
             else
@@ -719,7 +718,6 @@ public class Indexer
         String duration = _.formatTime(System.currentTimeMillis() - stats.getInt("startTime"));
         sb.append("\n- total time: " + duration);
         sb.append("\n- modules loaded: " + loadedFiles.size());
-        sb.append("\n- unresolved modules: " + failedModules.size());
         sb.append("\n- semantic problems: " + semanticErrors.size());
         sb.append("\n- failed to parse: " + failedToParse.size());
 

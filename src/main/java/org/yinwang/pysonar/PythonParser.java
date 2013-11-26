@@ -786,6 +786,7 @@ public class PythonParser
             Node n3 = parseFileInner(filename, python3Process);
             if (n3 == null)
             {
+                Indexer.idx.failedToParse.add(filename);
                 return null;
             }
             else
