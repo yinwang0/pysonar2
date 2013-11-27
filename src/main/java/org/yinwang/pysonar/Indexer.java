@@ -171,26 +171,25 @@ public class Indexer {
     }
 
 
-    public void putRef(@Nullable Node node, @Nullable List<Binding> bs) {
-        if (node == null || node instanceof Url || bs == null) {
-            return;
-        }
-        Ref ref = new Ref(node);
-        List<Binding> bindings = references.get(ref);
-        if (bindings == null) {
-            bindings = new ArrayList<>(1);
-            references.put(ref, bindings);
-        }
-        for (Binding b : bs) {
-            if (!bindings.contains(b)) {
-                bindings.add(b);
+    public void putRef(@NotNull Node node, @NotNull List<Binding> bs) {
+        if (!(node instanceof Url)) {
+            Ref ref = new Ref(node);
+            List<Binding> bindings = references.get(ref);
+            if (bindings == null) {
+                bindings = new ArrayList<>(1);
+                references.put(ref, bindings);
             }
-            b.addRef(ref);
+            for (Binding b : bs) {
+                if (!bindings.contains(b)) {
+                    bindings.add(b);
+                }
+                b.addRef(ref);
+            }
         }
     }
 
 
-    public void putRef(@Nullable Node node, @Nullable Binding b) {
+    public void putRef(@NotNull Node node, @NotNull Binding b) {
         List<Binding> bs = new ArrayList<>();
         bs.add(b);
         putRef(node, bs);

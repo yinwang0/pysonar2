@@ -105,9 +105,8 @@ public class Attribute extends Node {
             t.getTable().setPath(targetType.getTable().extendPath(attr.getId()));
             return t;
         } else {
-            Indexer.idx.putRef(attr, bs);
-
             for (Binding b : bs) {
+                Indexer.idx.putRef(attr, b);
                 if (getParent() != null && getParent().isCall() &&
                         b.getType().isFuncType() && targetType.isInstanceType())
                 {  // method call
