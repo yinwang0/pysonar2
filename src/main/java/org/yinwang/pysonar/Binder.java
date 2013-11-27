@@ -1,10 +1,7 @@
-package org.yinwang.pysonar.ast;
+package org.yinwang.pysonar;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Indexer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.ast.*;
 import org.yinwang.pysonar.types.ListType;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
@@ -15,11 +12,11 @@ import java.util.List;
 /**
  * Handles binding names to scopes, including destructuring assignment.
  */
-public class NameBinder {
+public class Binder {
 
     public static void bind(@NotNull Scope s, Node target, @NotNull Type rvalue, Binding.Kind kind) {
         if (target instanceof Name) {
-            bindName(s, (Name) target, rvalue, kind);
+            bind(s, (Name) target, rvalue, kind);
         } else if (target instanceof Tuple) {
             bind(s, ((Tuple) target).elts, rvalue, kind);
         } else if (target instanceof NList) {
@@ -29,9 +26,7 @@ public class NameBinder {
         } else if (target instanceof Subscript) {
             Subscript sub = (Subscript) target;
             Type valueType = Node.resolveExpr(sub.value, s);
-            if (sub.slice != null) {
-                Node.resolveExpr(sub.slice, s);
-            }
+            Node.resolveExpr(sub.slice, s);
             if (valueType instanceof ListType) {
                 ListType t = (ListType) valueType;
                 t.setElementType(UnionType.union(t.getElementType(), rvalue));
@@ -84,10 +79,7 @@ public class NameBinder {
     }
 
 
-    @Nullable
-    public static void bindName(@NotNull Scope s, @NotNull Name name, @NotNull Type rvalue,
-                                Binding.Kind kind)
-    {
+    public static void bind(@NotNull Scope s, @NotNull Name name, @NotNull Type rvalue, Binding.Kind kind) {
         if (s.isGlobalName(name.getId())) {
             Binding b = new Binding(name.getId(), name, rvalue, kind);
             s.getGlobalTable().update(name.getId(), b);

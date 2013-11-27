@@ -2,6 +2,7 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.yinwang.pysonar.Binder;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
@@ -175,7 +176,7 @@ public class FunctionDef extends Node {
             fun.setCls(outType.asClassType());
         }
 
-        NameBinder.bind(outer, name, fun, funkind);
+        Binder.bind(outer, name, fun, funkind);
         return Indexer.idx.builtins.Cont;
     }
 

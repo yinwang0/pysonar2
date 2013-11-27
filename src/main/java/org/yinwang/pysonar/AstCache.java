@@ -165,7 +165,7 @@ public class AstCache {
 
     // package-private for testing
     void serialize(@NotNull Module ast) {
-        String path = getCachePath(ast.getMD5(), new File(ast.getFile()).getName());
+        String path = getCachePath(ast.getSHA1(), new File(ast.getFile()).getName());
         ObjectOutputStream oos = null;
         FileOutputStream fos = null;
         try {
