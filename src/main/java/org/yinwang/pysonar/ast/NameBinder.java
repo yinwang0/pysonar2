@@ -98,6 +98,7 @@ public class NameBinder {
     }
 
 
+    // iterator
     public static void bindIter(@NotNull Scope s, Node target, @NotNull Node iter, Binding.Kind kind) {
         Type iterType = Node.resolveExpr(iter, s);
 
@@ -109,13 +110,17 @@ public class NameBinder {
             List<Binding> ents = iterType.getTable().lookupAttr("__iter__");
             if (ents != null) {
                 for (Binding ent : ents) {
-                    if (ent.getType().isFuncType()) {
-                        bind(s, target, ent.getType().asFuncType().getReturnType(), kind);
-                    } else {
-                        iter.addWarning("not an iterable type: " + iterType);
+                    if (ent == null || !ent.getType().isFuncType()) {
+                        if (!iterType.isUnknownType()) {
+                            Indexer.idx.putProblem(iter, "not an iterable type: " + iterType);
+                        }
                         bind(s, target, Indexer.idx.builtins.unknown, kind);
+                    } else {
+                        bind(s, target, ent.getType().asFuncType().getReturnType(), kind);
                     }
                 }
+            } else {
+                bind(s, target, Indexer.idx.builtins.unknown, kind);
             }
         }
     }
