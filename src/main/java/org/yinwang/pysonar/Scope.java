@@ -178,10 +178,13 @@ public class Scope {
 
 
     // create new binding and insert
-    @NotNull
     public void insert(String id, Node node, Type type, Binding.Kind kind) {
         Binding b = new Binding(id, node, type, kind);
-        b.setQname(extendPath(id));
+        if (type.isModuleType()) {
+            b.setQname(type.asModuleType().getQname());
+        } else {
+            b.setQname(extendPath(id));
+        }
         update(id, b);
     }
 
