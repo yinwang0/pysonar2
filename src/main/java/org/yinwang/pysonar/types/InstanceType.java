@@ -46,5 +46,4 @@ public class InstanceType extends Type {
     protected String printType(CyclicTypeRecorder ctr) {
         return getClassType().asClassType().getName();
     }
-
 }

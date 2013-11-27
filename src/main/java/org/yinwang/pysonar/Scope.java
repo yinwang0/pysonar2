@@ -331,15 +331,6 @@ public class Scope {
     }
 
 
-    public static Type makeUnion(List<Binding> bs) {
-        Type t = Indexer.idx.builtins.unknown;
-        for (Binding b : bs) {
-            t = UnionType.union(t, b.getType());
-        }
-        return t;
-    }
-
-
     /**
      * Look for a attribute named {@code attr} and if found, return its type.
      */
@@ -351,6 +342,15 @@ public class Scope {
         } else {
             return makeUnion(bs);
         }
+    }
+
+
+    public static Type makeUnion(List<Binding> bs) {
+        Type t = Indexer.idx.builtins.unknown;
+        for (Binding b : bs) {
+            t = UnionType.union(t, b.getType());
+        }
+        return t;
     }
 
 
