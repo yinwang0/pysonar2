@@ -138,11 +138,6 @@ public class Def {
     }
 
 
-    public boolean isModule() {
-        return binding.getKind() == Binding.Kind.MODULE;
-    }
-
-
     public int getStart() {
         return start;
     }
