@@ -179,17 +179,6 @@ public class JSONDump {
                 json.writeNumberField("start", binding.docstringStart);
                 json.writeNumberField("end", binding.docstringEnd);
                 json.writeEndObject();
-            } else if (binding.getKind() == Binding.Kind.MODULE) {
-                AstCache.DocstringInfo info = idx.getModuleDocstringInfoForFile(binding.getFileOrUrl());
-                if (info != null) {
-                    json.writeStartObject();
-                    json.writeStringField("sym", path);
-                    json.writeStringField("file", binding.getFileOrUrl());
-                    json.writeStringField("body", info.docstring);
-                    json.writeNumberField("start", info.start);
-                    json.writeNumberField("end", info.end);
-                    json.writeEndObject();
-                }
             }
         }
     }
