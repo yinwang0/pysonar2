@@ -38,7 +38,18 @@ public class InstanceType extends Type {
 
     @Override
     public boolean equals(Object other) {
-        return this == other;
+        if (other instanceof InstanceType) {
+            // for now ignore the case where an instance of the same class is modified
+            return classType.equals(((InstanceType) other).classType);
+        } else {
+            return false;
+        }
+    }
+
+
+    @Override
+    public int hashCode() {
+        return classType.hashCode();
     }
 
 
