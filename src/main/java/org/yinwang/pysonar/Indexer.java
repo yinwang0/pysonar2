@@ -63,9 +63,7 @@ public class Indexer {
 
     // main entry to the indexer
     public void index(String path) {
-        if (new File(projectDir).isDirectory()) {
-            projectDir = _.unifyPath(path);
-        }
+        projectDir = _.unifyPath(path);
         loadFileRecursive(projectDir);
     }
 
@@ -112,7 +110,7 @@ public class Indexer {
         if (cwd != null) {
             loadPath.add(cwd);
         }
-        if (projectDir != null) {
+        if (projectDir != null && (new File(projectDir).isDirectory())) {
             loadPath.add(projectDir);
         }
         loadPath.addAll(path);
