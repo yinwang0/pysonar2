@@ -89,7 +89,7 @@ public abstract class Node implements java.io.Serializable {
 
 
     @Nullable
-    public Str docstring() {
+    public Str getDocString() {
         Node body = null;
         if (this instanceof FunctionDef) {
             body = ((FunctionDef) this).body;

@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.ast.FunctionDef;
 import org.yinwang.pysonar.ast.Node;
+import org.yinwang.pysonar.ast.Str;
 import org.yinwang.pysonar.types.Type;
 
 import java.io.*;
@@ -171,13 +172,15 @@ public class JSONDump {
         if (!seenDocs.contains(path)) {
             seenDocs.add(path);
 
-            if (binding.docstring != null) {
+            Str doc = binding.getDocstring();
+
+            if (doc != null) {
                 json.writeStartObject();
                 json.writeStringField("sym", path);
                 json.writeStringField("file", binding.getFileOrUrl());
-                json.writeStringField("body", binding.docstring);
-                json.writeNumberField("start", binding.docstringStart);
-                json.writeNumberField("end", binding.docstringEnd);
+                json.writeStringField("body", doc.getStr());
+                json.writeNumberField("start", doc.start);
+                json.writeNumberField("end", doc.end);
                 json.writeEndObject();
             }
         }

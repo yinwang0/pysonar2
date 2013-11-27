@@ -34,12 +34,13 @@ public class Binding implements Comparable<Object> {
     @NotNull
     private String name;     // unqualified name
     @NotNull
+    private Node node;
+    @NotNull
     private String qname;    // qualified name
     private Type type;       // inferred type
     public Kind kind;        // name usage context
 
     private Set<Ref> refs;
-
 
     // fields from Def
     private int start = -1;
@@ -47,23 +48,15 @@ public class Binding implements Comparable<Object> {
     private int bodyStart = -1;
     private int bodyEnd = -1;
 
-    public String docstring;
-    public int docstringStart;
-    public int docstringEnd;
-
     @Nullable
     private String fileOrUrl;
-    @NotNull
-    private Node node;
 
 
-    public Binding(@NotNull String id, Node node, @NotNull Type type, @NotNull Kind kind) {
+    public Binding(@NotNull String id, @NotNull Node node, @NotNull Type type, @NotNull Kind kind) {
         this.name = id;
         this.qname = type.getTable().getPath();
         this.type = type;
         this.kind = kind;
-        this.node = node;
-
         this.node = node;
 
         if (node instanceof Url) {
@@ -95,28 +88,27 @@ public class Binding implements Comparable<Object> {
         {
             bodyStart = parent.start;
             bodyEnd = parent.end;
-            Str docstring = parent.docstring();
-            if (docstring != null) {
-                this.docstring = docstring.getStr();
-                this.docstringStart = docstring.start;
-                this.docstringEnd = docstring.end;
-            }
         } else if (node instanceof Module) {
             name = ((Module) node).name;
             start = 0;
             end = 0;
             bodyStart = node.start;
             bodyEnd = node.end;
-
-            Str docstring = node.docstring();
-            if (docstring != null) {
-                this.docstring = docstring.getStr();
-                this.docstringStart = docstring.start;
-                this.docstringEnd = docstring.end;
-            }
         } else {
             bodyStart = node.start;
             bodyEnd = node.end;
+        }
+    }
+
+
+    public Str getDocstring() {
+        Node parent = node.getParent();
+        if ((parent instanceof FunctionDef && ((FunctionDef) parent).name == node) ||
+                (parent instanceof ClassDef && ((ClassDef) parent).name == node))
+        {
+            return parent.getDocString();
+        } else {
+            return node.getDocString();
         }
     }
 
