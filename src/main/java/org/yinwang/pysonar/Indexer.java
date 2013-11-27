@@ -26,7 +26,7 @@ public class Indexer {
     public Scope moduleTable = new Scope(null, Scope.ScopeType.GLOBAL);
     public List<String> loadedFiles = new ArrayList<>();
     public Scope globaltable = new Scope(null, Scope.ScopeType.GLOBAL);
-    public Map<String, List<Binding>> allBindings = new LinkedHashMap<>();
+    public List<Binding> allBindings = new ArrayList<>();
     private Map<Ref, List<Binding>> references = new LinkedHashMap<>();
     public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
     public Map<String, List<Diagnostic>> parseErrors = new HashMap<>();
@@ -149,7 +149,7 @@ public class Indexer {
 
 
     @NotNull
-    public Map<String, List<Binding>> getAllBindings() {
+    public List<Binding> getAllBindings() {
         return allBindings;
     }
 
@@ -524,15 +524,13 @@ public class Indexer {
         applyUncalled();
 
         // mark unused variables
-        for (List<Binding> bindings : allBindings.values()) {
-            for (Binding b : bindings) {
-                if (!b.getType().isClassType() &&
-                        !b.getType().isFuncType() &&
-                        !b.getType().isModuleType()
-                        && b.getRefs().isEmpty())
-                {
-                    Indexer.idx.putProblem(b.getNode(), "Unused variable: " + b.getName());
-                }
+        for (Binding b : allBindings) {
+            if (!b.getType().isClassType() &&
+                    !b.getType().isFuncType() &&
+                    !b.getType().isModuleType()
+                    && b.getRefs().isEmpty())
+            {
+                Indexer.idx.putProblem(b.getNode(), "Unused variable: " + b.getName());
             }
         }
 
@@ -613,11 +611,9 @@ public class Indexer {
 
         // calculate number of defs, refs, xrefs
         int nDef = 0, nXRef = 0;
-        for (List<Binding> bindings : getAllBindings().values()) {
-            for (Binding b : bindings) {
-                nDef += 1;
-                nXRef += b.getRefs().size();
-            }
+        for (Binding b : getAllBindings()) {
+            nDef += 1;
+            nXRef += b.getRefs().size();
         }
 
         sb.append("\n- number of definitions: " + nDef);
@@ -647,32 +643,8 @@ public class Indexer {
     }
 
 
-    @Nullable
-    private Binding findBinding(@NotNull Binding b) {
-        List<Binding> existing = allBindings.get(b.getQname());
-        if (existing != null) {
-            for (Binding eb : existing) {
-                if (eb.equals(b)) {
-                    return eb;
-                }
-            }
-        }
-        return null;
-    }
-
-
-    @NotNull
     public void registerBinding(@NotNull Binding b) {
-        String qname = b.getQname();
-        List<Binding> existing = allBindings.get(qname);
-
-        if (existing != null) {
-            existing.add(b);
-        } else {
-            List<Binding> lb = new ArrayList<>();
-            lb.add(b);
-            allBindings.put(qname, lb);
-        }
+        allBindings.add(b);
     }
 
 

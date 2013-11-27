@@ -44,21 +44,12 @@ class Linker {
 
     public void findLinks(@NotNull Indexer indexer) {
         _.msg("Adding xref links");
+        FancyProgress progress = new FancyProgress(indexer.getAllBindings().size(), 50);
 
-        int ndef = 0;
-        for (List<Binding> bindings : indexer.getAllBindings().values()) {
-            for (Binding b : bindings) {
-                ndef += 1;
-            }
-        }
-
-        FancyProgress progress = new FancyProgress(ndef, 50);
-        for (List<Binding> bindings : indexer.getAllBindings().values()) {
-            for (Binding b : bindings) {
-                addSemanticStyles(b);
-                processDef(b);
-                progress.tick();
-            }
+        for (Binding b : indexer.getAllBindings()) {
+            addSemanticStyles(b);
+            processDef(b);
+            progress.tick();
         }
 
         // highlight definitions
@@ -69,7 +60,6 @@ class Linker {
             processRef(e.getKey(), e.getValue());
             progress.tick();
         }
-
 
 //        for (List<Diagnostic> ld: indexer.semanticErrors.values()) {
 //            for (Diagnostic d: ld) {

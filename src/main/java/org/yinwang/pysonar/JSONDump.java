@@ -226,22 +226,20 @@ public class JSONDump {
             json.writeStartArray();
         }
 
-        for (List<Binding> bindings : idx.getAllBindings().values()) {
-            for (Binding b : bindings) {
-                if (b.getFile() != null) {
-                    if (shouldEmit(b.getFile(), srcpath)) {
-                        writeSymJson(b, symJson);
-                        writeDocJson(b, idx, docJson);
-                    }
+        for (Binding b : idx.getAllBindings()) {
+            if (b.getFile() != null) {
+                if (shouldEmit(b.getFile(), srcpath)) {
+                    writeSymJson(b, symJson);
+                    writeDocJson(b, idx, docJson);
                 }
+            }
 
-                for (Ref ref : b.getRefs()) {
-                    if (ref.getFile() != null) {
-                        String key = ref.getFile() + ":" + ref.start();
-                        if (!seenRef.contains(key) && shouldEmit(ref.getFile(), srcpath)) {
-                            writeRefJson(ref, b, refJson);
-                            seenRef.add(key);
-                        }
+            for (Ref ref : b.getRefs()) {
+                if (ref.getFile() != null) {
+                    String key = ref.getFile() + ":" + ref.start();
+                    if (!seenRef.contains(key) && shouldEmit(ref.getFile(), srcpath)) {
+                        writeRefJson(ref, b, refJson);
+                        seenRef.add(key);
                     }
                 }
             }
