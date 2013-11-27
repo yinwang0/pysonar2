@@ -35,7 +35,7 @@ public class JSONDump {
             idx.addPath(inclpath);
         }
 
-        idx.loadFileRecursive(srcpath);
+        idx.index(srcpath);
         idx.finish();
 
         if (idx.semanticErrors.size() > 0) {

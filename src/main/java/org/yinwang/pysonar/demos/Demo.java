@@ -82,7 +82,7 @@ public class Demo {
 
         indexer = new Indexer();
         _.msg("Loading and analyzing files");
-        indexer.loadFileRecursive(_.unifyPath(fileOrDir));
+        indexer.index(_.unifyPath(fileOrDir));
         indexer.finish();
 
         generateHtml();

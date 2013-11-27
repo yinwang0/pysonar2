@@ -46,6 +46,8 @@ public class Indexer {
     private Logger logger;
     private FancyProgress loadingProgress = null;
 
+    String projectDir;
+
 
     public Indexer() {
         stats.putInt("startTime", System.currentTimeMillis());
@@ -56,6 +58,15 @@ public class Indexer {
         addPythonPath();
         createCacheDir();
         getAstCache();
+    }
+
+
+    // main entry to the indexer
+    public void index(String path) {
+        if (new File(projectDir).isDirectory()) {
+            projectDir = _.unifyPath(path);
+        }
+        loadFileRecursive(projectDir);
     }
 
 
@@ -100,6 +111,9 @@ public class Indexer {
         List<String> loadPath = new ArrayList<>();
         if (cwd != null) {
             loadPath.add(cwd);
+        }
+        if (projectDir != null) {
+            loadPath.add(projectDir);
         }
         loadPath.addAll(path);
         return loadPath;
