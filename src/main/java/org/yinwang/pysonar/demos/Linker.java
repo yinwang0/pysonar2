@@ -177,10 +177,6 @@ class Linker {
      * the AST.
      */
     private void addSemanticStyles(@NotNull Binding nb) {
-        if (nb == null || !nb.hasName()) {
-            return;
-        }
-
         boolean isConst = CONSTANT.matcher(nb.getName()).matches();
         switch (nb.getKind()) {
             case SCOPE:

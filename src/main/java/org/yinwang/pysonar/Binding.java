@@ -51,8 +51,6 @@ public class Binding implements Comparable<Object> {
     public int docstringStart;
     public int docstringEnd;
 
-    @NotNull
-    private Binding binding;
     @Nullable
     private String fileOrUrl;
     @NotNull
@@ -120,9 +118,6 @@ public class Binding implements Comparable<Object> {
             bodyStart = node.start;
             bodyEnd = node.end;
         }
-
-//        Util.msg("start: " + start + ", end: " + end + ", bodystart: " + bodyStart + ", bodyend: " + bodyEnd);
-
     }
 
 
@@ -193,28 +188,8 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    public boolean isReadOnly() {
-        return isReadonly;
-    }
-
-
-    public boolean isDeprecated() {
-        return isDeprecated;
-    }
-
-
-    public void markDeprecated() {
-        isDeprecated = true;
-    }
-
-
     public boolean isBuiltin() {
         return isBuiltin;
-    }
-
-
-    public void markBuiltin() {
-        isBuiltin = true;
     }
 
 
@@ -291,19 +266,9 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    public boolean hasName() {
-        return name != null;
-    }
-
-
     @NotNull
     public Node getNode() {
         return node;
-    }
-
-
-    public void setNode(Node node) {
-        this.node = node;
     }
 
 

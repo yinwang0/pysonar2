@@ -246,9 +246,9 @@ public class Outliner {
      */
     @NotNull
     public List<Entry> generate(@NotNull Scope scope, @NotNull String path) {
-        List<Entry> result = new ArrayList<Entry>();
+        List<Entry> result = new ArrayList<>();
 
-        Set<Binding> entries = new TreeSet<Binding>();
+        Set<Binding> entries = new TreeSet<>();
         for (Binding b : scope.values()) {
             if (!b.isSynthetic()
                     && !b.isBuiltin()

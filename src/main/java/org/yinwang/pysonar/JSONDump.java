@@ -65,7 +65,7 @@ public class JSONDump {
                         Binding.Kind.PARAMETER == binding.getKind() ||
                         Binding.Kind.SCOPE == binding.getKind() ||
                         Binding.Kind.ATTRIBUTE == binding.getKind() ||
-                        (binding.hasName() && (name.length() == 0 || name.charAt(0) == '_' || name.startsWith("lambda%"))));
+                        (name.length() == 0 || name.charAt(0) == '_' || name.startsWith("lambda%")));
 
         String path = binding.getQname().replace('.', '/').replace("%20", ".");
 
