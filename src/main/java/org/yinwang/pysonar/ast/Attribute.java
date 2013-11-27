@@ -76,6 +76,12 @@ public class Attribute extends Node {
             Indexer.idx.putProblem(this, "Can't set attribute for UnknownType");
             return;
         }
+        // new attr, mark the type as "mutated"
+        if (targetType.getTable().lookupAttr(attr.id) == null ||
+                !targetType.getTable().lookupAttrType(attr.id).equals(v))
+        {
+            targetType.setMutated(true);
+        }
         targetType.getTable().insert(attr.id, attr, v, ATTRIBUTE);
     }
 

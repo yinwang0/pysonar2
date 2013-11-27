@@ -17,6 +17,7 @@ public abstract class Type {
 
     @Nullable
     public Scope table;
+    public boolean mutated = false;
 
 
     @NotNull
@@ -38,6 +39,16 @@ public abstract class Type {
             table = new Scope(null, Scope.ScopeType.SCOPE);
         }
         return table;
+    }
+
+
+    public boolean isMutated() {
+        return mutated;
+    }
+
+
+    public void setMutated(boolean mutated) {
+        this.mutated = mutated;
     }
 
 
