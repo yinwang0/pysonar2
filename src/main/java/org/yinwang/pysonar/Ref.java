@@ -32,7 +32,7 @@ public class Ref {
 
         if (node instanceof Name) {
             Name n = ((Name) node);
-            name = n.getId();
+            name = n.id;
             if (n.isCall()) {
                 markAsCall();
             }

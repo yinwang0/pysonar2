@@ -200,19 +200,21 @@ public class Call extends Node {
                 aType = aTypes.get(i);
             } else if (i - nPositional >= 0 && i - nPositional < dSize) {
                 aType = dTypes.get(i - nPositional);
-            } else if (kwTypes != null && args.get(i).isName() &&
-                    kwTypes.containsKey(args.get(i).asName().getId()))
-            {
-                aType = kwTypes.get(args.get(i).asName().getId());
-                kwTypes.remove(args.get(i).asName().getId());
-            } else if (starargsType != null && starargsType.isTupleType() &&
-                    j < starargsType.asTupleType().getElementTypes().size())
-            {
-                aType = starargsType.asTupleType().get(j++);
             } else {
-                aType = Indexer.idx.builtins.unknown;
-                if (call != null) {
-                    Indexer.idx.putProblem(args.get(i), "unable to bind argument:" + args.get(i));
+                if (kwTypes != null && args.get(i).isName() &&
+                        kwTypes.containsKey(args.get(i).asName().id))
+                {
+                    aType = kwTypes.get(args.get(i).asName().id);
+                    kwTypes.remove(args.get(i).asName().id);
+                } else if (starargsType != null && starargsType.isTupleType() &&
+                        j < starargsType.asTupleType().getElementTypes().size())
+                {
+                    aType = starargsType.asTupleType().get(j++);
+                } else {
+                    aType = Indexer.idx.builtins.unknown;
+                    if (call != null) {
+                        Indexer.idx.putProblem(args.get(i), "unable to bind argument:" + args.get(i));
+                    }
                 }
             }
             Binder.bind(funcTable, arg, aType, Binding.Kind.PARAMETER);

@@ -50,7 +50,7 @@ public class ClassDef extends Node {
     @NotNull
     @Override
     public Type resolve(@NotNull Scope s) {
-        ClassType classType = new ClassType(getName().getId(), s);
+        ClassType classType = new ClassType(getName().id, s);
         List<Type> baseTypes = new ArrayList<>();
         for (Node base : bases) {
             Type baseType = resolveExpr(base, s);
@@ -97,7 +97,7 @@ public class ClassDef extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<ClassDef:" + name.getId() + ":" + start + ">";
+        return "<ClassDef:" + name.id + ":" + start + ">";
     }
 
 

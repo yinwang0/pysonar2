@@ -60,10 +60,10 @@ public class Name extends Node {
         } else if (id.equals("True") || id.equals("False")) {
             return Indexer.idx.builtins.BaseBool;
         } else {
-            Indexer.idx.putProblem(this, "unbound variable " + getId());
+            Indexer.idx.putProblem(this, "unbound variable " + id);
             Indexer.idx.stats.inc("unresolved");
             Type t = Indexer.idx.builtins.unknown;
-            t.getTable().setPath(s.extendPath(getId()));
+            t.getTable().setPath(s.extendPath(id));
             return t;
         }
     }
@@ -76,12 +76,6 @@ public class Name extends Node {
     public boolean isAttribute() {
         return parent instanceof Attribute
                 && ((Attribute) parent).getAttr() == this;
-    }
-
-
-    @NotNull
-    public String getId() {
-        return id;
     }
 
 

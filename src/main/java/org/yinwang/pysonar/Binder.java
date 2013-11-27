@@ -80,12 +80,12 @@ public class Binder {
 
 
     public static void bind(@NotNull Scope s, @NotNull Name name, @NotNull Type rvalue, Binding.Kind kind) {
-        if (s.isGlobalName(name.getId())) {
-            Binding b = new Binding(name.getId(), name, rvalue, kind);
-            s.getGlobalTable().update(name.getId(), b);
+        if (s.isGlobalName(name.id)) {
+            Binding b = new Binding(name.id, name, rvalue, kind);
+            s.getGlobalTable().update(name.id, b);
             Indexer.idx.putRef(name, b);
         } else {
-            s.insert(name.getId(), name, rvalue, kind);
+            s.insert(name.id, name, rvalue, kind);
         }
     }
 
