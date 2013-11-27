@@ -56,8 +56,7 @@ class Linker {
         for (List<Binding> bindings : indexer.getAllBindings().values()) {
             for (Binding b : bindings) {
                 addSemanticStyles(b);
-                Def def = b.getDef();
-                processDef(def, b);
+                processDef(b);
                 progress.tick();
             }
         }
@@ -86,18 +85,18 @@ class Linker {
     }
 
 
-    private void processDef(@NotNull Def def, @NotNull Binding binding) {
-        int hash = def.hashCode();
+    private void processDef(@NotNull Binding binding) {
+        int hash = binding.hashCode();
 
-        if (def.isURL() || def.getStart() < 0 || seenDef.contains(hash)) {
+        if (binding.isURL() || binding.getStart() < 0 || seenDef.contains(hash)) {
             return;
         }
 
         seenDef.add(hash);
-        StyleRun style = new StyleRun(StyleRun.Type.ANCHOR, def.getStart(), def.getLength());
+        StyleRun style = new StyleRun(StyleRun.Type.ANCHOR, binding.getStart(), binding.getLength());
         style.message = binding.getType().toString();
         style.url = binding.getQname();
-        style.id = "" + Math.abs(def.hashCode());
+        style.id = "" + Math.abs(binding.hashCode());
 
         Set<Ref> refs = binding.getRefs();
         style.highlight = new ArrayList<>();
@@ -106,7 +105,7 @@ class Linker {
         for (Ref r : refs) {
             style.highlight.add(Integer.toString(Math.abs(r.hashCode())));
         }
-        addFileStyle(def.getFile(), style);
+        addFileStyle(binding.getFile(), style);
     }
 
 
@@ -127,8 +126,7 @@ class Linker {
 
             link.highlight = new ArrayList<>();
             for (Binding b : bindings) {
-                Def d = b.getDef();
-                link.highlight.add(Integer.toString(Math.abs(d.hashCode())));
+                link.highlight.add(Integer.toString(Math.abs(b.hashCode())));
             }
 
             // Currently jump to the first binding only. Should change to have a
@@ -179,35 +177,34 @@ class Linker {
      * the AST.
      */
     private void addSemanticStyles(@NotNull Binding nb) {
-        Def def = nb.getSingle();
-        if (def == null || !def.hasName()) {
+        if (nb == null || !nb.hasName()) {
             return;
         }
 
-        boolean isConst = CONSTANT.matcher(def.getName()).matches();
+        boolean isConst = CONSTANT.matcher(nb.getName()).matches();
         switch (nb.getKind()) {
             case SCOPE:
                 if (isConst) {
-                    addSemanticStyle(def, StyleRun.Type.CONSTANT);
+                    addSemanticStyle(nb, StyleRun.Type.CONSTANT);
                 }
                 break;
             case VARIABLE:
-                addSemanticStyle(def, isConst ? StyleRun.Type.CONSTANT : StyleRun.Type.IDENTIFIER);
+                addSemanticStyle(nb, isConst ? StyleRun.Type.CONSTANT : StyleRun.Type.IDENTIFIER);
                 break;
             case PARAMETER:
-                addSemanticStyle(def, StyleRun.Type.PARAMETER);
+                addSemanticStyle(nb, StyleRun.Type.PARAMETER);
                 break;
             case CLASS:
-                addSemanticStyle(def, StyleRun.Type.TYPE_NAME);
+                addSemanticStyle(nb, StyleRun.Type.TYPE_NAME);
                 break;
         }
     }
 
 
-    private void addSemanticStyle(@NotNull Def def, StyleRun.Type type) {
-        String path = def.getFile();
+    private void addSemanticStyle(@NotNull Binding binding, StyleRun.Type type) {
+        String path = binding.getFile();
         if (path != null) {
-            addFileStyle(path, new StyleRun(type, def.getStart(), def.getLength()));
+            addFileStyle(path, new StyleRun(type, binding.getStart(), binding.getLength()));
         }
     }
 
@@ -220,25 +217,18 @@ class Linker {
     }
 
 
-    /**
-     * Generate a URL for a reference to a binding.
-     *
-     * @param binding  the referenced binding
-     * @param filename the path containing the reference, or null if there was an error
-     */
     @Nullable
     private String toURL(@NotNull Binding binding, String filename) {
-        Def def = binding.getSingle();
 
         if (binding.isBuiltin()) {
-            return def.getURL();
+            return binding.getURL();
         }
 
         String destPath;
         if (binding.getType().isModuleType()) {
             destPath = binding.getType().asModuleType().getFile();
         } else {
-            destPath = def.getFile();
+            destPath = binding.getFile();
         }
 
         if (destPath == null) {

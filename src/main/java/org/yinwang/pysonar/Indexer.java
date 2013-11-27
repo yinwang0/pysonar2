@@ -531,8 +531,7 @@ public class Indexer {
                         !b.getType().isModuleType()
                         && b.getRefs().isEmpty())
                 {
-                    Def def = b.getDef();
-                    Indexer.idx.putProblem(def.getNode(), "Unused variable: " + def.getName());
+                    Indexer.idx.putProblem(b.getNode(), "Unused variable: " + b.getName());
                 }
             }
         }

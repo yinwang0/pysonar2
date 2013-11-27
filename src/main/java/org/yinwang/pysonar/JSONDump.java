@@ -54,19 +54,18 @@ public class JSONDump {
     }
 
 
-    private static void writeSymJson(Def def, JsonGenerator json) throws IOException {
-        Binding binding = def.getBinding();
-        if (def.getStart() < 0) {
+    private static void writeSymJson(Binding binding, JsonGenerator json) throws IOException {
+        if (binding.getStart() < 0) {
             return;
         }
 
-        String name = def.getName();
+        String name = binding.getName();
         boolean isExported = !(
                 Binding.Kind.VARIABLE == binding.getKind() ||
                         Binding.Kind.PARAMETER == binding.getKind() ||
                         Binding.Kind.SCOPE == binding.getKind() ||
                         Binding.Kind.ATTRIBUTE == binding.getKind() ||
-                        (def.hasName() && (name.length() == 0 || name.charAt(0) == '_' || name.startsWith("lambda%"))));
+                        (binding.hasName() && (name.length() == 0 || name.charAt(0) == '_' || name.startsWith("lambda%"))));
 
         String path = binding.getQname().replace('.', '/').replace("%20", ".");
 
@@ -75,13 +74,13 @@ public class JSONDump {
             json.writeStartObject();
             json.writeStringField("name", name);
             json.writeStringField("path", path);
-            json.writeStringField("file", def.getFileOrUrl());
-            json.writeNumberField("identStart", def.getStart());
-            json.writeNumberField("identEnd", def.getEnd());
-            json.writeNumberField("defStart", def.getBodyStart());
-            json.writeNumberField("defEnd", def.getBodyEnd());
+            json.writeStringField("file", binding.getFileOrUrl());
+            json.writeNumberField("identStart", binding.getStart());
+            json.writeNumberField("identEnd", binding.getEnd());
+            json.writeNumberField("defStart", binding.getBodyStart());
+            json.writeNumberField("defEnd", binding.getBodyEnd());
             json.writeBooleanField("exported", isExported);
-            json.writeStringField("kind", def.getBinding().getKind().toString());
+            json.writeStringField("kind", binding.getKind().toString());
 
             if (Binding.Kind.FUNCTION == binding.getKind() ||
                     Binding.Kind.METHOD == binding.getKind() ||
@@ -91,7 +90,7 @@ public class JSONDump {
 
                 // get args expression
                 String argExpr = null;
-                Type t = def.getBinding().getType();
+                Type t = binding.getType();
 
                 if (t.isUnionType()) {
                     t = t.asUnionType().firstUseful();
@@ -135,7 +134,7 @@ public class JSONDump {
                     }
                 }
 
-                String typeExpr = def.getBinding().getType().toString();
+                String typeExpr = binding.getType().toString();
 
                 json.writeNullField("params");
 
@@ -150,11 +149,10 @@ public class JSONDump {
 
 
     private static void writeRefJson(Ref ref, Binding binding, JsonGenerator json) throws IOException {
-        Def def = binding.getSingle();
-        if (def.getFile() != null) {
+        if (binding.getFile() != null) {
             String path = binding.getQname().replace(".", "/").replace("%20", ".");
 
-            if (def.getStart() >= 0 && ref.start() >= 0 && !binding.isBuiltin()) {
+            if (binding.getStart() >= 0 && ref.start() >= 0 && !binding.isBuiltin()) {
                 json.writeStartObject();
                 json.writeStringField("sym", path);
                 json.writeStringField("file", ref.getFile());
@@ -167,26 +165,26 @@ public class JSONDump {
     }
 
 
-    private static void writeDocJson(Def def, Indexer idx, JsonGenerator json) throws Exception {
-        String path = def.getBinding().getQname().replace('.', '/').replace("%20", ".");
+    private static void writeDocJson(Binding binding, Indexer idx, JsonGenerator json) throws Exception {
+        String path = binding.getQname().replace('.', '/').replace("%20", ".");
 
         if (!seenDocs.contains(path)) {
             seenDocs.add(path);
 
-            if (def.docstring != null) {
+            if (binding.docstring != null) {
                 json.writeStartObject();
                 json.writeStringField("sym", path);
-                json.writeStringField("file", def.getFileOrUrl());
-                json.writeStringField("body", def.docstring);
-                json.writeNumberField("start", def.docstringStart);
-                json.writeNumberField("end", def.docstringEnd);
+                json.writeStringField("file", binding.getFileOrUrl());
+                json.writeStringField("body", binding.docstring);
+                json.writeNumberField("start", binding.docstringStart);
+                json.writeNumberField("end", binding.docstringEnd);
                 json.writeEndObject();
-            } else if (def.getBinding().getKind() == Binding.Kind.MODULE) {
-                AstCache.DocstringInfo info = idx.getModuleDocstringInfoForFile(def.getFileOrUrl());
+            } else if (binding.getKind() == Binding.Kind.MODULE) {
+                AstCache.DocstringInfo info = idx.getModuleDocstringInfoForFile(binding.getFileOrUrl());
                 if (info != null) {
                     json.writeStartObject();
                     json.writeStringField("sym", path);
-                    json.writeStringField("file", def.getFileOrUrl());
+                    json.writeStringField("file", binding.getFileOrUrl());
                     json.writeStringField("body", info.docstring);
                     json.writeNumberField("start", info.start);
                     json.writeNumberField("end", info.end);
@@ -238,11 +236,10 @@ public class JSONDump {
 
         for (List<Binding> bindings : idx.getAllBindings().values()) {
             for (Binding b : bindings) {
-                Def def = b.getDef();
-                if (def.getFile() != null) {
-                    if (shouldEmit(def.getFile(), srcpath)) {
-                        writeSymJson(def, symJson);
-                        writeDocJson(def, idx, docJson);
+                if (b.getFile() != null) {
+                    if (shouldEmit(b.getFile(), srcpath)) {
+                        writeSymJson(b, symJson);
+                        writeDocJson(b, idx, docJson);
                     }
                 }
 

@@ -38,8 +38,6 @@ public class Binding implements Comparable<Object> {
     private Type type;       // inferred type
     public Kind kind;        // name usage context
 
-    @NotNull
-    private Def def;   // definitions (may be multiple)
     private Set<Ref> refs;
 
 
@@ -66,7 +64,7 @@ public class Binding implements Comparable<Object> {
         this.qname = type.getTable().getPath();
         this.type = type;
         this.kind = kind;
-        addDef(node);
+        this.node = node;
 
         this.node = node;
 
@@ -145,32 +143,8 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    public void addDef(@Nullable Node node) {
-        if (node != null) {
-            Def def = new Def(node, this);
-            addDef(def);
-        }
-    }
-
-
-    public void addDef(Def def) {
-        def.setBinding(this);
-        this.def = def;
-        if (def.isURL()) {
-            markBuiltin();
-        }
-    }
-
-
     public void addRef(Ref ref) {
         getRefs().add(ref);
-    }
-
-
-    // Returns one definition (even if there are many)
-    @NotNull
-    public Def getSingle() {
-        return getDef();
     }
 
 
@@ -244,12 +218,6 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    @NotNull
-    public Def getDef() {
-        return def;
-    }
-
-
     public Set<Ref> getRefs() {
         if (refs == null) {
             refs = new LinkedHashSet<>(1);
@@ -266,7 +234,7 @@ public class Binding implements Comparable<Object> {
             return file != null ? file : "<built-in module>";
         }
 
-        String file = def.getFile();
+        String file = getFile();
         if (file != null) {
             return file;
         }
@@ -343,7 +311,7 @@ public class Binding implements Comparable<Object> {
      * Bindings can be sorted by their location for outlining purposes.
      */
     public int compareTo(@NotNull Object o) {
-        return getSingle().getStart() - ((Binding) o).getSingle().getStart();
+        return getStart() - ((Binding) o).getStart();
     }
 
 
@@ -355,7 +323,7 @@ public class Binding implements Comparable<Object> {
         sb.append(":qname=").append(qname);
         sb.append(":type=").append(type);
         sb.append(":kind=").append(kind);
-        sb.append(":def=").append(def);
+        sb.append(":node=").append(node);
         sb.append(":refs=");
         if (getRefs().size() > 10) {
             sb.append("[");
