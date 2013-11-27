@@ -22,7 +22,7 @@ public class Scope {
 
 
     @Nullable
-    private Map<String, Binding> table;  // stays null for most scopes (mem opt)
+    private Map<String, List<Binding>> table;  // stays null for most scopes (mem opt)
     @Nullable
     public Scope parent;      // all are non-null except global table
     @Nullable
@@ -84,27 +84,23 @@ public class Scope {
 
 
     public void merge(Scope other) {
-        for (Map.Entry<String, Binding> e1 : getInternalTable().entrySet()) {
-            Binding b1 = e1.getValue();
-            Binding b2 = other.getInternalTable().get(e1.getKey());
+        for (Map.Entry<String, List<Binding>> e1 : getInternalTable().entrySet()) {
+            List<Binding> b1 = e1.getValue();
+            List<Binding> b2 = other.getInternalTable().get(e1.getKey());
 
             // both branch have the same name, need merge
             if (b2 != null && b1 != b2) {
-                Def d1 = b1.getDef();
-                Def d2 = b2.getDef();
-                Type t = UnionType.union(b1.getType(), b2.getType());
-                Binding b = this.insert(e1.getKey(), d1.getNode(), t, b1.getKind());
-                b.addDef(d2);
+                b1.addAll(b2);
             }
         }
 
-        for (Map.Entry<String, Binding> e2 : other.getInternalTable().entrySet()) {
-            Binding b1 = getInternalTable().get(e2.getKey());
-            Binding b2 = e2.getValue();
+        for (Map.Entry<String, List<Binding>> e2 : other.getInternalTable().entrySet()) {
+            List<Binding> b1 = getInternalTable().get(e2.getKey());
+            List<Binding> b2 = e2.getValue();
 
             // both branch have the same name, need merge
             if (b1 == null && b1 != b2) {
-                this.update(b2.getName(), b2);
+                this.update(e2.getKey(), b2);
             }
         }
     }
@@ -182,19 +178,31 @@ public class Scope {
 
 
     // create new binding and insert
-    @NotNull
-    public Binding insert(String id, Node node, Type type, Binding.Kind kind) {
+    public void insert(String id, Node node, Type type, Binding.Kind kind) {
         Binding b = new Binding(id, node, type, kind);
-        b.setQname(extendPath(id));
-        return update(id, b);
+        if (type.isModuleType()) {
+            b.setQname(type.asModuleType().getQname());
+        } else {
+            b.setQname(extendPath(id));
+        }
+        update(id, b);
     }
 
 
     // directly insert a given binding
     @NotNull
-    public Binding update(String id, @NotNull Binding b) {
-        getInternalTable().put(id, b);
-        return b;
+    public List<Binding> update(String id, @NotNull List<Binding> bs) {
+        getInternalTable().put(id, bs);
+        return bs;
+    }
+
+
+    @NotNull
+    public List<Binding> update(String id, @NotNull Binding b) {
+        List<Binding> bs = new ArrayList<>();
+        bs.add(b);
+        getInternalTable().put(id, bs);
+        return bs;
     }
 
 
@@ -224,7 +232,7 @@ public class Scope {
      * parent table.
      */
     @Nullable
-    public Binding lookupLocal(String name) {
+    public List<Binding> lookupLocal(String name) {
         if (table == null) {
             return null;
         } else {
@@ -238,12 +246,12 @@ public class Scope {
      * recurse on the parent table.
      */
     @Nullable
-    public Binding lookup(String name) {
-        Binding b = getModuleBindingIfGlobal(name);
+    public List<Binding> lookup(String name) {
+        List<Binding> b = getModuleBindingIfGlobal(name);
         if (b != null) {
             return b;
         } else {
-            Binding ent = lookupLocal(name);
+            List<Binding> ent = lookupLocal(name);
             if (ent != null) {
                 return ent;
             } else if (getParent() != null) {
@@ -260,8 +268,8 @@ public class Scope {
      * it up locally.
      */
     @Nullable
-    public Binding lookupScope(String name) {
-        Binding b = getModuleBindingIfGlobal(name);
+    public List<Binding> lookupScope(String name) {
+        List<Binding> b = getModuleBindingIfGlobal(name);
         if (b != null) {
             return b;
         } else {
@@ -282,11 +290,11 @@ public class Scope {
 
 
     @Nullable
-    public Binding lookupAttr(String attr) {
+    public List<Binding> lookupAttr(String attr) {
         if (looked.contains(this)) {
             return null;
         } else {
-            Binding b = lookupLocal(attr);
+            List<Binding> b = lookupLocal(attr);
             if (b != null) {
                 return b;
             } else {
@@ -314,11 +322,11 @@ public class Scope {
      */
     @Nullable
     public Type lookupType(String name) {
-        Binding b = lookup(name);
-        if (b == null) {
+        List<Binding> bs = lookup(name);
+        if (bs == null) {
             return null;
         } else {
-            return b.getType();
+            return makeUnion(bs);
         }
     }
 
@@ -328,12 +336,21 @@ public class Scope {
      */
     @Nullable
     public Type lookupAttrType(String attr) {
-        Binding b = lookupAttr(attr);
-        if (b == null) {
+        List<Binding> bs = lookupAttr(attr);
+        if (bs == null) {
             return null;
         } else {
-            return b.getType();
+            return makeUnion(bs);
         }
+    }
+
+
+    public static Type makeUnion(List<Binding> bs) {
+        Type t = Indexer.idx.builtins.unknown;
+        for (Binding b : bs) {
+            t = UnionType.union(t, b.getType());
+        }
+        return t;
     }
 
 
@@ -371,7 +388,7 @@ public class Scope {
      * If {@code name} is declared as a global, return the module binding.
      */
     @Nullable
-    private Binding getModuleBindingIfGlobal(String name) {
+    private List<Binding> getModuleBindingIfGlobal(String name) {
         if (isGlobalName(name)) {
             Scope module = getGlobalTable();
             if (module != this) {
@@ -400,14 +417,18 @@ public class Scope {
     @NotNull
     public Collection<Binding> values() {
         if (table != null) {
-            return table.values();
+            List<Binding> ret = new ArrayList<>();
+            for (List<Binding> bs : table.values()) {
+                ret.addAll(bs);
+            }
+            return ret;
         }
         return Collections.emptySet();
     }
 
 
     @NotNull
-    public Set<Entry<String, Binding>> entrySet() {
+    public Set<Entry<String, List<Binding>>> entrySet() {
         if (table != null) {
             return table.entrySet();
         }
@@ -431,7 +452,7 @@ public class Scope {
 
 
     @NotNull
-    private Map<String, Binding> getInternalTable() {
+    private Map<String, List<Binding>> getInternalTable() {
         if (this.table == null) {
             this.table = new HashMap<>();
         }

@@ -41,26 +41,13 @@ public class Module extends Node {
     }
 
 
-    /**
-     * Used when module is parsed from an in-memory string.
-     *
-     * @param path file path
-     * @param md5  sha1 message digest for source contents
-     */
-    public void setFileAndMD5(String path, String md5) {
-        file = path;
-        name = _.moduleName(file);
-        this.sha1 = md5;
-    }
-
-
     @Override
     public String getFile() {
         return file;
     }
 
 
-    public String getMD5() {
+    public String getSHA1() {
         return sha1;
     }
 
@@ -68,7 +55,7 @@ public class Module extends Node {
     @NotNull
     @Override
     public Type resolve(@NotNull Scope s) {
-        ModuleType mt = new ModuleType(_.moduleName(file), file, Indexer.idx.globaltable);
+        ModuleType mt = new ModuleType(name, file, Indexer.idx.globaltable);
         s.insert(_.moduleQname(file), this, mt, Binding.Kind.MODULE);
         resolveExpr(body, mt.getTable());
         return mt;

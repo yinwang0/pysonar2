@@ -26,7 +26,7 @@ public class Indexer {
     public Scope moduleTable = new Scope(null, Scope.ScopeType.GLOBAL);
     public List<String> loadedFiles = new ArrayList<>();
     public Scope globaltable = new Scope(null, Scope.ScopeType.GLOBAL);
-    public Map<String, List<Binding>> allBindings = new LinkedHashMap<>();
+    public List<Binding> allBindings = new ArrayList<>();
     private Map<Ref, List<Binding>> references = new LinkedHashMap<>();
     public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
     public Map<String, List<Diagnostic>> parseErrors = new HashMap<>();
@@ -46,6 +46,8 @@ public class Indexer {
     private Logger logger;
     private FancyProgress loadingProgress = null;
 
+    String projectDir;
+
 
     public Indexer() {
         stats.putInt("startTime", System.currentTimeMillis());
@@ -56,6 +58,13 @@ public class Indexer {
         addPythonPath();
         createCacheDir();
         getAstCache();
+    }
+
+
+    // main entry to the indexer
+    public void index(String path) {
+        projectDir = _.unifyPath(path);
+        loadFileRecursive(projectDir);
     }
 
 
@@ -101,6 +110,9 @@ public class Indexer {
         if (cwd != null) {
             loadPath.add(cwd);
         }
+        if (projectDir != null && (new File(projectDir).isDirectory())) {
+            loadPath.add(projectDir);
+        }
         loadPath.addAll(path);
         return loadPath;
     }
@@ -137,7 +149,7 @@ public class Indexer {
 
 
     @NotNull
-    public Map<String, List<Binding>> getAllBindings() {
+    public List<Binding> getAllBindings() {
         return allBindings;
     }
 
@@ -171,20 +183,28 @@ public class Indexer {
     }
 
 
-    public void putRef(@Nullable Node node, @Nullable Binding b) {
-        if (node == null || node instanceof Url || b == null) {
-            return;
+    public void putRef(@NotNull Node node, @NotNull List<Binding> bs) {
+        if (!(node instanceof Url)) {
+            Ref ref = new Ref(node);
+            List<Binding> bindings = references.get(ref);
+            if (bindings == null) {
+                bindings = new ArrayList<>(1);
+                references.put(ref, bindings);
+            }
+            for (Binding b : bs) {
+                if (!bindings.contains(b)) {
+                    bindings.add(b);
+                }
+                b.addRef(ref);
+            }
         }
-        Ref ref = new Ref(node);
-        List<Binding> bindings = references.get(ref);
-        if (bindings == null) {
-            bindings = new ArrayList<>(1);
-            references.put(ref, bindings);
-        }
-        if (!bindings.contains(b)) {
-            bindings.add(b);
-        }
-        b.addRef(ref);
+    }
+
+
+    public void putRef(@NotNull Node node, @NotNull Binding b) {
+        List<Binding> bs = new ArrayList<>();
+        bs.add(b);
+        putRef(node, bs);
     }
 
 
@@ -425,11 +445,9 @@ public class Indexer {
                 }
 
                 if (prev != null) {
-                    Binding b = prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
-                    Indexer.idx.putRef(name.get(i), b);
+                    prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                 } else {
-                    Binding b = scope.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
-                    Indexer.idx.putRef(name.get(i), b);
+                    scope.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                 }
 
                 prev = mod;
@@ -442,11 +460,9 @@ public class Indexer {
                         return null;
                     }
                     if (prev != null) {
-                        Binding b = prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
-                        Indexer.idx.putRef(name.get(i), b);
+                        prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                     } else {
-                        Binding b = scope.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
-                        Indexer.idx.putRef(name.get(i), b);
+                        scope.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                     }
                     prev = mod;
                 } else {
@@ -508,17 +524,13 @@ public class Indexer {
         applyUncalled();
 
         // mark unused variables
-        for (List<Binding> bindings : allBindings.values()) {
-            for (Binding b : bindings) {
-                if (!b.getType().isClassType() &&
-                        !b.getType().isFuncType() &&
-                        !b.getType().isModuleType()
-                        && b.getRefs().isEmpty())
-                {
-                    for (Def def : b.getDefs()) {
-                        Indexer.idx.putProblem(def.getNode(), "Unused variable: " + def.getName());
-                    }
-                }
+        for (Binding b : allBindings) {
+            if (!b.getType().isClassType() &&
+                    !b.getType().isFuncType() &&
+                    !b.getType().isModuleType()
+                    && b.getRefs().isEmpty())
+            {
+                Indexer.idx.putProblem(b.getNode(), "Unused variable: " + b.getName());
             }
         }
 
@@ -599,11 +611,9 @@ public class Indexer {
 
         // calculate number of defs, refs, xrefs
         int nDef = 0, nXRef = 0;
-        for (List<Binding> bindings : getAllBindings().values()) {
-            for (Binding b : bindings) {
-                nDef += b.getDefs().size();
-                nXRef += b.getRefs().size();
-            }
+        for (Binding b : getAllBindings()) {
+            nDef += 1;
+            nXRef += b.getRefs().size();
         }
 
         sb.append("\n- number of definitions: " + nDef);
@@ -621,11 +631,6 @@ public class Indexer {
     }
 
 
-    public AstCache.DocstringInfo getModuleDocstringInfoForFile(String file) {
-        return getAstCache().getModuleDocstringInfo(file);
-    }
-
-
     @NotNull
     public List<String> getLoadedFiles() {
         List<String> files = new ArrayList<>();
@@ -638,32 +643,8 @@ public class Indexer {
     }
 
 
-    @Nullable
-    private Binding findBinding(@NotNull Binding b) {
-        List<Binding> existing = allBindings.get(b.getQname());
-        if (existing != null) {
-            for (Binding eb : existing) {
-                if (eb.equals(b)) {
-                    return eb;
-                }
-            }
-        }
-        return null;
-    }
-
-
-    @NotNull
     public void registerBinding(@NotNull Binding b) {
-        String qname = b.getQname();
-        List<Binding> existing = allBindings.get(qname);
-
-        if (existing != null) {
-            existing.add(b);
-        } else {
-            List<Binding> lb = new ArrayList<>();
-            lb.add(b);
-            allBindings.put(qname, lb);
-        }
+        allBindings.add(b);
     }
 
 

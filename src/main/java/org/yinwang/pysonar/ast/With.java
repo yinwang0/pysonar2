@@ -1,6 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.Binder;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
@@ -29,7 +30,7 @@ public class With extends Node {
         for (Withitem item : items) {
             Type val = resolveExpr(item.context_expr, s);
             if (item.optional_vars != null) {
-                NameBinder.bind(s, item.optional_vars, val);
+                Binder.bind(s, item.optional_vars, val);
             }
         }
         return resolveExpr(body, s);

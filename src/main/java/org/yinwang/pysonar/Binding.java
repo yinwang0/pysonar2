@@ -2,16 +2,16 @@ package org.yinwang.pysonar;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.ast.Node;
+import org.yinwang.pysonar.ast.*;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 
 public class Binding implements Comparable<Object> {
+
     public enum Kind {
         ATTRIBUTE,    // attr accessed with "." on some other object
         CLASS,        // class definition
@@ -34,24 +34,82 @@ public class Binding implements Comparable<Object> {
     @NotNull
     private String name;     // unqualified name
     @NotNull
+    private Node node;
+    @NotNull
     private String qname;    // qualified name
     private Type type;       // inferred type
     public Kind kind;        // name usage context
 
-    @NotNull
-    private SortedSet<Def> defs;   // definitions (may be multiple)
-    private SortedSet<Ref> refs;
+    private Set<Ref> refs;
+
+    // fields from Def
+    private int start = -1;
+    private int end = -1;
+    private int bodyStart = -1;
+    private int bodyEnd = -1;
+
+    @Nullable
+    private String fileOrUrl;
 
 
-    public Binding(@NotNull String id, Node node, @NotNull Type type, @NotNull Kind kind) {
+    public Binding(@NotNull String id, @NotNull Node node, @NotNull Type type, @NotNull Kind kind) {
         this.name = id;
         this.qname = type.getTable().getPath();
         this.type = type;
         this.kind = kind;
-        this.defs = new TreeSet<>();
-        addDef(node);
+        this.node = node;
 
+        if (node instanceof Url) {
+            String url = ((Url) node).getURL();
+            if (url.startsWith("file://")) {
+                fileOrUrl = url.substring("file://".length());
+            } else {
+                fileOrUrl = url;
+            }
+        } else {
+            fileOrUrl = node.getFile();
+            if (node instanceof Name) {
+                name = node.asName().id;
+            }
+        }
+
+        initLocationInfo(node);
         Indexer.idx.registerBinding(this);
+    }
+
+
+    private void initLocationInfo(Node node) {
+        start = node.start;
+        end = node.end;
+
+        Node parent = node.getParent();
+        if ((parent instanceof FunctionDef && ((FunctionDef) parent).name == node) ||
+                (parent instanceof ClassDef && ((ClassDef) parent).name == node))
+        {
+            bodyStart = parent.start;
+            bodyEnd = parent.end;
+        } else if (node instanceof Module) {
+            name = ((Module) node).name;
+            start = 0;
+            end = 0;
+            bodyStart = node.start;
+            bodyEnd = node.end;
+        } else {
+            bodyStart = node.start;
+            bodyEnd = node.end;
+        }
+    }
+
+
+    public Str getDocstring() {
+        Node parent = node.getParent();
+        if ((parent instanceof FunctionDef && ((FunctionDef) parent).name == node) ||
+                (parent instanceof ClassDef && ((ClassDef) parent).name == node))
+        {
+            return parent.getDocString();
+        } else {
+            return node.getDocString();
+        }
     }
 
 
@@ -72,34 +130,8 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    public void addDef(@Nullable Node node) {
-        if (node != null) {
-            Def def = new Def(node, this);
-            addDef(def);
-        }
-    }
-
-
-    public void addDef(Def def) {
-        def.setBinding(this);
-
-        Set<Def> defs = getDefs();
-        defs.add(def);
-        if (def.isURL()) {
-            markBuiltin();
-        }
-    }
-
-
     public void addRef(Ref ref) {
         getRefs().add(ref);
-    }
-
-
-    // Returns one definition (even if there are many)
-    @NotNull
-    public Def getSingle() {
-        return defs.first();
     }
 
 
@@ -148,46 +180,14 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    public boolean isReadOnly() {
-        return isReadonly;
-    }
-
-
-    public boolean isDeprecated() {
-        return isDeprecated;
-    }
-
-
-    public void markDeprecated() {
-        isDeprecated = true;
-    }
-
-
     public boolean isBuiltin() {
         return isBuiltin;
     }
 
 
-    public void markBuiltin() {
-        isBuiltin = true;
-    }
-
-
-    @NotNull
-    public Set<Def> getDefs() {
-        return defs;
-    }
-
-
-    @NotNull
-    public Def getDef() {
-        return defs.iterator().next();
-    }
-
-
     public Set<Ref> getRefs() {
         if (refs == null) {
-            refs = new TreeSet<>();
+            refs = new LinkedHashSet<>(1);
         }
         return refs;
     }
@@ -201,23 +201,74 @@ public class Binding implements Comparable<Object> {
             return file != null ? file : "<built-in module>";
         }
 
-        for (Def def : defs) {
-            String file = def.getFile();
-            if (file != null) {
-                return file;
-            }
+        String file = getFile();
+        if (file != null) {
+            return file;
         }
 
         return "<built-in binding>";
     }
 
 
+    @Nullable
+    public String getFile() {
+        return isURL() ? null : fileOrUrl;
+    }
+
+
+    @Nullable
+    public String getURL() {
+        return isURL() ? fileOrUrl : null;
+    }
+
+
+    @Nullable
+    public String getFileOrUrl() {
+        return fileOrUrl;
+    }
+
+
+    public boolean isURL() {
+        return fileOrUrl != null && fileOrUrl.startsWith("http://");
+    }
+
+
+    public int getStart() {
+        return start;
+    }
+
+
+    public int getEnd() {
+        return end;
+    }
+
+
+    public int getLength() {
+        return end - start;
+    }
+
+
+    public int getBodyStart() {
+        return bodyStart;
+    }
+
+
+    public int getBodyEnd() {
+        return bodyEnd;
+    }
+
+
+    @NotNull
+    public Node getNode() {
+        return node;
+    }
+
+
     /**
      * Bindings can be sorted by their location for outlining purposes.
      */
-    @Override
     public int compareTo(@NotNull Object o) {
-        return getSingle().getStart() - ((Binding) o).getSingle().getStart();
+        return getStart() - ((Binding) o).getStart();
     }
 
 
@@ -229,7 +280,7 @@ public class Binding implements Comparable<Object> {
         sb.append(":qname=").append(qname);
         sb.append(":type=").append(type);
         sb.append(":kind=").append(kind);
-        sb.append(":defs=").append(defs);
+        sb.append(":node=").append(node);
         sb.append(":refs=");
         if (getRefs().size() > 10) {
             sb.append("[");
@@ -242,6 +293,27 @@ public class Binding implements Comparable<Object> {
         }
         sb.append(">");
         return sb.toString();
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Binding)) {
+            return false;
+        } else {
+            Binding b = (Binding) obj;
+            return (start == b.start
+                    && end == b.end
+                    && ((fileOrUrl == null && b.fileOrUrl == null)
+                    || (fileOrUrl != null && b.fileOrUrl != null &&
+                    fileOrUrl.equals(b.fileOrUrl))));
+        }
+    }
+
+
+    @Override
+    public int hashCode() {
+        return ("" + fileOrUrl + start).hashCode();
     }
 
 }

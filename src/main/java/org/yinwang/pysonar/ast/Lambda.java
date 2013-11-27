@@ -1,6 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.Binder;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
@@ -56,8 +57,8 @@ public class Lambda extends FunctionDef {
         this.defaultTypes = resolveAndConstructList(defaults, outer);
         FunType cl = new FunType(this, outer.getForwarding());
         cl.getTable().setParent(outer);
-        cl.getTable().setPath(outer.extendPath(getName().getId()));
-        NameBinder.bind(outer, getName(), cl, Binding.Kind.FUNCTION);
+        cl.getTable().setPath(outer.extendPath(getName().id));
+        Binder.bind(outer, getName(), cl, Binding.Kind.FUNCTION);
         cl.setDefaultTypes(resolveAndConstructList(defaults, outer));
         Indexer.idx.addUncalled(cl);
         return cl;

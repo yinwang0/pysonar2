@@ -2,6 +2,7 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.yinwang.pysonar.Binder;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
@@ -76,7 +77,7 @@ public class FunctionDef extends Node {
      */
     @Nullable
     protected String getBindingName(Scope s) {
-        return name.getId();
+        return name.id;
     }
 
 
@@ -155,13 +156,13 @@ public class FunctionDef extends Node {
         resolveList(decoratorList, outer);   //XXX: not handling functional transformations yet
         FunType fun = new FunType(this, outer.getForwarding());
         fun.getTable().setParent(outer);
-        fun.getTable().setPath(outer.extendPath(getName().getId()));
+        fun.getTable().setPath(outer.extendPath(getName().id));
         fun.setDefaultTypes(resolveAndConstructList(defaults, outer));
         Indexer.idx.addUncalled(fun);
         Binding.Kind funkind;
 
         if (outer.getScopeType() == Scope.ScopeType.CLASS) {
-            if ("__init__".equals(name.getId())) {
+            if ("__init__".equals(name.id)) {
                 funkind = Binding.Kind.CONSTRUCTOR;
             } else {
                 funkind = Binding.Kind.METHOD;
@@ -175,7 +176,7 @@ public class FunctionDef extends Node {
             fun.setCls(outType.asClassType());
         }
 
-        NameBinder.bind(outer, name, fun, funkind);
+        Binder.bind(outer, name, fun, funkind);
         return Indexer.idx.builtins.Cont;
     }
 

@@ -76,7 +76,7 @@ class Styler extends DefaultNodeVisitor {
             return true;
         }
 
-        if (BUILTIN.matcher(n.getId()).matches()) {
+        if (BUILTIN.matcher(n.id).matches()) {
             addStyle(n, StyleRun.Type.BUILTIN);
             return true;
         }

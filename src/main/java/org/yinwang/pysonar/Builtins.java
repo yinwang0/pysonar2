@@ -251,26 +251,26 @@ public class Builtins {
 
 
         @Nullable
-        protected Binding update(String name, Url url, Type type, Binding.Kind kind) {
-            return table.insert(name, url, type, kind);
+        protected void update(String name, Url url, Type type, Binding.Kind kind) {
+            table.insert(name, url, type, kind);
         }
 
 
         @Nullable
-        protected Binding addClass(String name, Url url, Type type) {
-            return table.insert(name, url, type, CLASS);
+        protected void addClass(String name, Url url, Type type) {
+            table.insert(name, url, type, CLASS);
         }
 
 
         @Nullable
-        protected Binding addMethod(String name, Url url, Type type) {
-            return table.insert(name, url, type, METHOD);
+        protected void addMethod(String name, Url url, Type type) {
+            table.insert(name, url, type, METHOD);
         }
 
 
         @Nullable
-        protected Binding addFunction(String name, Url url, Type type) {
-            return table.insert(name, url, newFunc(type), FUNCTION);
+        protected void addFunction(String name, Url url, Type type) {
+            table.insert(name, url, newFunc(type), FUNCTION);
         }
 
 
@@ -305,8 +305,8 @@ public class Builtins {
 
 
         @Nullable
-        protected Binding addAttr(String name, Url url, Type type) {
-            return table.insert(name, url, type, ATTRIBUTE);
+        protected void addAttr(String name, Url url, Type type) {
+            table.insert(name, url, type, ATTRIBUTE);
         }
 
 
@@ -521,9 +521,7 @@ public class Builtins {
         for (String m : tuple_methods) {
             bt.insert(m, newLibUrl("stdtypes"), newFunc(), METHOD);
         }
-        Binding b = bt.insert("__getslice__", newDataModelUrl("object.__getslice__"),
-                newFunc(), METHOD);
-        b.markDeprecated();
+        bt.insert("__getslice__", newDataModelUrl("object.__getslice__"), newFunc(), METHOD);
         bt.insert("__getitem__", newDataModelUrl("object.__getitem__"), newFunc(), METHOD);
         bt.insert("__iter__", newDataModelUrl("object.__iter__"), newFunc(), METHOD);
     }
@@ -755,14 +753,6 @@ public class Builtins {
     }
 
 
-    @Nullable
-    private Binding synthetic(@NotNull Scope table, String n, Url url, Type type, Binding.Kind k) {
-        Binding b = table.insert(n, url, type, k);
-        b.markSynthetic();
-        return b;
-    }
-
-
     void buildFunctionType() {
         Scope t = BaseFunction.getTable();
 
@@ -770,19 +760,15 @@ public class Builtins {
             t.insert(s, new Url(DATAMODEL_URL), BaseStr, ATTRIBUTE);
         }
 
-        Binding b = synthetic(t, "func_closure", new Url(DATAMODEL_URL), newTuple(), ATTRIBUTE);
-        b.markReadOnly();
-
-        synthetic(t, "func_code", new Url(DATAMODEL_URL), unknown(), ATTRIBUTE);
-        synthetic(t, "func_defaults", new Url(DATAMODEL_URL), newTuple(), ATTRIBUTE);
-        synthetic(t, "func_globals", new Url(DATAMODEL_URL),
-                new DictType(BaseStr, Indexer.idx.builtins.unknown), ATTRIBUTE);
-        synthetic(t, "func_dict", new Url(DATAMODEL_URL),
-                new DictType(BaseStr, Indexer.idx.builtins.unknown), ATTRIBUTE);
+        t.insert("func_closure", new Url(DATAMODEL_URL), newTuple(), ATTRIBUTE);
+        t.insert("func_code", new Url(DATAMODEL_URL), unknown(), ATTRIBUTE);
+        t.insert("func_defaults", new Url(DATAMODEL_URL), newTuple(), ATTRIBUTE);
+        t.insert("func_globals", new Url(DATAMODEL_URL), new DictType(BaseStr, Indexer.idx.builtins.unknown), ATTRIBUTE);
+        t.insert("func_dict", new Url(DATAMODEL_URL), new DictType(BaseStr, Indexer.idx.builtins.unknown), ATTRIBUTE);
 
         // Assume any function can become a method, for simplicity.
         for (String s : list("__func__", "im_func")) {
-            synthetic(t, s, new Url(DATAMODEL_URL), new FunType(), METHOD);
+            t.insert(s, new Url(DATAMODEL_URL), new FunType(), METHOD);
         }
     }
 
@@ -793,11 +779,10 @@ public class Builtins {
         Scope t = BaseClass.getTable();
 
         for (String s : list("__name__", "__doc__", "__module__")) {
-            synthetic(t, s, new Url(DATAMODEL_URL), BaseStr, ATTRIBUTE);
+            t.insert(s, new Url(DATAMODEL_URL), BaseStr, ATTRIBUTE);
         }
 
-        synthetic(t, "__dict__", new Url(DATAMODEL_URL),
-                new DictType(BaseStr, unknown()), ATTRIBUTE);
+        t.insert("__dict__", new Url(DATAMODEL_URL), new DictType(BaseStr, unknown()), ATTRIBUTE);
     }
 
 
@@ -873,7 +858,7 @@ public class Builtins {
                 addClass(f, newDataModelUrl("org/yinwang/pysonar/types"),
                         newClass(f, Indexer.idx.globaltable, Object));
             }
-            BaseException = (ClassType) table.lookup("BaseException").getType();
+            BaseException = (ClassType) table.lookupType("BaseException");
 
             for (String f : list("True", "False")) {
                 addAttr(f, newDataModelUrl("org/yinwang/pysonar/types"), BaseBool);
@@ -1971,8 +1956,7 @@ public class Builtins {
                         newFunc(newTuple(BaseStr, BaseStr)), FUNCTION);
             }
 
-            Binding b = ospath.insert("walk", newLibUrl("os.path"), newFunc(None), FUNCTION);
-            b.markDeprecated();
+            ospath.insert("walk", newLibUrl("os.path"), newFunc(None), FUNCTION);
 
             String[] str_attrs = {
                     "altsep", "curdir", "devnull", "defpath", "pardir", "pathsep", "sep",

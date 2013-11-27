@@ -3,7 +3,6 @@ package org.yinwang.pysonar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Module;
-import org.yinwang.pysonar.ast.Str;
 
 import java.io.*;
 import java.util.HashMap;
@@ -18,30 +17,12 @@ import java.util.logging.Logger;
  */
 public class AstCache {
 
-    public static class DocstringInfo {
-        public String docstring;
-        public int start;
-        public int end;
-
-
-        public static DocstringInfo NewWithDocstringNode(@NotNull Str docstringNode) {
-            DocstringInfo d = new DocstringInfo();
-            d.docstring = docstringNode.getStr();
-            d.start = docstringNode.start;
-            d.end = docstringNode.end;
-            return d;
-        }
-    }
-
-
     private static final Logger LOG = Logger.getLogger(AstCache.class.getCanonicalName());
-
-    @NotNull
-    private Map<String, Module> cache = new HashMap<>();
-    private Map<String, DocstringInfo> docstringCache = new HashMap<>();
 
     private static AstCache INSTANCE;
 
+    @NotNull
+    private Map<String, Module> cache = new HashMap<>();
     @NotNull
     private static PythonParser parser;
 
@@ -109,14 +90,8 @@ public class AstCache {
         // Might be cached on disk but not in memory.
         Module mod = getSerializedModule(path);
         if (mod != null) {
-
             LOG.log(Level.FINE, "reusing " + path);
-
             cache.put(path, mod);
-            Str docstring = mod.docstring();
-            if (docstring != null) {
-                docstringCache.put(path, DocstringInfo.NewWithDocstringNode(docstring));
-            }
             return mod;
         }
 
@@ -127,9 +102,6 @@ public class AstCache {
         }
         finally {
             cache.put(path, mod);  // may be null
-            if (mod != null && mod.docstring() != null) {
-                docstringCache.put(path, DocstringInfo.NewWithDocstringNode(mod.docstring())); // may be null
-            }
         }
 
         if (mod != null) {
@@ -137,12 +109,6 @@ public class AstCache {
         }
 
         return mod;
-    }
-
-
-    @Nullable
-    public DocstringInfo getModuleDocstringInfo(String path) {
-        return docstringCache.get(path);
     }
 
 
@@ -165,7 +131,7 @@ public class AstCache {
 
     // package-private for testing
     void serialize(@NotNull Module ast) {
-        String path = getCachePath(ast.getMD5(), new File(ast.getFile()).getName());
+        String path = getCachePath(ast.getSHA1(), new File(ast.getFile()).getName());
         ObjectOutputStream oos = null;
         FileOutputStream fos = null;
         try {
@@ -194,7 +160,7 @@ public class AstCache {
     @Nullable
     Module getSerializedModule(String sourcePath) {
         File sourceFile = new File(sourcePath);
-        if (sourceFile == null || !sourceFile.canRead()) {
+        if (!sourceFile.canRead()) {
             return null;
         }
         File cached = new File(getCachePath(sourceFile));

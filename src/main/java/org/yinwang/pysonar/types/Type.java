@@ -209,8 +209,6 @@ public abstract class Type {
     }
 
 
-    public abstract boolean equals(Object other);
-
     protected abstract String printType(CyclicTypeRecorder ctr);
 
 

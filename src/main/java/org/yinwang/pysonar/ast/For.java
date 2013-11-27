@@ -1,6 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.Binder;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
@@ -37,7 +38,7 @@ public class For extends Node {
     @NotNull
     @Override
     public Type resolve(@NotNull Scope s) {
-        NameBinder.bindIter(s, target, iter, Binding.Kind.SCOPE);
+        Binder.bindIter(s, target, iter, Binding.Kind.SCOPE);
 
         Type ret;
         if (body == null) {

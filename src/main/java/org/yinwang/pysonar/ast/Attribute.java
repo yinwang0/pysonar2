@@ -8,6 +8,7 @@ import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
@@ -31,7 +32,7 @@ public class Attribute extends Node {
 
     @Nullable
     public String getAttributeName() {
-        return attr.getId();
+        return attr.id;
     }
 
 
@@ -75,7 +76,7 @@ public class Attribute extends Node {
             Indexer.idx.putProblem(this, "Can't set attribute for UnknownType");
             return;
         }
-        targetType.getTable().insert(attr.getId(), attr, v, ATTRIBUTE);
+        targetType.getTable().insert(attr.id, attr, v, ATTRIBUTE);
     }
 
 
@@ -97,22 +98,23 @@ public class Attribute extends Node {
 
 
     private Type getAttrType(@NotNull Type targetType) {
-        Binding b = targetType.getTable().lookupAttr(attr.getId());
-        if (b == null) {
+        List<Binding> bs = targetType.getTable().lookupAttr(attr.id);
+        if (bs == null) {
             Indexer.idx.putProblem(attr, "attribute not found in type: " + targetType);
             Type t = Indexer.idx.builtins.unknown;
-            t.getTable().setPath(targetType.getTable().extendPath(attr.getId()));
+            t.getTable().setPath(targetType.getTable().extendPath(attr.id));
             return t;
         } else {
-            Indexer.idx.putRef(attr, b);
-
-            if (getParent() != null && getParent().isCall() &&
-                    b.getType().isFuncType() && targetType.isInstanceType())
-            {  // method call
-                b.getType().asFuncType().setSelfType(targetType);
+            for (Binding b : bs) {
+                Indexer.idx.putRef(attr, b);
+                if (getParent() != null && getParent().isCall() &&
+                        b.getType().isFuncType() && targetType.isInstanceType())
+                {  // method call
+                    b.getType().asFuncType().setSelfType(targetType);
+                }
             }
 
-            return b.getType();
+            return Scope.makeUnion(bs);
         }
     }
 

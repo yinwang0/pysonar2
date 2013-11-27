@@ -26,7 +26,7 @@ public class Delete extends Node {
         for (Node n : targets) {
             resolveExpr(n, s);
             if (n instanceof Name) {
-                s.remove(n.asName().getId());
+                s.remove(n.asName().id);
             }
         }
         return Indexer.idx.builtins.Cont;

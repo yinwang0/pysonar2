@@ -1,6 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.Binder;
 import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
@@ -36,7 +37,7 @@ public class ExceptHandler extends Node {
             typeval = resolveExpr(exceptionType, s);
         }
         if (name != null) {
-            NameBinder.bind(s, name, typeval);
+            Binder.bind(s, name, typeval);
         }
         if (body != null) {
             return resolveExpr(body, s);

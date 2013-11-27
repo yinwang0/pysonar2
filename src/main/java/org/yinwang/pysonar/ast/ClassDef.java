@@ -1,10 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Builtins;
-import org.yinwang.pysonar.Indexer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.*;
 import org.yinwang.pysonar.types.ClassType;
 import org.yinwang.pysonar.types.DictType;
 import org.yinwang.pysonar.types.TupleType;
@@ -53,7 +50,7 @@ public class ClassDef extends Node {
     @NotNull
     @Override
     public Type resolve(@NotNull Scope s) {
-        ClassType classType = new ClassType(getName().getId(), s);
+        ClassType classType = new ClassType(getName().id, s);
         List<Type> baseTypes = new ArrayList<>();
         for (Node base : bases) {
             Type baseType = resolveExpr(base, s);
@@ -81,24 +78,26 @@ public class ClassDef extends Node {
 
         // Bind ClassType to name here before resolving the body because the
         // methods need this type as self.
-        NameBinder.bind(s, name, classType, Binding.Kind.CLASS);
+        Binder.bind(s, name, classType, Binding.Kind.CLASS);
         resolveExpr(body, classType.getTable());
         return Indexer.idx.builtins.Cont;
     }
 
 
     private void addSpecialAttribute(@NotNull Scope s, String name, Type proptype) {
-        Binding b = s.insert(name, Builtins.newTutUrl("classes.html"), proptype, Binding.Kind.ATTRIBUTE);
+        Binding b = new Binding(name, Builtins.newTutUrl("classes.html"), proptype, Binding.Kind.ATTRIBUTE);
+        s.update(name, b);
         b.markSynthetic();
         b.markStatic();
         b.markReadOnly();
+
     }
 
 
     @NotNull
     @Override
     public String toString() {
-        return "<ClassDef:" + name.getId() + ":" + start + ">";
+        return "<ClassDef:" + name.id + ":" + start + ">";
     }
 
 
