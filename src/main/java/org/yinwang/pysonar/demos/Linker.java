@@ -48,7 +48,7 @@ class Linker {
         int ndef = 0;
         for (List<Binding> bindings : indexer.getAllBindings().values()) {
             for (Binding b : bindings) {
-                ndef += b.getDefs().size();
+                ndef += 1;
             }
         }
 
@@ -56,10 +56,9 @@ class Linker {
         for (List<Binding> bindings : indexer.getAllBindings().values()) {
             for (Binding b : bindings) {
                 addSemanticStyles(b);
-                for (Def def : b.getDefs()) {
-                    processDef(def, b);
-                    progress.tick();
-                }
+                Def def = b.getDef();
+                processDef(def, b);
+                progress.tick();
             }
         }
 
@@ -128,9 +127,8 @@ class Linker {
 
             link.highlight = new ArrayList<>();
             for (Binding b : bindings) {
-                for (Def d : b.getDefs()) {
-                    link.highlight.add(Integer.toString(Math.abs(d.hashCode())));
-                }
+                Def d = b.getDef();
+                link.highlight.add(Integer.toString(Math.abs(d.hashCode())));
             }
 
             // Currently jump to the first binding only. Should change to have a

@@ -238,12 +238,11 @@ public class JSONDump {
 
         for (List<Binding> bindings : idx.getAllBindings().values()) {
             for (Binding b : bindings) {
-                for (Def def : b.getDefs()) {
-                    if (def.getFile() != null) {
-                        if (shouldEmit(def.getFile(), srcpath)) {
-                            writeSymJson(def, symJson);
-                            writeDocJson(def, idx, docJson);
-                        }
+                Def def = b.getDef();
+                if (def.getFile() != null) {
+                    if (shouldEmit(def.getFile(), srcpath)) {
+                        writeSymJson(def, symJson);
+                        writeDocJson(def, idx, docJson);
                     }
                 }
 

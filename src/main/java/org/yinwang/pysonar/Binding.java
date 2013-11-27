@@ -38,7 +38,7 @@ public class Binding implements Comparable<Object> {
     public Kind kind;        // name usage context
 
     @NotNull
-    private Set<Def> defs;   // definitions (may be multiple)
+    private Def def;   // definitions (may be multiple)
     private Set<Ref> refs;
 
 
@@ -47,7 +47,6 @@ public class Binding implements Comparable<Object> {
         this.qname = type.getTable().getPath();
         this.type = type;
         this.kind = kind;
-        this.defs = new LinkedHashSet<>(1);
         addDef(node);
 
         Indexer.idx.registerBinding(this);
@@ -81,9 +80,7 @@ public class Binding implements Comparable<Object> {
 
     public void addDef(Def def) {
         def.setBinding(this);
-
-        Set<Def> defs = getDefs();
-        defs.add(def);
+        this.def = def;
         if (def.isURL()) {
             markBuiltin();
         }
@@ -98,7 +95,7 @@ public class Binding implements Comparable<Object> {
     // Returns one definition (even if there are many)
     @NotNull
     public Def getSingle() {
-        return getDefs().iterator().next();
+        return getDef();
     }
 
 
@@ -173,14 +170,8 @@ public class Binding implements Comparable<Object> {
 
 
     @NotNull
-    public Set<Def> getDefs() {
-        return defs;
-    }
-
-
-    @NotNull
     public Def getDef() {
-        return defs.iterator().next();
+        return def;
     }
 
 
@@ -200,11 +191,9 @@ public class Binding implements Comparable<Object> {
             return file != null ? file : "<built-in module>";
         }
 
-        for (Def def : defs) {
-            String file = def.getFile();
-            if (file != null) {
-                return file;
-            }
+        String file = def.getFile();
+        if (file != null) {
+            return file;
         }
 
         return "<built-in binding>";
@@ -227,7 +216,7 @@ public class Binding implements Comparable<Object> {
         sb.append(":qname=").append(qname);
         sb.append(":type=").append(type);
         sb.append(":kind=").append(kind);
-        sb.append(":defs=").append(defs);
+        sb.append(":def=").append(def);
         sb.append(":refs=");
         if (getRefs().size() > 10) {
             sb.append("[");

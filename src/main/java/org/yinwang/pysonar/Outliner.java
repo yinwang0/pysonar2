@@ -252,7 +252,6 @@ public class Outliner {
         for (Binding b : scope.values()) {
             if (!b.isSynthetic()
                     && !b.isBuiltin()
-                    && !b.getDefs().isEmpty()
                     && path.equals(b.getSingle().getFile()))
             {
                 entries.add(b);

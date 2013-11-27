@@ -520,9 +520,8 @@ public class Indexer {
                         !b.getType().isModuleType()
                         && b.getRefs().isEmpty())
                 {
-                    for (Def def : b.getDefs()) {
-                        Indexer.idx.putProblem(def.getNode(), "Unused variable: " + def.getName());
-                    }
+                    Def def = b.getDef();
+                    Indexer.idx.putProblem(def.getNode(), "Unused variable: " + def.getName());
                 }
             }
         }
@@ -606,7 +605,7 @@ public class Indexer {
         int nDef = 0, nXRef = 0;
         for (List<Binding> bindings : getAllBindings().values()) {
             for (Binding b : bindings) {
-                nDef += b.getDefs().size();
+                nDef += 1;
                 nXRef += b.getRefs().size();
             }
         }
