@@ -152,8 +152,8 @@ public class AstCache {
      * file's base name is included for ease of debugging.
      */
     @NotNull
-    public String getCachePath(@NotNull File sourcePath) {
-        return getCachePath(_.getSHA1(sourcePath), sourcePath.getName());
+    public String getCachePath(@NotNull String sourcePath) {
+        return getCachePath(_.getSHA1(sourcePath), new File(sourcePath).getName());
     }
 
 
@@ -194,30 +194,27 @@ public class AstCache {
     @Nullable
     Module getSerializedModule(String sourcePath) {
         File sourceFile = new File(sourcePath);
-        if (sourceFile == null || !sourceFile.canRead()) {
+        if (!sourceFile.canRead()) {
             return null;
         }
-        File cached = new File(getCachePath(sourceFile));
+        File cached = new File(getCachePath(sourcePath));
         if (!cached.canRead()) {
             return null;
         }
-        return deserialize(sourceFile);
+        return deserialize(sourcePath);
     }
 
 
     // package-private for testing
     @Nullable
-    Module deserialize(@NotNull File sourcePath) {
+    Module deserialize(@NotNull String sourcePath) {
         String cachePath = getCachePath(sourcePath);
         FileInputStream fis = null;
         ObjectInputStream ois = null;
         try {
             fis = new FileInputStream(cachePath);
             ois = new ObjectInputStream(fis);
-            Module mod = (Module) ois.readObject();
-            // Files in different dirs may have the same base name and contents.
-            mod.setFile(sourcePath);
-            return mod;
+            return (Module) ois.readObject();
         }
         catch (Exception e) {
             return null;

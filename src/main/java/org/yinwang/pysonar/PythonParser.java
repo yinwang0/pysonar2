@@ -237,15 +237,9 @@ public class PythonParser {
 
 
         if (type.equals("Module")) {
+            String filename = (String) map.get("filename");
             Block b = convertBlock(map.get("body"));
-            Module m = new Module(b, start, end);
-            try {
-                m.setFile(_.unifyPath((String) map.get("filename")));
-            }
-            catch (Exception e) {
-
-            }
-            return m;
+            return new Module(b, filename, start, end);
         }
 
         if (type.equals("alias")) {         // lower case alias

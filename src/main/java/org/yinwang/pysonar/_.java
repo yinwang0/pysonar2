@@ -190,8 +190,8 @@ public class _ {
 
 
     @NotNull
-    public static String getSHA1(@NotNull File path) {
-        byte[] bytes = getBytesFromFile(path);
+    public static String getSHA1(@NotNull String path) {
+        byte[] bytes = getBytesFromFile(new File(path));
         return getMD5(bytes);
     }
 
