@@ -46,7 +46,7 @@ public class UnionType extends Type {
 
     static public Type remove(Type t1, Type t2) {
         if (t1 instanceof UnionType) {
-            Set<Type> types = new HashSet<Type>(((UnionType) t1).getTypes());
+            Set<Type> types = new HashSet<>(((UnionType) t1).getTypes());
             types.remove(t2);
             return UnionType.newUnion(types);
         } else if (t1 == t2) {
@@ -91,13 +91,23 @@ public class UnionType extends Type {
     }
 
 
+    // take a union of two types
+    // with preference: other > None > Cont > unknown
     @NotNull
     public static Type union(@NotNull Type u, @NotNull Type v) {
         if (u.equals(v)) {
             return u;
-        } else if (u.isUnknownType() || u == Indexer.idx.builtins.None) {
+        } else if (u == Indexer.idx.builtins.unknown) {
             return v;
-        } else if (v.isUnknownType() || v == Indexer.idx.builtins.None) {
+        } else if (v == Indexer.idx.builtins.unknown) {
+            return u;
+        } else if (u == Indexer.idx.builtins.Cont) {
+            return v;
+        } else if (v == Indexer.idx.builtins.Cont) {
+            return u;
+        } else if (u == Indexer.idx.builtins.None) {
+            return v;
+        } else if (v == Indexer.idx.builtins.None) {
             return u;
         } else {
             return new UnionType(u, v);
