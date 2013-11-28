@@ -36,25 +36,9 @@ public class Attribute extends Node {
     }
 
 
-    public void setAttr(@NotNull Name attr) {
-        this.attr = attr;
-    }
-
-
     @NotNull
     public Name getAttr() {
         return attr;
-    }
-
-
-    public void setTarget(@NotNull Node target) {
-        this.target = target;
-    }
-
-
-    @Nullable
-    public Node getTarget() {
-        return target;
     }
 
 
