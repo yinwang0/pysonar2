@@ -101,10 +101,6 @@ public class UnionType extends Type {
             return v;
         } else if (v == Indexer.idx.builtins.unknown) {
             return u;
-        } else if (u == Indexer.idx.builtins.Cont) {
-            return v;
-        } else if (v == Indexer.idx.builtins.Cont) {
-            return u;
         } else if (u == Indexer.idx.builtins.None) {
             return v;
         } else if (v == Indexer.idx.builtins.None) {
