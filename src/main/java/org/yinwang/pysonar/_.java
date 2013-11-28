@@ -224,6 +224,11 @@ public class _ {
     }
 
 
+    public static String escapeWindowsPath(String path) {
+        return path.replace("\\", "\\\\");
+    }
+
+
     @NotNull
     public static Collection<String> toStringCollection(@NotNull Collection<Integer> collection) {
         List<String> ret = new ArrayList<>();

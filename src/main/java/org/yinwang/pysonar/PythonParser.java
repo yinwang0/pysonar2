@@ -685,9 +685,14 @@ public class PythonParser {
         exchange.delete();
         marker.delete();
 
+        String s1 = _.escapeWindowsPath(filename);
+        String s2 = _.escapeWindowsPath(exchangeFile);
+        String s3 = _.escapeWindowsPath(endMark);
+        String pyCommand = "parse_dump('" + s1 + "', '" + s2 + "', '" + s3 + "')\n";
+
         try {
             OutputStreamWriter writer = new OutputStreamWriter(pythonProcess.getOutputStream());
-            writer.write("parse_dump('" + filename + "', '" + exchangeFile + "', '" + endMark + "')\n");
+            writer.write(pyCommand);
             writer.flush();
         }
         catch (Exception e) {
@@ -697,9 +702,7 @@ public class PythonParser {
             return null;
         }
 
-
         long waitStart = System.currentTimeMillis();
-
         while (!marker.exists()) {
             if (System.currentTimeMillis() - waitStart > TIMEOUT) {
                 _.msg("\nTimed out while parsing: " + filename);
