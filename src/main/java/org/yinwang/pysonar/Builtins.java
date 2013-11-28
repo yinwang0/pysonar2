@@ -72,6 +72,7 @@ public class Builtins {
     public ClassType BaseTuple;
     public ClassType BaseModule;
     public ClassType BaseFile;
+    public InstanceType BaseFileInst;
     public ClassType BaseException;
     public ClassType BaseStruct;
     public ClassType BaseFunction;  // models functions, lambas and methods
@@ -82,7 +83,7 @@ public class Builtins {
     public ClassType Datetime_time;
     public ClassType Datetime_timedelta;
     public ClassType Datetime_tzinfo;
-    public ClassType Time_struct_time;
+    public InstanceType Time_struct_time;
 
 
     @NotNull
@@ -390,6 +391,7 @@ public class Builtins {
         BaseStr = new InstanceType(newClass("str", bt, Object));
         BaseModule = newClass("module", bt);
         BaseFile = newClass("file", bt, Object);
+        BaseFileInst = new InstanceType(BaseFile);
         BaseFunction = newClass("function", bt, Object);
         BaseClass = newClass("classobj", bt, Object);
     }
@@ -742,7 +744,7 @@ public class Builtins {
         }
 
         table.insert("readlines", newLibUrl(url), newFunc(newList(BaseStr)), METHOD);
-        table.insert("xreadlines", newLibUrl(url), newFunc(BaseFile), METHOD);
+        table.insert("xreadlines", newLibUrl(url), newFunc(BaseStr), METHOD);
         table.insert("closed", newLibUrl(url), BaseNum, ATTRIBUTE);
         table.insert("encoding", newLibUrl(url), BaseStr, ATTRIBUTE);
         table.insert("errors", newLibUrl(url), unknown(), ATTRIBUTE);
@@ -803,15 +805,15 @@ public class Builtins {
             addFunction("bool", newLibUrl("functions", "bool"), BaseBool);
             addFunction("complex", newLibUrl("functions", "complex"), BaseComplex);
             addClass("dict", newLibUrl("stdtypes", "typesmapping"), BaseDict);
-            addFunction("file", newLibUrl("functions", "file"), BaseFile);
-            addFunction("float", newLibUrl("functions", "float"), BaseFloat);
+            addFunction("file", newLibUrl("functions", "file"), BaseFileInst);
             addFunction("int", newLibUrl("functions", "int"), BaseNum);
-            addFunction("list", newLibUrl("functions", "list"), BaseList);
             addFunction("long", newLibUrl("functions", "long"), BaseNum);
-            addFunction("object", newLibUrl("functions", "object"), Object);
+            addFunction("float", newLibUrl("functions", "float"), BaseFloat);
+            addFunction("list", newLibUrl("functions", "list"), new InstanceType(BaseList));
+            addFunction("object", newLibUrl("functions", "object"), new InstanceType(Object));
             addFunction("str", newLibUrl("functions", "str"), BaseStr);
-            addFunction("tuple", newLibUrl("functions", "tuple"), BaseTuple);
-            addFunction("type", newLibUrl("functions", "type"), Type);
+            addFunction("tuple", newLibUrl("functions", "tuple"), new InstanceType(BaseTuple));
+            addFunction("type", newLibUrl("functions", "type"), new InstanceType(Type));
 
             // XXX:  need to model the following as built-in class types:
             //   basestring, bool, buffer, frozenset, property, set, slice,
@@ -865,7 +867,7 @@ public class Builtins {
             }
 
             addAttr("None", newDataModelUrl("org/yinwang/pysonar/types"), None);
-            addFunction("open", newTutUrl("inputoutput.html#reading-and-writing-files"), BaseFile);
+            addFunction("open", newTutUrl("inputoutput.html#reading-and-writing-files"), BaseFileInst);
             addFunction("__import__", newLibUrl("functions"), newModule("<?>"));
 
             Indexer.idx.globaltable.insert("__builtins__", liburl(), module, ATTRIBUTE);
@@ -1025,7 +1027,7 @@ public class Builtins {
         @Override
         public void initBindings() {
             ClassType StringIO = newClass("StringIO", table, BaseFile);
-            addFunction("StringIO", liburl(), StringIO);
+            addFunction("StringIO", liburl(), new InstanceType(StringIO));
             addAttr("InputType", liburl(), Type);
             addAttr("OutputType", liburl(), Type);
             addAttr("cStringIO_CAPI", liburl(), unknown());
@@ -1803,7 +1805,7 @@ public class Builtins {
                 addFunction(s, liburl(a), BaseNum);
             }
 
-            addFunction("fork", liburl(a), newUnion(BaseFile, BaseNum));
+            addFunction("fork", liburl(a), newUnion(BaseFileInst, BaseNum));
             addFunction("times", liburl(a), newTuple(BaseNum, BaseNum, BaseNum, BaseNum, BaseNum));
 
             for (String s : list("forkpty", "wait", "waitpid")) {
@@ -1820,16 +1822,16 @@ public class Builtins {
             String a = "file-object-creation";
 
             for (String s : list("fdopen", "popen", "tmpfile")) {
-                addFunction(s, liburl(a), BaseFile);
+                addFunction(s, liburl(a), BaseFileInst);
             }
 
-            addFunction("popen2", liburl(a), newTuple(BaseFile, BaseFile));
-            addFunction("popen3", liburl(a), newTuple(BaseFile, BaseFile, BaseFile));
-            addFunction("popen4", liburl(a), newTuple(BaseFile, BaseFile));
+            addFunction("popen2", liburl(a), newTuple(BaseFileInst, BaseFileInst));
+            addFunction("popen3", liburl(a), newTuple(BaseFileInst, BaseFileInst, BaseFileInst));
+            addFunction("popen4", liburl(a), newTuple(BaseFileInst, BaseFileInst));
 
             a = "file-descriptor-operations";
 
-            addFunction("open", liburl(a), BaseFile);
+            addFunction("open", liburl(a), BaseFileInst);
 
             for (String s : list("close", "closerange", "dup2", "fchmod",
                     "fchown", "fdatasync", "fsync", "ftruncate",
@@ -1894,7 +1896,7 @@ public class Builtins {
                 addFunction(s, liburl(a), newList(BaseStr));
             }
 
-            addFunction("mkfifo", liburl(a), BaseFile);
+            addFunction("mkfifo", liburl(a), BaseFileInst);
 
             addFunction("stat", liburl(a), newList(BaseNum));  // XXX: posix.stat_result
             addFunction("statvfs", liburl(a), newList(BaseNum));  // XXX: pos.statvfs_result
@@ -2461,7 +2463,7 @@ public class Builtins {
 
         @Override
         public void initBindings() {
-            ClassType struct_time = Time_struct_time = newClass("datetime", table, Object);
+            InstanceType struct_time = Time_struct_time = new InstanceType(newClass("datetime", table, Object));
             addAttr("struct_time", liburl(), struct_time);
 
             String[] struct_time_attrs = {
