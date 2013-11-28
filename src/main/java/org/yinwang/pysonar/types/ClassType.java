@@ -24,7 +24,7 @@ public class ClassType extends Type {
     }
 
 
-    public ClassType(@NotNull String name, Scope parent, @Nullable ClassType superClass) {
+    public ClassType(@NotNull String name, Scope parent, @Nullable Type superClass) {
         this(name, parent);
         if (superClass != null) {
             addSuper(superClass);

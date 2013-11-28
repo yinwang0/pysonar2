@@ -66,15 +66,15 @@ public class Builtins {
     public InstanceType BaseComplex;
     public InstanceType BaseBool;
     public InstanceType BaseStr;
-    public ClassType BaseList;
-    public ClassType BaseArray;
-    public ClassType BaseDict;
-    public ClassType BaseTuple;
-    public ClassType BaseModule;
-    public ClassType BaseFile;
+    public InstanceType BaseList;
+    public InstanceType BaseArray;
+    public InstanceType BaseDict;
+    public InstanceType BaseTuple;
+    public InstanceType BaseModule;
+    public InstanceType BaseFile;
     public ClassType BaseException;
-    public ClassType BaseStruct;
-    public ClassType BaseFunction;  // models functions, lambas and methods
+    public InstanceType BaseStruct;
+    public InstanceType BaseFunction;  // models functions, lambas and methods
     public ClassType BaseClass;  // models classes and instances
 
     public ClassType Datetime_datetime;
@@ -115,10 +115,10 @@ public class Builtins {
 
     @NotNull
     ClassType newClass(@NotNull String name, Scope table,
-                       ClassType superClass, @NotNull ClassType... moreSupers)
+                       Type superClass, @NotNull Type... moreSupers)
     {
         ClassType t = new ClassType(name, table, superClass);
-        for (ClassType c : moreSupers) {
+        for (Type c : moreSupers) {
             t.addSuper(c);
         }
         nativeTypes.add(t);
@@ -378,19 +378,19 @@ public class Builtins {
         None = new InstanceType(newClass("None", bt));
         Cont = new InstanceType(newClass("None", bt));                 // continuation (to express non-return)
         Type = newClass("type", bt, Object);
-        BaseTuple = newClass("tuple", bt, Object);
-        BaseList = newClass("list", bt, Object);
-        BaseArray = newClass("array", bt);
-        BaseDict = newClass("dict", bt, Object);
+        BaseTuple = new InstanceType(newClass("tuple", bt, Object));
+        BaseList = new InstanceType(newClass("list", bt, Object));
+        BaseArray = new InstanceType(newClass("array", bt));
+        BaseDict = new InstanceType(newClass("dict", bt, Object));
         ClassType numClass = newClass("int", bt, Object);
         BaseNum = new InstanceType(numClass);
         BaseFloat = new InstanceType(newClass("float", bt, Object));
         BaseComplex = new InstanceType(newClass("complex", bt, Object));
         BaseBool = new InstanceType(newClass("bool", bt, numClass));
         BaseStr = new InstanceType(newClass("str", bt, Object));
-        BaseModule = newClass("module", bt);
-        BaseFile = newClass("file", bt, Object);
-        BaseFunction = newClass("function", bt, Object);
+        BaseModule = new InstanceType(newClass("module", bt));
+        BaseFile = new InstanceType(newClass("file", bt, Object));
+        BaseFunction = new InstanceType(newClass("function", bt, Object));
         BaseClass = newClass("classobj", bt, Object);
     }
 
@@ -2334,7 +2334,7 @@ public class Builtins {
             addFunction("unpack", liburl(), newTuple());
             addFunction("unpack_from", liburl(), newTuple());
 
-            BaseStruct = newClass("Struct", table, Object);
+            BaseStruct = new InstanceType(newClass("Struct", table, Object));
             addClass("Struct", liburl("struct-objects"), BaseStruct);
             Scope t = BaseStruct.getTable();
             t.insert("pack", liburl("struct-objects"), newFunc(BaseStr), METHOD);
