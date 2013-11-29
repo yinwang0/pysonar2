@@ -30,17 +30,17 @@ public class JSONDump {
     }
 
 
-    private static Indexer newIndexer(String srcpath, String[] inclpaths) throws Exception {
-        Indexer idx = new Indexer();
+    private static Analyzer newAnalyzer(String srcpath, String[] inclpaths) throws Exception {
+        Analyzer idx = new Analyzer();
         for (String inclpath : inclpaths) {
             idx.addPath(inclpath);
         }
 
-        idx.index(srcpath);
+        idx.analyze(srcpath);
         idx.finish();
 
         if (idx.semanticErrors.size() > 0) {
-            log.info("Indexer errors:");
+            log.info("Analyzer errors:");
             for (Entry<String, List<Diagnostic>> entry : idx.semanticErrors.entrySet()) {
                 String k = entry.getKey();
                 log.info("  Key: " + k);
@@ -166,7 +166,7 @@ public class JSONDump {
     }
 
 
-    private static void writeDocJson(Binding binding, Indexer idx, JsonGenerator json) throws Exception {
+    private static void writeDocJson(Binding binding, Analyzer idx, JsonGenerator json) throws Exception {
         String path = binding.getQname().replace('.', '/').replace("%20", ".");
 
         if (!seenDocs.contains(path)) {
@@ -215,7 +215,7 @@ public class JSONDump {
             }
         });
 
-        Indexer idx = newIndexer(srcpath, inclpaths);
+        Analyzer idx = newAnalyzer(srcpath, inclpaths);
         idx.multilineFunType = true;
         JsonFactory jsonFactory = new JsonFactory();
         JsonGenerator symJson = jsonFactory.createGenerator(symOut);

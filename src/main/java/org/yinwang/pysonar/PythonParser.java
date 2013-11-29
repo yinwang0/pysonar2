@@ -664,13 +664,13 @@ public class PythonParser {
         } else if (python3Process != null) {
             Node n3 = parseFileInner(filename, python3Process);
             if (n3 == null) {
-                Indexer.idx.failedToParse.add(filename);
+                Analyzer.self.failedToParse.add(filename);
                 return null;
             } else {
                 return n3;
             }
         } else {
-            Indexer.idx.failedToParse.add(filename);
+            Analyzer.self.failedToParse.add(filename);
             return null;
         }
     }

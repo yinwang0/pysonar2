@@ -1,9 +1,9 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binder;
 import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
@@ -42,7 +42,7 @@ public class For extends Node {
 
         Type ret;
         if (body == null) {
-            ret = Indexer.idx.builtins.unknown;
+            ret = Analyzer.self.builtins.unknown;
         } else {
             ret = resolveExpr(body, s);
         }

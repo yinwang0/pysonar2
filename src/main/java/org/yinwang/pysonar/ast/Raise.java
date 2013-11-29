@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
@@ -34,7 +34,7 @@ public class Raise extends Node {
         if (traceback != null) {
             resolveExpr(traceback, s);
         }
-        return Indexer.idx.builtins.Cont;
+        return Analyzer.self.builtins.Cont;
     }
 
 

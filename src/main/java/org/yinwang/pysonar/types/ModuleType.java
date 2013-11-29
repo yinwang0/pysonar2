@@ -2,7 +2,7 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar._;
 
@@ -23,7 +23,7 @@ public class ModuleType extends Type {
         if (file != null) {
             // This will return null iff specified file is not prefixed by
             // any path in the module search path -- i.e., the caller asked
-            // the indexer to load a file not in the search path.
+            // the analyzer to load a file not in the search path.
             qname = _.moduleQname(file);
         }
         if (qname == null) {
@@ -34,8 +34,8 @@ public class ModuleType extends Type {
         getTable().setType(this);
 
         // null during bootstrapping of built-in types
-        if (Indexer.idx.builtins != null) {
-            getTable().addSuper(Indexer.idx.builtins.BaseModule.getTable());
+        if (Analyzer.self.builtins != null) {
+            getTable().addSuper(Analyzer.self.builtins.BaseModule.getTable());
         }
     }
 

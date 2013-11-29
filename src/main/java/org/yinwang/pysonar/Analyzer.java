@@ -15,13 +15,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-/**
- * Indexes a set of Python files and builds a code graph. <p>
- * This class is not thread-safe.
- */
-public class Indexer {
+public class Analyzer {
 
-    public static Indexer idx;
+    // global static instance of the analyzer itself
+    public static Analyzer self;
 
     public Scope moduleTable = new Scope(null, Scope.ScopeType.GLOBAL);
     public List<String> loadedFiles = new ArrayList<>();
@@ -49,10 +46,10 @@ public class Indexer {
     String projectDir;
 
 
-    public Indexer() {
+    public Analyzer() {
         stats.putInt("startTime", System.currentTimeMillis());
-        logger = Logger.getLogger(Indexer.class.getCanonicalName());
-        idx = this;
+        logger = Logger.getLogger(Analyzer.class.getCanonicalName());
+        self = this;
         builtins = new Builtins();
         builtins.init();
         addPythonPath();
@@ -61,8 +58,8 @@ public class Indexer {
     }
 
 
-    // main entry to the indexer
-    public void index(String path) {
+    // main entry to the analyzer
+    public void analyze(String path) {
         projectDir = _.unifyPath(path);
         loadFileRecursive(projectDir);
     }
@@ -270,7 +267,7 @@ public class Indexer {
         }
 
         // detect circular import
-        if (Indexer.idx.inImportStack(path)) {
+        if (Analyzer.self.inImportStack(path)) {
             return null;
         }
 
@@ -278,7 +275,7 @@ public class Indexer {
         String oldcwd = cwd;
         setCWD(f.getParent());
 
-        Indexer.idx.pushImportStack(path);
+        Analyzer.self.pushImportStack(path);
         ModuleType mod = parseAndResolve(path);
 
         // restore old CWD
@@ -299,7 +296,7 @@ public class Indexer {
 
     @Nullable
     private ModuleType parseAndResolve(String file) {
-        finer("Indexing: " + file);
+        finer("Analyzing: " + file);
         loadingProgress.tick();
 
         try {
@@ -530,7 +527,7 @@ public class Indexer {
                     !b.getType().isModuleType()
                     && b.getRefs().isEmpty())
             {
-                Indexer.idx.putProblem(b.getNode(), "Unused variable: " + b.getName());
+                Analyzer.self.putProblem(b.getNode(), "Unused variable: " + b.getName());
             }
         }
 
@@ -683,7 +680,7 @@ public class Indexer {
     @NotNull
     @Override
     public String toString() {
-        return "<Indexer:locs=" + references.size() + ":probs="
+        return "<Analyzer:locs=" + references.size() + ":probs="
                 + semanticErrors.size() + ":files=" + loadedFiles.size() + ">";
     }
 }

@@ -1,8 +1,8 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
@@ -31,7 +31,7 @@ public class Name extends Node {
      * We don't always have enough information at this point to know
      * if it's a constructor call or a regular function/method call,
      * so we just determine if it looks like a call or not, and the
-     * indexer will convert constructor-calls to NEW in a later pass.
+     * analyzer will convert constructor-calls to NEW in a later pass.
      */
     @Override
     public boolean isCall() {
@@ -54,15 +54,15 @@ public class Name extends Node {
     public Type resolve(@NotNull Scope s) {
         List<Binding> b = s.lookup(id);
         if (b != null) {
-            Indexer.idx.putRef(this, b);
-            Indexer.idx.stats.inc("resolved");
+            Analyzer.self.putRef(this, b);
+            Analyzer.self.stats.inc("resolved");
             return Scope.makeUnion(b);
         } else if (id.equals("True") || id.equals("False")) {
-            return Indexer.idx.builtins.BaseBool;
+            return Analyzer.self.builtins.BaseBool;
         } else {
-            Indexer.idx.putProblem(this, "unbound variable " + id);
-            Indexer.idx.stats.inc("unresolved");
-            Type t = Indexer.idx.builtins.unknown;
+            Analyzer.self.putProblem(this, "unbound variable " + id);
+            Analyzer.self.stats.inc("unresolved");
+            Type t = Analyzer.self.builtins.unknown;
             t.getTable().setPath(s.extendPath(id));
             return t;
         }

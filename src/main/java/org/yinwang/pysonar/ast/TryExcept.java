@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
@@ -31,9 +31,9 @@ public class TryExcept extends Node {
     @NotNull
     @Override
     public Type resolve(Scope s) {
-        Type tp1 = Indexer.idx.builtins.unknown;
-        Type tp2 = Indexer.idx.builtins.unknown;
-        Type tph = Indexer.idx.builtins.unknown;
+        Type tp1 = Analyzer.self.builtins.unknown;
+        Type tp2 = Analyzer.self.builtins.unknown;
+        Type tph = Analyzer.self.builtins.unknown;
 
         for (ExceptHandler h : handlers) {
             tph = UnionType.union(tph, resolveExpr(h, s));

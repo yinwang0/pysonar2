@@ -1,8 +1,8 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binder;
-import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
@@ -32,7 +32,7 @@ public class ExceptHandler extends Node {
     @NotNull
     @Override
     public Type resolve(@NotNull Scope s) {
-        Type typeval = Indexer.idx.builtins.unknown;
+        Type typeval = Analyzer.self.builtins.unknown;
         if (exceptionType != null) {
             typeval = resolveExpr(exceptionType, s);
         }
@@ -42,7 +42,7 @@ public class ExceptHandler extends Node {
         if (body != null) {
             return resolveExpr(body, s);
         } else {
-            return Indexer.idx.builtins.unknown;
+            return Analyzer.self.builtins.unknown;
         }
     }
 

@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
@@ -27,7 +27,7 @@ public class While extends Node {
     @Override
     public Type resolve(Scope s) {
         resolveExpr(test, s);
-        Type t = Indexer.idx.builtins.unknown;
+        Type t = Analyzer.self.builtins.unknown;
 
         if (body != null) {
             t = resolveExpr(body, s);

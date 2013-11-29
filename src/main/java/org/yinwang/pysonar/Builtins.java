@@ -129,7 +129,7 @@ public class Builtins {
 
     @Nullable
     ModuleType newModule(String name) {
-        ModuleType mt = new ModuleType(name, null, Indexer.idx.globaltable);
+        ModuleType mt = new ModuleType(name, null, Analyzer.self.globaltable);
         nativeTypes.add(mt);
         return mt;
     }
@@ -137,7 +137,7 @@ public class Builtins {
 
     @NotNull
     InstanceType unknown() {
-        InstanceType t = Indexer.idx.builtins.unknown;
+        InstanceType t = Analyzer.self.builtins.unknown;
         nativeTypes.add(t);
         return t;
     }
@@ -160,9 +160,9 @@ public class Builtins {
     @Nullable
     FunType newFunc(@Nullable Type type) {
         if (type == null) {
-            type = Indexer.idx.builtins.unknown;
+            type = Analyzer.self.builtins.unknown;
         }
-        FunType t = new FunType(Indexer.idx.builtins.unknown, type);
+        FunType t = new FunType(Analyzer.self.builtins.unknown, type);
         nativeTypes.add(t);
         return t;
     }
@@ -246,7 +246,7 @@ public class Builtins {
             if (module == null) {
                 module = newModule(name);
                 table = module.getTable();
-                Indexer.idx.moduleTable.insert(name, liburl(), module, MODULE);
+                Analyzer.self.moduleTable.insert(name, liburl(), module, MODULE);
             }
         }
 
@@ -765,8 +765,8 @@ public class Builtins {
         t.insert("func_closure", new Url(DATAMODEL_URL), newTuple(), ATTRIBUTE);
         t.insert("func_code", new Url(DATAMODEL_URL), unknown(), ATTRIBUTE);
         t.insert("func_defaults", new Url(DATAMODEL_URL), newTuple(), ATTRIBUTE);
-        t.insert("func_globals", new Url(DATAMODEL_URL), new DictType(BaseStr, Indexer.idx.builtins.unknown), ATTRIBUTE);
-        t.insert("func_dict", new Url(DATAMODEL_URL), new DictType(BaseStr, Indexer.idx.builtins.unknown), ATTRIBUTE);
+        t.insert("func_globals", new Url(DATAMODEL_URL), new DictType(BaseStr, Analyzer.self.builtins.unknown), ATTRIBUTE);
+        t.insert("func_dict", new Url(DATAMODEL_URL), new DictType(BaseStr, Analyzer.self.builtins.unknown), ATTRIBUTE);
 
         // Assume any function can become a method, for simplicity.
         for (String s : list("__func__", "im_func")) {
@@ -798,7 +798,7 @@ public class Builtins {
 
         @Override
         public void initBindings() {
-            Indexer.idx.moduleTable.insert(name, liburl(), module, MODULE);
+            Analyzer.self.moduleTable.insert(name, liburl(), module, MODULE);
             table.addSuper(BaseModule.getTable());
 
             addClass("None", newLibUrl("constants"), None);
@@ -858,7 +858,7 @@ public class Builtins {
 
             for (String f : builtin_exception_types) {
                 addClass(f, newDataModelUrl("org/yinwang/pysonar/types"),
-                        newClass(f, Indexer.idx.globaltable, Object));
+                        newClass(f, Analyzer.self.globaltable, Object));
             }
             BaseException = (ClassType) table.lookupType("BaseException");
 
@@ -870,8 +870,8 @@ public class Builtins {
             addFunction("open", newTutUrl("inputoutput.html#reading-and-writing-files"), BaseFileInst);
             addFunction("__import__", newLibUrl("functions"), newModule("<?>"));
 
-            Indexer.idx.globaltable.insert("__builtins__", liburl(), module, ATTRIBUTE);
-            Indexer.idx.globaltable.putAll(table);
+            Analyzer.self.globaltable.insert("__builtins__", liburl(), module, ATTRIBUTE);
+            Analyzer.self.globaltable.putAll(table);
         }
     }
 

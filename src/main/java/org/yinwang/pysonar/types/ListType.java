@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,14 +17,14 @@ public class ListType extends Type {
 
 
     public ListType() {
-        this(Indexer.idx.builtins.unknown);
+        this(Analyzer.self.builtins.unknown);
     }
 
 
     public ListType(Type elt0) {
         eltType = elt0;
-        getTable().addSuper(Indexer.idx.builtins.BaseList.getTable());
-        getTable().setPath(Indexer.idx.builtins.BaseList.getTable().getPath());
+        getTable().addSuper(Analyzer.self.builtins.BaseList.getTable());
+        getTable().setPath(Analyzer.self.builtins.BaseList.getTable().getPath());
     }
 
 

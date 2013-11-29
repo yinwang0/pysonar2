@@ -38,7 +38,7 @@ public class Call extends Node {
 
     /**
      * Most of the work here is done by the static method invoke, which is also
-     * used by Indexer.applyUncalled. By using a static method we avoid building
+     * used by Analyzer.applyUncalled. By using a static method we avoid building
      * a NCall node for those dummy calls.
      */
     @NotNull
@@ -68,7 +68,7 @@ public class Call extends Node {
 
         if (opType.isUnionType()) {
             Set<Type> types = opType.asUnionType().getTypes();
-            Type retType = Indexer.idx.builtins.unknown;
+            Type retType = Analyzer.self.builtins.unknown;
             for (Type funcType : types) {
                 Type t = resolveCall(funcType, aTypes, kwTypes, kwargsType, starargsType);
                 retType = UnionType.union(retType, t);
@@ -94,7 +94,7 @@ public class Call extends Node {
             return new InstanceType(rator, this, aTypes);
         } else {
             addWarning("calling non-function and non-class: " + rator);
-            return Indexer.idx.builtins.unknown;
+            return Analyzer.self.builtins.unknown;
         }
     }
 
@@ -107,22 +107,22 @@ public class Call extends Node {
                              Type starargsType,
                              @Nullable Node call)
     {
-        Indexer.idx.removeUncalled(func);
+        Analyzer.self.removeUncalled(func);
 
         if (func.func != null && !func.func.called) {
-            Indexer.idx.nCalled++;
+            Analyzer.self.nCalled++;
             func.func.called = true;
         }
 
         if (func.getFunc() == null) {           // func without definition (possibly builtins)
             return func.getReturnType();
-        } else if (call != null && Indexer.idx.inStack(call)) {
+        } else if (call != null && Analyzer.self.inStack(call)) {
             func.setSelfType(null);
-            return Indexer.idx.builtins.unknown;
+            return Analyzer.self.builtins.unknown;
         }
 
         if (call != null) {
-            Indexer.idx.pushStack(call);
+            Analyzer.self.pushStack(call);
         }
 
         List<Type> argTypeList = new ArrayList<>();
@@ -158,10 +158,10 @@ public class Call extends Node {
         } else {
             Type toType = resolveExpr(func.func.body, funcTable);
             if (missingReturn(toType)) {
-                Indexer.idx.putProblem(func.func.name, "Function not always return a value");
+                Analyzer.self.putProblem(func.func.name, "Function not always return a value");
 
                 if (call != null) {
-                    Indexer.idx.putProblem(call, "Call not always return a value");
+                    Analyzer.self.putProblem(call, "Call not always return a value");
                 }
             }
 
@@ -211,9 +211,9 @@ public class Call extends Node {
                 {
                     aType = starargsType.asTupleType().get(j++);
                 } else {
-                    aType = Indexer.idx.builtins.unknown;
+                    aType = Analyzer.self.builtins.unknown;
                     if (call != null) {
-                        Indexer.idx.putProblem(args.get(i), "unable to bind argument:" + args.get(i));
+                        Analyzer.self.putProblem(args.get(i), "unable to bind argument:" + args.get(i));
                     }
                 }
             }
@@ -224,9 +224,9 @@ public class Call extends Node {
         if (fkwargs != null) {
             if (kwTypes != null && !kwTypes.isEmpty()) {
                 Type kwValType = UnionType.newUnion(kwTypes.values());
-                Binder.bind(funcTable, fkwargs, new DictType(Indexer.idx.builtins.BaseStr, kwValType), Binding.Kind.PARAMETER);
+                Binder.bind(funcTable, fkwargs, new DictType(Analyzer.self.builtins.BaseStr, kwValType), Binding.Kind.PARAMETER);
             } else {
-                Binder.bind(funcTable, fkwargs, Indexer.idx.builtins.unknown, Binding.Kind.PARAMETER);
+                Binder.bind(funcTable, fkwargs, Analyzer.self.builtins.unknown, Binding.Kind.PARAMETER);
             }
         }
 
@@ -235,7 +235,7 @@ public class Call extends Node {
                 Type starType = new TupleType(aTypes.subList(args.size(), aTypes.size()));
                 Binder.bind(funcTable, fvarargs, starType, Binding.Kind.PARAMETER);
             } else {
-                Binder.bind(funcTable, fvarargs, Indexer.idx.builtins.unknown, Binding.Kind.PARAMETER);
+                Binder.bind(funcTable, fvarargs, Analyzer.self.builtins.unknown, Binding.Kind.PARAMETER);
             }
         }
 
@@ -272,7 +272,7 @@ public class Call extends Node {
 
         if (toType.isUnionType()) {
             for (Type t : toType.asUnionType().getTypes()) {
-                if (t == Indexer.idx.builtins.None || t == Indexer.idx.builtins.Cont) {
+                if (t == Analyzer.self.builtins.None || t == Analyzer.self.builtins.Cont) {
                     hasNone = true;
                 } else {
                     hasOther = true;

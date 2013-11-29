@@ -1,8 +1,8 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
@@ -33,27 +33,27 @@ public class Block extends Node {
                     scope.addGlobalName(name.id);
                     List<Binding> nb = scope.lookup(name.id);
                     if (nb != null) {
-                        Indexer.idx.putRef(name, nb);
+                        Analyzer.self.putRef(name, nb);
                     }
                 }
             }
         }
 
         boolean returned = false;
-        Type retType = Indexer.idx.builtins.unknown;
+        Type retType = Analyzer.self.builtins.unknown;
 
         for (Node n : seq) {
             Type t = resolveExpr(n, scope);
             if (!returned) {
                 retType = UnionType.union(retType, t);
-                if (!UnionType.contains(t, Indexer.idx.builtins.Cont)) {
+                if (!UnionType.contains(t, Analyzer.self.builtins.Cont)) {
                     returned = true;
-                    retType = UnionType.remove(retType, Indexer.idx.builtins.Cont);
+                    retType = UnionType.remove(retType, Analyzer.self.builtins.Cont);
                 }
             } else if (scope.getScopeType() != Scope.ScopeType.GLOBAL &&
                     scope.getScopeType() != Scope.ScopeType.MODULE)
             {
-                Indexer.idx.putProblem(n, "unreachable code");
+                Analyzer.self.putProblem(n, "unreachable code");
             }
         }
 

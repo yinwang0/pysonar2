@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,8 +15,8 @@ public class TupleType extends Type {
 
     public TupleType() {
         this.eltTypes = new ArrayList<>();
-        getTable().addSuper(Indexer.idx.builtins.BaseTuple.getTable());
-        getTable().setPath(Indexer.idx.builtins.BaseTuple.getTable().getPath());
+        getTable().addSuper(Analyzer.self.builtins.BaseTuple.getTable());
+        getTable().setPath(Analyzer.self.builtins.BaseTuple.getTable().getPath());
     }
 
 

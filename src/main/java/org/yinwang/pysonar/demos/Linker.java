@@ -42,11 +42,11 @@ class Linker {
     }
 
 
-    public void findLinks(@NotNull Indexer indexer) {
+    public void findLinks(@NotNull Analyzer analyzer) {
         _.msg("Adding xref links");
-        FancyProgress progress = new FancyProgress(indexer.getAllBindings().size(), 50);
+        FancyProgress progress = new FancyProgress(analyzer.getAllBindings().size(), 50);
 
-        for (Binding b : indexer.getAllBindings()) {
+        for (Binding b : analyzer.getAllBindings()) {
             addSemanticStyles(b);
             processDef(b);
             progress.tick();
@@ -54,20 +54,20 @@ class Linker {
 
         // highlight definitions
         _.msg("\nAdding ref links");
-        progress = new FancyProgress(indexer.getReferences().size(), 50);
+        progress = new FancyProgress(analyzer.getReferences().size(), 50);
 
-        for (Entry<Ref, List<Binding>> e : indexer.getReferences().entrySet()) {
+        for (Entry<Ref, List<Binding>> e : analyzer.getReferences().entrySet()) {
             processRef(e.getKey(), e.getValue());
             progress.tick();
         }
 
-//        for (List<Diagnostic> ld: indexer.semanticErrors.values()) {
+//        for (List<Diagnostic> ld: analyzer.semanticErrors.values()) {
 //            for (Diagnostic d: ld) {
 //                processDiagnostic(d);
 //            }
 //        }
 
-//        for (List<Diagnostic> ld: indexer.parseErrors.values()) {
+//        for (List<Diagnostic> ld: analyzer.parseErrors.values()) {
 //            for (Diagnostic d: ld) {
 //                processDiagnostic(d);
 //            }

@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.demos;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.ast.*;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ class Styler extends DefaultNodeVisitor {
     private static final Pattern TRISTRING_PREFIX =
             Pattern.compile("^[ruRU]{0,2}['\"]{3}");
 
-    private Indexer indexer;
+    private Analyzer analyzer;
     private String source;
     private String path;
     @NotNull
@@ -39,8 +39,8 @@ class Styler extends DefaultNodeVisitor {
     private Set<Integer> docOffsets = new HashSet<>();
 
 
-    public Styler(Indexer idx, Linker linker) {
-        this.indexer = idx;
+    public Styler(Analyzer idx, Linker linker) {
+        this.analyzer = idx;
         this.linker = linker;
     }
 
@@ -55,7 +55,7 @@ class Styler extends DefaultNodeVisitor {
     public List<StyleRun> addStyles(String path, String src) {
         this.path = path;
         source = src;
-        Module m = indexer.getAstForFile(path);
+        Module m = analyzer.getAstForFile(path);
         if (m != null) {
             m.visit(this);
         }

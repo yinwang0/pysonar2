@@ -1,8 +1,8 @@
 package org.yinwang.pysonar.demos;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.FancyProgress;
-import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar._;
 
 import java.io.File;
@@ -58,7 +58,7 @@ public class Demo {
                     "} </script>\n";
 
 
-    private Indexer indexer;
+    private Analyzer analyzer;
     private String rootPath;
     private Linker linker;
 
@@ -80,13 +80,13 @@ public class Demo {
             _.die("File not found: " + fileOrDir);
         }
 
-        indexer = new Indexer();
+        analyzer = new Analyzer();
         _.msg("Loading and analyzing files");
-        indexer.index(_.unifyPath(fileOrDir));
-        indexer.finish();
+        analyzer.analyze(_.unifyPath(fileOrDir));
+        analyzer.finish();
 
         generateHtml();
-        indexer.close();
+        analyzer.close();
     }
 
 
@@ -95,13 +95,13 @@ public class Demo {
         makeOutputDir();
 
         linker = new Linker(rootPath, OUTPUT_DIR);
-        linker.findLinks(indexer);
+        linker.findLinks(analyzer);
 
         int rootLength = rootPath.length();
         _.msg("\nGenerating HTML");
 
         int total = 0;
-        for (String path : indexer.getLoadedFiles()) {
+        for (String path : analyzer.getLoadedFiles()) {
             if (path.startsWith(rootPath)) {
                 total++;
             }
@@ -109,7 +109,7 @@ public class Demo {
 
         FancyProgress progress = new FancyProgress(total, 50);
 
-        for (String path : indexer.getLoadedFiles()) {
+        for (String path : analyzer.getLoadedFiles()) {
             if (path.startsWith(rootPath)) {
                 progress.tick();
                 File destFile = _.joinPath(OUTPUT_DIR, path.substring(rootLength));
@@ -125,7 +125,7 @@ public class Demo {
             }
         }
 
-        _.msg("\nWrote " + indexer.getLoadedFiles().size() + " files to " + OUTPUT_DIR);
+        _.msg("\nWrote " + analyzer.getLoadedFiles().size() + " files to " + OUTPUT_DIR);
     }
 
 
@@ -141,11 +141,11 @@ public class Demo {
             return "";
         }
 
-        List<StyleRun> styles = new Styler(indexer, linker).addStyles(path, source);
+        List<StyleRun> styles = new Styler(analyzer, linker).addStyles(path, source);
         styles.addAll(linker.getStyles(path));
 
         String styledSource = new StyleApplier(path, source, styles).apply();
-        String outline = new HtmlOutline(indexer).generate(path);
+        String outline = new HtmlOutline(analyzer).generate(path);
 
         StringBuilder sb = new StringBuilder();
         sb.append("<html><head title=\"").append(path).append("\">")

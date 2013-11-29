@@ -55,7 +55,7 @@ public class AstCache {
      */
     public boolean clearDiskCache() {
         try {
-            _.deleteDirectory(new File(Indexer.idx.cacheDir));
+            _.deleteDirectory(new File(Analyzer.self.cacheDir));
             return true;
         }
         catch (Exception x) {
@@ -125,7 +125,7 @@ public class AstCache {
 
     @NotNull
     public String getCachePath(String md5, String name) {
-        return _.makePathString(Indexer.idx.cacheDir, name + md5 + ".ast");
+        return _.makePathString(Analyzer.self.cacheDir, name + md5 + ".ast");
     }
 
 

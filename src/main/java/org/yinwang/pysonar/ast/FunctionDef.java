@@ -2,9 +2,9 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binder;
 import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.Type;
@@ -158,7 +158,7 @@ public class FunctionDef extends Node {
         fun.getTable().setParent(outer);
         fun.getTable().setPath(outer.extendPath(getName().id));
         fun.setDefaultTypes(resolveAndConstructList(defaults, outer));
-        Indexer.idx.addUncalled(fun);
+        Analyzer.self.addUncalled(fun);
         Binding.Kind funkind;
 
         if (outer.getScopeType() == Scope.ScopeType.CLASS) {
@@ -177,7 +177,7 @@ public class FunctionDef extends Node {
         }
 
         Binder.bind(outer, name, fun, funkind);
-        return Indexer.idx.builtins.Cont;
+        return Analyzer.self.builtins.Cont;
     }
 
 

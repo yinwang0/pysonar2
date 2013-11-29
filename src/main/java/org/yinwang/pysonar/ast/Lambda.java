@@ -1,9 +1,9 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binder;
 import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.Type;
@@ -60,7 +60,7 @@ public class Lambda extends FunctionDef {
         cl.getTable().setPath(outer.extendPath(getName().id));
         Binder.bind(outer, getName(), cl, Binding.Kind.FUNCTION);
         cl.setDefaultTypes(resolveAndConstructList(defaults, outer));
-        Indexer.idx.addUncalled(cl);
+        Analyzer.self.addUncalled(cl);
         return cl;
     }
 

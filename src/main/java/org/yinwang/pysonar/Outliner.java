@@ -225,10 +225,10 @@ public class Outliner {
      * @param scope the file scope
      * @param path  the file for which to build the outline
      * @return a list of entries constituting the file outline.
-     *         Returns an empty list if the indexer hasn't indexed that path.
+     *         Returns an empty list if the analyzer hasn't analyzed that path.
      */
     @NotNull
-    public List<Entry> generate(@NotNull Indexer idx, @NotNull String abspath) {
+    public List<Entry> generate(@NotNull Analyzer idx, @NotNull String abspath) {
         ModuleType mt = idx.loadFile(abspath);
         if (mt == null) {
             return new ArrayList<Entry>();

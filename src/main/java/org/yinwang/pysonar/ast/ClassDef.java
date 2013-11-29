@@ -62,17 +62,17 @@ public class ClassDef extends Node {
                     break;
                 }
             } else {
-                Indexer.idx.putProblem(base, base + " is not a class");
+                Analyzer.self.putProblem(base, base + " is not a class");
             }
             baseTypes.add(baseType);
         }
 
         // XXX: Not sure if we should add "bases", "name" and "dict" here. They
         // must be added _somewhere_ but I'm just not sure if it should be HERE.
-        Builtins builtins = Indexer.idx.builtins;
+        Builtins builtins = Analyzer.self.builtins;
         addSpecialAttribute(classType.getTable(), "__bases__", new TupleType(baseTypes));
         addSpecialAttribute(classType.getTable(), "__name__", builtins.BaseStr);
-        addSpecialAttribute(classType.getTable(), "__dict__", new DictType(builtins.BaseStr, Indexer.idx.builtins.unknown));
+        addSpecialAttribute(classType.getTable(), "__dict__", new DictType(builtins.BaseStr, Analyzer.self.builtins.unknown));
         addSpecialAttribute(classType.getTable(), "__module__", builtins.BaseStr);
         addSpecialAttribute(classType.getTable(), "__doc__", builtins.BaseStr);
 
@@ -80,7 +80,7 @@ public class ClassDef extends Node {
         // methods need this type as self.
         Binder.bind(s, name, classType, Binding.Kind.CLASS);
         resolveExpr(body, classType.getTable());
-        return Indexer.idx.builtins.Cont;
+        return Analyzer.self.builtins.Cont;
     }
 
 

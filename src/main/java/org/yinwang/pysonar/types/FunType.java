@@ -2,7 +2,7 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.TypeStack;
 import org.yinwang.pysonar.ast.FunctionDef;
@@ -35,8 +35,8 @@ public class FunType extends Type {
 
     public FunType(Type from, Type to) {
         addMapping(from, to);
-        getTable().addSuper(Indexer.idx.builtins.BaseFunction.getTable());
-        getTable().setPath(Indexer.idx.builtins.BaseFunction.getTable().getPath());
+        getTable().addSuper(Analyzer.self.builtins.BaseFunction.getTable());
+        getTable().setPath(Analyzer.self.builtins.BaseFunction.getTable().getPath());
     }
 
 
@@ -63,7 +63,7 @@ public class FunType extends Type {
         if (!arrows.isEmpty()) {
             return arrows.values().iterator().next();
         } else {
-            return Indexer.idx.builtins.unknown;
+            return Analyzer.self.builtins.unknown;
         }
     }
 
@@ -129,7 +129,7 @@ public class FunType extends Type {
     static Type removeNoneReturn(@NotNull Type toType) {
         if (toType.isUnionType()) {
             Set<Type> types = new HashSet<>(toType.asUnionType().getTypes());
-            types.remove(Indexer.idx.builtins.Cont);
+            types.remove(Analyzer.self.builtins.Cont);
             return UnionType.newUnion(types);
         } else {
             return toType;
@@ -153,7 +153,7 @@ public class FunType extends Type {
             return true;
         }
 
-        if (type1.isUnknownType() || type1 == Indexer.idx.builtins.None || type1.equals(type2)) {
+        if (type1.isUnknownType() || type1 == Analyzer.self.builtins.None || type1.equals(type2)) {
             return true;
         }
 
@@ -223,7 +223,7 @@ public class FunType extends Type {
 
                 if (!seen.contains(as)) {
                     if (i != 0) {
-                        if (Indexer.idx.multilineFunType) {
+                        if (Analyzer.self.multilineFunType) {
                             sb.append("\n| ");
                         } else {
                             sb.append(" | ");

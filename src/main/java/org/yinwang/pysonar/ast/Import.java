@@ -1,8 +1,8 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
@@ -26,14 +26,14 @@ public class Import extends Node {
     @Override
     public Type resolve(@NotNull Scope s) {
         for (Alias a : names) {
-            ModuleType mod = Indexer.idx.loadModule(a.name, s);
+            ModuleType mod = Analyzer.self.loadModule(a.name, s);
             if (mod == null) {
-                Indexer.idx.putProblem(this, "Cannot load module");
+                Analyzer.self.putProblem(this, "Cannot load module");
             } else if (a.asname != null) {
                 s.insert(a.asname.id, a.asname, mod, Binding.Kind.VARIABLE);
             }
         }
-        return Indexer.idx.builtins.Cont;
+        return Analyzer.self.builtins.Cont;
     }
 
 

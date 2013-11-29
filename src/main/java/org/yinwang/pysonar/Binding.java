@@ -74,7 +74,7 @@ public class Binding implements Comparable<Object> {
         }
 
         initLocationInfo(node);
-        Indexer.idx.registerBinding(this);
+        Analyzer.self.registerBinding(this);
     }
 
 

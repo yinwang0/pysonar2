@@ -2,7 +2,7 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.TypeStack;
 import org.yinwang.pysonar._;
@@ -57,7 +57,7 @@ public abstract class Type {
      * (i.e., C, Java, C# or some other host language.)
      */
     public boolean isNative() {
-        return Indexer.idx.builtins.isNative(this);
+        return Analyzer.self.builtins.isNative(this);
     }
 
 
@@ -92,14 +92,14 @@ public abstract class Type {
 
 
     public boolean isNumType() {
-        return (this == Indexer.idx.builtins.BaseNum ||
-                this == Indexer.idx.builtins.BaseFloat ||
-                this == Indexer.idx.builtins.BaseComplex);
+        return (this == Analyzer.self.builtins.BaseNum ||
+                this == Analyzer.self.builtins.BaseFloat ||
+                this == Analyzer.self.builtins.BaseComplex);
     }
 
 
     public boolean isStrType() {
-        return this == Indexer.idx.builtins.BaseStr;
+        return this == Analyzer.self.builtins.BaseStr;
     }
 
 
@@ -114,7 +114,7 @@ public abstract class Type {
 
 
     public boolean isUnknownType() {
-        return this == Indexer.idx.builtins.unknown;
+        return this == Analyzer.self.builtins.unknown;
     }
 
 

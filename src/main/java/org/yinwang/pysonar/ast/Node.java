@@ -2,7 +2,7 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
@@ -200,12 +200,12 @@ public abstract class Node implements java.io.Serializable {
 
 
     protected void addWarning(String msg) {
-        Indexer.idx.putProblem(this, msg);
+        Analyzer.self.putProblem(this, msg);
     }
 
 
     protected void addError(String msg) {
-        Indexer.idx.putProblem(this, msg);
+        Analyzer.self.putProblem(this, msg);
     }
 
 
@@ -217,10 +217,10 @@ public abstract class Node implements java.io.Serializable {
     @NotNull
     protected Type resolveListAsUnion(@Nullable List<? extends Node> nodes, Scope s) {
         if (nodes == null || nodes.isEmpty()) {
-            return Indexer.idx.builtins.unknown;
+            return Analyzer.self.builtins.unknown;
         }
 
-        Type result = Indexer.idx.builtins.unknown;
+        Type result = Analyzer.self.builtins.unknown;
         for (Node node : nodes) {
             Type nodeType = resolveExpr(node, s);
             result = UnionType.union(result, nodeType);

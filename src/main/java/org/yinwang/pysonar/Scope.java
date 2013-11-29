@@ -346,7 +346,7 @@ public class Scope {
 
 
     public static Type makeUnion(List<Binding> bs) {
-        Type t = Indexer.idx.builtins.unknown;
+        Type t = Analyzer.self.builtins.unknown;
         for (Binding b : bs) {
             t = UnionType.union(t, b.getType());
         }

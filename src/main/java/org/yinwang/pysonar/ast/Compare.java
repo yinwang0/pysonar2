@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
@@ -32,7 +32,7 @@ public class Compare extends Node {
     public Type resolve(Scope s) {
         resolveExpr(left, s);
         resolveList(comparators, s);
-        return Indexer.idx.builtins.BaseNum;
+        return Analyzer.self.builtins.BaseNum;
     }
 
 

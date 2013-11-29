@@ -32,7 +32,7 @@ public class Binder {
                 t.setElementType(UnionType.union(t.getElementType(), rvalue));
             }
         } else if (target != null) {
-            Indexer.idx.putProblem(target, "invalid location for assignment");
+            Analyzer.self.putProblem(target, "invalid location for assignment");
         }
     }
 
@@ -68,10 +68,10 @@ public class Binder {
             bind(s, xs, rvalue.asDictType().toTupleType(xs.size()), kind);
         } else if (rvalue.isUnknownType()) {
             for (Node x : xs) {
-                bind(s, x, Indexer.idx.builtins.unknown, kind);
+                bind(s, x, Analyzer.self.builtins.unknown, kind);
             }
         } else {
-            Indexer.idx.putProblem(xs.get(0).getFile(),
+            Analyzer.self.putProblem(xs.get(0).getFile(),
                     xs.get(0).start,
                     xs.get(xs.size() - 1).end,
                     "unpacking non-iterable: " + rvalue);
@@ -83,7 +83,7 @@ public class Binder {
         if (s.isGlobalName(name.id)) {
             Binding b = new Binding(name.id, name, rvalue, kind);
             s.getGlobalTable().update(name.id, b);
-            Indexer.idx.putRef(name, b);
+            Analyzer.self.putRef(name, b);
         } else {
             s.insert(name.id, name, rvalue, kind);
         }
@@ -104,15 +104,15 @@ public class Binder {
                 for (Binding ent : ents) {
                     if (ent == null || !ent.getType().isFuncType()) {
                         if (!iterType.isUnknownType()) {
-                            Indexer.idx.putProblem(iter, "not an iterable type: " + iterType);
+                            Analyzer.self.putProblem(iter, "not an iterable type: " + iterType);
                         }
-                        bind(s, target, Indexer.idx.builtins.unknown, kind);
+                        bind(s, target, Analyzer.self.builtins.unknown, kind);
                     } else {
                         bind(s, target, ent.getType().asFuncType().getReturnType(), kind);
                     }
                 }
             } else {
-                bind(s, target, Indexer.idx.builtins.unknown, kind);
+                bind(s, target, Analyzer.self.builtins.unknown, kind);
             }
         }
     }
@@ -129,6 +129,6 @@ public class Binder {
         } else {
             msg = "ValueError: too many values to unpack";
         }
-        Indexer.idx.putProblem(xs.get(0).getFile(), beg, end, msg);
+        Analyzer.self.putProblem(xs.get(0).getFile(), beg, end, msg);
     }
 }

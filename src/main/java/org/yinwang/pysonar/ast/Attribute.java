@@ -2,8 +2,8 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
@@ -57,7 +57,7 @@ public class Attribute extends Node {
 
     private void setAttrType(@NotNull Type targetType, @NotNull Type v) {
         if (targetType.isUnknownType()) {
-            Indexer.idx.putProblem(this, "Can't set attribute for UnknownType");
+            Analyzer.self.putProblem(this, "Can't set attribute for UnknownType");
             return;
         }
         // new attr, mark the type as "mutated"
@@ -76,7 +76,7 @@ public class Attribute extends Node {
         Type targetType = resolveExpr(target, s);
         if (targetType.isUnionType()) {
             Set<Type> types = targetType.asUnionType().getTypes();
-            Type retType = Indexer.idx.builtins.unknown;
+            Type retType = Analyzer.self.builtins.unknown;
             for (Type tt : types) {
                 retType = UnionType.union(retType, getAttrType(tt));
             }
@@ -90,13 +90,13 @@ public class Attribute extends Node {
     private Type getAttrType(@NotNull Type targetType) {
         List<Binding> bs = targetType.getTable().lookupAttr(attr.id);
         if (bs == null) {
-            Indexer.idx.putProblem(attr, "attribute not found in type: " + targetType);
-            Type t = Indexer.idx.builtins.unknown;
+            Analyzer.self.putProblem(attr, "attribute not found in type: " + targetType);
+            Type t = Analyzer.self.builtins.unknown;
             t.getTable().setPath(targetType.getTable().extendPath(attr.id));
             return t;
         } else {
             for (Binding b : bs) {
-                Indexer.idx.putRef(attr, b);
+                Analyzer.self.putRef(attr, b);
                 if (getParent() != null && getParent().isCall() &&
                         b.getType().isFuncType() && targetType.isInstanceType())
                 {  // method call

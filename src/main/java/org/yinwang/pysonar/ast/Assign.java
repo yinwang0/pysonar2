@@ -1,8 +1,8 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binder;
-import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
@@ -34,7 +34,7 @@ public class Assign extends Node {
     @Override
     public Type resolve(@NotNull Scope s) {
         if (rvalue == null) {
-            Indexer.idx.putProblem(this, "missing RHS of assignment");
+            Analyzer.self.putProblem(this, "missing RHS of assignment");
         } else {
             Type valueType = resolveExpr(rvalue, s);
             for (Node t : targets) {
@@ -42,7 +42,7 @@ public class Assign extends Node {
             }
         }
 
-        return Indexer.idx.builtins.Cont;
+        return Analyzer.self.builtins.Cont;
     }
 
 

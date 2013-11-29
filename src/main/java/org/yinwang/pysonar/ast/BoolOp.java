@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
@@ -30,7 +30,7 @@ public class BoolOp extends Node {
             for (Node e : values) {
                 last = resolveExpr(e, s);
             }
-            return (last == null ? Indexer.idx.builtins.unknown : last);
+            return (last == null ? Analyzer.self.builtins.unknown : last);
         }
 
         // OR

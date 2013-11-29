@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 
 
 public class DictType extends Type {
@@ -11,15 +11,15 @@ public class DictType extends Type {
 
 
     public DictType() {
-        this(Indexer.idx.builtins.unknown, Indexer.idx.builtins.unknown);
+        this(Analyzer.self.builtins.unknown, Analyzer.self.builtins.unknown);
     }
 
 
     public DictType(Type key0, Type val0) {
         keyType = key0;
         valueType = val0;
-        getTable().addSuper(Indexer.idx.builtins.BaseDict.getTable());
-        getTable().setPath(Indexer.idx.builtins.BaseDict.getTable().getPath());
+        getTable().addSuper(Analyzer.self.builtins.BaseDict.getTable());
+        getTable().setPath(Analyzer.self.builtins.BaseDict.getTable().getPath());
     }
 
 

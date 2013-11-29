@@ -2,7 +2,7 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
@@ -37,7 +37,7 @@ public class Withitem extends Node {
     @NotNull
     @Override
     public Type resolve(Scope s) {
-        return Indexer.idx.builtins.unknown;
+        return Analyzer.self.builtins.unknown;
     }
 
 

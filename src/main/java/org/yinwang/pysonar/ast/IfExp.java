@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
@@ -32,12 +32,12 @@ public class IfExp extends Node {
         if (body != null) {
             type1 = resolveExpr(body, s);
         } else {
-            type1 = Indexer.idx.builtins.Cont;
+            type1 = Analyzer.self.builtins.Cont;
         }
         if (orelse != null) {
             type2 = resolveExpr(orelse, s);
         } else {
-            type2 = Indexer.idx.builtins.Cont;
+            type2 = Analyzer.self.builtins.Cont;
         }
         return UnionType.union(type1, type2);
     }

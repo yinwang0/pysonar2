@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
@@ -29,6 +29,6 @@ public class Break extends Node {
     @NotNull
     @Override
     public Type resolve(Scope s) {
-        return Indexer.idx.builtins.None;
+        return Analyzer.self.builtins.None;
     }
 }

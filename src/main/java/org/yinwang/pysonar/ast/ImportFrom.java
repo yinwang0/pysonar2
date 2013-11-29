@@ -2,8 +2,8 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Indexer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.ListType;
 import org.yinwang.pysonar.types.ModuleType;
@@ -40,13 +40,13 @@ public class ImportFrom extends Node {
     @Override
     public Type resolve(@NotNull Scope s) {
         if (module == null) {
-            return Indexer.idx.builtins.Cont;
+            return Analyzer.self.builtins.Cont;
         }
 
-        ModuleType mod = Indexer.idx.loadModule(module, s);
+        ModuleType mod = Analyzer.self.loadModule(module, s);
 
         if (mod == null) {
-            Indexer.idx.putProblem(this, "Cannot load module");
+            Analyzer.self.putProblem(this, "Cannot load module");
         } else if (isImportStar()) {
             importStar(s, mod);
         } else {
@@ -56,15 +56,15 @@ public class ImportFrom extends Node {
                 if (bs != null) {
                     if (a.asname != null) {
                         s.update(a.asname.id, bs);
-                        Indexer.idx.putRef(a.asname, bs);
+                        Analyzer.self.putRef(a.asname, bs);
                     } else {
                         s.update(first.id, bs);
-                        Indexer.idx.putRef(first, bs);
+                        Analyzer.self.putRef(first, bs);
                     }
                 } else {
                     List<Name> ext = new ArrayList<>(module);
                     ext.add(first);
-                    ModuleType mod2 = Indexer.idx.loadModule(ext, s);
+                    ModuleType mod2 = Analyzer.self.loadModule(ext, s);
                     if (mod2 != null) {
                         if (a.asname != null) {
                             s.insert(a.asname.id, a.asname, mod2, Binding.Kind.VARIABLE);
@@ -76,7 +76,7 @@ public class ImportFrom extends Node {
             }
         }
 
-        return Indexer.idx.builtins.Cont;
+        return Analyzer.self.builtins.Cont;
     }
 
 
@@ -90,7 +90,7 @@ public class ImportFrom extends Node {
             return;
         }
 
-        Module mod = Indexer.idx.getAstForFile(mt.getFile());
+        Module mod = Analyzer.self.getAstForFile(mt.getFile());
         if (mod == null) {
             return;
         }
@@ -116,7 +116,7 @@ public class ImportFrom extends Node {
                 } else {
                     List<Name> m2 = new ArrayList<>(module);
                     m2.add(new Name(name));
-                    ModuleType mod2 = Indexer.idx.loadModule(m2, s);
+                    ModuleType mod2 = Analyzer.self.loadModule(m2, s);
                     if (mod2 != null) {
                         s.insert(name, null, mod2, Binding.Kind.VARIABLE);
                     }

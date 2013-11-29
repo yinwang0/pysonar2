@@ -2,7 +2,7 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -50,7 +50,7 @@ public class UnionType extends Type {
             types.remove(t2);
             return UnionType.newUnion(types);
         } else if (t1 == t2) {
-            return Indexer.idx.builtins.unknown;
+            return Analyzer.self.builtins.unknown;
         } else {
             return t1;
         }
@@ -59,7 +59,7 @@ public class UnionType extends Type {
 
     @NotNull
     static public Type newUnion(@NotNull Collection<Type> types) {
-        Type t = Indexer.idx.builtins.unknown;
+        Type t = Analyzer.self.builtins.unknown;
         for (Type nt : types) {
             t = union(t, nt);
         }
@@ -97,13 +97,13 @@ public class UnionType extends Type {
     public static Type union(@NotNull Type u, @NotNull Type v) {
         if (u.equals(v)) {
             return u;
-        } else if (u == Indexer.idx.builtins.unknown) {
+        } else if (u == Analyzer.self.builtins.unknown) {
             return v;
-        } else if (v == Indexer.idx.builtins.unknown) {
+        } else if (v == Analyzer.self.builtins.unknown) {
             return u;
-        } else if (u == Indexer.idx.builtins.None) {
+        } else if (u == Analyzer.self.builtins.None) {
             return v;
-        } else if (v == Indexer.idx.builtins.None) {
+        } else if (v == Analyzer.self.builtins.None) {
             return u;
         } else {
             return new UnionType(u, v);
@@ -113,14 +113,14 @@ public class UnionType extends Type {
 
     /**
      * Returns the first alternate whose type is not unknown and
-     * is not {@link Indexer.idx.builtins.None}.
+     * is not {@link org.yinwang.pysonar.Analyzer.idx.builtins.None}.
      *
      * @return the first non-unknown, non-{@code None} alternate, or {@code null} if none found
      */
     @Nullable
     public Type firstUseful() {
         for (Type type : types) {
-            if (!type.isUnknownType() && type != Indexer.idx.builtins.None) {
+            if (!type.isUnknownType() && type != Analyzer.self.builtins.None) {
                 return type;
             }
         }

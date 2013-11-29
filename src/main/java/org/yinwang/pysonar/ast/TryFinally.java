@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Indexer;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
@@ -23,7 +23,7 @@ public class TryFinally extends Node {
     @NotNull
     @Override
     public Type resolve(Scope s) {
-        Type tFinal = Indexer.idx.builtins.unknown;
+        Type tFinal = Analyzer.self.builtins.unknown;
         if (body != null) {
             resolveExpr(body, s);
         }
