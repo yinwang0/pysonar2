@@ -3,7 +3,7 @@ package org.yinwang.pysonar.ast;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Scope;
-import org.yinwang.pysonar.types.ListType;
+import org.yinwang.pysonar.types.DictType;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
@@ -51,8 +51,11 @@ public class Subscript extends Node {
         } else if (vt.isTupleType()) {
             return getListSubscript(vt.asTupleType().toListType(), st, s);
         } else if (vt.isDictType()) {
-            ListType nl = new ListType(vt.asDictType().valueType);
-            return getListSubscript(nl, st, s);
+            DictType dt = vt.asDictType();
+            if (!dt.keyType.equals(st)) {
+                addWarning("Possible KeyError (wrong type for subscript)");
+            }
+            return vt.asDictType().valueType;
         } else if (vt.isStrType()) {
             if (st.isListType() || st.isNumType()) {
                 return vt;

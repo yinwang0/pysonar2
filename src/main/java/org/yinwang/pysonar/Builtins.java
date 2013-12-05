@@ -67,6 +67,7 @@ public class Builtins {
     public InstanceType BaseBool;
     public InstanceType BaseStr;
     public ClassType BaseList;
+    public InstanceType BaseListInst;
     public ClassType BaseArray;
     public ClassType BaseDict;
     public ClassType BaseTuple;
@@ -381,6 +382,7 @@ public class Builtins {
         Type = newClass("type", bt, Object);
         BaseTuple = newClass("tuple", bt, Object);
         BaseList = newClass("list", bt, Object);
+        BaseListInst = new InstanceType(BaseList);
         BaseArray = newClass("array", bt);
         BaseDict = newClass("dict", bt, Object);
         ClassType numClass = newClass("int", bt, Object);
@@ -551,7 +553,7 @@ public class Builtins {
 
     void buildListType() {
         BaseList.getTable().insert("__getslice__", newDataModelUrl("object.__getslice__"),
-                newFunc(BaseList), METHOD);
+                newFunc(BaseListInst), METHOD);
         BaseList.getTable().insert("__getitem__", newDataModelUrl("object.__getitem__"),
                 newFunc(BaseList), METHOD);
         BaseList.getTable().insert("__iter__", newDataModelUrl("object.__iter__"),
