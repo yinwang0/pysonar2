@@ -174,6 +174,10 @@ public class FunType extends Type {
             return true;
         }
 
+        if (type1 instanceof ListType && type2 instanceof ListType) {
+            return subsumedInner(((ListType) type1).toTupleType(), ((ListType) type2).toTupleType(), typeStack);
+        }
+
         return false;
     }
 
@@ -200,6 +204,26 @@ public class FunType extends Type {
     }
 
 
+    // If the self type is set, use the self type in the display
+    // This is for display purpose only, it may not be logically
+    //   correct wrt some pathological programs
+    private TupleType simplifySelf(TupleType from) {
+        TupleType simplified = new TupleType();
+        if (from.getElementTypes().size() > 0) {
+            if (cls != null) {
+                simplified.add(cls.getCanon());
+            } else {
+                simplified.add(from.get(0));
+            }
+        }
+
+        for (int i = 1; i < from.getElementTypes().size(); i++) {
+            simplified.add(from.get(i));
+        }
+        return simplified;
+    }
+
+
     @Override
     protected String printType(@NotNull CyclicTypeRecorder ctr) {
 
@@ -219,7 +243,12 @@ public class FunType extends Type {
             Set<String> seen = new HashSet<>();
 
             for (Map.Entry<Type, Type> e : arrows.entrySet()) {
-                String as = e.getKey().printType(ctr) + " -> " + e.getValue().printType(ctr);
+                Type from = e.getKey();
+                if (from.isTupleType()) {
+                    from = simplifySelf(from.asTupleType());
+                }
+
+                String as = from.printType(ctr) + " -> " + e.getValue().printType(ctr);
 
                 if (!seen.contains(as)) {
                     if (i != 0) {
