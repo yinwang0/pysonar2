@@ -50,7 +50,7 @@ public class ClassType extends Type {
 
     public InstanceType getCanon() {
         if (canon == null) {
-            canon = new InstanceType(this, null, null);
+            canon = new InstanceType(this);
         }
         return canon;
     }
