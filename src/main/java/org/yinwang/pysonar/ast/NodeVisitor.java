@@ -90,6 +90,8 @@ public interface NodeVisitor {
 
     public boolean visit(Num m);
 
+    public boolean visit(Op m);
+
     public boolean visit(Pass m);
 
     public boolean visit(Print m);
@@ -109,6 +111,8 @@ public interface NodeVisitor {
     public boolean visit(Str m);
 
     public boolean visit(Subscript m);
+
+    public boolean visit(Try m);
 
     public boolean visit(TryExcept m);
 
@@ -131,4 +135,6 @@ public interface NodeVisitor {
     public boolean visit(YieldFrom m);
 
     public boolean visit(Set s);
+
+    public boolean visit(Starred s);
 }

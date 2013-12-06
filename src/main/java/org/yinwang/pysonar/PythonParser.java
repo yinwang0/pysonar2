@@ -416,6 +416,15 @@ public class PythonParser {
             return new Global(nameNodes, start, end);
         }
 
+        if (type.equals("Nonlocal")) {
+            List<String> names = (List<String>) map.get("names");
+            List<Name> nameNodes = new ArrayList<>();
+            for (String name : names) {
+                nameNodes.add(new Name(name));
+            }
+            return new Global(nameNodes, start, end);
+        }
+
         if (type.equals("If")) {
             Node test = deJson(map.get("test"));
             Block body = convertBlock(map.get("body"));
@@ -468,6 +477,11 @@ public class PythonParser {
         if (type.equals("List")) {
             List<Node> elts = convertList(map.get("elts"));
             return new NList(elts, start, end);
+        }
+
+        if (type.equals("Starred")) { // f(*[1, 2, 3, 4])
+            Node value = deJson(map.get("value"));
+            return new Starred(value, start, end);
         }
 
         if (type.equals("ListComp")) {
@@ -559,6 +573,14 @@ public class PythonParser {
             return new Subscript(value, slice, start, end);
         }
 
+        if (type.equals("Try")) {
+            Block body = convertBlock(map.get("body"));
+            Block orelse = convertBlock(map.get("orelse"));
+            List<ExceptHandler> handlers = convertListExceptHandler(map.get("handlers"));
+            Block finalbody = convertBlock(map.get("finalbody"));
+            return new Try(handlers, body, orelse, finalbody, start, end);
+        }
+
         if (type.equals("TryExcept")) {
             Block body = convertBlock(map.get("body"));
             Block orelse = convertBlock(map.get("orelse"));
@@ -625,7 +647,112 @@ public class PythonParser {
             return new Yield(value, start, end);
         }
 
-        // Util.msg("unexpected ast node: " + o);
+        if (type.equals("Add") || type.equals("UAdd")) {
+            return new Op("+", start, end);
+        }
+
+        if (type.equals("Sub") || type.equals("USub")) {
+            return new Op("-", start, end);
+        }
+
+        if (type.equals("Mult")) {
+            return new Op("*", start, end);
+        }
+
+        if (type.equals("Div")) {
+            return new Op("/", start, end);
+        }
+
+        if (type.equals("Pow")) {
+            return new Op("**", start, end);
+        }
+
+        if (type.equals("Eq")) {
+            return new Op("==", start, end);
+        }
+
+        if (type.equals("NotEq")) {
+            return new Op("!=", start, end);
+        }
+
+        if (type.equals("Lt")) {
+            return new Op("<", start, end);
+        }
+
+        if (type.equals("LtE")) {
+            return new Op("<=", start, end);
+        }
+
+        if (type.equals("Gt")) {
+            return new Op(">", start, end);
+        }
+
+        if (type.equals("GtE")) {
+            return new Op(">=", start, end);
+        }
+
+        if (type.equals("BitAnd")) {
+            return new Op("&", start, end);
+        }
+
+        if (type.equals("BitOr")) {
+            return new Op("|", start, end);
+        }
+
+        if (type.equals("BitXor")) {
+            return new Op("^", start, end);
+        }
+
+        if (type.equals("FloorDiv")) {
+            return new Op("//", start, end);
+        }
+
+        if (type.equals("In")) {
+            return new Op("in", start, end);
+        }
+
+        if (type.equals("NotIn")) {
+            return new Op("not in", start, end);
+        }
+
+        if (type.equals("Is")) {
+            return new Op("is", start, end);
+        }
+
+        if (type.equals("IsNot")) {
+            return new Op("is not", start, end);
+        }
+
+        if (type.equals("LShift")) {
+            return new Op("<<", start, end);
+        }
+
+        if (type.equals("Mod")) {
+            return new Op("%", start, end);
+        }
+
+        if (type.equals("RShift")) {
+            return new Op(">>", start, end);
+        }
+
+        if (type.equals("Invert")) {
+            return new Op("~", start, end);
+        }
+
+        if (type.equals("And")) {
+            return new Op("and", start, end);
+        }
+
+        if (type.equals("Or")) {
+            return new Op("or", start, end);
+        }
+
+        if (type.equals("Not")) {
+            return new Op("not", start, end);
+        }
+
+        _.die("[Please report bug]: unexpected ast node: " + map.get("ast_type"));
+
         return null;
     }
 

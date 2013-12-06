@@ -228,6 +228,9 @@ public class DefaultNodeVisitor implements NodeVisitor {
         return traverseIntoNodes;
     }
 
+    public boolean visit(Op n) {
+        return traverseIntoNodes;
+    }
 
     public boolean visit(Pass n) {
         return traverseIntoNodes;
@@ -268,6 +271,10 @@ public class DefaultNodeVisitor implements NodeVisitor {
         return traverseIntoNodes;
     }
 
+
+    public boolean visit(Try n) {
+        return traverseIntoNodes;
+    }
 
     public boolean visit(TryExcept n) {
         return traverseIntoNodes;
@@ -315,6 +322,10 @@ public class DefaultNodeVisitor implements NodeVisitor {
 
 
     public boolean visit(YieldFrom n) {
+        return traverseIntoNodes;
+    }
+
+    public boolean visit(Starred n) {
         return traverseIntoNodes;
     }
 }
