@@ -157,6 +157,17 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
+    public boolean isBinOp() {
+        return this instanceof BinOp;
+    }
+
+
+    @NotNull
+    public BinOp asBinOp() {
+        return (BinOp) this;
+    }
+
+
     @NotNull
     public Call asCall() {
         return (Call) this;

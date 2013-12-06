@@ -92,9 +92,7 @@ public abstract class Type {
 
 
     public boolean isNumType() {
-        return (this == Analyzer.self.builtins.BaseNum ||
-                this == Analyzer.self.builtins.BaseFloat ||
-                this == Analyzer.self.builtins.BaseComplex);
+        return this instanceof NumType;
     }
 
 
@@ -127,6 +125,12 @@ public abstract class Type {
     @NotNull
     public DictType asDictType() {
         return (DictType) this;
+    }
+
+
+    @NotNull
+    public NumType asNumType() {
+        return (NumType) this;
     }
 
 

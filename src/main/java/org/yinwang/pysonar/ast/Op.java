@@ -3,6 +3,7 @@ package org.yinwang.pysonar.ast;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar._;
 import org.yinwang.pysonar.types.Type;
 
 
@@ -19,6 +20,27 @@ public class Op extends Node {
 
     public String getName() {
         return name;
+    }
+
+
+    public static String invert(String name) {
+        if (name.equals("<")) {
+            return ">=";
+        }
+        if (name.equals("<=")) {
+            return ">";
+        }
+        if (name.equals(">")) {
+            return "<=";
+        }
+        if (name.equals(">=")) {
+            return "<";
+        }
+        if (name.equals("==")) {
+            return "==";
+        }
+        _.die("invalid operator name for invert: " + name);
+        return "";  // unreacheable
     }
 
 
