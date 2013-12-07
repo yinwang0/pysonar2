@@ -1,6 +1,6 @@
+import random
 
-x = int(random())
-
+x = int(random.random() * 1000)
 y = 1
 
 if x < 1:
@@ -10,11 +10,3 @@ if x < 1:
         y = True
 
 print y
-
-
-def f(x):
-    print x
-
-f(1)
-f(2)
-

@@ -121,6 +121,7 @@ public class If extends Node {
         boolean cont1 = UnionType.contains(type1, Analyzer.self.builtins.Cont);
         boolean cont2 = UnionType.contains(type2, Analyzer.self.builtins.Cont);
 
+        // decide which branch affects the downstream state
         if (conditionType == Analyzer.self.builtins.True && cont1) {
             s.overwrite(s1);
         } else if (conditionType == Analyzer.self.builtins.False && cont2) {
@@ -133,7 +134,14 @@ public class If extends Node {
             s.overwrite(s2);
         }
 
-        return UnionType.union(type1, type2);
+        // determine return type
+        if (conditionType == Analyzer.self.builtins.True) {
+            return type1;
+        } else if (conditionType == Analyzer.self.builtins.False) {
+            return type2;
+        } else {
+            return UnionType.union(type1, type2);
+        }
     }
 
 
