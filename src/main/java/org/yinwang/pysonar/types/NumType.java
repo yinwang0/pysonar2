@@ -1,6 +1,9 @@
 package org.yinwang.pysonar.types;
 
 
+import org.yinwang.pysonar.Analyzer;
+
+
 public class NumType extends Type {
     public String typename;
     private double upper = Double.MAX_VALUE;
@@ -44,32 +47,6 @@ public class NumType extends Type {
 
     public boolean eq(NumType other) {
         return isActualValue() && other.isActualValue() && this.lower == other.lower;
-    }
-
-
-    @Override
-    protected String printType(CyclicTypeRecorder ctr) {
-        StringBuilder sb = new StringBuilder(typename);
-
-        if (lower == upper) {
-            sb.append("(" + lower + ")");
-        } else if (isLowerBounded() || isUpperBounded()) {
-            sb.append("[");
-            if (isLowerBounded()) {
-                sb.append(lower);
-            } else {
-                sb.append("?");
-            }
-            sb.append("..");
-            if (isUpperBounded()) {
-                sb.append(upper);
-            } else {
-                sb.append("?");
-            }
-            sb.append("]");
-        }
-
-        return sb.toString();
     }
 
 
@@ -126,4 +103,39 @@ public class NumType extends Type {
     public void setActual(double actual) {
         this.lower = this.upper = actual;
     }
+
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof NumType;
+    }
+
+
+    @Override
+    protected String printType(CyclicTypeRecorder ctr) {
+        StringBuilder sb = new StringBuilder(typename);
+
+        if (Analyzer.self.debug) {
+            if (lower == upper) {
+                sb.append("(" + lower + ")");
+            } else if (isLowerBounded() || isUpperBounded()) {
+                sb.append("[");
+                if (isLowerBounded()) {
+                    sb.append(lower);
+                } else {
+                    sb.append("?");
+                }
+                sb.append("..");
+                if (isUpperBounded()) {
+                    sb.append(upper);
+                } else {
+                    sb.append("?");
+                }
+                sb.append("]");
+            }
+        }
+
+        return sb.toString();
+    }
+
 }

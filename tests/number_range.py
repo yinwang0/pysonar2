@@ -10,3 +10,11 @@ if x < 1:
         y = True
 
 print y
+
+
+def f(x):
+    print x
+
+f(1)
+f(2)
+

@@ -23,6 +23,11 @@ public class Op extends Node {
     }
 
 
+    public boolean isNumberComparisonOp() {
+        return name.equals("<") || name.equals(">") || name.equals("<=") || name.equals(">=");
+    }
+
+
     public static String invert(String name) {
         if (name.equals("<")) {
             return ">=";

@@ -36,13 +36,14 @@ public class Compare extends Node {
 
         // try to figure out actual result
         if (ops.size() > 0 && ops.get(0) instanceof Op) {
-            String opname = ((Op) ops.get(0)).name;
+            Op op = (Op) ops.get(0);
+            String opname = op.name;
             Node left = this.left;
             Node right = comparators.get(0);
             Type leftType = left.resolve(s);
             Type rightType = right.resolve(s);
 
-            if (leftType.isNumType() && rightType.isNumType()) {
+            if (op.isNumberComparisonOp() && leftType.isNumType() && rightType.isNumType()) {
                 NumType leftNum = leftType.asNumType();
                 NumType rightNum = rightType.asNumType();
 
@@ -69,8 +70,6 @@ public class Compare extends Node {
                         return Analyzer.self.builtins.BaseBool;
                     }
                 }
-            } else {
-                Analyzer.self.putProblem(this, "comparing non-numbers: " + leftType + " and " + rightType);
             }
         }
 

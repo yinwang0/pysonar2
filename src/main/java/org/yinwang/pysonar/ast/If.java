@@ -32,50 +32,59 @@ public class If extends Node {
         List<Node> ops = compare.ops;
 
         if (ops.size() > 0 && ops.get(0) instanceof Op) {
-            String opname = ((Op) ops.get(0)).name;
-            Node left = compare.left;
-            Node right = compare.comparators.get(0);
-            if (!left.isName()) {
-                Node tmp = right;
-                right = left;
-                left = tmp;
-                opname = Op.invert(opname);
-            }
+            Op op = ((Op) ops.get(0));
+            String opname = op.name;
+            if (op.isNumberComparisonOp()) {
 
-            if (left.isName()) {
-                Name leftName = left.asName();
-                Type leftType = left.resolve(s1);
-                Type rightType = right.resolve(s1);
-                NumType trueType = Analyzer.self.builtins.BaseNum;
-                NumType falseType = Analyzer.self.builtins.BaseNum;
-
-                if (opname.equals("<") || opname.equals("<=")) {
-                    if (leftType.isNumType() && rightType.isNumType()) {
-                        NumType newUpper = rightType.asNumType();
-                        trueType = new NumType(leftType.asNumType());
-                        trueType.setUpper(newUpper.getUpper());
-                        falseType = new NumType(leftType.asNumType());
-                        falseType.setLower(newUpper.getUpper());
-                    } else {
-                        Analyzer.self.putProblem(test, "comparing non-numbers: " + leftType + " and " + rightType);
-                    }
-                } else if (opname.equals(">") || opname.equals(">=")) {
-                    if (leftType.isNumType() && rightType.isNumType()) {
-                        NumType newLower = rightType.asNumType();
-                        trueType = new NumType(leftType.asNumType());
-                        trueType.setLower(newLower.getLower());
-                        falseType = new NumType(leftType.asNumType());
-                        falseType.setUpper(newLower.getLower());
-                    } else {
-                        Analyzer.self.putProblem(test, "comparing non-numbers: " + leftType + " and " + rightType);
-                    }
-                } else {
-                    trueType = leftType.asNumType();
+                Node left = compare.left;
+                Node right = compare.comparators.get(0);
+                if (!left.isName()) {
+                    Node tmp = right;
+                    right = left;
+                    left = tmp;
+                    opname = Op.invert(opname);
                 }
 
-                Binding b = s1.lookup(leftName.id).get(0);
-                s1.update(leftName.id, new Binding(leftName.id, b.getNode(), trueType, Binding.Kind.SCOPE));
-                s2.update(leftName.id, new Binding(leftName.id, b.getNode(), falseType, Binding.Kind.SCOPE));
+                if (left.isName()) {
+                    Name leftName = left.asName();
+                    Type leftType = left.resolve(s1);
+                    Type rightType = right.resolve(s1);
+                    NumType trueType = Analyzer.self.builtins.BaseNum;
+                    NumType falseType = Analyzer.self.builtins.BaseNum;
+
+                    if (opname.equals("<") || opname.equals("<=")) {
+                        if (leftType.isNumType() && rightType.isNumType()) {
+                            NumType newUpper = rightType.asNumType();
+                            trueType = new NumType(leftType.asNumType());
+                            trueType.setUpper(newUpper.getUpper());
+                            falseType = new NumType(leftType.asNumType());
+                            falseType.setLower(newUpper.getUpper());
+                        } else {
+                            Analyzer.self.putProblem(test, "comparing non-numbers: " + leftType + " and " + rightType);
+                        }
+                    } else if (opname.equals(">") || opname.equals(">=")) {
+                        if (leftType.isNumType() && rightType.isNumType()) {
+                            NumType newLower = rightType.asNumType();
+                            trueType = new NumType(leftType.asNumType());
+                            trueType.setLower(newLower.getLower());
+                            falseType = new NumType(leftType.asNumType());
+                            falseType.setUpper(newLower.getLower());
+                        } else {
+                            Analyzer.self.putProblem(test, "comparing non-numbers: " + leftType + " and " + rightType);
+                        }
+                    }
+
+                    Node loc;
+                    List<Binding> bs = s1.lookup(leftName.id);
+                    if (bs != null && bs.size() > 0) {
+                        loc = bs.get(0).getNode();
+                    } else {
+                        loc = leftName;
+                    }
+
+                    s1.update(leftName.id, new Binding(leftName.id, loc, trueType, Binding.Kind.SCOPE));
+                    s2.update(leftName.id, new Binding(leftName.id, loc, falseType, Binding.Kind.SCOPE));
+                }
             }
         }
     }
