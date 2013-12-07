@@ -71,7 +71,7 @@ public class Demo {
     }
 
 
-    private void start(@NotNull File fileOrDir) throws Exception {
+    private void start(@NotNull File fileOrDir, boolean debug) throws Exception {
         File rootDir = fileOrDir.isFile() ? fileOrDir.getParentFile() : fileOrDir;
         try {
             rootPath = _.unifyPath(rootDir);
@@ -80,7 +80,7 @@ public class Demo {
             _.die("File not found: " + fileOrDir);
         }
 
-        analyzer = new Analyzer();
+        analyzer = new Analyzer(debug);
         _.msg("Loading and analyzing files");
         analyzer.analyze(_.unifyPath(fileOrDir));
         analyzer.finish();
@@ -195,14 +195,21 @@ public class Demo {
 
 
     public static void main(@NotNull String[] args) throws Exception {
-        if (args.length != 2) {
+        if (args.length < 2 || args.length > 3) {
             usage();
+        }
+
+        boolean debug = false;
+        if (args.length > 2) {
+            if (args[2].equals("--debug")) {
+                debug = true;
+            }
         }
 
         File fileOrDir = checkFile(args[0]);
         OUTPUT_DIR = new File(args[1]);
 
-        new Demo().start(fileOrDir);
+        new Demo().start(fileOrDir, debug);
 
         _.msg(_.getGCStats());
 

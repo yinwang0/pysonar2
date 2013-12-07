@@ -19,6 +19,7 @@ public class Analyzer {
 
     // global static instance of the analyzer itself
     public static Analyzer self;
+    public boolean debug = false;
 
     public Scope moduleTable = new Scope(null, Scope.ScopeType.GLOBAL);
     public List<String> loadedFiles = new ArrayList<>();
@@ -55,6 +56,12 @@ public class Analyzer {
         addPythonPath();
         createCacheDir();
         getAstCache();
+    }
+
+
+    public Analyzer(boolean debug) {
+        this();
+        this.debug = debug;
     }
 
 
