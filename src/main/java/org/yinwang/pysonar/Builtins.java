@@ -65,8 +65,8 @@ public class Builtins {
     public NumType BaseFloat; // BaseNum models int, float and long
     public NumType BaseComplex;
     public InstanceType BaseBool;
-    public InstanceType True;
-    public InstanceType False;
+    public BoolType True;
+    public BoolType False;
     public InstanceType Infeasible;
     public InstanceType BaseStr;
     public ClassType BaseList;
@@ -393,8 +393,8 @@ public class Builtins {
         BaseFloat = new NumType("float");
         BaseComplex = new NumType("complex");
         BaseBool = new InstanceType(newClass("bool", bt, numClass));
-        True = new InstanceType(newClass("true", bt, numClass));
-        False = new InstanceType(newClass("false", bt, numClass));
+        True = new BoolType(BoolType.Value.True);
+        False = new BoolType(BoolType.Value.False);
         Infeasible = new InstanceType(newClass("invalid", bt, numClass));    // impossible boolean type
         BaseStr = new InstanceType(newClass("str", bt, Object));
         BaseModule = newClass("module", bt);

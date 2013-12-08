@@ -2,19 +2,24 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
+import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.types.BoolType;
+import org.yinwang.pysonar.types.NumType;
 import org.yinwang.pysonar.types.Type;
-import org.yinwang.pysonar.types.UnionType;
 
 
 public class BinOp extends Node {
 
+    @NotNull
     public Node left;
+    @NotNull
     public Node right;
-    public Node op;
+    @NotNull
+    public Op op;
 
 
-    public BinOp(Node left, Node right, Node op, int start, int end) {
+    public BinOp(@NotNull Node left, @NotNull Node right, @NotNull Op op, int start, int end) {
         super(start, end);
         this.left = left;
         this.right = right;
@@ -26,39 +31,163 @@ public class BinOp extends Node {
     @NotNull
     @Override
     public Type resolve(Scope s) {
-        Type ltype = null, rtype = null;
-        if (left != null) {
-            ltype = resolveExpr(left, s);
-        }
-        if (right != null) {
-            rtype = resolveExpr(right, s);
+
+        Type ltype = resolveExpr(left, s);
+        Type rtype;
+
+        // boolean operations
+        if (op == Op.And) {
+            if (ltype.isUndecidedBool()) {
+                rtype = resolveExpr(right, ltype.asBool().getS1());
+            } else {
+                rtype = resolveExpr(right, s);
+            }
+
+            if (ltype.isTrue() && rtype.isTrue()) {
+                return Analyzer.self.builtins.True;
+            } else if (ltype.isFalse() || rtype.isFalse()) {
+                return Analyzer.self.builtins.False;
+            } else {
+                Scope falseState = Scope.merge(ltype.asBool().getS2(), rtype.asBool().getS2());
+                return new BoolType(rtype.asBool().getS1(), falseState);
+            }
         }
 
-        // If either non-null operand is a string, assume the result is a string.
+        if (op == Op.Or) {
+            if (ltype.isUndecidedBool()) {
+                rtype = resolveExpr(right, ltype.asBool().getS2());
+            } else {
+                rtype = resolveExpr(right, s);
+            }
+
+            if (ltype.isTrue() || rtype.isTrue()) {
+                return Analyzer.self.builtins.True;
+            } else if (ltype.isFalse() && rtype.isFalse()) {
+                return Analyzer.self.builtins.False;
+            } else {
+                return Analyzer.self.builtins.BaseBool;
+            }
+        }
+
+        rtype = resolveExpr(right, s);
+
+        if (ltype.isUnknownType() || rtype.isUnknownType()) {
+            return Analyzer.self.builtins.unknown;
+        }
+
+        // Don't do specific things about string types at the moment
         if (ltype == Analyzer.self.builtins.BaseStr || rtype == Analyzer.self.builtins.BaseStr) {
             return Analyzer.self.builtins.BaseStr;
         }
-        // If either non-null operand is a number, assume the result is a number.
-        if (ltype == Analyzer.self.builtins.BaseNum || rtype == Analyzer.self.builtins.BaseNum) {
-            return Analyzer.self.builtins.BaseNum;
+
+        // try to figure out actual result
+        if (ltype.isNumType() && rtype.isNumType()) {
+            NumType leftNum = ltype.asNumType();
+            NumType rightNum = rtype.asNumType();
+
+            if (op == Op.Add) {
+                return NumType.add(leftNum, rightNum);
+            }
+
+            if (op == Op.Sub) {
+                return NumType.sub(leftNum, rightNum);
+            }
+
+            if (op == Op.Mul) {
+                return NumType.mul(leftNum, rightNum);
+            }
+
+            if (op == Op.Div) {
+                return NumType.div(leftNum, rightNum);
+            }
+
+            // comparison
+            if (op == Op.Lt || op == Op.Gt) {
+                Node leftNode = left;
+                NumType trueType, falseType;
+                Op op1 = op;
+
+                if (!left.isName()) {
+                    leftNode = right;
+
+                    NumType tmpNum = rightNum;
+                    rightNum = leftNum;
+                    leftNum = tmpNum;
+
+                    op1 = Op.invert(op1);
+                }
+
+                if (op1 == Op.Lt) {
+                    if (leftNum.lt(rightNum)) {
+                        return Analyzer.self.builtins.True;
+                    } else if (leftNum.gt(rightNum)) {
+                        return Analyzer.self.builtins.False;
+                    } else {
+                        // transfer bound information
+                        Scope s1 = s.copy();
+                        Scope s2 = s.copy();
+
+                        if (leftNode.isName()) {
+                            // true branch: if l < r, then l's upper bound is r's upper bound
+                            trueType = new NumType(leftNum);
+                            trueType.setUpper(rightNum.getUpper());
+
+                            // false branch: if l > r, then l's lower bound is r's lower bound
+                            falseType = new NumType(leftNum);
+                            falseType.setLower(rightNum.getLower());
+                            String id = leftNode.asName().id;
+
+                            for (Binding b : s.lookup(id)) {
+                                Node loc = b.getNode();
+                                s1.update(id, new Binding(id, loc, trueType, b.getKind()));
+                                s2.update(id, new Binding(id, loc, falseType, b.getKind()));
+                            }
+                        }
+                        return new BoolType(s1, s2);
+                    }
+                }
+
+                if (op1 == Op.Gt) {
+                    if (leftNum.gt(rightNum)) {
+                        return Analyzer.self.builtins.True;
+                    } else if (leftNum.lt(rightNum)) {
+                        return Analyzer.self.builtins.False;
+                    } else {
+                        // undecided, need to transfer bound information
+                        Scope s1 = s.copy();
+                        Scope s2 = s.copy();
+
+                        if (leftNode.isName()) {
+                            // true branch: if l > r, then l's lower bound is r's lower bound
+                            trueType = new NumType(leftNum);
+                            trueType.setLower(rightNum.getLower());
+
+                            // false branch: if l < r, then l's upper bound is r's upper bound
+                            falseType = new NumType(leftNum);
+                            falseType.setUpper(rightNum.getUpper());
+                            String id = leftNode.asName().id;
+
+                            for (Binding b : s.lookup(id)) {
+                                Node loc = b.getNode();
+                                s1.update(id, new Binding(id, loc, trueType, b.getKind()));
+                                s2.update(id, new Binding(id, loc, falseType, b.getKind()));
+                            }
+                        }
+                        return new BoolType(s1, s2);
+                    }
+                }
+            }
         }
 
-        if (ltype == null) {
-            return (rtype == null ? Analyzer.self.builtins.unknown : rtype);
-        }
-
-        if (rtype == null) {
-            return (ltype == null ? Analyzer.self.builtins.unknown : ltype);
-        }
-
-        return UnionType.union(ltype, rtype);
+        Analyzer.self.putProblem(this, "operator " + op + " cannot be applied on operands " + ltype + " and " + rtype);
+        return Analyzer.self.builtins.unknown;
     }
 
 
     @NotNull
     @Override
     public String toString() {
-        return "<BinOp:" + left + " " + op + " " + right + ">";
+        return "(" + left + " " + op + " " + right + ")";
     }
 
 

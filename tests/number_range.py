@@ -1,12 +1,13 @@
-import random
+# import random
 
-x = int(random.random() * 1000)
-y = 1
+x = int(random)
+y = int(random)
 
-if x < 1:
-    if x < 4:
-        y = "hi"
+if 1 < x < 2 and y < 4:
+    z = x + y
+    if z < 7:
+        w = "true"
     else:
-        y = True
+        w = False
 
-print y
+print x, y, w

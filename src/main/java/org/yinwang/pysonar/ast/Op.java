@@ -1,70 +1,71 @@
 package org.yinwang.pysonar.ast;
 
-import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar._;
-import org.yinwang.pysonar.types.Type;
 
 
-public class Op extends Node {
+public enum Op {
+    // numeral
+    Add,
+    Sub,
+    Mul,
+    Div,
+    Mod,
+    Pow,
+    FloorDiv,
 
-    public String name;
+    // comparison
+    Eq,
+    Eqv,
+    Equal,
+    Lt,
+    Gt,
+
+    // bit
+    BitAnd,
+    BitOr,
+    BitXor,
+    In,
+    LShift,
+    RShift,
+    Invert,
+
+    // boolean
+    And,
+    Or,
+    Not,
+
+    // synthetic
+    NotEqual,
+    NotEq,
+    LtE,
+    GtE,
+    NotIn;
 
 
-    public Op(@NotNull Object name, int start, int end) {
-        super(start, end);
-        this.name = name.toString();
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-
-    public boolean isNumberComparisonOp() {
-        return name.equals("<") || name.equals(">") || name.equals("<=") || name.equals(">=");
-    }
-
-
-    public static String invert(String name) {
-        if (name.equals("<")) {
-            return ">=";
+    public static Op invert(Op op) {
+        if (op == Op.Lt) {
+            return Op.Gt;
         }
-        if (name.equals("<=")) {
-            return ">";
+
+        if (op == Op.Gt) {
+            return Op.Lt;
         }
-        if (name.equals(">")) {
-            return "<=";
+
+        if (op == Op.Eq) {
+            return Op.Eq;
         }
-        if (name.equals(">=")) {
-            return "<";
+
+        if (op == Op.And) {
+            return Op.Or;
         }
-        if (name.equals("==")) {
-            return "==";
+
+        if (op == Op.Or) {
+            return Op.And;
         }
-        _.die("invalid operator name for invert: " + name);
-        return "";  // unreacheable
+
+        _.die("invalid operator name for invert: " + op);
+        return null;  // unreacheable
     }
 
 
-    @NotNull
-    @Override
-    public Type resolve(Scope s) {
-        return Analyzer.self.builtins.unknown;   // will never be used
-    }
-
-
-    @NotNull
-    @Override
-    public String toString() {
-        return name;
-    }
-
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        v.visit(this);
-    }
 }

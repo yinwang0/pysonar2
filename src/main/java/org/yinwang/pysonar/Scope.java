@@ -231,12 +231,17 @@ public class Scope {
      * Look up a name in the current symbol table only. Don't recurse on the
      * parent table.
      */
-    @Nullable
+    @NotNull
     public List<Binding> lookupLocal(String name) {
         if (table == null) {
-            return null;
+            return Collections.emptyList();
         } else {
-            return table.get(name);
+            List<Binding> bs = table.get(name);
+            if (bs == null) {
+                return Collections.emptyList();
+            } else {
+                return bs;
+            }
         }
     }
 
@@ -245,19 +250,19 @@ public class Scope {
      * Look up a name (String) in the current symbol table.  If not found,
      * recurse on the parent table.
      */
-    @Nullable
+    @NotNull
     public List<Binding> lookup(String name) {
         List<Binding> b = getModuleBindingIfGlobal(name);
         if (b != null) {
             return b;
         } else {
             List<Binding> ent = lookupLocal(name);
-            if (ent != null) {
+            if (!ent.isEmpty()) {
                 return ent;
             } else if (getParent() != null) {
                 return getParent().lookup(name);
             } else {
-                return null;
+                return Collections.emptyList();
             }
         }
     }
@@ -267,7 +272,7 @@ public class Scope {
      * Look up a name in the module if it is declared as global, otherwise look
      * it up locally.
      */
-    @Nullable
+    @NotNull
     public List<Binding> lookupScope(String name) {
         List<Binding> b = getModuleBindingIfGlobal(name);
         if (b != null) {
@@ -289,28 +294,28 @@ public class Scope {
     private static Set<Scope> looked = new HashSet<>();    // circularity prevention
 
 
-    @Nullable
+    @NotNull
     public List<Binding> lookupAttr(String attr) {
         if (looked.contains(this)) {
-            return null;
+            return Collections.emptyList();
         } else {
             List<Binding> b = lookupLocal(attr);
-            if (b != null) {
+            if (!b.isEmpty()) {
                 return b;
             } else {
                 if (supers != null && !supers.isEmpty()) {
                     looked.add(this);
                     for (Scope p : supers) {
                         b = p.lookupAttr(attr);
-                        if (b != null) {
+                        if (!b.isEmpty()) {
                             looked.remove(this);
                             return b;
                         }
                     }
                     looked.remove(this);
-                    return null;
+                    return Collections.emptyList();
                 } else {
-                    return null;
+                    return Collections.emptyList();
                 }
             }
         }

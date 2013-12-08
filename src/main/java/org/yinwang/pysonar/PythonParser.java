@@ -111,6 +111,26 @@ public class PythonParser {
 
 
     @Nullable
+    private List<Op> convertListOp(@Nullable Object o) {
+        if (o == null) {
+            return null;
+        } else {
+            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
+            List<Op> out = new ArrayList<>();
+
+            for (Map<String, Object> m : in) {
+                Op n = convertOp(m);
+                if (n != null) {
+                    out.add(n);
+                }
+            }
+
+            return out;
+        }
+    }
+
+
+    @Nullable
     private List<Keyword> convertListKeyword(@Nullable Object o) {
         if (o == null) {
             return null;
@@ -286,14 +306,51 @@ public class PythonParser {
         if (type.equals("BinOp")) {
             Node left = deJson(map.get("left"));
             Node right = deJson(map.get("right"));
-            Node op = deJson(map.get("op"));
+            Op op = convertOp(map.get("op"));
+
+            // compositional operators
+            if (op == Op.NotEqual) {
+                Node eq = new BinOp(left, right, Op.Equal, start, end);
+                return new UnaryOp(Op.Not, eq, start, end);
+            }
+
+            if (op == Op.LtE) {
+                Node lt = new BinOp(left, right, Op.Lt, start, end);
+                Node eq = new BinOp(left, right, Op.Eq, start, end);
+                return new BinOp(lt, eq, Op.Or, start, end);
+            }
+
+            if (op == Op.GtE) {
+                Node gt = new BinOp(left, right, Op.Gt, start, end);
+                Node eq = new BinOp(left, right, Op.Eq, start, end);
+                return new BinOp(gt, eq, Op.Or, start, end);
+            }
+
+            if (op == Op.NotIn) {
+                Node in = new BinOp(left, right, Op.In, start, end);
+                return new UnaryOp(Op.Not, in, start, end);
+            }
+
+            if (op == Op.NotEq) {
+                Node in = new BinOp(left, right, Op.Eq, start, end);
+                return new UnaryOp(Op.Not, in, start, end);
+            }
+
             return new BinOp(left, right, op, start, end);
+
         }
 
         if (type.equals("BoolOp")) {
             List<Node> values = convertList(map.get("values"));
-            Name op = (Name) deJson(map.get("op_node"));
-            return new BoolOp(op, values, start, end);
+            if (values == null || values.size() < 2) {
+                _.die("impossible number of arguments, please fix the Python parser");
+            }
+            Op op = convertOp(map.get("op"));
+            BinOp ret = new BinOp(values.get(0), values.get(1), op, start, end);
+            for (int i = 2; i < values.size(); i++) {
+                ret = new BinOp(ret, values.get(i), op, start, end);
+            }
+            return ret;
         }
 
         if (type.equals("Break")) {
@@ -323,11 +380,17 @@ public class PythonParser {
             return new ClassDef(name, bases, body, start, end);
         }
 
+        // left-fold Compare into
         if (type.equals("Compare")) {
-            Node name = deJson(map.get("left"));
-            List<Node> ops = convertList(map.get("ops"));
+            Node left = deJson(map.get("left"));
+            List<Op> ops = convertListOp(map.get("ops"));
             List<Node> comparators = convertList(map.get("comparators"));
-            return new Compare(name, ops, comparators, start, end);
+            Node result = new BinOp(left, comparators.get(0), ops.get(0), start, end);
+            for (int i = 1; i < comparators.size(); i++) {
+                Node compNext = new BinOp(comparators.get(i - 1), comparators.get(i), ops.get(i), start, end);
+                result = new BinOp(result, compNext, Op.And, start, end);
+            }
+            return result;
         }
 
         if (type.equals("comprehension")) {
@@ -600,7 +663,7 @@ public class PythonParser {
         }
 
         if (type.equals("UnaryOp")) {
-            Node op = deJson(map.get("op"));
+            Op op = convertOp(map.get("op"));
             Node operand = deJson(map.get("operand"));
             return new UnaryOp(op, operand, start, end);
         }
@@ -647,112 +710,123 @@ public class PythonParser {
             return new Yield(value, start, end);
         }
 
+        _.die("[Please report bug]: unexpected ast node: " + map.get("ast_type"));
+
+        return null;
+    }
+
+
+    public Op convertOp(Object map) {
+        String type = (String) ((Map<String, Object>) map).get("ast_type");
+
         if (type.equals("Add") || type.equals("UAdd")) {
-            return new Op("+", start, end);
+            return Op.Add;
         }
 
         if (type.equals("Sub") || type.equals("USub")) {
-            return new Op("-", start, end);
+            return Op.Sub;
         }
 
         if (type.equals("Mult")) {
-            return new Op("*", start, end);
+            return Op.Mul;
         }
 
         if (type.equals("Div")) {
-            return new Op("/", start, end);
+            return Op.Div;
         }
 
         if (type.equals("Pow")) {
-            return new Op("**", start, end);
+            return Op.Pow;
         }
 
         if (type.equals("Eq")) {
-            return new Op("==", start, end);
-        }
-
-        if (type.equals("NotEq")) {
-            return new Op("!=", start, end);
-        }
-
-        if (type.equals("Lt")) {
-            return new Op("<", start, end);
-        }
-
-        if (type.equals("LtE")) {
-            return new Op("<=", start, end);
-        }
-
-        if (type.equals("Gt")) {
-            return new Op(">", start, end);
-        }
-
-        if (type.equals("GtE")) {
-            return new Op(">=", start, end);
-        }
-
-        if (type.equals("BitAnd")) {
-            return new Op("&", start, end);
-        }
-
-        if (type.equals("BitOr")) {
-            return new Op("|", start, end);
-        }
-
-        if (type.equals("BitXor")) {
-            return new Op("^", start, end);
-        }
-
-        if (type.equals("FloorDiv")) {
-            return new Op("//", start, end);
-        }
-
-        if (type.equals("In")) {
-            return new Op("in", start, end);
-        }
-
-        if (type.equals("NotIn")) {
-            return new Op("not in", start, end);
+            return Op.Equal;
         }
 
         if (type.equals("Is")) {
-            return new Op("is", start, end);
+            return Op.Eq;
         }
 
-        if (type.equals("IsNot")) {
-            return new Op("is not", start, end);
+        if (type.equals("Lt")) {
+            return Op.Lt;
         }
+
+        if (type.equals("Gt")) {
+            return Op.Gt;
+        }
+
+
+        if (type.equals("BitAnd")) {
+            return Op.BitAnd;
+        }
+
+        if (type.equals("BitOr")) {
+            return Op.BitOr;
+        }
+
+        if (type.equals("BitXor")) {
+            return Op.BitXor;
+        }
+
+
+        if (type.equals("In")) {
+            return Op.In;
+        }
+
 
         if (type.equals("LShift")) {
-            return new Op("<<", start, end);
+            return Op.LShift;
+        }
+
+        if (type.equals("FloorDiv")) {
+            return Op.FloorDiv;
         }
 
         if (type.equals("Mod")) {
-            return new Op("%", start, end);
+            return Op.Mod;
         }
 
         if (type.equals("RShift")) {
-            return new Op(">>", start, end);
+            return Op.RShift;
         }
 
         if (type.equals("Invert")) {
-            return new Op("~", start, end);
+            return Op.Invert;
         }
 
         if (type.equals("And")) {
-            return new Op("and", start, end);
+            return Op.And;
         }
 
         if (type.equals("Or")) {
-            return new Op("or", start, end);
+            return Op.Or;
         }
 
         if (type.equals("Not")) {
-            return new Op("not", start, end);
+            return Op.Not;
         }
 
-        _.die("[Please report bug]: unexpected ast node: " + map.get("ast_type"));
+        if (type.equals("NotEq")) {
+            return Op.NotEqual;
+        }
 
+        if (type.equals("IsNot")) {
+            return Op.NotEq;
+        }
+
+        if (type.equals("LtE")) {
+            return Op.LtE;
+        }
+
+        if (type.equals("GtE")) {
+            return Op.GtE;
+        }
+
+        if (type.equals("NotIn")) {
+            return Op.NotIn;
+        }
+
+        _.die("illegal operator: " + type);
         return null;
     }
 
