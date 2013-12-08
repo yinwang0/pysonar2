@@ -6,8 +6,8 @@ import org.yinwang.pysonar.Analyzer;
 
 public class NumType extends Type {
     public String typename;
-    private double upper = Double.MAX_VALUE;
-    private double lower = Double.MIN_VALUE;
+    private double upper = Double.POSITIVE_INFINITY;
+    private double lower = Double.NEGATIVE_INFINITY;
 
 
     public NumType(String typename) {
@@ -112,22 +112,22 @@ public class NumType extends Type {
 
 
     public boolean isUpperBounded() {
-        return upper != Double.MAX_VALUE;
+        return upper != Double.POSITIVE_INFINITY;
     }
 
 
     public void setUpperUnbounded(boolean upperUnbounded) {
-        this.upper = Double.MAX_VALUE;
+        this.upper = Double.POSITIVE_INFINITY;
     }
 
 
     public boolean isLowerBounded() {
-        return lower != Double.MIN_VALUE;
+        return lower != Double.NEGATIVE_INFINITY;
     }
 
 
     public void setLowerUnbounded(boolean lowerUnbounded) {
-        this.lower = Double.MIN_VALUE;
+        this.lower = Double.NEGATIVE_INFINITY;
     }
 
 
@@ -184,13 +184,13 @@ public class NumType extends Type {
                 if (isLowerBounded()) {
                     sb.append(lower);
                 } else {
-                    sb.append("?");
+                    sb.append("-∞");
                 }
                 sb.append("..");
                 if (isUpperBounded()) {
                     sb.append(upper);
                 } else {
-                    sb.append("?");
+                    sb.append("+∞");
                 }
                 sb.append("]");
             }
