@@ -310,33 +310,33 @@ public class PythonParser {
 
             // compositional operators
             if (op == Op.NotEqual) {
-                Node eq = new BinOp(left, right, Op.Equal, start, end);
+                Node eq = new BinOp(Op.Equal, left, right, start, end);
                 return new UnaryOp(Op.Not, eq, start, end);
             }
 
             if (op == Op.LtE) {
-                Node lt = new BinOp(left, right, Op.Lt, start, end);
-                Node eq = new BinOp(left, right, Op.Eq, start, end);
-                return new BinOp(lt, eq, Op.Or, start, end);
+                Node lt = new BinOp(Op.Lt, left, right, start, end);
+                Node eq = new BinOp(Op.Eq, left, right, start, end);
+                return new BinOp(Op.Or, lt, eq, start, end);
             }
 
             if (op == Op.GtE) {
-                Node gt = new BinOp(left, right, Op.Gt, start, end);
-                Node eq = new BinOp(left, right, Op.Eq, start, end);
-                return new BinOp(gt, eq, Op.Or, start, end);
+                Node gt = new BinOp(Op.Gt, left, right, start, end);
+                Node eq = new BinOp(Op.Eq, left, right, start, end);
+                return new BinOp(Op.Or, gt, eq, start, end);
             }
 
             if (op == Op.NotIn) {
-                Node in = new BinOp(left, right, Op.In, start, end);
+                Node in = new BinOp(Op.In, left, right, start, end);
                 return new UnaryOp(Op.Not, in, start, end);
             }
 
             if (op == Op.NotEq) {
-                Node in = new BinOp(left, right, Op.Eq, start, end);
+                Node in = new BinOp(Op.Eq, left, right, start, end);
                 return new UnaryOp(Op.Not, in, start, end);
             }
 
-            return new BinOp(left, right, op, start, end);
+            return new BinOp(op, left, right, start, end);
 
         }
 
@@ -346,9 +346,9 @@ public class PythonParser {
                 _.die("impossible number of arguments, please fix the Python parser");
             }
             Op op = convertOp(map.get("op"));
-            BinOp ret = new BinOp(values.get(0), values.get(1), op, start, end);
+            BinOp ret = new BinOp(op, values.get(0), values.get(1), start, end);
             for (int i = 2; i < values.size(); i++) {
-                ret = new BinOp(ret, values.get(i), op, start, end);
+                ret = new BinOp(op, ret, values.get(i), start, end);
             }
             return ret;
         }
@@ -385,10 +385,10 @@ public class PythonParser {
             Node left = deJson(map.get("left"));
             List<Op> ops = convertListOp(map.get("ops"));
             List<Node> comparators = convertList(map.get("comparators"));
-            Node result = new BinOp(left, comparators.get(0), ops.get(0), start, end);
+            Node result = new BinOp(ops.get(0), left, comparators.get(0), start, end);
             for (int i = 1; i < comparators.size(); i++) {
-                Node compNext = new BinOp(comparators.get(i - 1), comparators.get(i), ops.get(i), start, end);
-                result = new BinOp(result, compNext, Op.And, start, end);
+                Node compNext = new BinOp(ops.get(i), comparators.get(i - 1), comparators.get(i), start, end);
+                result = new BinOp(Op.And, result, compNext, start, end);
             }
             return result;
         }

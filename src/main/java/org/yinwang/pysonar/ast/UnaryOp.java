@@ -12,11 +12,11 @@ public class UnaryOp extends Node {
     public Node operand;
 
 
-    public UnaryOp(Op op, Node n, int start, int end) {
+    public UnaryOp(Op op, Node operand, int start, int end) {
         super(start, end);
         this.op = op;
-        this.operand = n;
-        addChildren(n);
+        this.operand = operand;
+        addChildren(operand);
     }
 
 

@@ -119,7 +119,7 @@ public abstract class Node implements java.io.Serializable {
 
 
     @NotNull
-    abstract public Type resolve(Scope s);
+    protected abstract Type resolve(Scope s);
 
 
     public boolean isCall() {

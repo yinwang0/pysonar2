@@ -19,7 +19,7 @@ public class BinOp extends Node {
     public Op op;
 
 
-    public BinOp(@NotNull Node left, @NotNull Node right, @NotNull Op op, int start, int end) {
+    public BinOp(@NotNull Op op, @NotNull Node left, @NotNull Node right, int start, int end) {
         super(start, end);
         this.left = left;
         this.right = right;
@@ -47,9 +47,11 @@ public class BinOp extends Node {
                 return Analyzer.self.builtins.True;
             } else if (ltype.isFalse() || rtype.isFalse()) {
                 return Analyzer.self.builtins.False;
-            } else {
+            } else if (ltype.isUndecidedBool() && rtype.isUndecidedBool()) {
                 Scope falseState = Scope.merge(ltype.asBool().getS2(), rtype.asBool().getS2());
                 return new BoolType(rtype.asBool().getS1(), falseState);
+            } else {
+                return Analyzer.self.builtins.BaseBool;
             }
         }
 
@@ -64,6 +66,9 @@ public class BinOp extends Node {
                 return Analyzer.self.builtins.True;
             } else if (ltype.isFalse() && rtype.isFalse()) {
                 return Analyzer.self.builtins.False;
+            } else if (ltype.isUndecidedBool() && rtype.isUndecidedBool()) {
+                Scope trueState = Scope.merge(ltype.asBool().getS1(), rtype.asBool().getS1());
+                return new BoolType(trueState, rtype.asBool().getS2());
             } else {
                 return Analyzer.self.builtins.BaseBool;
             }
@@ -178,6 +183,7 @@ public class BinOp extends Node {
                 }
             }
         }
+
 
         Analyzer.self.putProblem(this, "operator " + op + " cannot be applied on operands " + ltype + " and " + rtype);
         return Analyzer.self.builtins.unknown;
