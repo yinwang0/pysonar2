@@ -6,21 +6,21 @@ import org.yinwang.pysonar.Binder;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
-import java.util.List;
-
 
 public class Assign extends Node {
 
-    public List<Node> targets;
-    public Node rvalue;
+    @NotNull
+    public Node target;
+    @NotNull
+    public Node value;
 
 
-    public Assign(List<Node> targets, Node rvalue, int start, int end) {
+    public Assign(@NotNull Node target, @NotNull Node value, int start, int end) {
         super(start, end);
-        this.targets = targets;
-        this.rvalue = rvalue;
-        addChildren(targets);
-        addChildren(rvalue);
+        this.target = target;
+        this.value = value;
+        addChildren(target);
+        addChildren(value);
     }
 
 
@@ -33,15 +33,8 @@ public class Assign extends Node {
     @NotNull
     @Override
     public Type resolve(@NotNull Scope s) {
-        if (rvalue == null) {
-            Analyzer.self.putProblem(this, "missing RHS of assignment");
-        } else {
-            Type valueType = resolveExpr(rvalue, s);
-            for (Node t : targets) {
-                Binder.bind(s, t, valueType);
-            }
-        }
-
+        Type valueType = resolveExpr(value, s);
+        Binder.bind(s, target, valueType);
         return Analyzer.self.builtins.Cont;
     }
 
@@ -49,15 +42,15 @@ public class Assign extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Assign:" + targets + "=" + rvalue + ">";
+        return "(" + target + " = " + value + ")";
     }
 
 
     @Override
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
-            visitNodeList(targets, v);
-            visitNode(rvalue, v);
+            visitNode(target, v);
+            visitNode(value, v);
         }
     }
 }

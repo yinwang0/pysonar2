@@ -281,10 +281,26 @@ public class PythonParser {
             return new Assert(test, msg, start, end);
         }
 
+        // assign could be x=y=z=1
+        // turn it into one or more Assign nodes
+        // z = 1; y = z; x = z
         if (type.equals("Assign")) {
             List<Node> targets = convertList(map.get("targets"));
             Node value = deJson(map.get("value"));
-            return new Assign(targets, value, start, end);
+            if (targets.size() == 1) {
+                return new Assign(targets.get(0), value, start, end);
+            } else {
+                List<Node> assignments = new ArrayList<>();
+                Node lastTarget = targets.get(targets.size() - 1);
+                assignments.add(new Assign(lastTarget, value, start, end));
+
+                for (int i = targets.size() - 2; i >= 0; i--) {
+                    Node nextAssign = new Assign(targets.get(i), lastTarget, start, end);
+                    assignments.add(nextAssign);
+                }
+
+                return new Block(assignments, start, end);
+            }
         }
 
         if (type.equals("Attribute")) {
@@ -299,8 +315,9 @@ public class PythonParser {
         if (type.equals("AugAssign")) {
             Node target = deJson(map.get("target"));
             Node value = deJson(map.get("value"));
-            Name op = (Name) deJson(map.get("op_node"));              // hack
-            return new AugAssign(target, value, op, start, end);
+            Op op = convertOp(map.get("op"));
+            Node operation = new BinOp(op, target, value, target.start, value.end);
+            return new Assign(target, operation, start, end);
         }
 
         if (type.equals("BinOp")) {

@@ -44,11 +44,6 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(AugAssign n) {
-        return traverseIntoNodes;
-    }
-
-
     public boolean visit(BinOp n) {
         return traverseIntoNodes;
     }

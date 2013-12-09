@@ -186,7 +186,7 @@ public class BinOp extends Node {
 
 
         Analyzer.self.putProblem(this, "operator " + op + " cannot be applied on operands " + ltype + " and " + rtype);
-        return Analyzer.self.builtins.unknown;
+        return ltype;
     }
 
 

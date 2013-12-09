@@ -38,11 +38,6 @@ public abstract class GenericNodeVisitor extends DefaultNodeVisitor {
     }
 
 
-    public boolean visit(AugAssign n) {
-        return traverseIntoNodes && dispatch(n);
-    }
-
-
     public boolean visit(BinOp n) {
         return traverseIntoNodes && dispatch(n);
     }

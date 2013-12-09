@@ -22,7 +22,6 @@ public interface NodeVisitor {
 
     public boolean visit(Attribute m);
 
-    public boolean visit(AugAssign m);
 
     public boolean visit(BinOp m);
 
