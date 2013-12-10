@@ -25,109 +25,162 @@ def dump(input, output)
 end
 
 
+def dump_string(src)
+  tree = Ripper::SexpBuilder.new(src).parse
+
+  banner "sexp"
+  pp tree
+  simplified = convert(tree)
+
+  banner "simplified"
+  pp simplified
+end
+
+
 # convert ruby's "sexp" into json
 # also remove redundant information
 # exp -> hash
 def convert(exp)
   h = {}
-  if not exp.is_a?(Array) and not exp==nil
-    puts "unexpected input: #{exp.inspect}"
-  end
-  
+
   if exp == nil
     {}
   elsif exp[0] == :program
-    h[:ast_type] = :program
-    h[:body] = convert(exp[1])
-    h
+    {
+      :astype => :program,
+      :body => convert(exp[1])
+    }
   elsif exp[0] == :module
-    h[:ast_type] = :module
-    h[:name] = convert(exp[1])
-    h[:body] = convert(exp[2])
-    h
-  elsif exp[0] == :def
-    h[:ast_type] = :def
-    h[:name] = convert(exp[1])
-    h[:params] = convert(exp[2])
-    h[:body] = convert(exp[3])
-    h
-  elsif exp[0] == :class
-    h[:ast_type] = :class
-    h[:name] = convert(exp[1])
-    h[:body] = convert(exp[3])
-    h
-  elsif [:stmts_add, :const_path_ref].include?(exp[0])
-    s1 = convert(exp[1])
-    s2 = convert(exp[2])
-    if not s1.is_a?(Array)
-      s1 = [s1]
-    end
-    
-    if not s2.is_a?(Array)
-      s2 = [s2]
-    end
-    
-    ret = []
-    ret.concat(s1).concat(s2)
-    ret
-  elsif exp[0] == :assign
-    h[:ast_type] = :assign
-    h[:target] = convert(exp[1])
-    h[:value] = convert(exp[2])
-    h
-  elsif [:var_field, :var_ref, :const_ref].include? exp[0]
-    h[:ast_type] = :name
-    h.merge!(convert(exp[1]))
-    h
-  elsif exp[0] == :params
-    h[:ast_type] = :params
-    h[:value] = convert_array(exp[1..-1])
-    h
-  elsif exp[0] == :@ivar
-    h[:ast_type] = :ivar
-    h[:name] = convert(exp[1])
-    h
+    {
+      :astype => :module,
+      :name => convert(exp[1]),
+      :body => convert(exp[2])
+    }
   elsif exp[0] == :@ident
-    h[:id] = exp[1]
-    h[:location] = exp[2]
-    h
-  elsif exp[0] == :if
-    h[:ast_type] = :if
-    h[:test] = convert(exp[1])
-    h[:body] = convert(exp[2])
-    if exp[3]
-      h[:orelse] = convert(exp[3])
-    end
-    h
-  elsif exp[0] == :binary
-    h[:ast_type] = :binary
-    h[:left] = convert(exp[1])
-    h[:op] = convert(exp[2])
-    h[:right] = convert(exp[3])
-    h
-  elsif exp[0] == :@int
-    h[:ast_type] = :int
-    h[:n] = exp[1]
-    h[:location] = exp[2]
-    h
+    {
+      :id => exp[1],
+      :location => exp[2]
+    }
+  elsif exp[0] == :@ivar
+    {
+      :astype => :ivar,
+      :name => convert(exp[1])
+    }
   elsif exp[0] == :@const
-    h[:ast_type] = :const
-    h[:value] = exp[1]
-    h[:location] = exp[2]
-    h
+    #:@const is just a name
+    {
+      :astype => :name,
+      :value => exp[1],
+      :location => exp[2]
+    }
+  elsif exp[0] == :def
+    {
+      :astype => :def,
+      :name => convert(exp[1]),
+      :params => convert(exp[2]),
+      :body => convert(exp[3])
+    }
+  elsif exp[0] == :params
+    {
+      :astype => :params,
+      :value => convert_array(exp[1..-1])
+    }
+  elsif exp[0] == :class
+    {
+      :astype => :class,
+      :name => convert(exp[1]),
+      :body => convert(exp[3])
+    }
+  elsif exp[0] == :method_add_block
+    call = convert(exp[1])
+    call[:block] = convert(exp[2])
+    call
+  elsif exp[0] == :method_add_arg
+    call = convert(exp[1])
+    call[:args].push(convert(exp[2]))
+    call
+  elsif exp[0] == :fcall or exp[0] == :command
+    {
+      :astype => :call,
+      :func => convert(exp[1]),
+      :args => []
+    }
+  elsif exp[0] == :args_new
+    {
+      :astype => :args,
+      :args => []
+    }
+  elsif exp[0] == :args_add
+    args = convert(exp[1])
+    args[:args].push(convert(exp[2]))
+    args
+  elsif exp[0] == :args_add_block
+    args = convert(exp[1])
+    maybe_block = exp[2]
+    if maybe_block
+      args[:block] = maybe_block
+    end
+    args
+  elsif exp[0] == :assign
+    {
+      :astype => :assign,
+      :target => convert(exp[1]),
+      :value => convert(exp[2])
+    }
+  elsif exp[0] == :if
+    ret = {
+      :astype => :if,
+      :test => convert(exp[1]),
+      :body => convert(exp[2])
+    }
+    if exp[3]
+      ret[:orelse] = convert(exp[3])
+    end
+    ret
+  elsif exp[0] == :stmts_new
+    {
+      :astype => :block,
+      :stmts => []
+    }
+  elsif exp[0] == :stmts_add
+    block = convert(exp[1])
+    stmt = convert(exp[2])
+    block[:stmts].push(stmt)
+    block
+  elsif exp[0] == :binary
+    {
+      :astype => :binary,
+      :left => convert(exp[1]),
+      :op => convert(exp[2]),
+      :right => convert(exp[3])
+    }
+  elsif exp[0] == :@int
+    {
+      :astype => :int,
+      :n => exp[1],
+      :location => exp[2]
+    }
   elsif exp[0] == :hash
-    h[:ast_type] = :hash
-    h[:value] = convert(exp[1])
-    h
-  elsif [:stmts_new, :void_stmt].include?(exp[0])
-    []
-  elsif [:vcall, :paren, :else, :bodystmt, :rest_param, :blockarg].include?(exp[0])
+    {
+      :astype => :hash,
+      :value => convert(exp[1])
+    }
+  elsif exp[0] == :const_path_ref
+    {
+      :astype => :attribute,
+      :value => convert(exp[1]),
+      :attr => convert(exp[2])
+    }
+  elsif exp[0] == :void_stmt
+    {
+      :astype => :void
+    }
+  # superflous wrappers that contains one object, just remove it
+  elsif is_wrapper?(exp[0])
     convert(exp[1])
-  elsif exp.is_a?(Array)
-    convert_array(exp)
   else
-    banner("unknown #{exp}")
-    h[:unknown] = exp
+    banner("unknown")
+    puts "#{exp}"
   end
 end
 
@@ -137,4 +190,25 @@ def convert_array(arr)
 end
 
 
-dump(ARGV[0], ARGV[1])
+def is_wrapper?(x)
+  wrappers = [:var_field,
+              :var_ref,
+              :const_ref,
+              :vcall,
+              :paren,
+              :arg_paren,
+              :else,
+              :bodystmt,
+              :rest_param,
+              :blockarg
+             ]
+  return wrappers.include?(x)
+end
+
+if ARGV[0] == "-s"
+  dump_string(ARGV[1])
+elsif ARGV[0] == "-c"
+  pp convert(ARGV[1])
+else
+  dump(ARGV[0], ARGV[1])
+end
