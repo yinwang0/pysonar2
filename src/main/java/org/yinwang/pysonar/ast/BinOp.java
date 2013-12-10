@@ -81,7 +81,7 @@ public class BinOp extends Node {
         }
 
         // Don't do specific things about string types at the moment
-        if (ltype == Analyzer.self.builtins.BaseStr || rtype == Analyzer.self.builtins.BaseStr) {
+        if (ltype == Analyzer.self.builtins.BaseStr && rtype == Analyzer.self.builtins.BaseStr) {
             return Analyzer.self.builtins.BaseStr;
         }
 
