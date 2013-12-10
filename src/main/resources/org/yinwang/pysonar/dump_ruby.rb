@@ -58,13 +58,25 @@ def convert(exp)
     }
   elsif exp[0] == :@ident
     {
-      :id => exp[1],
+      :type => :ident,
+      :name => exp[1],
       :location => exp[2]
     }
+  elsif exp[0] == :@gvar
+    {
+      :type => :gvar,
+      :name => exp[1],
+      :location => exp[2]
+    }
+  elsif exp[0] == :symbol
+    sym = convert(exp[1])
+    sym[:type] = :symbol
+    sym
   elsif exp[0] == :@ivar
     {
       :type => :ivar,
-      :name => convert(exp[1])
+      :name => exp[1],
+      :location => exp[2]
     }
   elsif exp[0] == :@const
     #:@const is just a name
@@ -130,10 +142,30 @@ def convert(exp)
     call = convert(exp[1])
     call[:args].push(convert(exp[2]))
     call
-  elsif [:call, :fcall, :command, :command_call, :super].include?(exp[0])
+  elsif exp[0] == :command
+    {
+      :type => :command,
+      :func => convert(exp[1]),
+      :args => convert(exp[2])
+    }
+  elsif exp[0] == :command_call
     if exp[2] == :"." or exp[2] == :"::"
-      puts "value: #{exp[1]}, attr: #{exp[3]}"
-      func = { 
+      func = {
+        :type => :attribute,
+        :value => convert(exp[1]),
+        :attr => convert(exp[3])
+      }
+    else
+      func = convert(exp[1])
+    end
+    {
+      :type => :command_call,
+      :func => func,
+      :args => convert(exp[4])
+    }
+  elsif [:call, :fcall, :super].include?(exp[0])
+    if exp[2] == :"." or exp[2] == :"::"
+      func = {
         :type => :attribute,
         :value => convert(exp[1]),
         :attr => convert(exp[3])
@@ -145,7 +177,7 @@ def convert(exp)
       :type => exp[0],
       :func => func,
       :args => []
-    }    
+    }
   elsif exp[0] == :args_new
     {
       :type => :args,
@@ -287,6 +319,17 @@ def convert(exp)
       :type => :hash,
       :value => convert(exp[1])
     }
+  elsif exp[0] == :assoclist_from_args
+    {
+      :type => :assoclist,
+      :data => convert_array(exp[1])
+    }
+  elsif exp[0] == :assoc_new
+    {
+      :type => :assoc,
+      :key => exp[1],
+      :value => exp[2]
+    }
   elsif exp[0] == :const_path_ref
     {
       :type => :attribute,
@@ -352,4 +395,3 @@ elsif ARGV[0] == "-c"
 else
   dump(ARGV[0], ARGV[1])
 end
-
