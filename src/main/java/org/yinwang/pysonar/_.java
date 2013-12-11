@@ -57,8 +57,8 @@ public class _ {
 
         if (f.getName().endsWith("__init__.py")) {
             file = f.getParent();
-        } else if (file.endsWith(".py")) {
-            file = file.substring(0, file.length() - ".py".length());
+        } else if (file.endsWith(Analyzer.self.suffix)) {
+            file = file.substring(0, file.length() - Analyzer.self.suffix.length());
         }
 
         return file.replace(".", "%20").replace('/', '.').replace('\\', '.');
@@ -76,8 +76,8 @@ public class _ {
         String name = f.getName();
         if (name.equals("__init__.py")) {
             return f.getParentFile().getName();
-        } else if (name.endsWith(".py")) {
-            return name.substring(0, name.length() - ".py".length());
+        } else if (name.endsWith(Analyzer.self.suffix)) {
+            return name.substring(0, name.length() - Analyzer.self.suffix.length());
         } else {
             return name;
         }

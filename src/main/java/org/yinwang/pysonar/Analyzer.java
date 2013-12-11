@@ -45,12 +45,18 @@ public class Analyzer {
     private FancyProgress loadingProgress = null;
 
     String projectDir;
+    String suffix;
 
 
-    public Analyzer() {
+    public Analyzer(@NotNull String language) {
         stats.putInt("startTime", System.currentTimeMillis());
         logger = Logger.getLogger(Analyzer.class.getCanonicalName());
         self = this;
+        if (language.equals("python")) {
+            this.suffix = ".py";
+        } else if (language.equals("ruby")) {
+            this.suffix = ".rb";
+        }
         builtins = new Builtins();
         builtins.init();
         addPythonPath();
@@ -59,8 +65,8 @@ public class Analyzer {
     }
 
 
-    public Analyzer(boolean debug) {
-        this();
+    public Analyzer(@NotNull String language, boolean debug) {
+        this(language);
         this.debug = debug;
     }
 
@@ -320,8 +326,7 @@ public class Analyzer {
                 loadedFiles.add(file);
                 return mod;
             }
-        }
-        catch (OutOfMemoryError e) {
+        } catch (OutOfMemoryError e) {
             if (astCache != null) {
                 astCache.clear();
             }
@@ -401,7 +406,7 @@ public class Analyzer {
                 return p;
             }
 
-            File startFile = new File(startDir + ".py");
+            File startFile = new File(startDir + suffix);
             if (startFile.exists()) {
                 return p;
             }
@@ -457,7 +462,7 @@ public class Analyzer {
                 prev = mod;
 
             } else if (i == name.size() - 1) {
-                File startFile = new File(path + ".py");
+                File startFile = new File(path + suffix);
                 if (startFile.exists()) {
                     ModuleType mod = loadFile(startFile.getPath());
                     if (mod == null) {
@@ -496,7 +501,7 @@ public class Analyzer {
                 loadFileRecursive(file.getPath());
             }
         } else {
-            if (file_or_dir.getPath().endsWith(".py")) {
+            if (file_or_dir.getPath().endsWith(suffix)) {
                 loadFile(file_or_dir.getPath());
             }
         }
@@ -513,7 +518,7 @@ public class Analyzer {
                 sum += countFileRecursive(file.getPath());
             }
         } else {
-            if (file_or_dir.getPath().endsWith(".py")) {
+            if (file_or_dir.getPath().endsWith(suffix)) {
                 sum += 1;
             }
         }
@@ -532,8 +537,7 @@ public class Analyzer {
             if (!b.getType().isClassType() &&
                     !b.getType().isFuncType() &&
                     !b.getType().isModuleType()
-                    && b.getRefs().isEmpty())
-            {
+                    && b.getRefs().isEmpty()) {
                 Analyzer.self.putProblem(b.getNode(), "Unused variable: " + b.getName());
             }
         }
@@ -639,7 +643,7 @@ public class Analyzer {
     public List<String> getLoadedFiles() {
         List<String> files = new ArrayList<>();
         for (String file : loadedFiles) {
-            if (file.endsWith(".py")) {
+            if (file.endsWith(suffix)) {
                 files.add(file);
             }
         }

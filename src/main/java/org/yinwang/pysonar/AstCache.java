@@ -24,7 +24,7 @@ public class AstCache {
     @NotNull
     private Map<String, Module> cache = new HashMap<>();
     @NotNull
-    private static PythonParser parser;
+    private static RubyParser parser;
 
 
     private AstCache() {
@@ -35,7 +35,7 @@ public class AstCache {
         if (INSTANCE == null) {
             INSTANCE = new AstCache();
         }
-        parser = new PythonParser();
+        parser = new RubyParser();
         return INSTANCE;
     }
 
@@ -69,7 +69,7 @@ public class AstCache {
 
     public void close() {
         parser.close();
-//        clearDiskCache();
+        clearDiskCache();
     }
 
 

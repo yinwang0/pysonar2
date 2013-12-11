@@ -249,8 +249,8 @@ public class PythonParser {
         Map<String, Object> map = (Map<String, Object>) o;
 
         String type = (String) map.get("type");
-        Double startDouble = (Double) map.get("node_start");
-        Double endDouble = (Double) map.get("node_end");
+        Double startDouble = (Double) map.get("start");
+        Double endDouble = (Double) map.get("end");
 
         int start = startDouble == null ? 0 : startDouble.intValue();
         int end = endDouble == null ? 1 : endDouble.intValue();

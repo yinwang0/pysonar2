@@ -86,7 +86,7 @@ public class RubyParser {
             return null;
         } else {
             List<Map<String, Object>> in = (List<Map<String, Object>>) o;
-            List<Node> out = new ArrayList<Node>();
+            List<Node> out = new ArrayList<>();
 
             for (Map<String, Object> m : in) {
                 Node n = deJson(m);
@@ -238,23 +238,12 @@ public class RubyParser {
         Map<String, Object> map = (Map<String, Object>) o;
 
         String type = (String) map.get("type");
-        Double startDouble = (Double) map.get("node_start");
-        Double endDouble = (Double) map.get("node_end");
+        Double startDouble = (Double) map.get("start");
+        Double endDouble = (Double) map.get("end");
 
         int start = startDouble == null ? 0 : startDouble.intValue();
         int end = endDouble == null ? 1 : endDouble.intValue();
 
-
-        if (type.equals("Module")) {
-            Block b = convertBlock(map.get("body"));
-            Module m = new Module(b, start, end);
-            try {
-                m.setFile(_.unifyPath((String) map.get("filename")));
-            } catch (Exception e) {
-
-            }
-            return m;
-        }
 
         if (type.equals("alias")) {         // lower case alias
             String qname = (String) map.get("name");
@@ -267,28 +256,6 @@ public class RubyParser {
             Node test = deJson(map.get("test"));
             Node msg = deJson(map.get("msg"));
             return new Assert(test, msg, start, end);
-        }
-
-        // assign could be x=y=z=1
-        // turn it into one or more Assign nodes
-        // z = 1; y = z; x = z
-        if (type.equals("Assign")) {
-            List<Node> targets = convertList(map.get("targets"));
-            Node value = deJson(map.get("value"));
-            if (targets.size() == 1) {
-                return new Assign(targets.get(0), value, start, end);
-            } else {
-                List<Node> assignments = new ArrayList<>();
-                Node lastTarget = targets.get(targets.size() - 1);
-                assignments.add(new Assign(lastTarget, value, start, end));
-
-                for (int i = targets.size() - 2; i >= 0; i--) {
-                    Node nextAssign = new Assign(targets.get(i), lastTarget, start, end);
-                    assignments.add(nextAssign);
-                }
-
-                return new Block(assignments, start, end);
-            }
         }
 
         if (type.equals("Attribute")) {
@@ -558,20 +525,10 @@ public class RubyParser {
             return new ListComp(elt, generators, start, end);
         }
 
-        if (type.equals("Name")) {
-            String id = (String) map.get("id");
-            return new Name(id, start, end);
-        }
-
         // another name for Name in Python3 func parameters?
         if (type.equals("arg")) {
             String id = (String) map.get("arg");
             return new Name(id, start, end);
-        }
-
-        if (type.equals("Num")) {
-            Object n = map.get("n");
-            return new Num(n, start, end);
         }
 
         if (type.equals("SetComp")) {
@@ -713,6 +670,52 @@ public class RubyParser {
         if (type.equals("YieldFrom")) {
             Node value = deJson(map.get("value"));
             return new Yield(value, start, end);
+        }
+
+
+        // ---------------------------------------------------------------------
+
+        if (type.equals("program")) {
+            Block b = (Block) deJson(map.get("body"));
+            Module m = new Module(b, start, end);
+            try {
+                m.setFile(_.unifyPath((String) map.get("filename")));
+            } catch (Exception e) {
+
+            }
+            return m;
+        }
+
+        if (type.equals("module")) {
+            Block b = convertBlock(map.get("body"));
+            Module m = new Module(b, start, end);
+            try {
+                m.setFile(_.unifyPath((String) map.get("filename")));
+            } catch (Exception e) {
+
+            }
+            return m;
+        }
+
+        if (type.equals("block")) {
+            List<Node> stmts = convertList(map.get("stmts"));
+            return new Block(stmts, start, end);
+        }
+
+        if (type.equals("assign")) {
+            Node target = deJson(map.get("target"));
+            Node value = deJson(map.get("value"));
+            return new Assign(target, value, start, end);
+        }
+
+        if (type.equals("ident")) {
+            String id = (String) map.get("name");
+            return new Name(id, start, end);
+        }
+
+        if (type.equals("int")) {
+            Object n = map.get("value");
+            return new Num(n, start, end);
         }
 
         _.die("[Please report bug]: unexpected ast node: " + map.get("type"));
