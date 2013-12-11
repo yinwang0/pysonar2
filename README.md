@@ -65,19 +65,6 @@ lib). This is due to the highlighting code I added to the demo not using
 sophisticated ways of doing it. The situation may change soon.
 
 
-
-### Jython Branch
-
-PySonar used to use Jython's parser and was part of Jython. If you want to try
-that version, please checkout the <a
-href="https://github.com/yinwang0/pysonar2/tree/jython">jython branch</a>. You
-may also want to look at <a
-href="http://hg.python.org/jython/file/11776cd9765b/src/org/python/indexer">PySonar 1.0
-code</a> inside Jython project. But keep in mind that the new code here is much
-better, and those old versions are no longer supported or developed by me.
-
-
-
 ### Copyright (GPLv3)
 
 Copyright (c) 2013 Yin Wang
