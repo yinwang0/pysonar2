@@ -17,8 +17,7 @@ public class Try extends Node {
     public Block finalbody;
 
     public Try(List<ExceptHandler> handlers, Block body, Block orelse, Block finalbody,
-                     int start, int end)
-    {
+               int start, int end) {
         super(start, end);
         this.handlers = handlers;
         this.body = body;
@@ -37,8 +36,10 @@ public class Try extends Node {
         Type tph = Analyzer.self.builtins.unknown;
         Type tpFinal = Analyzer.self.builtins.unknown;
 
-        for (ExceptHandler h : handlers) {
-            tph = UnionType.union(tph, resolveExpr(h, s));
+        if (handlers != null) {
+            for (ExceptHandler h : handlers) {
+                tph = UnionType.union(tph, resolveExpr(h, s));
+            }
         }
 
         if (body != null) {
@@ -52,7 +53,6 @@ public class Try extends Node {
         if (finalbody != null) {
             tpFinal = resolveExpr(finalbody, s);
         }
-
 
         return new UnionType(tp1, tp2, tph, tpFinal);
     }

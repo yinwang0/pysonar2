@@ -264,16 +264,6 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(TryExcept n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(TryFinally n) {
-        return traverseIntoNodes;
-    }
-
-
     public boolean visit(Tuple n) {
         return traverseIntoNodes;
     }

@@ -664,13 +664,13 @@ public class PythonParser extends Parser {
             Block body = convertBlock(map.get("body"));
             Block orelse = convertBlock(map.get("orelse"));
             List<ExceptHandler> handlers = convertListExceptHandler(map.get("handlers"));
-            return new TryExcept(handlers, body, orelse, start, end);
+            return new Try(handlers, body, orelse, null, start, end);
         }
 
         if (type.equals("TryFinally")) {
             Block body = convertBlock(map.get("body"));
             Block finalbody = convertBlock(map.get("finalbody"));
-            return new TryFinally(body, finalbody, start, end);
+            return new Try(null, body, null, finalbody, start, end);
         }
 
         if (type.equals("Tuple")) {

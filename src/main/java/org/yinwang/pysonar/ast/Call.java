@@ -16,14 +16,14 @@ public class Call extends Node {
 
     public Node func;
     public List<Node> args;
+    @Nullable
     public List<Keyword> keywords;
     public Node kwargs;
     public Node starargs;
 
 
-    public Call(Node func, List<Node> args, List<Keyword> keywords,
-                Node kwargs, Node starargs, int start, int end)
-    {
+    public Call(Node func, List<Node> args, @Nullable List<Keyword> keywords,
+                Node kwargs, Node starargs, int start, int end) {
         super(start, end);
         this.func = func;
         this.args = args;
@@ -59,8 +59,10 @@ public class Call extends Node {
         List<Type> aTypes = resolveAndConstructList(args, s);
         Map<String, Type> kwTypes = new HashMap<>();
 
-        for (Keyword kw : keywords) {
-            kwTypes.put(kw.getArg(), resolveExpr(kw.getValue(), s));
+        if (keywords != null) {
+            for (Keyword kw : keywords) {
+                kwTypes.put(kw.getArg(), resolveExpr(kw.getValue(), s));
+            }
         }
 
         Type kwargsType = kwargs == null ? null : resolveExpr(kwargs, s);
@@ -85,8 +87,7 @@ public class Call extends Node {
                              List<Type> aTypes,
                              Map<String, Type> kwTypes,
                              Type kwargsType,
-                             Type starargsType)
-    {
+                             Type starargsType) {
         if (rator.isFuncType()) {
             FunType ft = rator.asFuncType();
             return apply(ft, aTypes, kwTypes, kwargsType, starargsType, this);
@@ -105,8 +106,7 @@ public class Call extends Node {
                              Map<String, Type> kTypes,
                              Type kwargsType,
                              Type starargsType,
-                             @Nullable Node call)
-    {
+                             @Nullable Node call) {
         Analyzer.self.removeUncalled(func);
 
         if (func.func != null && !func.func.called) {
@@ -182,8 +182,7 @@ public class Call extends Node {
                                    @Nullable List<Type> dTypes,
                                    @Nullable Map<String, Type> kwTypes,
                                    @Nullable Type kwargsType,
-                                   @Nullable Type starargsType)
-    {
+                                   @Nullable Type starargsType) {
         TupleType fromType = new TupleType();
         int aSize = aTypes == null ? 0 : aTypes.size();
         int dSize = dTypes == null ? 0 : dTypes.size();
@@ -202,13 +201,11 @@ public class Call extends Node {
                 aType = dTypes.get(i - nPositional);
             } else {
                 if (kwTypes != null && args.get(i).isName() &&
-                        kwTypes.containsKey(args.get(i).asName().id))
-                {
+                        kwTypes.containsKey(args.get(i).asName().id)) {
                     aType = kwTypes.get(args.get(i).asName().id);
                     kwTypes.remove(args.get(i).asName().id);
                 } else if (starargsType != null && starargsType.isTupleType() &&
-                        j < starargsType.asTupleType().getElementTypes().size())
-                {
+                        j < starargsType.asTupleType().getElementTypes().size()) {
                     aType = starargsType.asTupleType().get(j++);
                 } else {
                     aType = Analyzer.self.builtins.unknown;

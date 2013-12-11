@@ -15,9 +15,33 @@ public class Num extends Node {
     public Num(Object n, int start, int end) {
         super(start, end);
         if (n instanceof String) {
-            this.complex = (String) n;
+            String s = (String) n;
+            Double maybeDouble = getDouble(s);
+            if (maybeDouble != null) {
+                this.n = maybeDouble;
+            } else {
+                this.complex = (String) n;
+            }
         } else {
             this.n = (Double) n;
+        }
+    }
+
+
+    public Double getDouble(String s) {
+        try {
+            return Double.parseDouble(s);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+    public Integer getInt(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (Exception e) {
+            return null;
         }
     }
 

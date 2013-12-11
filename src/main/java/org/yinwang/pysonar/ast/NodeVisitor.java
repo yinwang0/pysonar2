@@ -109,10 +109,6 @@ public interface NodeVisitor {
 
     public boolean visit(Try m);
 
-    public boolean visit(TryExcept m);
-
-    public boolean visit(TryFinally m);
-
     public boolean visit(Tuple m);
 
     public boolean visit(UnaryOp m);

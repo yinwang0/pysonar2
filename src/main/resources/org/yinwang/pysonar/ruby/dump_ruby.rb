@@ -112,14 +112,14 @@ class SexpSimplifier
       }
     elsif exp[0] == :@ident
       {
-          :type => :ident,
-          :name => exp[1],
+          :type => :name,
+          :id => exp[1],
           :location => exp[2],
       }
     elsif exp[0] == :@gvar
       {
           :type => :gvar,
-          :name => exp[1],
+          :id => exp[1],
           :location => exp[2]
       }
     elsif exp[0] == :symbol
@@ -129,14 +129,14 @@ class SexpSimplifier
     elsif exp[0] == :@ivar
       {
           :type => :ivar,
-          :name => exp[1],
+          :id => exp[1],
           :location => exp[2]
       }
     elsif exp[0] == :@const
       #:@const is just a name
       {
           :type => :name,
-          :value => exp[1],
+          :id => exp[1],
           :location => exp[2]
       }
     elsif exp[0] == :def
@@ -193,11 +193,13 @@ class SexpSimplifier
       call
     elsif exp[0] == :method_add_arg
       call = convert(exp[1])
-      call[:args].push(convert(exp[2]))
+      puts "call: #{call}"
+      puts "args: #{convert(exp[2])}"
+      call[:args] = convert(exp[2])
       call
     elsif exp[0] == :command
       {
-          :type => :command,
+          :type => :call,
           :func => convert(exp[1]),
           :args => convert(exp[2])
       }
@@ -212,7 +214,7 @@ class SexpSimplifier
         func = convert(exp[1])
       end
       {
-          :type => :command_call,
+          :type => :call,
           :func => func,
           :args => convert(exp[4])
       }
@@ -227,18 +229,17 @@ class SexpSimplifier
         func = convert(exp[1])
       end
       {
-          :type => exp[0],
+          :type => :call,
           :func => func,
-          :args => []
       }
     elsif exp[0] == :args_new
       {
           :type => :args,
-          :args => []
+          :positional => []
       }
     elsif exp[0] == :args_add
       args = convert(exp[1])
-      args[:args].push(convert(exp[2]))
+      args[:positional].push(convert(exp[2]))
       args
     elsif exp[0] == :args_add_star
       args = convert(exp[1])
@@ -260,7 +261,7 @@ class SexpSimplifier
       }
     elsif exp[0] == :opassign
       # convert x+=1 into x=x+1
-      operation = convert([:binary, exp[1], exp[2][1], exp[3]])
+      operation = convert([:binary, exp[1], exp[2][1][0..-2], exp[3]])
       {
           :type => :assign,
           :target => convert(exp[1]),
@@ -335,8 +336,8 @@ class SexpSimplifier
     elsif exp[0] == :for
       {
           :type => :for,
-          :var => convert(exp[1]),
-          :in => convert(exp[2]),
+          :target => convert(exp[1]),
+          :iter => convert(exp[2]),
           :body => convert(exp[3])
       }
     elsif exp[0] == :begin
@@ -375,11 +376,17 @@ class SexpSimplifier
       {
           :type => :unary,
           :op => op(exp[1]),
-          :value => convert(exp[2])
+          :operand => convert(exp[2])
       }
     elsif exp[0] == :@int
       {
           :type => :int,
+          :value => exp[1],
+          :location => exp[2]
+      }
+    elsif exp[0] == :@float
+      {
+          :type => :float,
           :value => exp[1],
           :location => exp[2]
       }
@@ -410,9 +417,7 @@ class SexpSimplifier
           :value => []
       }
     elsif exp[0] == :string_add
-      s = convert(exp[1])
-      s[:value].push(convert(exp[2]))
-      s
+      convert(exp[2])
     elsif exp[0] == :string_concat
       convert([:binary, exp[1], :string_concat, exp[2]])
     elsif exp[0] == :hash
@@ -494,7 +499,7 @@ class SexpSimplifier
                 :blockarg,
                 :symbol_literal,
                 :regexp_literal,
-                :string_literal,
+                :string_literal
     ]
     wrappers.include?(x)
   end
