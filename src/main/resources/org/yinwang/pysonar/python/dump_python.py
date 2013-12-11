@@ -15,7 +15,7 @@ class AstEncoder(JSONEncoder):
     def default(self, o):
         if hasattr(o, '__dict__'):
             d = o.__dict__
-            d['ast_type'] = o.__class__.__name__
+            d['type'] = o.__class__.__name__
             return d
         else:
             return str(o)

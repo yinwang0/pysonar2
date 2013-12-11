@@ -15,62 +15,51 @@ import java.util.List;
 import java.util.Map;
 
 
-public class PythonParser {
+public class RubyParser {
     @Nullable
-    Process python2Process;
-    @Nullable
-    Process python3Process;
+    Process rubyProcess;
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private static final String PYTHON2_EXE = "python";
-    private static final String PYTHON3_EXE = "python3";
-    private static final String dumpPythonResource = "org/yinwang/pysonar/python/dump_python.py";
+    private static final String RUBY_EXE = "irb";
+    private static final String dumpPythonResource = "org/yinwang/pysonar/ruby/dump_ruby.rb";
     private String exchangeFile;
     private String endMark;
-    private String pyStub;
+    private String rbStub;
 
     private static final int TIMEOUT = 5000;
 
 
-    public PythonParser() {
+    public RubyParser() {
         String tmpDir = _.getSystemTempDir();
         String sid = _.newSessionId();
 
         exchangeFile = _.makePathString(tmpDir, "pysonar2", "json." + sid);
         endMark = _.makePathString(tmpDir, "pysonar2", "end." + sid);
-        pyStub = _.makePathString(tmpDir, "pysonar2", "dump_python." + sid);
+        rbStub = _.makePathString(tmpDir, "pysonar2", "dump_ruby." + sid);
 
-        startPythonProcesses();
+        startRubyProcesses();
 
-        if (python2Process != null) {
-            _.msg("Started: " + PYTHON2_EXE);
-        }
-
-        if (python3Process != null) {
-            _.msg("Started: " + PYTHON3_EXE);
+        if (rubyProcess != null) {
+            _.msg("Started: " + RUBY_EXE);
         }
     }
 
 
-    // start or restart python processes
-    private void startPythonProcesses() {
-        if (python2Process != null) {
-            python2Process.destroy();
-        }
-        if (python3Process != null) {
-            python3Process.destroy();
+    // start or restart ruby process
+    private void startRubyProcesses() {
+        if (rubyProcess != null) {
+            rubyProcess.destroy();
         }
 
-        python2Process = startPython(PYTHON2_EXE);
-        python3Process = startPython(PYTHON3_EXE);
+        rubyProcess = startInterpreter(RUBY_EXE);
 
-        if (python2Process == null && python3Process == null) {
-            _.die("You don't seem to have either of Python or Python3 on PATH");
+        if (rubyProcess == null) {
+            _.die("You don't seem to have ruby on PATH");
         }
     }
 
 
     public void close() {
-        new File(pyStub).delete();
+        new File(rbStub).delete();
         new File(exchangeFile).delete();
         new File(endMark).delete();
     }
@@ -854,7 +843,7 @@ public class PythonParser {
 
 
     @Nullable
-    public Process startPython(String pythonExe) {
+    public Process startInterpreter(String interpExe) {
         String jsonizeStr;
         Process p;
 
@@ -867,50 +856,50 @@ public class PythonParser {
         }
 
         try {
-            FileWriter fw = new FileWriter(pyStub);
+            FileWriter fw = new FileWriter(rbStub);
             fw.write(jsonizeStr);
             fw.close();
         } catch (Exception e) {
-            _.die("Failed to write into: " + pyStub);
+            _.die("Failed to write into: " + rbStub);
             return null;
         }
 
         try {
-            ProcessBuilder builder = new ProcessBuilder(pythonExe, "-i", pyStub);
+            ProcessBuilder builder = new ProcessBuilder(interpExe);
             builder.redirectErrorStream(true);
             builder.environment().remove("PYTHONPATH");
             p = builder.start();
         } catch (Exception e) {
-            _.die("Failed to start Python");
+            _.die("Failed to start irb");
             return null;
         }
+
+        if (!sendCommand("load '" + rbStub + "'", p)) {
+            _.die("Failed to load rbStub, please report bug");
+            p.destroy();
+            return null;
+        }
+
         return p;
     }
 
 
     @Nullable
     public Node parseFile(String filename) {
-        Node node2 = parseFileInner(filename, python2Process);
-        if (node2 != null) {
-            return node2;
-        } else if (python3Process != null) {
-            Node node3 = parseFileInner(filename, python3Process);
-            if (node3 == null) {
-                Analyzer.self.failedToParse.add(filename);
-                return null;
-            } else {
-                return node3;
-            }
+        Node node = parseFileInner(filename, rubyProcess);
+        if (node != null) {
+            return node;
         } else {
-            Analyzer.self.failedToParse.add(filename);
+//            Analyzer.self.failedToParse.add(filename);
             return null;
         }
     }
 
 
-    private boolean sendCommand(String cmd, @NotNull Process pythonProcess) {
+    private boolean sendCommand(String cmd, @NotNull Process rubyProcess) {
+        _.msg("sending cmd: " + cmd);
         try {
-            OutputStreamWriter writer = new OutputStreamWriter(pythonProcess.getOutputStream());
+            OutputStreamWriter writer = new OutputStreamWriter(rubyProcess.getOutputStream());
             writer.write(cmd);
             writer.write("\n");
             writer.flush();
@@ -923,7 +912,7 @@ public class PythonParser {
 
 
     @Nullable
-    public Node parseFileInner(String filename, @NotNull Process pythonProcess) {
+    public Node parseFileInner(String filename, @NotNull Process rubyProcess) {
 //        Util.msg("parsing: " + filename + " using " + pythonProcess);
 
         File exchange = new File(exchangeFile);
@@ -936,7 +925,7 @@ public class PythonParser {
         String s3 = _.escapeWindowsPath(endMark);
         String dumpCommand = "parse_dump('" + s1 + "', '" + s2 + "', '" + s3 + "')";
 
-        if (!sendCommand(dumpCommand, pythonProcess)) {
+        if (!sendCommand(dumpCommand, rubyProcess)) {
             exchange.delete();
             marker.delete();
             return null;
@@ -948,7 +937,7 @@ public class PythonParser {
                 _.msg("\nTimed out while parsing: " + filename);
                 exchange.delete();
                 marker.delete();
-                startPythonProcesses();
+                startRubyProcesses();
                 return null;
             }
 
@@ -975,6 +964,12 @@ public class PythonParser {
 
         Map<String, Object> map = deserialize(json);
         return deJson(map);
+    }
+
+
+    public static void main(String[] args) {
+        RubyParser parser = new RubyParser();
+        parser.parseFile(args[0]);
     }
 
 }
