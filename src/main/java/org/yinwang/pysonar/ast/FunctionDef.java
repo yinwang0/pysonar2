@@ -29,8 +29,7 @@ public class FunctionDef extends Node {
 
 
     public FunctionDef(Name name, List<Node> args, Block body, List<Node> defaults,
-                       Name vararg, Name kwarg, int start, int end)
-    {
+                       Name vararg, Name kwarg, int start, int end) {
         super(start, end);
         this.name = name;
         this.args = args;
@@ -61,12 +60,6 @@ public class FunctionDef extends Node {
 
     @Override
     public boolean isFunctionDef() {
-        return true;
-    }
-
-
-    @Override
-    public boolean bindsName() {
         return true;
     }
 

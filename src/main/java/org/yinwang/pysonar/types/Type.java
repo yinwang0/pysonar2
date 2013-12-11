@@ -19,6 +19,7 @@ public abstract class Type {
     public Scope table;
     public boolean mutated = false;
 
+    public String file = null;
 
     public Scope trueState;
     public Scope falseState;
@@ -43,6 +44,16 @@ public abstract class Type {
             table = new Scope(null, Scope.ScopeType.SCOPE);
         }
         return table;
+    }
+
+
+    public String getFile() {
+        return file;
+    }
+
+
+    public void setFile(String file) {
+        this.file = file;
     }
 
 

@@ -26,7 +26,7 @@ public class Import extends Node {
     @Override
     public Type resolve(@NotNull Scope s) {
         for (Alias a : names) {
-            ModuleType mod = Analyzer.self.loadModule(a.name, s);
+            Type mod = Analyzer.self.loadModule(a.name, s);
             if (mod == null) {
                 Analyzer.self.putProblem(this, "Cannot load module");
             } else if (a.asname != null) {

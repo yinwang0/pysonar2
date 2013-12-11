@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class PythonParser {
+public class PythonParser extends Parser {
     @Nullable
     Process python2Process;
     @Nullable

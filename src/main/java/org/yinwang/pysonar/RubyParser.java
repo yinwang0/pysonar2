@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class RubyParser {
+public class RubyParser extends Parser {
     @Nullable
     Process rubyProcess;
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -677,13 +677,14 @@ public class RubyParser {
 
         if (type.equals("program")) {
             Block b = (Block) deJson(map.get("body"));
-            Module m = new Module(b, start, end);
-            try {
-                m.setFile(_.unifyPath((String) map.get("filename")));
-            } catch (Exception e) {
-
+            String file = (String) map.get("filename");
+            if (file != null) {
+                b.setFile(_.unifyPath(file));
+            } else {
+                _.die("program should contain a filename field, please check the parser");
             }
-            return m;
+
+            return b;
         }
 
         if (type.equals("module")) {

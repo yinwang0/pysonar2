@@ -229,9 +229,9 @@ public class Outliner {
      */
     @NotNull
     public List<Entry> generate(@NotNull Analyzer idx, @NotNull String abspath) {
-        ModuleType mt = idx.loadFile(abspath);
+        Type mt = idx.loadFile(abspath);
         if (mt == null) {
-            return new ArrayList<Entry>();
+            return new ArrayList<>();
         }
         return generate(mt.getTable(), abspath);
     }

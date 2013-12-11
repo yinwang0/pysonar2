@@ -23,12 +23,6 @@ public class ExceptHandler extends Node {
     }
 
 
-    @Override
-    public boolean bindsName() {
-        return true;
-    }
-
-
     @NotNull
     @Override
     public Type resolve(@NotNull Scope s) {

@@ -6,7 +6,6 @@ import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.ListType;
-import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 
 import java.util.ArrayList;
@@ -30,12 +29,6 @@ public class ImportFrom extends Node {
     }
 
 
-    @Override
-    public boolean bindsName() {
-        return true;
-    }
-
-
     @NotNull
     @Override
     public Type resolve(@NotNull Scope s) {
@@ -43,7 +36,7 @@ public class ImportFrom extends Node {
             return Analyzer.self.builtins.Cont;
         }
 
-        ModuleType mod = Analyzer.self.loadModule(module, s);
+        Type mod = Analyzer.self.loadModule(module, s);
 
         if (mod == null) {
             Analyzer.self.putProblem(this, "Cannot load module");
@@ -64,7 +57,7 @@ public class ImportFrom extends Node {
                 } else {
                     List<Name> ext = new ArrayList<>(module);
                     ext.add(first);
-                    ModuleType mod2 = Analyzer.self.loadModule(ext, s);
+                    Type mod2 = Analyzer.self.loadModule(ext, s);
                     if (mod2 != null) {
                         if (a.asname != null) {
                             s.insert(a.asname.id, a.asname, mod2, Binding.Kind.VARIABLE);
@@ -85,13 +78,13 @@ public class ImportFrom extends Node {
     }
 
 
-    private void importStar(@NotNull Scope s, @Nullable ModuleType mt) {
+    private void importStar(@NotNull Scope s, @Nullable Type mt) {
         if (mt == null || mt.getFile() == null) {
             return;
         }
 
-        Module mod = Analyzer.self.getAstForFile(mt.getFile());
-        if (mod == null) {
+        Node node = Analyzer.self.getAstForFile(mt.getFile());
+        if (node == null) {
             return;
         }
 
@@ -116,9 +109,9 @@ public class ImportFrom extends Node {
                 } else {
                     List<Name> m2 = new ArrayList<>(module);
                     m2.add(new Name(name));
-                    ModuleType mod2 = Analyzer.self.loadModule(m2, s);
-                    if (mod2 != null) {
-                        s.insert(name, null, mod2, Binding.Kind.VARIABLE);
+                    Type type = Analyzer.self.loadModule(m2, s);
+                    if (type != null) {
+                        s.insert(name, null, type, Binding.Kind.VARIABLE);
                     }
                 }
             }

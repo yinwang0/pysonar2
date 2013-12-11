@@ -2,7 +2,10 @@ package org.yinwang.pysonar;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.ast.*;
+import org.yinwang.pysonar.ast.Call;
+import org.yinwang.pysonar.ast.Name;
+import org.yinwang.pysonar.ast.Node;
+import org.yinwang.pysonar.ast.Url;
 import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
@@ -10,7 +13,6 @@ import org.yinwang.pysonar.types.Type;
 import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,9 +48,11 @@ public class Analyzer {
 
     String projectDir;
     String suffix;
+    String language;
 
 
     public Analyzer(@NotNull String language) {
+        this.language = language;
         stats.putInt("startTime", System.currentTimeMillis());
         logger = Logger.getLogger(Analyzer.class.getCanonicalName());
         self = this;
@@ -262,7 +266,7 @@ public class Analyzer {
 
 
     @Nullable
-    public ModuleType loadFile(String path) {
+    public Type loadFile(String path) {
 //        Util.msg("loading: " + path);
 
         path = _.unifyPath(path);
@@ -273,7 +277,7 @@ public class Analyzer {
             return null;
         }
 
-        ModuleType module = getCachedModule(path);
+        Type module = getCachedModule(path);
         if (module != null) {
             finer("\nusing cached module " + path + " [succeeded]");
             return module;
@@ -289,11 +293,11 @@ public class Analyzer {
         setCWD(f.getParent());
 
         Analyzer.self.pushImportStack(path);
-        ModuleType mod = parseAndResolve(path);
+        Type type = parseAndResolve(path);
 
         // restore old CWD
         setCWD(oldcwd);
-        return mod;
+        return type;
     }
 
 
@@ -308,23 +312,22 @@ public class Analyzer {
 
 
     @Nullable
-    private ModuleType parseAndResolve(String file) {
+    private Type parseAndResolve(String file) {
         finer("Analyzing: " + file);
         loadingProgress.tick();
 
         try {
-            Module ast;
-            ast = getAstForFile(file);
+            Node ast = getAstForFile(file);
 
             if (ast == null) {
                 failedToParse.add(file);
                 return null;
             } else {
                 finer("resolving: " + file);
-                ModuleType mod = (ModuleType) Node.resolveExpr(ast, moduleTable);
+                Type type = Node.resolveExpr(ast, moduleTable);
                 finer("[success]");
                 loadedFiles.add(file);
-                return mod;
+                return type;
             }
         } catch (OutOfMemoryError e) {
             if (astCache != null) {
@@ -352,7 +355,7 @@ public class Analyzer {
 
     private AstCache getAstCache() {
         if (astCache == null) {
-            astCache = AstCache.get();
+            astCache = AstCache.get(language);
         }
         return astCache;
     }
@@ -362,7 +365,7 @@ public class Analyzer {
      * Returns the syntax tree for {@code file}. <p>
      */
     @Nullable
-    public Module getAstForFile(String file) {
+    public Node getAstForFile(String file) {
         return getAstCache().getAST(file);
     }
 
@@ -417,14 +420,14 @@ public class Analyzer {
 
 
     @Nullable
-    public ModuleType loadModule(@NotNull List<Name> name, @NotNull Scope scope) {
+    public Type loadModule(@NotNull List<Name> name, @NotNull Scope scope) {
         if (name.isEmpty()) {
             return null;
         }
 
         String qname = makeQname(name);
 
-        ModuleType mt = getBuiltinModule(qname);
+        Type mt = getBuiltinModule(qname);
         if (mt != null) {
             scope.insert(name.get(0).id,
                     new Url(Builtins.LIBRARY_URL + mt.getTable().getPath() + ".html"),
@@ -434,7 +437,7 @@ public class Analyzer {
 
         // If there are more than one segment
         // load the packages first
-        ModuleType prev = null;
+        Type prev = null;
         String startPath = locateModule(name.get(0).id);
 
         if (startPath == null) {
@@ -448,7 +451,7 @@ public class Analyzer {
             File initFile = new File(_.joinPath(path, "__init__.py").getPath());
 
             if (initFile.exists()) {
-                ModuleType mod = loadFile(initFile.getPath());
+                Type mod = loadFile(initFile.getPath());
                 if (mod == null) {
                     return null;
                 }
@@ -464,7 +467,7 @@ public class Analyzer {
             } else if (i == name.size() - 1) {
                 File startFile = new File(path + suffix);
                 if (startFile.exists()) {
-                    ModuleType mod = loadFile(startFile.getPath());
+                    Type mod = loadFile(startFile.getPath());
                     if (mod == null) {
                         return null;
                     }

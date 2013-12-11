@@ -141,7 +141,7 @@ public class Demo {
             return "";
         }
 
-        List<StyleRun> styles = new Styler(analyzer, linker).addStyles(path, source);
+        List<StyleRun> styles = new Styler(analyzer).addStyles(path, source);
         styles.addAll(linker.getStyles(path));
 
         String styledSource = new StyleApplier(path, source, styles).apply();

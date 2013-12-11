@@ -27,10 +27,9 @@ class Styler extends DefaultNodeVisitor {
 
     private Analyzer analyzer;
     private String source;
-    private String path;
+
     @NotNull
     private List<StyleRun> styles = new ArrayList<>();
-    private Linker linker;
 
     /**
      * Offsets of doc strings found by node visitor.
@@ -39,9 +38,8 @@ class Styler extends DefaultNodeVisitor {
     private Set<Integer> docOffsets = new HashSet<>();
 
 
-    public Styler(Analyzer idx, Linker linker) {
+    public Styler(Analyzer idx) {
         this.analyzer = idx;
-        this.linker = linker;
     }
 
 
@@ -53,11 +51,10 @@ class Styler extends DefaultNodeVisitor {
      */
     @NotNull
     public List<StyleRun> addStyles(String path, String src) {
-        this.path = path;
         source = src;
-        Module m = analyzer.getAstForFile(path);
-        if (m != null) {
-            m.visit(this);
+        Node node = analyzer.getAstForFile(path);
+        if (node != null) {
+            node.visit(this);
         }
         return styles;
     }

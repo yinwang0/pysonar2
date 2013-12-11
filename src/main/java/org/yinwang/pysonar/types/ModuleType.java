@@ -9,8 +9,6 @@ import org.yinwang.pysonar._;
 
 public class ModuleType extends Type {
 
-    @Nullable
-    private String file;
     @NotNull
     private String name;
     @Nullable
@@ -39,25 +37,12 @@ public class ModuleType extends Type {
         }
     }
 
-
-    public void setFile(String file) {
-        this.file = file;
+    public String getName() {
+        return name;
     }
-
-
-    @Nullable
-    public String getFile() {
-        return file;
-    }
-
 
     public void setName(String name) {
         this.name = name;
-    }
-
-
-    public String getName() {
-        return name;
     }
 
 

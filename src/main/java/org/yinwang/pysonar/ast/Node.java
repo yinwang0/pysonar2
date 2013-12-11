@@ -4,17 +4,24 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar._;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public abstract class Node implements java.io.Serializable {
 
+    public String file = null;
     public int start = -1;
     public int end = -1;
+
+    public String name;
+    private String sha1;   // input source file sha
+
 
     @Nullable
     protected Node parent = null;
@@ -41,6 +48,11 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
+    public String getSHA1() {
+        return sha1;
+    }
+
+
     @NotNull
     public Node getAstRoot() {
         if (parent == null) {
@@ -55,14 +67,15 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
-    public boolean bindsName() {
-        return false;
-    }
-
-
     @Nullable
     public String getFile() {
-        return parent != null ? parent.getFile() : null;
+        if (file != null) {
+            return file;
+        } else if (parent != null) {
+            return parent.getFile();
+        } else {
+            return null;
+        }
     }
 
 
@@ -85,6 +98,13 @@ public abstract class Node implements java.io.Serializable {
                 }
             }
         }
+    }
+
+
+    public void setFile(String file) {
+        this.file = file;
+        this.name = _.moduleName(file);
+        this.sha1 = _.getSHA1(new File(file));
     }
 
 
