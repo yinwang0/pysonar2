@@ -136,7 +136,7 @@ public class ImportFrom extends Node {
     @Override
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
-            visitNodeList(names, v);
+            visitNodes(names, v);
         }
     }
 }

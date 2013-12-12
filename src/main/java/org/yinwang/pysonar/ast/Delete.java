@@ -43,7 +43,7 @@ public class Delete extends Node {
     @Override
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
-            visitNodeList(targets, v);
+            visitNodes(targets, v);
         }
     }
 }

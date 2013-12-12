@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Scope;
-import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 
 import java.util.List;
@@ -47,7 +46,7 @@ public class Import extends Node {
     @Override
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
-            visitNodeList(names, v);
+            visitNodes(names, v);
         }
     }
 }

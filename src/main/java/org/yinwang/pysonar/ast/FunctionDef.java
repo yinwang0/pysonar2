@@ -87,8 +87,8 @@ public class FunctionDef extends Node {
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(name, v);
-            visitNodeList(args, v);
-            visitNodeList(defaults, v);
+            visitNodes(args, v);
+            visitNodes(defaults, v);
             visitNode(kwarg, v);
             visitNode(vararg, v);
             visitNode(body, v);

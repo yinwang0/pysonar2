@@ -76,7 +76,7 @@ public class Block extends Node {
     @Override
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
-            visitNodeList(seq, v);
+            visitNodes(seq, v);
         }
     }
 }

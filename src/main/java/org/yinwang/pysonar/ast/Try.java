@@ -11,12 +11,12 @@ import java.util.List;
 
 public class Try extends Node {
 
-    public List<ExceptHandler> handlers;
+    public List<Handler> handlers;
     public Block body;
     public Block orelse;
     public Block finalbody;
 
-    public Try(List<ExceptHandler> handlers, Block body, Block orelse, Block finalbody,
+    public Try(List<Handler> handlers, Block body, Block orelse, Block finalbody,
                int start, int end) {
         super(start, end);
         this.handlers = handlers;
@@ -37,7 +37,7 @@ public class Try extends Node {
         Type tpFinal = Analyzer.self.builtins.unknown;
 
         if (handlers != null) {
-            for (ExceptHandler h : handlers) {
+            for (Handler h : handlers) {
                 tph = UnionType.union(tph, resolveExpr(h, s));
             }
         }
@@ -68,7 +68,7 @@ public class Try extends Node {
     @Override
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
-            visitNodeList(handlers, v);
+            visitNodes(handlers, v);
             visitNode(body, v);
             visitNode(orelse, v);
         }

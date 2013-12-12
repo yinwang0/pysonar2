@@ -99,7 +99,7 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(ExceptHandler n) {
+    public boolean visit(Handler n) {
         return traverseIntoNodes;
     }
 

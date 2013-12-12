@@ -45,7 +45,7 @@ public interface NodeVisitor {
 
     public boolean visit(Ellipsis m);
 
-    public boolean visit(ExceptHandler m);
+    public boolean visit(Handler m);
 
     public boolean visit(Exec m);
 

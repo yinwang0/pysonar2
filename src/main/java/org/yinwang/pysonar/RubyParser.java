@@ -186,10 +186,10 @@ public class RubyParser extends Parser {
         }
 
         if (type.equals("rescue")) {
-            Node name = deJson(map.get("name"));
-            Node exceptionType = deJson(map.get("type"));
+            List<Node> exceptions = convertList(map.get("exceptions"));
+            Node binder = deJson(map.get("binder"));
             Block body = (Block) deJson(map.get("body"));
-            return new ExceptHandler(name, exceptionType, body, start, end);
+            return new Handler(exceptions, binder, body, start, end);
         }
 
         if (type.equals("for")) {

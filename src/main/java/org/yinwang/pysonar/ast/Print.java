@@ -47,7 +47,7 @@ public class Print extends Node {
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(dest, v);
-            visitNodeList(values, v);
+            visitNodes(values, v);
         }
     }
 }

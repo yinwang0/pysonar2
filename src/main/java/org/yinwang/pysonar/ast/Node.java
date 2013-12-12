@@ -257,11 +257,7 @@ public abstract class Node implements java.io.Serializable {
      * {@code null}, returns a new {@link org.yinwang.pysonar.types.UnknownType}.
      */
     @NotNull
-    protected Type resolveListAsUnion(@Nullable List<? extends Node> nodes, Scope s) {
-        if (nodes == null || nodes.isEmpty()) {
-            return Analyzer.self.builtins.unknown;
-        }
-
+    protected Type resolveUnion(@NotNull Collection<? extends Node> nodes, Scope s) {
         Type result = Analyzer.self.builtins.unknown;
         for (Node node : nodes) {
             Type nodeType = resolveExpr(node, s);
@@ -275,7 +271,7 @@ public abstract class Node implements java.io.Serializable {
      * Resolves each element, also construct a result list.
      */
     @Nullable
-    static protected List<Type> resolveList(@Nullable List<? extends Node> nodes, Scope s) {
+    static protected List<Type> resolveList(@Nullable Collection<? extends Node> nodes, Scope s) {
         if (nodes == null) {
             return null;
         } else {
@@ -303,7 +299,7 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
-    protected void visitNodeList(@Nullable Collection<? extends Node> nodes, NodeVisitor v) {
+    protected void visitNodes(@Nullable Collection<? extends Node> nodes, NodeVisitor v) {
         if (nodes != null) {
             for (Node n : nodes) {
                 if (n != null) {

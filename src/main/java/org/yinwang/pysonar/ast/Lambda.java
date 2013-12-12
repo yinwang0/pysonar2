@@ -73,8 +73,8 @@ public class Lambda extends FunctionDef {
     @Override
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
-            visitNodeList(args, v);
-            visitNodeList(defaults, v);
+            visitNodes(args, v);
+            visitNodes(defaults, v);
             visitNode(vararg, v);
             visitNode(kwarg, v);
             visitNode(body, v);

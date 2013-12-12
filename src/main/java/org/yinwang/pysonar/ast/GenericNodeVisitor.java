@@ -88,7 +88,7 @@ public abstract class GenericNodeVisitor extends DefaultNodeVisitor {
     }
 
 
-    public boolean visit(ExceptHandler n) {
+    public boolean visit(Handler n) {
         return traverseIntoNodes && dispatch(n);
     }
 

@@ -6,20 +6,23 @@ import org.yinwang.pysonar.Binder;
 import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.Type;
 
+import java.util.List;
 
-public class ExceptHandler extends Node {
 
-    public Node name;
-    public Node exceptionType;
+public class Handler extends Node {
+
+    public List<Node> exceptions;
+    public Node binder;
     public Block body;
 
 
-    public ExceptHandler(Node name, Node exceptionType, Block body, int start, int end) {
+    public Handler(List<Node> exceptions, Node binder, Block body, int start, int end) {
         super(start, end);
-        this.name = name;
-        this.exceptionType = exceptionType;
+        this.binder = binder;
+        this.exceptions = exceptions;
         this.body = body;
-        addChildren(name, exceptionType, body);
+        addChildren(binder, body);
+        addChildren(exceptions);
     }
 
 
@@ -27,11 +30,11 @@ public class ExceptHandler extends Node {
     @Override
     public Type resolve(@NotNull Scope s) {
         Type typeval = Analyzer.self.builtins.unknown;
-        if (exceptionType != null) {
-            typeval = resolveExpr(exceptionType, s);
+        if (exceptions != null) {
+            typeval = resolveUnion(exceptions, s);
         }
-        if (name != null) {
-            Binder.bind(s, name, typeval);
+        if (binder != null) {
+            Binder.bind(s, binder, typeval);
         }
         if (body != null) {
             return resolveExpr(body, s);
@@ -44,15 +47,15 @@ public class ExceptHandler extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<ExceptHandler:" + start + ":" + name + ":" + exceptionType + ">";
+        return "(handler:" + start + ":" + exceptions + ":" + binder + ")";
     }
 
 
     @Override
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
-            visitNode(name, v);
-            visitNode(exceptionType, v);
+            visitNode(binder, v);
+            visitNodes(exceptions, v);
             visitNode(body, v);
         }
     }

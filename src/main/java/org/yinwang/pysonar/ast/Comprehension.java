@@ -47,7 +47,7 @@ public class Comprehension extends Node {
         if (v.visit(this)) {
             visitNode(target, v);
             visitNode(iter, v);
-            visitNodeList(ifs, v);
+            visitNodes(ifs, v);
         }
     }
 }

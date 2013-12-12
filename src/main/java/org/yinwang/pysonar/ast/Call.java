@@ -327,8 +327,8 @@ public class Call extends Node {
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(func, v);
-            visitNodeList(args, v);
-            visitNodeList(keywords, v);
+            visitNodes(args, v);
+            visitNodes(keywords, v);
             visitNode(kwargs, v);
             visitNode(starargs, v);
         }

@@ -152,17 +152,17 @@ public class PythonParser extends Parser {
 
 
     @Nullable
-    private List<ExceptHandler> convertListExceptHandler(@Nullable Object o) {
+    private <T> List<T> convertList2(@Nullable Object o) {
         if (o == null) {
             return null;
         } else {
             List<Map<String, Object>> in = (List<Map<String, Object>>) o;
-            List<ExceptHandler> out = new ArrayList<ExceptHandler>();
+            List<T> out = new ArrayList<>();
 
             for (Map<String, Object> m : in) {
                 Node n = deJson(m);
                 if (n != null) {
-                    out.add((ExceptHandler) n);
+                    out.add((T) n);
                 }
             }
 
@@ -225,7 +225,8 @@ public class PythonParser extends Parser {
             while (i < qname.length() &&
                     (Character.isJavaIdentifierPart(qname.charAt(i)) ||
                             qname.charAt(i) == '*') &&
-                    qname.charAt(i) != '.') {
+                    qname.charAt(i) != '.')
+            {
                 name += qname.charAt(i);
                 i++;
             }
@@ -443,10 +444,19 @@ public class PythonParser extends Parser {
         }
 
         if (type.equals("ExceptHandler")) {
-            Node name = deJson(map.get("name"));
-            Node exceptionType = deJson(map.get("type"));
+            Node exception = deJson(map.get("type"));
+            List<Node> exceptions;
+
+            if (exception != null) {
+                exceptions = new ArrayList<>();
+                exceptions.add(exception);
+            } else {
+                exceptions = null;
+            }
+
+            Node binder = deJson(map.get("name"));
             Block body = convertBlock(map.get("body"));
-            return new ExceptHandler(name, exceptionType, body, start, end);
+            return new Handler(exceptions, binder, body, start, end);
         }
 
         if (type.equals("Exec")) {
@@ -655,7 +665,7 @@ public class PythonParser extends Parser {
         if (type.equals("Try")) {
             Block body = convertBlock(map.get("body"));
             Block orelse = convertBlock(map.get("orelse"));
-            List<ExceptHandler> handlers = convertListExceptHandler(map.get("handlers"));
+            List<Handler> handlers = convertList2(map.get("handlers"));
             Block finalbody = convertBlock(map.get("finalbody"));
             return new Try(handlers, body, orelse, finalbody, start, end);
         }
@@ -663,7 +673,7 @@ public class PythonParser extends Parser {
         if (type.equals("TryExcept")) {
             Block body = convertBlock(map.get("body"));
             Block orelse = convertBlock(map.get("orelse"));
-            List<ExceptHandler> handlers = convertListExceptHandler(map.get("handlers"));
+            List<Handler> handlers = convertList2(map.get("handlers"));
             return new Try(handlers, body, orelse, null, start, end);
         }
 
@@ -859,7 +869,8 @@ public class PythonParser extends Parser {
         Process p;
 
         try {
-            InputStream jsonize = Thread.currentThread().getContextClassLoader().getResourceAsStream(dumpPythonResource);
+            InputStream jsonize = Thread.currentThread().getContextClassLoader().getResourceAsStream(
+                    dumpPythonResource);
             jsonizeStr = _.readWholeStream(jsonize);
         } catch (Exception e) {
             _.die("Failed to open resource file:" + dumpPythonResource);

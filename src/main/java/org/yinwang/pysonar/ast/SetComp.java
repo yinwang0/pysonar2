@@ -42,7 +42,7 @@ public class SetComp extends Node {
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(elt, v);
-            visitNodeList(generators, v);
+            visitNodes(generators, v);
         }
     }
 }

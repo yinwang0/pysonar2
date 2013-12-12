@@ -97,376 +97,407 @@ class SexpSimplifier
   def convert(exp)
     if exp == nil
       {}
-    elsif exp[0] == :program
-      {
-          :type => :program,
-          :body => convert(exp[1]),
-          :filename => @filename
-      }
-    elsif exp[0] == :module
-      {
-          :type => :module,
-          :name => convert(exp[1]),
-          :body => convert(exp[2]),
-          :filename => @filename
-      }
-    elsif exp[0] == :@ident
-      {
-          :type => :name,
-          :id => exp[1],
-          :location => exp[2],
-      }
-    elsif exp[0] == :@gvar
-      {
-          :type => :gvar,
-          :id => exp[1],
-          :location => exp[2]
-      }
-    elsif exp[0] == :symbol
-      sym = convert(exp[1])
-      sym[:type] = :symbol
-      sym
-    elsif exp[0] == :@ivar
-      {
-          :type => :ivar,
-          :id => exp[1],
-          :location => exp[2]
-      }
-    elsif exp[0] == :@const
-      #:@const is just a name
-      {
-          :type => :name,
-          :id => exp[1],
-          :location => exp[2]
-      }
-    elsif exp[0] == :def
-      {
-          :type => :def,
-          :name => convert(exp[1]),
-          :params => convert(exp[2]),
-          :body => convert(exp[3])
-      }
-    elsif exp[0] == :do_block
-      {
-          :type => :funblock,
-          :params => convert(exp[1]),
-          :body => convert(exp[2])
-      }
-    elsif exp[0] == :brace_block
-      {
-          :type => :funblock,
-          :params => convert(exp[1]),
-          :body => convert(exp[2])
-      }
-    elsif exp[0] == :params
-      ret = {:type => :params}
-      if exp[1]
-        ret[:positional] = convert_array(exp[1])
-      end
-      if exp[2]
-        # ret[:keyword] = exp[2].map { |x| make_keyword(x) }
-        exp[2].each { |x| ret[:positional].push(convert(x[0])) }
-        ret[:defaults] = exp[2].map { |x| convert(x[1])}
-      end
-      if exp[3]
-        ret[:rest] = convert(exp[3])
-      end
-      if exp[4]
-        ret[:after_rest] = convert_array(exp[4])
-      end
-
-      if exp[7]
-        ret[:block] = convert(exp[7])
-      end
-      ret
-    elsif exp[0] == :block_var
-      params = convert(exp[1])
-      if exp[2]
-        params[:block_var] = convert_array(exp[2])
-      end
-      params
-    elsif exp[0] == :class
-      ret = {
-          :type => :class,
-          :name => convert(exp[1]),
-          :body => convert(exp[3])
-      }
-      if exp[2]
-        ret[:super] = convert(exp[2])
-      end
-      ret
-    elsif exp[0] == :method_add_block
-      call = convert(exp[1])
-      call[:block_arg] = convert(exp[2])
-      call
-    elsif exp[0] == :method_add_arg
-      call = convert(exp[1])
-      puts "call: #{call}"
-      puts "args: #{convert(exp[2])}"
-      call[:args] = convert(exp[2])
-      call
-    elsif exp[0] == :command
-      {
-          :type => :call,
-          :func => convert(exp[1]),
-          :args => convert(exp[2])
-      }
-    elsif exp[0] == :command_call
-      if exp[2] == :'.' or exp[2] == :'::'
-        func = {
-            :type => :attribute,
-            :value => convert(exp[1]),
-            :attr => convert(exp[3])
-        }
-      else
-        func = convert(exp[1])
-      end
-      {
-          :type => :call,
-          :func => func,
-          :args => convert(exp[4])
-      }
-    elsif [:call, :fcall, :super].include?(exp[0])
-      if exp[2] == :'.' or exp[2] == :'::'
-        func = {
-            :type => :attribute,
-            :value => convert(exp[1]),
-            :attr => convert(exp[3])
-        }
-      else
-        func = convert(exp[1])
-      end
-      {
-          :type => :call,
-          :func => func,
-      }
-    elsif exp[0] == :args_new
-      {
-          :type => :args,
-          :positional => []
-      }
-    elsif exp[0] == :args_add
-      args = convert(exp[1])
-      args[:positional].push(convert(exp[2]))
-      args
-    elsif exp[0] == :args_add_star
-      args = convert(exp[1])
-      if exp[2]
-        args[:star] = convert(exp[2])
-      end
-      args
-    elsif exp[0] == :args_add_block
-      args = convert(exp[1])
-      if exp[2]
-        args[:block] = convert(exp[2])
-      end
-      args
-    elsif exp[0] == :assign
-      {
-          :type => :assign,
-          :target => convert(exp[1]),
-          :value => convert(exp[2])
-      }
-    elsif exp[0] == :opassign
-      # convert x+=1 into x=x+1
-      operation = convert([:binary, exp[1], exp[2][1][0..-2], exp[3]])
-      {
-          :type => :assign,
-          :target => convert(exp[1]),
-          :value => operation
-      }
-    elsif exp[0] == :dot2 or exp[0] == :dot3
-      {
-          :type => exp[0],
-          :from => convert(exp[1]),
-          :to => convert(exp[2])
-      }
-    elsif exp[0] == :alias
-      {
-          :type => :alias,
-          :name1 => convert(exp[1]),
-          :name2 => convert(exp[2])
-      }
-    elsif exp[0] == :undef
-      {
-          :type => :undef,
-          :names => convert_array(exp[1]),
-      }
-    elsif [:if, :if_mod, :elsif].include?(exp[0])
-      ret = {
-          :type => :if,
-          :test => convert(exp[1]),
-          :body => convert(exp[2])
-      }
-      if exp[3]
-        ret[:else] = convert(exp[3])
-      end
-      ret
-    elsif exp[0] == :case
-      ret = {
-          :clauses => convert(exp[2])
-      }
-      if exp[1]
-        ret[:expr] = convert(exp[1])
-      end
-      ret
-    elsif exp[0] == :when
-      {
-          :type => :when,
-          :pattern => convert(exp[1]),
-          :value => convert(exp[2]),
-          :else => convert(exp[3])
-      }
-    elsif exp[0] == :while or exp[0] == :while_mod
-      {
-          :type => :while,
-          :test => convert(exp[1]),
-          :body => convert(exp[2])
-      }
-    elsif exp[0] == :unless or exp[0] == :unless_mod
-      # to be converted to 'if not test ...'
-      ret = {
-          :type => :unless,
-          :test => convert(exp[1]),
-          :body => convert(exp[2])
-      }
-      if exp[3]
-        ret[:else] = convert(exp[3])
-      end
-      ret
-    elsif exp[0] == :until or exp[0] == :until_mod
-      # to be converted to 'while not test ...'
-      {
-          :type => :until,
-          :test => convert(exp[1]),
-          :body => convert(exp[2])
-      }
-    elsif exp[0] == :for
-      {
-          :type => :for,
-          :target => convert(exp[1]),
-          :iter => convert(exp[2]),
-          :body => convert(exp[3])
-      }
-    elsif exp[0] == :begin
-      bodystmt = exp[1]
-      {
-          :type => :begin,
-          :body => convert(bodystmt[1]),
-          :rescue => convert(bodystmt[2]),
-          :else => convert(bodystmt[3]),
-          :ensure => convert(bodystmt[4])
-      }
-    elsif exp[0] == :rescue
-      {
-          :type => :rescue,
-          :exceptions => convert_array(exp[1]),
-          :handler => convert(exp[3])
-      }
-    elsif exp[0] == :stmts_new
-      {
-          :type => :block,
-          :stmts => []
-      }
-    elsif exp[0] == :stmts_add
-      block = convert(exp[1])
-      stmt = convert(exp[2])
-      block[:stmts].push(stmt)
-      block
-    elsif exp[0] == :binary
-      {
-          :type => :binary,
-          :left => convert(exp[1]),
-          :op => op(exp[2]),
-          :right => convert(exp[3])
-      }
-    elsif exp[0] == :unary
-      {
-          :type => :unary,
-          :op => op(exp[1]),
-          :operand => convert(exp[2])
-      }
-    elsif exp[0] == :@int
-      {
-          :type => :int,
-          :value => exp[1],
-          :location => exp[2]
-      }
-    elsif exp[0] == :@float
-      {
-          :type => :float,
-          :value => exp[1],
-          :location => exp[2]
-      }
-    elsif exp[0] == :regexp_literal
-      regexp = convert(exp[1])
-      regexp[:end] = convert(exp[2])
-      regexp
-    elsif exp[0] == :regexp_add
-      {
-          :type => :regexp,
-          :pattern => convert(exp[2]),
-      }
-    elsif exp[0] == :@regexp_end
-      {
-          :type => :string,
-          :value => exp[1],
-          :location => exp[2]
-      }
-    elsif exp[0] == :@tstring_content
-      {
-          :type => :string,
-          :value => exp[1],
-          :location => exp[2]
-      }
-    elsif exp[0] == :string_content
-      {
-          :type => :string,
-          :value => []
-      }
-    elsif exp[0] == :string_add
-      convert(exp[2])
-    elsif exp[0] == :string_concat
-      convert([:binary, exp[1], :string_concat, exp[2]])
-    elsif exp[0] == :hash
-      {
-          :type => :hash,
-          :value => convert(exp[1])
-      }
-    elsif exp[0] == :assoclist_from_args
-      {
-          :type => :assoclist,
-          :data => convert_array(exp[1])
-      }
-    elsif exp[0] == :assoc_new
-      {
-          :type => :assoc,
-          :key => exp[1],
-          :value => exp[2]
-      }
-    elsif exp[0] == :const_path_ref
-      {
-          :type => :attribute,
-          :value => convert(exp[1]),
-          :attr => convert(exp[2])
-      }
-    elsif exp[0] == :void_stmt
-      {
-          :type => :void
-      }
-    elsif [:top_const_ref, :return, :yield, :defined].include?(exp[0])
-      # constructs that contains one thing
-      # but should keep the type
-      {
-          :type => exp[0],
-          :value => convert(exp[1])
-      }
-    elsif is_wrapper?(exp[0])
-      # superflous wrappers that contains one object, just remove it
-      convert(exp[1])
     else
-      banner('unknown')
-      puts "#{exp}"
+      case exp[0]
+        when :program
+          {
+              :type => :program,
+              :body => convert(exp[1]),
+              :filename => @filename
+          }
+        when :module
+          {
+              :type => :module,
+              :name => convert(exp[1]),
+              :body => convert(exp[2]),
+              :filename => @filename
+          }
+        when :@ident
+          {
+              :type => :name,
+              :id => exp[1],
+              :location => exp[2],
+          }
+        when :@gvar
+          {
+              :type => :gvar,
+              :id => exp[1],
+              :location => exp[2]
+          }
+        when :symbol
+          sym = convert(exp[1])
+          sym[:type] = :symbol
+          sym
+        when :@ivar
+          {
+              :type => :ivar,
+              :id => exp[1],
+              :location => exp[2]
+          }
+        when :@const
+          #:@const is just a name
+          {
+              :type => :name,
+              :id => exp[1],
+              :location => exp[2]
+          }
+        when :def
+          {
+              :type => :def,
+              :name => convert(exp[1]),
+              :params => convert(exp[2]),
+              :body => convert(exp[3])
+          }
+        when :do_block
+          {
+              :type => :funblock,
+              :params => convert(exp[1]),
+              :body => convert(exp[2])
+          }
+        when :brace_block
+          {
+              :type => :funblock,
+              :params => convert(exp[1]),
+              :body => convert(exp[2])
+          }
+        when :params
+          ret = {:type => :params}
+          if exp[1]
+            ret[:positional] = convert_array(exp[1])
+          end
+          if exp[2]
+            # ret[:keyword] = exp[2].map { |x| make_keyword(x) }
+            exp[2].each { |x| ret[:positional].push(convert(x[0])) }
+            ret[:defaults] = exp[2].map { |x| convert(x[1]) }
+          end
+          if exp[3]
+            ret[:rest] = convert(exp[3])
+          end
+          if exp[4]
+            ret[:after_rest] = convert_array(exp[4])
+          end
+
+          if exp[7]
+            ret[:block] = convert(exp[7])
+          end
+          ret
+        when :block_var
+          params = convert(exp[1])
+          if exp[2]
+            params[:block_var] = convert_array(exp[2])
+          end
+          params
+        when :class
+          ret = {
+              :type => :class,
+              :name => convert(exp[1]),
+              :body => convert(exp[3])
+          }
+          if exp[2]
+            ret[:super] = convert(exp[2])
+          end
+          ret
+        when :method_add_block
+          call = convert(exp[1])
+          call[:block_arg] = convert(exp[2])
+          call
+        when :method_add_arg
+          call = convert(exp[1])
+          puts "call: #{call}"
+          puts "args: #{convert(exp[2])}"
+          call[:args] = convert(exp[2])
+          call
+        when :command
+          {
+              :type => :call,
+              :func => convert(exp[1]),
+              :args => convert(exp[2])
+          }
+        when :command_call
+          if exp[2] == :'.' or exp[2] == :'::'
+            func = {
+                :type => :attribute,
+                :value => convert(exp[1]),
+                :attr => convert(exp[3])
+            }
+          else
+            func = convert(exp[1])
+          end
+          {
+              :type => :call,
+              :func => func,
+              :args => convert(exp[4])
+          }
+        when :call, :fcall, :super
+          if exp[2] == :'.' or exp[2] == :'::'
+            func = {
+                :type => :attribute,
+                :value => convert(exp[1]),
+                :attr => convert(exp[3])
+            }
+          else
+            func = convert(exp[1])
+          end
+          {
+              :type => :call,
+              :func => func,
+          }
+        when :args_new
+          {
+              :type => :args,
+              :positional => []
+          }
+        when :args_add, :mrhs_add
+          args = convert(exp[1])
+          args[:positional].push(convert(exp[2]))
+          args
+        when :args_add_star
+          args = convert(exp[1])
+          if exp[2]
+            args[:star] = convert(exp[2])
+          end
+          args
+        when :args_add_block
+          args = convert(exp[1])
+          if exp[2]
+            args[:block] = convert(exp[2])
+          end
+          args
+        when :assign
+          {
+              :type => :assign,
+              :target => convert(exp[1]),
+              :value => convert(exp[2])
+          }
+        when :opassign
+          # convert x+=1 into x=x+1
+          operation = convert([:binary, exp[1], exp[2][1][0..-2], exp[3]])
+          {
+              :type => :assign,
+              :target => convert(exp[1]),
+              :value => operation
+          }
+        when :dot2, :dot3
+          {
+              :type => exp[0],
+              :from => convert(exp[1]),
+              :to => convert(exp[2])
+          }
+        when :alias
+          {
+              :type => :alias,
+              :name1 => convert(exp[1]),
+              :name2 => convert(exp[2])
+          }
+        when :undef
+          {
+              :type => :undef,
+              :names => convert_array(exp[1]),
+          }
+        when :if, :if_mod, :elsif
+          ret = {
+              :type => :if,
+              :test => convert(exp[1]),
+              :body => convert(exp[2])
+          }
+          if exp[3]
+            ret[:else] = convert(exp[3])
+          end
+          ret
+        when :case
+          ret = {
+              :clauses => convert(exp[2])
+          }
+          if exp[1]
+            ret[:expr] = convert(exp[1])
+          end
+          ret
+        when :when
+          {
+              :type => :when,
+              :pattern => convert(exp[1]),
+              :value => convert(exp[2]),
+              :else => convert(exp[3])
+          }
+        when :while, :while_mod
+          {
+              :type => :while,
+              :test => convert(exp[1]),
+              :body => convert(exp[2])
+          }
+        when :unless, :unless_mod
+          # to be converted to 'if not test ...'
+          ret = {
+              :type => :unless,
+              :test => convert(exp[1]),
+              :body => convert(exp[2])
+          }
+          if exp[3]
+            ret[:else] = convert(exp[3])
+          end
+          ret
+        when :until, :until_mod
+          # to be converted to 'while not test ...'
+          {
+              :type => :until,
+              :test => convert(exp[1]),
+              :body => convert(exp[2])
+          }
+        when :for
+          {
+              :type => :for,
+              :target => convert(exp[1]),
+              :iter => convert(exp[2]),
+              :body => convert(exp[3])
+          }
+        when :begin
+          bodystmt = exp[1]
+          {
+              :type => :begin,
+              :body => convert(bodystmt[1]),
+              :rescue => convert(bodystmt[2]),
+              :else => convert(bodystmt[3]),
+              :ensure => convert(bodystmt[4])
+          }
+        when :rescue
+          ret = { :type => :rescue }
+          if exp[1]
+            if exp[1][0].is_a? Array
+              ret[:exceptions] = convert_array(exp[1])
+            else
+              exceptions =  convert(exp[1])
+              ret[:expections] = exceptions[:positional]
+            end
+          end
+          if exp[2]
+            ret[:binder] = convert(exp[2])
+          end
+          if exp[3]
+            ret[:handler] = convert(exp[3])
+          end
+          if exp[4]
+            ret[:else] = convert(exp[4])
+          end
+          ret
+        when :stmts_new
+          {
+              :type => :block,
+              :stmts => []
+          }
+        when :stmts_add
+          block = convert(exp[1])
+          stmt = convert(exp[2])
+          block[:stmts].push(stmt)
+          block
+        when :binary
+          {
+              :type => :binary,
+              :left => convert(exp[1]),
+              :op => op(exp[2]),
+              :right => convert(exp[3])
+          }
+        when :unary
+          {
+              :type => :unary,
+              :op => op(exp[1]),
+              :operand => convert(exp[2])
+          }
+        when :@int
+          {
+              :type => :int,
+              :value => exp[1],
+              :location => exp[2]
+          }
+        when :@float
+          {
+              :type => :float,
+              :value => exp[1],
+              :location => exp[2]
+          }
+        when :regexp_literal
+          regexp = convert(exp[1])
+          regexp[:end] = convert(exp[2])
+          regexp
+        when :regexp_add
+          {
+              :type => :regexp,
+              :pattern => convert(exp[2]),
+          }
+        when :@regexp_end
+          {
+              :type => :string,
+              :value => exp[1],
+              :location => exp[2]
+          }
+        when :@tstring_content
+          {
+              :type => :string,
+              :value => exp[1],
+              :location => exp[2]
+          }
+        when :string_content
+          {
+              :type => :string,
+              :value => []
+          }
+        when :string_add
+          convert(exp[2])
+        when :string_concat
+          convert([:binary, exp[1], :string_concat, exp[2]])
+        when :hash
+          {
+              :type => :hash,
+              :value => convert(exp[1])
+          }
+        when :assoclist_from_args
+          {
+              :type => :assoclist,
+              :data => convert_array(exp[1])
+          }
+        when :assoc_new
+          {
+              :type => :assoc,
+              :key => exp[1],
+              :value => exp[2]
+          }
+        when :const_path_ref
+          {
+              :type => :attribute,
+              :value => convert(exp[1]),
+              :attr => convert(exp[2])
+          }
+        when :void_stmt
+          {
+              :type => :void
+          }
+        when :top_const_ref, :return, :yield, :defined
+          # constructs that contains one thing
+          # but should keep the type
+          {
+              :type => exp[0],
+              :value => convert(exp[1])
+          }
+        when :var_ref,
+            :var_field,
+            :const_ref,
+            :vcall,
+            :paren,
+            :else,
+            :ensure,
+            :arg_paren,
+            :bodystmt,
+            :rest_param,
+            :blockarg,
+            :symbol_literal,
+            :regexp_literal,
+            :string_literal,
+            :mrhs_new_from_args
+          # superflous wrappers that contains one object, just remove it
+          convert(exp[1])
+        else
+          banner('unknown')
+          puts "#{exp}"
+      end
     end
   end
 

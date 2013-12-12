@@ -51,7 +51,7 @@ public class DictComp extends Node {
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(key, v);
-            visitNodeList(generators, v);
+            visitNodes(generators, v);
         }
     }
 }

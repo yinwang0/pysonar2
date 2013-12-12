@@ -99,7 +99,7 @@ public class ClassDef extends Node {
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
             visitNode(name, v);
-            visitNodeList(bases, v);
+            visitNodes(bases, v);
             visitNode(body, v);
         }
     }

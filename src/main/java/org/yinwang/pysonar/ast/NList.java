@@ -44,7 +44,7 @@ public class NList extends Sequence {
     @Override
     public void visit(@NotNull NodeVisitor v) {
         if (v.visit(this)) {
-            visitNodeList(elts, v);
+            visitNodes(elts, v);
         }
     }
 }
