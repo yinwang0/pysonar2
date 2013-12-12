@@ -14,6 +14,7 @@ blog posts:
     mvn clean package
 
 
+
 ### If the build is broken
 
 I haven't set up releases, so I push working copies of the builds that I don't
@@ -22,11 +23,15 @@ current build is broken or buggy, please grab that snapshot instead. And of
 course, filing an issue is appreciated.
 
 
-### Configuration
+
+### System Requirements
+
+* Python 2.6 or 2.7
+* Python 3.x if you have Python3 files
 
 PySonar2 uses CPython interpreter to parse Python code, so please make sure you
 have `python` or `python3` installed and pointed to by the `PATH` environment
-variable.
+variable. If you have them in different names, please make symbol links.
 
 `PYTHONPATH` environment variable is used for locating the Python standard
 libraries. It is important to point it to the correct Python library, for
@@ -59,48 +64,24 @@ the _html_ directory after this process.
 
 All serious static analysis tools require a lot of memory to run. PySonar2
 doesn't need much memory to do analysis. 1GB is probably enough for analyzing a
-medium sized project such as the standard library or Django. But for generating
-the HTML files, you may need quite some memory (~2.5GB for Python 2.7 standard
-lib). This is due to the highlighting code I added to the demo not using
-sophisticated ways of doing it. The situation may change soon.
+medium sized project such as Python's standard library or Django. But for
+generating the HTML files, you may need quite some memory (~2.5GB for Python 2.7
+standard lib). This is due to the highlighting code is putting all code and
+their HTML tags into the memory.
 
 
-
-### Jython Branch
-
-PySonar used to use Jython's parser and was part of Jython. If you want to try
-that version, please checkout the <a
-href="https://github.com/yinwang0/pysonar2/tree/jython">jython branch</a>. You
-may also want to look at <a
-href="http://hg.python.org/jython/file/11776cd9765b/src/org/python/indexer">PySonar 1.0
-code</a> inside Jython project. But keep in mind that the new code here is much
-better, and those old versions are no longer supported or developed by me.
-
-
-
-### Copyright (BSD-style)
+### Copyright (GPLv3)
 
 Copyright (c) 2013 Yin Wang
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
 
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-3. The name of the author may not be used to endorse or promote products
-   derived from this software without specific prior written permission.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <http://www.gnu.org/licenses/>.

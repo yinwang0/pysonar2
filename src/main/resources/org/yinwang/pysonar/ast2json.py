@@ -8,7 +8,7 @@ from ast import *
 
 
 # Is it Python 3?
-is_python3 = (sys.version_info.major == 3)
+is_python3 = hasattr(sys.version_info, 'major') and (sys.version_info.major == 3)
 
 
 class AstEncoder(JSONEncoder):
@@ -69,11 +69,6 @@ def detect_encoding(path):
 #-------------------------------------------------------------
 #                   improvements to the AST
 #-------------------------------------------------------------
-
-# Is it Python 3?
-is_python3 = (sys.version_info.major == 3)
-
-
 def improve_ast(node, s):
     idxmap = build_index_map(s)
     improve_node(node, s, idxmap)
