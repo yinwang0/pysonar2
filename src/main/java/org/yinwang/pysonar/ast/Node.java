@@ -261,28 +261,18 @@ public abstract class Node implements java.io.Serializable {
 
 
     /**
-     * Resolves each element of a node list in the passed scope.
-     * Node list may be empty or {@code null}.
+     * Resolves each element, also construct a result list.
      */
-    static protected void resolveList(@Nullable List<? extends Node> nodes, Scope s) {
-        if (nodes != null) {
-            for (Node n : nodes) {
-                resolveExpr(n, s);
-            }
-        }
-    }
-
-
     @Nullable
-    static protected List<Type> resolveAndConstructList(@Nullable List<? extends Node> nodes, Scope s) {
+    static protected List<Type> resolveList(@Nullable List<? extends Node> nodes, Scope s) {
         if (nodes == null) {
             return null;
         } else {
-            List<Type> typeList = new ArrayList<>();
+            List<Type> ret = new ArrayList<>();
             for (Node n : nodes) {
-                typeList.add(resolveExpr(n, s));
+                ret.add(resolveExpr(n, s));
             }
-            return typeList;
+            return ret;
         }
     }
 

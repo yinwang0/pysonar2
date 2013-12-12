@@ -44,40 +44,29 @@ public class Call extends Node {
     @NotNull
     @Override
     public Type resolve(Scope s) {
-
-//// experiment with isinstance
-//        if (func.isName() && func.asName().id.equals("isinstance")) {
-//            if (args.size() == 2) {
-//                if (args.get(0).isName()) {
-//                    Type rType = resolveExpr(args.get(1), s);
-//                    s.put(args.get(0).asName().id, args.get(0), rType, SCOPE);
-//                }
-//            }
-//        }
-
-        Type opType = resolveExpr(func, s);
-        List<Type> aTypes = resolveAndConstructList(args, s);
-        Map<String, Type> kwTypes = new HashMap<>();
+        Type fun = resolveExpr(func, s);
+        List<Type> pos = resolveList(args, s);
+        Map<String, Type> hash = new HashMap<>();
 
         if (keywords != null) {
             for (Keyword kw : keywords) {
-                kwTypes.put(kw.getArg(), resolveExpr(kw.getValue(), s));
+                hash.put(kw.getArg(), resolveExpr(kw.getValue(), s));
             }
         }
 
-        Type kwargsType = kwargs == null ? null : resolveExpr(kwargs, s);
-        Type starargsType = starargs == null ? null : resolveExpr(starargs, s);
+        Type kw = kwargs == null ? null : resolveExpr(kwargs, s);
+        Type star = starargs == null ? null : resolveExpr(starargs, s);
 
-        if (opType.isUnionType()) {
-            Set<Type> types = opType.asUnionType().getTypes();
+        if (fun.isUnionType()) {
+            Set<Type> types = fun.asUnionType().getTypes();
             Type retType = Analyzer.self.builtins.unknown;
-            for (Type funcType : types) {
-                Type t = resolveCall(funcType, aTypes, kwTypes, kwargsType, starargsType);
+            for (Type ft : types) {
+                Type t = resolveCall(ft, pos, hash, kw, star);
                 retType = UnionType.union(retType, t);
             }
             return retType;
         } else {
-            return resolveCall(opType, aTypes, kwTypes, kwargsType, starargsType);
+            return resolveCall(fun, pos, hash, kw, star);
         }
     }
 
@@ -102,10 +91,10 @@ public class Call extends Node {
 
     @NotNull
     public static Type apply(@NotNull FunType func,
-                             @Nullable List<Type> aTypes,
-                             Map<String, Type> kTypes,
-                             Type kwargsType,
-                             Type starargsType,
+                             @Nullable List<Type> pos,
+                             Map<String, Type> hash,
+                             Type kw,
+                             Type star,
                              @Nullable Node call) {
         Analyzer.self.removeUncalled(func);
 
@@ -114,7 +103,8 @@ public class Call extends Node {
             func.func.called = true;
         }
 
-        if (func.getFunc() == null) {           // func without definition (possibly builtins)
+        if (func.getFunc() == null) {
+            // func without definition (possibly builtins)
             return func.getReturnType();
         } else if (call != null && Analyzer.self.inStack(call)) {
             func.setSelfType(null);
@@ -125,31 +115,31 @@ public class Call extends Node {
             Analyzer.self.pushStack(call);
         }
 
-        List<Type> argTypeList = new ArrayList<>();
+        List<Type> pTypes = new ArrayList<>();
         if (func.getSelfType() != null) {
-            argTypeList.add(func.getSelfType());
+            pTypes.add(func.getSelfType());
         } else if (func.getCls() != null) {
-            argTypeList.add(func.getCls().getCanon());
+            pTypes.add(func.getCls().getCanon());
         }
 
 
-        if (aTypes != null) {
-            argTypeList.addAll(aTypes);
+        if (pos != null) {
+            pTypes.addAll(pos);
         }
 
         bindMethodAttrs(func);
 
         Scope funcTable = new Scope(func.getEnv(), Scope.ScopeType.FUNCTION);
 
-        if (func.getTable().getParent() != null) {
-            funcTable.setPath(func.getTable().getParent().extendPath(func.func.name.id));
+        if (func.getTable().parent != null) {
+            funcTable.setPath(func.getTable().parent.extendPath(func.func.name.id));
         } else {
             funcTable.setPath(func.func.name.id);
         }
 
         Type fromType = bindParams(call, funcTable, func.func.args,
                 func.func.vararg, func.func.kwarg,
-                argTypeList, func.defaultTypes, kTypes, kwargsType, starargsType);
+                pTypes, func.defaultTypes, hash, kw, star);
 
         Type cachedTo = func.getMapping(fromType);
         if (cachedTo != null) {
@@ -176,42 +166,43 @@ public class Call extends Node {
     static private Type bindParams(@Nullable Node call,
                                    @NotNull Scope funcTable,
                                    @Nullable List<Node> args,
-                                   @Nullable Name fvarargs,
-                                   @Nullable Name fkwargs,
-                                   @Nullable List<Type> aTypes,
+                                   @Nullable Name rest,
+                                   @Nullable Name restKw,
+                                   @Nullable List<Type> pTypes,
                                    @Nullable List<Type> dTypes,
-                                   @Nullable Map<String, Type> kwTypes,
-                                   @Nullable Type kwargsType,
-                                   @Nullable Type starargsType) {
+                                   @Nullable Map<String, Type> hash,
+                                   @Nullable Type kw,
+                                   @Nullable Type star) {
         TupleType fromType = new TupleType();
         int pSize = args == null ? 0 : args.size();
-        int aSize = aTypes == null ? 0 : aTypes.size();
+        int aSize = pTypes == null ? 0 : pTypes.size();
         int dSize = dTypes == null ? 0 : dTypes.size();
-        int nPositional = pSize - dSize;
+        int nPos = pSize - dSize;
 
-        if (starargsType != null && starargsType.isListType()) {
-            starargsType = starargsType.asListType().toTupleType();
+        if (star != null && star.isListType()) {
+            star = star.asListType().toTupleType();
         }
 
         for (int i = 0, j = 0; i < pSize; i++) {
             Node arg = args.get(i);
             Type aType;
             if (i < aSize) {
-                aType = aTypes.get(i);
-            } else if (i - nPositional >= 0 && i - nPositional < dSize) {
-                aType = dTypes.get(i - nPositional);
+                aType = pTypes.get(i);
+            } else if (i - nPos >= 0 && i - nPos < dSize) {
+                aType = dTypes.get(i - nPos);
             } else {
-                if (kwTypes != null && args.get(i).isName() &&
-                        kwTypes.containsKey(args.get(i).asName().id)) {
-                    aType = kwTypes.get(args.get(i).asName().id);
-                    kwTypes.remove(args.get(i).asName().id);
-                } else if (starargsType != null && starargsType.isTupleType() &&
-                        j < starargsType.asTupleType().getElementTypes().size()) {
-                    aType = starargsType.asTupleType().get(j++);
+                if (hash != null && args.get(i).isName() &&
+                        hash.containsKey(args.get(i).asName().id)) {
+                    aType = hash.get(args.get(i).asName().id);
+                    hash.remove(args.get(i).asName().id);
+                } else if (star != null && star.isTupleType() &&
+                        j < star.asTupleType().getElementTypes().size()) {
+                    aType = star.asTupleType().get(j++);
                 } else {
                     aType = Analyzer.self.builtins.unknown;
                     if (call != null) {
-                        Analyzer.self.putProblem(args.get(i), "unable to bind argument:" + args.get(i));
+                        Analyzer.self.putProblem(args.get(i),
+                                "unable to bind argument:" + args.get(i));
                     }
                 }
             }
@@ -219,21 +210,31 @@ public class Call extends Node {
             fromType.add(aType);
         }
 
-        if (fkwargs != null) {
-            if (kwTypes != null && !kwTypes.isEmpty()) {
-                Type kwValType = UnionType.newUnion(kwTypes.values());
-                Binder.bind(funcTable, fkwargs, new DictType(Analyzer.self.builtins.BaseStr, kwValType), Binding.Kind.PARAMETER);
+        if (restKw != null) {
+            if (hash != null && !hash.isEmpty()) {
+                Type hashType = UnionType.newUnion(hash.values());
+                Binder.bind(
+                        funcTable,
+                        restKw,
+                        new DictType(Analyzer.self.builtins.BaseStr, hashType),
+                        Binding.Kind.PARAMETER);
             } else {
-                Binder.bind(funcTable, fkwargs, Analyzer.self.builtins.unknown, Binding.Kind.PARAMETER);
+                Binder.bind(funcTable,
+                        restKw,
+                        Analyzer.self.builtins.unknown,
+                        Binding.Kind.PARAMETER);
             }
         }
 
-        if (fvarargs != null) {
-            if (aTypes.size() > pSize) {
-                Type starType = new TupleType(aTypes.subList(pSize, aTypes.size()));
-                Binder.bind(funcTable, fvarargs, starType, Binding.Kind.PARAMETER);
+        if (rest != null) {
+            if (pTypes.size() > pSize) {
+                Type restType = new TupleType(pTypes.subList(pSize, pTypes.size()));
+                Binder.bind(funcTable, rest, restType, Binding.Kind.PARAMETER);
             } else {
-                Binder.bind(funcTable, fvarargs, Analyzer.self.builtins.unknown, Binding.Kind.PARAMETER);
+                Binder.bind(funcTable,
+                        rest,
+                        Analyzer.self.builtins.unknown,
+                        Binding.Kind.PARAMETER);
             }
         }
 
@@ -242,8 +243,8 @@ public class Call extends Node {
 
 
     static void bindMethodAttrs(@NotNull FunType cl) {
-        if (cl.getTable().getParent() != null) {
-            Type cls = cl.getTable().getParent().getType();
+        if (cl.getTable().parent != null) {
+            Type cls = cl.getTable().parent.getType();
             if (cls != null && cls.isClassType()) {
                 addReadOnlyAttr(cl, "im_class", cls, CLASS);
                 addReadOnlyAttr(cl, "__class__", cls, CLASS);
@@ -254,10 +255,16 @@ public class Call extends Node {
     }
 
 
-    @Nullable
-    static void addReadOnlyAttr(@NotNull FunType cl, String name, @NotNull Type type, Binding.Kind kind) {
-        Binding b = new Binding(name, Builtins.newDataModelUrl("the-standard-type-hierarchy"), type, kind);
-        cl.getTable().update(name, b);
+    static void addReadOnlyAttr(@NotNull FunType fun,
+                                String name,
+                                @NotNull Type type,
+                                Binding.Kind kind) {
+        Binding b = new Binding(
+                name,
+                Builtins.newDataModelUrl("the-standard-type-hierarchy"),
+                type,
+                kind);
+        fun.getTable().update(name, b);
         b.markSynthetic();
         b.markStatic();
         b.markReadOnly();
@@ -285,7 +292,7 @@ public class Call extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Call:" + func + ":" + args + ":" + start + ">";
+        return "(call:" + func + ":" + args + ":" + start + ")";
     }
 
 

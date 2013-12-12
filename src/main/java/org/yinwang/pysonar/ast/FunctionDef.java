@@ -49,7 +49,7 @@ public class FunctionDef extends Node {
         FunType fun = new FunType(this, s.getForwarding());
         fun.getTable().setParent(s);
         fun.getTable().setPath(s.extendPath(name.id));
-        fun.setDefaultTypes(resolveAndConstructList(defaults, s));
+        fun.setDefaultTypes(resolveList(defaults, s));
         Analyzer.self.addUncalled(fun);
         Binding.Kind funkind;
 

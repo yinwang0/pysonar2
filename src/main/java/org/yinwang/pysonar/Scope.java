@@ -118,12 +118,6 @@ public class Scope {
     }
 
 
-    @Nullable
-    public Scope getParent() {
-        return parent;
-    }
-
-
     public Scope getForwarding() {
         if (forwarding != null) {
             return forwarding;
@@ -254,10 +248,12 @@ public class Scope {
             List<Binding> ent = lookupLocal(name);
             if (ent != null) {
                 return ent;
-            } else if (getParent() != null) {
-                return getParent().lookup(name);
             } else {
-                return null;
+                if (parent != null) {
+                    return parent.lookup(name);
+                } else {
+                    return null;
+                }
             }
         }
     }
