@@ -23,7 +23,8 @@ public class Call extends Node {
 
 
     public Call(Node func, List<Node> args, @Nullable List<Keyword> keywords,
-                Node kwargs, Node starargs, int start, int end) {
+                Node kwargs, Node starargs, int start, int end)
+    {
         super(start, end);
         this.func = func;
         this.args = args;
@@ -72,18 +73,19 @@ public class Call extends Node {
 
 
     @NotNull
-    private Type resolveCall(@NotNull Type rator,
-                             List<Type> aTypes,
-                             Map<String, Type> kwTypes,
-                             Type kwargsType,
-                             Type starargsType) {
-        if (rator.isFuncType()) {
-            FunType ft = rator.asFuncType();
-            return apply(ft, aTypes, kwTypes, kwargsType, starargsType, this);
-        } else if (rator.isClassType()) {
-            return new InstanceType(rator, this, aTypes);
+    private Type resolveCall(@NotNull Type fun,
+                             List<Type> pos,
+                             Map<String, Type> hash,
+                             Type kw,
+                             Type star)
+    {
+        if (fun.isFuncType()) {
+            FunType ft = fun.asFuncType();
+            return apply(ft, pos, hash, kw, star, this);
+        } else if (fun.isClassType()) {
+            return new InstanceType(fun, this, pos);
         } else {
-            addWarning("calling non-function and non-class: " + rator);
+            addWarning("calling non-function and non-class: " + fun);
             return Analyzer.self.builtins.unknown;
         }
     }
@@ -95,7 +97,8 @@ public class Call extends Node {
                              Map<String, Type> hash,
                              Type kw,
                              Type star,
-                             @Nullable Node call) {
+                             @Nullable Node call)
+    {
         Analyzer.self.removeUncalled(func);
 
         if (func.func != null && !func.func.called) {
@@ -172,7 +175,8 @@ public class Call extends Node {
                                    @Nullable List<Type> dTypes,
                                    @Nullable Map<String, Type> hash,
                                    @Nullable Type kw,
-                                   @Nullable Type star) {
+                                   @Nullable Type star)
+    {
         TupleType fromType = new TupleType();
         int pSize = args == null ? 0 : args.size();
         int aSize = pTypes == null ? 0 : pTypes.size();
@@ -192,11 +196,13 @@ public class Call extends Node {
                 aType = dTypes.get(i - nPos);
             } else {
                 if (hash != null && args.get(i).isName() &&
-                        hash.containsKey(args.get(i).asName().id)) {
+                        hash.containsKey(args.get(i).asName().id))
+                {
                     aType = hash.get(args.get(i).asName().id);
                     hash.remove(args.get(i).asName().id);
                 } else if (star != null && star.isTupleType() &&
-                        j < star.asTupleType().getElementTypes().size()) {
+                        j < star.asTupleType().getElementTypes().size())
+                {
                     aType = star.asTupleType().get(j++);
                 } else {
                     aType = Analyzer.self.builtins.unknown;
@@ -258,7 +264,8 @@ public class Call extends Node {
     static void addReadOnlyAttr(@NotNull FunType fun,
                                 String name,
                                 @NotNull Type type,
-                                Binding.Kind kind) {
+                                Binding.Kind kind)
+    {
         Binding b = new Binding(
                 name,
                 Builtins.newDataModelUrl("the-standard-type-hierarchy"),
