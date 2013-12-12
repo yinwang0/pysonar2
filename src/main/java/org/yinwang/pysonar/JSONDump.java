@@ -105,7 +105,7 @@ public class JSONDump {
                         args.append("(");
                         boolean first = true;
 
-                        for (Node n : func.getArgs()) {
+                        for (Node n : func.args) {
                             if (!first) {
                                 args.append(", ");
                             }
@@ -113,20 +113,20 @@ public class JSONDump {
                             args.append(n.toDisplay());
                         }
 
-                        if (func.getVararg() != null) {
+                        if (func.vararg != null) {
                             if (!first) {
                                 args.append(", ");
                             }
                             first = false;
-                            args.append("*" + func.getVararg().toDisplay());
+                            args.append("*" + func.vararg.toDisplay());
                         }
 
-                        if (func.getKwarg() != null) {
+                        if (func.kwarg != null) {
                             if (!first) {
                                 args.append(", ");
                             }
                             first = false;
-                            args.append("**" + func.getKwarg().toDisplay());
+                            args.append("**" + func.kwarg.toDisplay());
                         }
 
                         args.append(")");

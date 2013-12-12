@@ -314,7 +314,7 @@ public class RubyParser extends Parser {
             return new Dict(keys, values, start, end);
         }
 
-        if (type.equals("ExceptHandler")) {
+        if (type.equals("rescue")) {
             Node name = deJson(map.get("name"));
             Node exceptionType = deJson(map.get("type"));
             Block body = (Block) deJson(map.get("body"));

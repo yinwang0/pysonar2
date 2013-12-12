@@ -9,7 +9,6 @@ import org.yinwang.pysonar.Scope;
 import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.Type;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -21,7 +20,6 @@ public class FunctionDef extends Node {
     @Nullable
     public List<Type> defaultTypes;
     public Name vararg;  // *args
-
     public Name kwarg;   // **kwarg
     public Node body;
     private List<Node> decoratorList;
@@ -44,118 +42,20 @@ public class FunctionDef extends Node {
     }
 
 
-    public void setDecoratorList(List<Node> decoratorList) {
-        this.decoratorList = decoratorList;
-        addChildren(decoratorList);
-    }
-
-
-    public List<Node> getDecoratorList() {
-        if (decoratorList == null) {
-            decoratorList = new ArrayList<Node>();
-        }
-        return decoratorList;
-    }
-
-
-    @Override
-    public boolean isFunctionDef() {
-        return true;
-    }
-
-
-    /**
-     * Returns the name of the function for indexing/qname purposes.
-     * Lambdas will return a generated name.
-     */
-    @Nullable
-    protected String getBindingName(Scope s) {
-        return name.id;
-    }
-
-
-    public List<Node> getArgs() {
-        return args;
-    }
-
-
-    public List<Node> getDefaults() {
-        return defaults;
-    }
-
-
-    @Nullable
-    public List<Type> getDefaultTypes() {
-        return defaultTypes;
-    }
-
-
-    public Node getBody() {
-        return body;
-    }
-
-
-    public Name getName() {
-        return name;
-    }
-
-
-    /**
-     * @return the vararg
-     */
-    public Name getVararg() {
-        return vararg;
-    }
-
-
-    /**
-     * @param vararg the vararg to set
-     */
-    public void setVararg(Name vararg) {
-        this.vararg = vararg;
-    }
-
-
-    /**
-     * @return the kwarg
-     */
-    public Name getKwarg() {
-        return kwarg;
-    }
-
-
-    /**
-     * @param kwarg the kwarg to set
-     */
-    public void setKwarg(Name kwarg) {
-        this.kwarg = kwarg;
-    }
-
-
-    /**
-     * A function's environment is not necessarily the enclosing scope. A
-     * method's environment is the scope of the most recent scope that is not a
-     * class.
-     * <p/>
-     * Be sure to distinguish the environment and the symbol table. The
-     * function's table is only used for the function's attributes like
-     * "im_class". Its parent should be the table of the enclosing scope, and
-     * its path should be derived from that scope too for locating the names
-     * "lexically".
-     */
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope outer) {
-        resolveList(decoratorList, outer);   //XXX: not handling functional transformations yet
-        FunType fun = new FunType(this, outer.getForwarding());
-        fun.getTable().setParent(outer);
-        fun.getTable().setPath(outer.extendPath(getName().id));
-        fun.setDefaultTypes(resolveAndConstructList(defaults, outer));
+    public Type resolve(@NotNull Scope s) {
+        resolveList(decoratorList, s);
+        FunType fun = new FunType(this, s.getForwarding());
+        fun.getTable().setParent(s);
+        fun.getTable().setPath(s.extendPath(name.id));
+        fun.setDefaultTypes(resolveAndConstructList(defaults, s));
         Analyzer.self.addUncalled(fun);
         Binding.Kind funkind;
 
-        if (outer.getScopeType() == Scope.ScopeType.CLASS) {
-            if ("__init__".equals(name.id)) {
+        if (s.getScopeType() == Scope.ScopeType.CLASS) {
+            if ("__init__".equals(name.id) ||
+                    "initialize".equals(name.id)) {
                 funkind = Binding.Kind.CONSTRUCTOR;
             } else {
                 funkind = Binding.Kind.METHOD;
@@ -164,12 +64,12 @@ public class FunctionDef extends Node {
             funkind = Binding.Kind.FUNCTION;
         }
 
-        Type outType = outer.getType();
+        Type outType = s.getType();
         if (outType != null && outType.isClassType()) {
             fun.setCls(outType.asClassType());
         }
 
-        Binder.bind(outer, name, fun, funkind);
+        Binder.bind(s, name, fun, funkind);
         return Analyzer.self.builtins.Cont;
     }
 
@@ -177,7 +77,7 @@ public class FunctionDef extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Function:" + start + ":" + name + ">";
+        return "(func:" + start + ":" + name + ")";
     }
 
 

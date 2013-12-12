@@ -14,8 +14,7 @@ import java.util.List;
 public class Lambda extends FunctionDef {
 
     public Lambda(List<Node> args, Node body, List<Node> defaults,
-                  Name varargs, Name kwargs, int start, int end)
-    {
+                  Name varargs, Name kwargs, int start, int end) {
         super(null, args, null, defaults, varargs, kwargs, start, end);
         this.body = body instanceof Block ? (Block) body : body;
         addChildren(this.body);
@@ -38,7 +37,6 @@ public class Lambda extends FunctionDef {
     }
 
 
-    @Override
     public Name getName() {
         if (name != null) {
             return name;
@@ -53,13 +51,13 @@ public class Lambda extends FunctionDef {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope outer) {
-        this.defaultTypes = resolveAndConstructList(defaults, outer);
-        FunType cl = new FunType(this, outer.getForwarding());
-        cl.getTable().setParent(outer);
-        cl.getTable().setPath(outer.extendPath(getName().id));
-        Binder.bind(outer, getName(), cl, Binding.Kind.FUNCTION);
-        cl.setDefaultTypes(resolveAndConstructList(defaults, outer));
+    public Type resolve(@NotNull Scope s) {
+        this.defaultTypes = resolveAndConstructList(defaults, s);
+        FunType cl = new FunType(this, s.getForwarding());
+        cl.getTable().setParent(s);
+        cl.getTable().setPath(s.extendPath(getName().id));
+        Binder.bind(s, getName(), cl, Binding.Kind.FUNCTION);
+        cl.setDefaultTypes(resolveAndConstructList(defaults, s));
         Analyzer.self.addUncalled(cl);
         return cl;
     }
@@ -68,7 +66,7 @@ public class Lambda extends FunctionDef {
     @NotNull
     @Override
     public String toString() {
-        return "<Lambda:" + start + ":" + args + ":" + body + ">";
+        return "(lambda:" + start + ":" + args + ":" + body + ")";
     }
 
 

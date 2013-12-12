@@ -175,7 +175,7 @@ public class Call extends Node {
     @NotNull
     static private Type bindParams(@Nullable Node call,
                                    @NotNull Scope funcTable,
-                                   @NotNull List<Node> args,
+                                   @Nullable List<Node> args,
                                    @Nullable Name fvarargs,
                                    @Nullable Name fkwargs,
                                    @Nullable List<Type> aTypes,
@@ -184,15 +184,16 @@ public class Call extends Node {
                                    @Nullable Type kwargsType,
                                    @Nullable Type starargsType) {
         TupleType fromType = new TupleType();
+        int pSize = args == null ? 0 : args.size();
         int aSize = aTypes == null ? 0 : aTypes.size();
         int dSize = dTypes == null ? 0 : dTypes.size();
-        int nPositional = args.size() - dSize;
+        int nPositional = pSize - dSize;
 
         if (starargsType != null && starargsType.isListType()) {
             starargsType = starargsType.asListType().toTupleType();
         }
 
-        for (int i = 0, j = 0; i < args.size(); i++) {
+        for (int i = 0, j = 0; i < pSize; i++) {
             Node arg = args.get(i);
             Type aType;
             if (i < aSize) {
@@ -228,8 +229,8 @@ public class Call extends Node {
         }
 
         if (fvarargs != null) {
-            if (aTypes.size() > args.size()) {
-                Type starType = new TupleType(aTypes.subList(args.size(), aTypes.size()));
+            if (aTypes.size() > pSize) {
+                Type starType = new TupleType(aTypes.subList(pSize, aTypes.size()));
                 Binder.bind(funcTable, fvarargs, starType, Binding.Kind.PARAMETER);
             } else {
                 Binder.bind(funcTable, fvarargs, Analyzer.self.builtins.unknown, Binding.Kind.PARAMETER);
