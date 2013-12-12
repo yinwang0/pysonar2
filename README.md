@@ -26,7 +26,7 @@ course, filing an issue is appreciated.
 
 ### System Requirements
 
-* Python 2.6 or 2.7
+* Python 2.6 or 2.7 (Python <=2.5 does not work)
 * Python 3.x if you have Python3 files
 
 PySonar2 uses CPython interpreter to parse Python code, so please make sure you
