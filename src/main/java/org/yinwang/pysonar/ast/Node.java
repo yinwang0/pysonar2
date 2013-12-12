@@ -10,6 +10,7 @@ import org.yinwang.pysonar.types.UnionType;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -90,7 +91,7 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
-    public void addChildren(@Nullable List<? extends Node> nodes) {
+    public void addChildren(@Nullable Collection<? extends Node> nodes) {
         if (nodes != null) {
             for (Node n : nodes) {
                 if (n != null) {
@@ -292,7 +293,7 @@ public abstract class Node implements java.io.Serializable {
     }
 
 
-    protected void visitNodeList(@Nullable List<? extends Node> nodes, NodeVisitor v) {
+    protected void visitNodeList(@Nullable Collection<? extends Node> nodes, NodeVisitor v) {
         if (nodes != null) {
             for (Node n : nodes) {
                 if (n != null) {
