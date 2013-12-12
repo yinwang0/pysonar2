@@ -82,7 +82,7 @@ public class Name extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Name:" + start + ":" + id + ">";
+        return "(" + id + ":" + start + ")";
     }
 
 

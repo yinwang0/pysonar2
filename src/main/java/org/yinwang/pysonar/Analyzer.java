@@ -603,7 +603,7 @@ public class Analyzer {
 
             for (FunType cl : uncalledDup) {
                 progress.tick();
-                Call.apply(cl, null, null, null, null, null);
+                Call.apply(cl, null, null, null, null, null, null);
             }
         }
     }

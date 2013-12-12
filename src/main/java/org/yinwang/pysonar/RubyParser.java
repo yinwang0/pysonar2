@@ -91,135 +91,6 @@ public class RubyParser extends Parser {
 
 
     @Nullable
-    private List<Op> convertListOp(@Nullable Object o) {
-        if (o == null) {
-            return null;
-        } else {
-            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
-            List<Op> out = new ArrayList<>();
-
-            for (Map<String, Object> m : in) {
-                Op n = convertOp(m);
-                if (n != null) {
-                    out.add(n);
-                }
-            }
-
-            return out;
-        }
-    }
-
-
-    @Nullable
-    private List<Keyword> convertListKeyword(@Nullable Object o) {
-        if (o == null) {
-            return null;
-        } else {
-            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
-            List<Keyword> out = new ArrayList<Keyword>();
-
-            for (Map<String, Object> m : in) {
-                Node n = deJson(m);
-                if (n != null) {
-                    out.add((Keyword) n);
-                }
-            }
-
-            return out;
-        }
-    }
-
-
-    @Nullable
-    private List<ExceptHandler> convertListExceptHandler(@Nullable Object o) {
-        if (o == null) {
-            return null;
-        } else {
-            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
-            List<ExceptHandler> out = new ArrayList<ExceptHandler>();
-
-            for (Map<String, Object> m : in) {
-                Node n = deJson(m);
-                if (n != null) {
-                    out.add((ExceptHandler) n);
-                }
-            }
-
-            return out;
-        }
-    }
-
-
-    @Nullable
-    private List<Alias> convertListAlias(@Nullable Object o) {
-        if (o == null) {
-            return null;
-        } else {
-            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
-            List<Alias> out = new ArrayList<Alias>();
-
-            for (Map<String, Object> m : in) {
-                Node n = deJson(m);
-                if (n != null) {
-                    out.add((Alias) n);
-                }
-            }
-
-            return out;
-        }
-    }
-
-
-    @Nullable
-    private List<Comprehension> convertListComprehension(@Nullable Object o) {
-        if (o == null) {
-            return null;
-        } else {
-            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
-            List<Comprehension> out = new ArrayList<Comprehension>();
-
-            for (Map<String, Object> m : in) {
-                Node n = deJson(m);
-                if (n != null) {
-                    out.add((Comprehension) n);
-                }
-            }
-
-            return out;
-        }
-    }
-
-
-    @NotNull
-    List<Name> segmentQname(@NotNull String qname, int start, boolean hasLoc) {
-        List<Name> result = new ArrayList<>();
-
-        for (int i = 0; i < qname.length(); i++) {
-            String name = "";
-            while (Character.isSpaceChar(qname.charAt(i))) {
-                i++;
-            }
-            int nameStart = i;
-
-            while (i < qname.length() &&
-                    (Character.isJavaIdentifierPart(qname.charAt(i)) ||
-                            qname.charAt(i) == '*') &&
-                    qname.charAt(i) != '.') {
-                name += qname.charAt(i);
-                i++;
-            }
-
-            int nameStop = i;
-            int nstart = hasLoc ? start + nameStart : -1;
-            int nstop = hasLoc ? start + nameStop : -1;
-            result.add(new Name(name, nstart, nstop));
-        }
-
-        return result;
-    }
-
-
-    @Nullable
     public Node deJson(Object o) {
         if (!(o instanceof Map)) {
             return null;
@@ -328,56 +199,11 @@ public class RubyParser extends Parser {
             return new For(target, iter, body, null, start, end);
         }
 
-        if (type.equals("GeneratorExp")) {
-            Node elt = deJson(map.get("elt"));
-            List<Comprehension> generators = convertListComprehension(map.get("generators"));
-            return new GeneratorExp(elt, generators, start, end);
-        }
-
-        if (type.equals("Global")) {
-            List<String> names = (List<String>) map.get("names");
-            List<Name> nameNodes = new ArrayList<>();
-            for (String name : names) {
-                nameNodes.add(new Name(name));
-            }
-            return new Global(nameNodes, start, end);
-        }
-
-        if (type.equals("Nonlocal")) {
-            List<String> names = (List<String>) map.get("names");
-            List<Name> nameNodes = new ArrayList<>();
-            for (String name : names) {
-                nameNodes.add(new Name(name));
-            }
-            return new Global(nameNodes, start, end);
-        }
-
         if (type.equals("if")) {
             Node test = deJson(map.get("test"));
             Block body = (Block) deJson(map.get("body"));
             Block orelse = (Block) deJson(map.get("else"));
             return new If(test, body, orelse, start, end);
-        }
-
-        if (type.equals("IfExp")) {
-            Node test = deJson(map.get("test"));
-            Node body = deJson(map.get("body"));
-            Node orelse = deJson(map.get("orelse"));
-            return new IfExp(test, body, orelse, start, end);
-        }
-
-
-        if (type.equals("Import")) {
-            List<Alias> aliases = convertListAlias(map.get("names"));
-            return new Import(aliases, start, end);
-        }
-
-        if (type.equals("ImportFrom")) {
-            String module = (String) map.get("module");
-            List<Name> moduleSeg = module == null ? null : segmentQname(module, start + "from ".length(), true);
-            List<Alias> names = convertListAlias(map.get("names"));
-            int level = ((Double) map.get("level")).intValue();
-            return new ImportFrom(moduleSeg, names, level, start, end);
         }
 
         if (type.equals("Index")) {
@@ -401,12 +227,6 @@ public class RubyParser extends Parser {
             return new Starred(value, start, end);
         }
 
-        if (type.equals("ListComp")) {
-            Node elt = deJson(map.get("elt"));
-            List<Comprehension> generators = convertListComprehension(map.get("generators"));
-            return new ListComp(elt, generators, start, end);
-        }
-
         // another name for Name in Python3 func parameters?
         if (type.equals("arg")) {
             String id = (String) map.get("arg");
@@ -423,11 +243,6 @@ public class RubyParser extends Parser {
             Node step = deJson(map.get("step"));
             Node upper = deJson(map.get("upper"));
             return new Slice(lower, step, upper, start, end);
-        }
-
-        if (type.equals("ExtSlice")) {
-            List<Node> dims = convertList(map.get("dims"));
-            return new ExtSlice(dims, start, end);
         }
 
         if (type.equals("string")) {
@@ -501,28 +316,55 @@ public class RubyParser extends Parser {
         if (type.equals("def")) {
             Name name = (Name) deJson(map.get("name"));
             Block body = (Block) deJson(map.get("body"));
-            Map<String, Object> args = (Map<String, Object>) map.get("params");
-            List<Node> positional = convertList(args.get("positional"));
-            return new FunctionDef(name, positional, body, null, null, null, start, end);
+            Map<String, Object> argsMap = (Map<String, Object>) map.get("params");
+            List<Node> positional = convertList(argsMap.get("positional"));
+            List<Node> defaults = convertList(argsMap.get("defaults"));
+            Name var = (Name) deJson(argsMap.get("rest"));
+            Name vararg = var == null ? null : var;
+            FunctionDef ret = new FunctionDef(name, positional, body, defaults, vararg, null, start, end);
+            ret.afterRest = convertList(argsMap.get("after_rest"));
+            ret.blockarg = (Name) deJson(argsMap.get("block"));
+            return ret;
         }
 
-        if (type.equals("do_block")) {
+        if (type.equals("funblock")) {
             Block body = (Block) deJson(map.get("body"));
-            Map<String, Object> args = (Map<String, Object>) map.get("params");
-            List<Node> positional = convertList(args.get("positional"));
-            return new Lambda(positional, body, null, null, null, start, end);
+            Map<String, Object> argsMap = (Map<String, Object>) map.get("params");
+            List<Node> positional = convertList(argsMap.get("positional"));
+            List<Node> defaults = convertList(argsMap.get("defaults"));
+            Name var = (Name) deJson(argsMap.get("rest"));
+            Name vararg = var == null ? null : var;
+            FunctionDef ret = new Lambda(positional, body, defaults, vararg, null, start, end);
+            ret.afterRest = convertList(argsMap.get("after_rest"));
+            ret.blockarg = (Name) deJson(argsMap.get("block"));
+            return ret;
         }
 
         if (type.equals("call")) {
             Node func = deJson(map.get("func"));
             Map<String, Object> args = (Map<String, Object>) map.get("args");
-            List<Node> positional;
-            if (args != null) {
-                positional = convertList(args.get("positional"));
-            } else {
-                positional = new ArrayList<>();
+            List<Node> posKey = convertList(args.get("positional"));
+            List<Node> pos = new ArrayList<>();
+            List<Keyword> kws = new ArrayList<>();
+            for (Node node : posKey) {
+                if (node.isAssign()) {
+                    kws.add(new Keyword(node.asAssign().target.asName().id,
+                            node.asAssign().value,
+                            node.start,
+                            node.end));
+                } else {
+                    pos.add(node);
+                }
+
             }
-            return new Call(func, positional, null, null, null, start, end);
+
+            Call ret = new Call(func, pos, kws, null, null, start, end);
+
+            Node blockarg = deJson(map.get("block_arg"));
+            if (blockarg != null) {
+                ret.blockarg = blockarg;
+            }
+            return ret;
         }
 
         if (type.equals("assign")) {
@@ -674,7 +516,8 @@ public class RubyParser extends Parser {
         Process p;
 
         try {
-            InputStream jsonize = Thread.currentThread().getContextClassLoader().getResourceAsStream(dumpPythonResource);
+            InputStream jsonize = Thread.currentThread().getContextClassLoader().getResourceAsStream(
+                    dumpPythonResource);
             jsonizeStr = _.readWholeStream(jsonize);
         } catch (Exception e) {
             _.die("Failed to open resource file:" + dumpPythonResource);

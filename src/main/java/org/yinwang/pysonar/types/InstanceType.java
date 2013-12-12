@@ -25,7 +25,7 @@ public class InstanceType extends Type {
         Type initFunc = this.getTable().lookupAttrType("__init__");
         if (initFunc != null && initFunc.isFuncType() && initFunc.asFuncType().getFunc() != null) {
             initFunc.asFuncType().setSelfType(this);
-            Call.apply(initFunc.asFuncType(), args, null, null, null, call);
+            Call.apply(initFunc.asFuncType(), args, null, null, null, null, call);
             initFunc.asFuncType().setSelfType(null);
         }
     }

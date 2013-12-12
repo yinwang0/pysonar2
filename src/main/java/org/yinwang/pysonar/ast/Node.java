@@ -172,6 +172,11 @@ public abstract class Node implements java.io.Serializable {
         return this instanceof Name;
     }
 
+    public boolean isAssign() {
+        return this instanceof Assign;
+    }
+
+
 
     public boolean isGlobal() {
         return this instanceof Global;
@@ -222,6 +227,11 @@ public abstract class Node implements java.io.Serializable {
     @NotNull
     public Name asName() {
         return (Name) this;
+    }
+
+    @NotNull
+    public Assign asAssign() {
+        return (Assign) this;
     }
 
 

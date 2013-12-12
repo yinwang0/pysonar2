@@ -82,7 +82,7 @@ public class Subscript extends Node {
                     addError("The type can't be sliced: " + vt);
                     return Analyzer.self.builtins.unknown;
                 } else if (sliceFunc.isFuncType()) {
-                    return Call.apply(sliceFunc.asFuncType(), null, null, null, null, this);
+                    return Call.apply(sliceFunc.asFuncType(), null, null, null, null, null, this);
                 } else {
                     addError("The type's __getslice__ method is not a function: " + sliceFunc);
                     return Analyzer.self.builtins.unknown;

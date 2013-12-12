@@ -20,6 +20,7 @@ public class Call extends Node {
     public List<Keyword> keywords;
     public Node kwargs;
     public Node starargs;
+    public Node blockarg = null;
 
 
     public Call(Node func, List<Node> args, @Nullable List<Keyword> keywords,
@@ -57,17 +58,18 @@ public class Call extends Node {
 
         Type kw = kwargs == null ? null : resolveExpr(kwargs, s);
         Type star = starargs == null ? null : resolveExpr(starargs, s);
+        Type block = blockarg == null ? null : resolveExpr(blockarg, s);
 
         if (fun.isUnionType()) {
             Set<Type> types = fun.asUnionType().getTypes();
             Type retType = Analyzer.self.builtins.unknown;
             for (Type ft : types) {
-                Type t = resolveCall(ft, pos, hash, kw, star);
+                Type t = resolveCall(ft, pos, hash, kw, star, block);
                 retType = UnionType.union(retType, t);
             }
             return retType;
         } else {
-            return resolveCall(fun, pos, hash, kw, star);
+            return resolveCall(fun, pos, hash, kw, star, block);
         }
     }
 
@@ -77,11 +79,12 @@ public class Call extends Node {
                              List<Type> pos,
                              Map<String, Type> hash,
                              Type kw,
-                             Type star)
+                             Type star,
+                             Type block)
     {
         if (fun.isFuncType()) {
             FunType ft = fun.asFuncType();
-            return apply(ft, pos, hash, kw, star, this);
+            return apply(ft, pos, hash, kw, star, block, this);
         } else if (fun.isClassType()) {
             return new InstanceType(fun, this, pos);
         } else {
@@ -97,6 +100,7 @@ public class Call extends Node {
                              Map<String, Type> hash,
                              Type kw,
                              Type star,
+                             Type block,
                              @Nullable Node call)
     {
         Analyzer.self.removeUncalled(func);
@@ -140,9 +144,9 @@ public class Call extends Node {
             funcTable.setPath(func.func.name.id);
         }
 
-        Type fromType = bindParams(call, funcTable, func.func.args,
+        Type fromType = bindParams(call, func.func, funcTable, func.func.args,
                 func.func.vararg, func.func.kwarg,
-                pTypes, func.defaultTypes, hash, kw, star);
+                pTypes, func.defaultTypes, hash, kw, star, block);
 
         Type cachedTo = func.getMapping(fromType);
         if (cachedTo != null) {
@@ -167,6 +171,7 @@ public class Call extends Node {
 
     @NotNull
     static private Type bindParams(@Nullable Node call,
+                                   @NotNull FunctionDef func,
                                    @NotNull Scope funcTable,
                                    @Nullable List<Node> args,
                                    @Nullable Name rest,
@@ -175,7 +180,8 @@ public class Call extends Node {
                                    @Nullable List<Type> dTypes,
                                    @Nullable Map<String, Type> hash,
                                    @Nullable Type kw,
-                                   @Nullable Type star)
+                                   @Nullable Type star,
+                                   @Nullable Type block)
     {
         TupleType fromType = new TupleType();
         int pSize = args == null ? 0 : args.size();
@@ -234,14 +240,31 @@ public class Call extends Node {
 
         if (rest != null) {
             if (pTypes.size() > pSize) {
-                Type restType = new TupleType(pTypes.subList(pSize, pTypes.size()));
-                Binder.bind(funcTable, rest, restType, Binding.Kind.PARAMETER);
+                if (func.afterRest != null) {
+                    int nAfter = func.afterRest.size();
+                    for (int i = 0; i < nAfter; i++) {
+                        Binder.bind(funcTable, func.afterRest.get(i),
+                                pTypes.get(pTypes.size() - nAfter + i),
+                                Binding.Kind.PARAMETER);
+                    }
+                    if (pTypes.size() - nAfter > 0) {
+                        Type restType = new TupleType(pTypes.subList(pSize, pTypes.size() - nAfter));
+                        Binder.bind(funcTable, rest, restType, Binding.Kind.PARAMETER);
+                    }
+                } else {
+                    Type restType = new TupleType(pTypes.subList(pSize, pTypes.size()));
+                    Binder.bind(funcTable, rest, restType, Binding.Kind.PARAMETER);
+                }
             } else {
                 Binder.bind(funcTable,
                         rest,
                         Analyzer.self.builtins.unknown,
                         Binding.Kind.PARAMETER);
             }
+        }
+
+        if (block != null || func.blockarg != null) {
+            Binder.bind(funcTable, func.blockarg, block, Binding.Kind.PARAMETER);
         }
 
         return fromType;

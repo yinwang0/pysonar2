@@ -148,7 +148,13 @@ class SexpSimplifier
       }
     elsif exp[0] == :do_block
       {
-          :type => :do_block,
+          :type => :funblock,
+          :params => convert(exp[1]),
+          :body => convert(exp[2])
+      }
+    elsif exp[0] == :brace_block
+      {
+          :type => :funblock,
           :params => convert(exp[1]),
           :body => convert(exp[2])
       }
@@ -158,7 +164,9 @@ class SexpSimplifier
         ret[:positional] = convert_array(exp[1])
       end
       if exp[2]
-        ret[:keyword] = exp[2].map { |x| make_keyword(x) }
+        # ret[:keyword] = exp[2].map { |x| make_keyword(x) }
+        exp[2].each { |x| ret[:positional].push(convert(x[0])) }
+        ret[:defaults] = exp[2].map { |x| convert(x[1])}
       end
       if exp[3]
         ret[:rest] = convert(exp[3])

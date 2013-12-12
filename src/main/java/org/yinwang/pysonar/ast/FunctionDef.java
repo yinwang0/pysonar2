@@ -21,6 +21,8 @@ public class FunctionDef extends Node {
     public List<Type> defaultTypes;
     public Name vararg;  // *args
     public Name kwarg;   // **kwarg
+    public Name blockarg = null;   // block arg of Ruby
+    public List<Node> afterRest = null;   // after rest arg of Ruby
     public Node body;
     private List<Node> decoratorList;
     public boolean called = false;
