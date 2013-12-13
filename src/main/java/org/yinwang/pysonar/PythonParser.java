@@ -16,19 +16,20 @@ import java.util.Map;
 
 
 public class PythonParser extends Parser {
+
+    private static final String PYTHON2_EXE = "python";
+    private static final String PYTHON3_EXE = "python3";
+    private static final int TIMEOUT = 5000;
+
     @Nullable
     Process python2Process;
     @Nullable
     Process python3Process;
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private static final String PYTHON2_EXE = "python";
-    private static final String PYTHON3_EXE = "python3";
     private static final String dumpPythonResource = "org/yinwang/pysonar/python/dump_python.py";
     private String exchangeFile;
     private String endMark;
-    private String pyStub;
-
-    private static final int TIMEOUT = 5000;
+    private String jsonizer;
 
 
     public PythonParser() {
@@ -37,7 +38,7 @@ public class PythonParser extends Parser {
 
         exchangeFile = _.makePathString(tmpDir, "pysonar2", "json." + sid);
         endMark = _.makePathString(tmpDir, "pysonar2", "end." + sid);
-        pyStub = _.makePathString(tmpDir, "pysonar2", "dump_python." + sid);
+        jsonizer = _.makePathString(tmpDir, "pysonar2", "dump_python." + sid);
 
         startPythonProcesses();
 
@@ -60,8 +61,8 @@ public class PythonParser extends Parser {
             python3Process.destroy();
         }
 
-        python2Process = startPython(PYTHON2_EXE);
-        python3Process = startPython(PYTHON3_EXE);
+        python2Process = startInterpreter(PYTHON2_EXE);
+        python3Process = startInterpreter(PYTHON3_EXE);
 
         if (python2Process == null && python3Process == null) {
             _.die("You don't seem to have either of Python or Python3 on PATH");
@@ -70,179 +71,14 @@ public class PythonParser extends Parser {
 
 
     public void close() {
-        new File(pyStub).delete();
+        new File(jsonizer).delete();
         new File(exchangeFile).delete();
         new File(endMark).delete();
     }
 
 
-    public Map<String, Object> deserialize(String text) {
-        return gson.fromJson(text, Map.class);
-    }
-
-
     @Nullable
-    private Block convertBlock(@Nullable Object o) {
-        if (o == null) {
-            return null;
-        } else {
-            return new Block(convertList(o), 0, 0);
-        }
-    }
-
-
-    @Nullable
-    private List<Node> convertList(@Nullable Object o) {
-        if (o == null) {
-            return null;
-        } else {
-            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
-            List<Node> out = new ArrayList<Node>();
-
-            for (Map<String, Object> m : in) {
-                Node n = deJson(m);
-                if (n != null) {
-                    out.add(n);
-                }
-            }
-
-            return out;
-        }
-    }
-
-
-    @Nullable
-    private List<Op> convertListOp(@Nullable Object o) {
-        if (o == null) {
-            return null;
-        } else {
-            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
-            List<Op> out = new ArrayList<>();
-
-            for (Map<String, Object> m : in) {
-                Op n = convertOp(m);
-                if (n != null) {
-                    out.add(n);
-                }
-            }
-
-            return out;
-        }
-    }
-
-
-    @Nullable
-    private List<Keyword> convertListKeyword(@Nullable Object o) {
-        if (o == null) {
-            return null;
-        } else {
-            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
-            List<Keyword> out = new ArrayList<Keyword>();
-
-            for (Map<String, Object> m : in) {
-                Node n = deJson(m);
-                if (n != null) {
-                    out.add((Keyword) n);
-                }
-            }
-
-            return out;
-        }
-    }
-
-
-    @Nullable
-    private <T> List<T> convertList2(@Nullable Object o) {
-        if (o == null) {
-            return null;
-        } else {
-            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
-            List<T> out = new ArrayList<>();
-
-            for (Map<String, Object> m : in) {
-                Node n = deJson(m);
-                if (n != null) {
-                    out.add((T) n);
-                }
-            }
-
-            return out;
-        }
-    }
-
-
-    @Nullable
-    private List<Alias> convertListAlias(@Nullable Object o) {
-        if (o == null) {
-            return null;
-        } else {
-            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
-            List<Alias> out = new ArrayList<Alias>();
-
-            for (Map<String, Object> m : in) {
-                Node n = deJson(m);
-                if (n != null) {
-                    out.add((Alias) n);
-                }
-            }
-
-            return out;
-        }
-    }
-
-
-    @Nullable
-    private List<Comprehension> convertListComprehension(@Nullable Object o) {
-        if (o == null) {
-            return null;
-        } else {
-            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
-            List<Comprehension> out = new ArrayList<Comprehension>();
-
-            for (Map<String, Object> m : in) {
-                Node n = deJson(m);
-                if (n != null) {
-                    out.add((Comprehension) n);
-                }
-            }
-
-            return out;
-        }
-    }
-
-
-    @NotNull
-    List<Name> segmentQname(@NotNull String qname, int start, boolean hasLoc) {
-        List<Name> result = new ArrayList<>();
-
-        for (int i = 0; i < qname.length(); i++) {
-            String name = "";
-            while (Character.isSpaceChar(qname.charAt(i))) {
-                i++;
-            }
-            int nameStart = i;
-
-            while (i < qname.length() &&
-                    (Character.isJavaIdentifierPart(qname.charAt(i)) ||
-                            qname.charAt(i) == '*') &&
-                    qname.charAt(i) != '.')
-            {
-                name += qname.charAt(i);
-                i++;
-            }
-
-            int nameStop = i;
-            int nstart = hasLoc ? start + nameStart : -1;
-            int nstop = hasLoc ? start + nameStop : -1;
-            result.add(new Name(name, nstart, nstop));
-        }
-
-        return result;
-    }
-
-
-    @Nullable
-    public Node deJson(Object o) {
+    public Node convert(Object o) {
         if (!(o instanceof Map)) {
             return null;
         }
@@ -276,8 +112,8 @@ public class PythonParser extends Parser {
         }
 
         if (type.equals("Assert")) {
-            Node test = deJson(map.get("test"));
-            Node msg = deJson(map.get("msg"));
+            Node test = convert(map.get("test"));
+            Node msg = convert(map.get("msg"));
             return new Assert(test, msg, start, end);
         }
 
@@ -286,7 +122,7 @@ public class PythonParser extends Parser {
         // z = 1; y = z; x = z
         if (type.equals("Assign")) {
             List<Node> targets = convertList(map.get("targets"));
-            Node value = deJson(map.get("value"));
+            Node value = convert(map.get("value"));
             if (targets.size() == 1) {
                 return new Assign(targets.get(0), value, start, end);
             } else {
@@ -304,8 +140,8 @@ public class PythonParser extends Parser {
         }
 
         if (type.equals("Attribute")) {
-            Node value = deJson(map.get("value"));
-            Name attr = (Name) deJson(map.get("attr_name"));
+            Node value = convert(map.get("value"));
+            Name attr = (Name) convert(map.get("attr_name"));
             if (attr == null) {
                 attr = new Name((String) map.get("attr"));
             }
@@ -313,16 +149,16 @@ public class PythonParser extends Parser {
         }
 
         if (type.equals("AugAssign")) {
-            Node target = deJson(map.get("target"));
-            Node value = deJson(map.get("value"));
+            Node target = convert(map.get("target"));
+            Node value = convert(map.get("value"));
             Op op = convertOp(map.get("op"));
             Node operation = new BinOp(op, target, value, target.start, value.end);
             return new Assign(target, operation, start, end);
         }
 
         if (type.equals("BinOp")) {
-            Node left = deJson(map.get("left"));
-            Node right = deJson(map.get("right"));
+            Node left = convert(map.get("left"));
+            Node right = convert(map.get("right"));
             Op op = convertOp(map.get("op"));
 
             // compositional operators
@@ -382,16 +218,16 @@ public class PythonParser extends Parser {
 
 
         if (type.equals("Call")) {
-            Node func = deJson(map.get("func"));
+            Node func = convert(map.get("func"));
             List<Node> args = convertList(map.get("args"));
-            List<Keyword> keywords = convertListKeyword(map.get("keywords"));
-            Node kwargs = deJson(map.get("kwarg"));
-            Node starargs = deJson(map.get("starargs"));
+            List<Keyword> keywords = convertList(map.get("keywords"));
+            Node kwargs = convert(map.get("kwarg"));
+            Node starargs = convert(map.get("starargs"));
             return new Call(func, args, keywords, kwargs, starargs, start, end);
         }
 
         if (type.equals("ClassDef")) {
-            Name name = (Name) deJson(map.get("name_node"));      // hack
+            Name name = (Name) convert(map.get("name_node"));      // hack
             List<Node> bases = convertList(map.get("bases"));
             Block body = convertBlock(map.get("body"));
             return new ClassDef(name, bases, body, start, end);
@@ -399,7 +235,7 @@ public class PythonParser extends Parser {
 
         // left-fold Compare into
         if (type.equals("Compare")) {
-            Node left = deJson(map.get("left"));
+            Node left = convert(map.get("left"));
             List<Op> ops = convertListOp(map.get("ops"));
             List<Node> comparators = convertList(map.get("comparators"));
             Node result = new BinOp(ops.get(0), left, comparators.get(0), start, end);
@@ -411,8 +247,8 @@ public class PythonParser extends Parser {
         }
 
         if (type.equals("comprehension")) {
-            Node target = deJson(map.get("target"));
-            Node iter = deJson(map.get("iter"));
+            Node target = convert(map.get("target"));
+            Node iter = convert(map.get("iter"));
             List<Node> ifs = convertList(map.get("ifs"));
             return new Comprehension(target, iter, ifs, start, end);
         }
@@ -433,9 +269,9 @@ public class PythonParser extends Parser {
         }
 
         if (type.equals("DictComp")) {
-            Node key = deJson(map.get("key"));
-            Node value = deJson(map.get("value"));
-            List<Comprehension> generators = convertListComprehension(map.get("generators"));
+            Node key = convert(map.get("key"));
+            Node value = convert(map.get("value"));
+            List<Comprehension> generators = convertList(map.get("generators"));
             return new DictComp(key, value, generators, start, end);
         }
 
@@ -444,7 +280,7 @@ public class PythonParser extends Parser {
         }
 
         if (type.equals("ExceptHandler")) {
-            Node exception = deJson(map.get("type"));
+            Node exception = convert(map.get("type"));
             List<Node> exceptions;
 
             if (exception != null) {
@@ -454,33 +290,33 @@ public class PythonParser extends Parser {
                 exceptions = null;
             }
 
-            Node binder = deJson(map.get("name"));
+            Node binder = convert(map.get("name"));
             Block body = convertBlock(map.get("body"));
             return new Handler(exceptions, binder, body, start, end);
         }
 
         if (type.equals("Exec")) {
-            Node body = deJson(map.get("body"));
-            Node globals = deJson(map.get("globals"));
-            Node locals = deJson(map.get("locals"));
+            Node body = convert(map.get("body"));
+            Node globals = convert(map.get("globals"));
+            Node locals = convert(map.get("locals"));
             return new Exec(body, globals, locals, start, end);
         }
 
         if (type.equals("Expr")) {
-            Node value = deJson(map.get("value"));
+            Node value = convert(map.get("value"));
             return new Expr(value, start, end);
         }
 
         if (type.equals("For")) {
-            Node target = deJson(map.get("target"));
-            Node iter = deJson(map.get("iter"));
+            Node target = convert(map.get("target"));
+            Node iter = convert(map.get("iter"));
             Block body = convertBlock(map.get("body"));
             Block orelse = convertBlock(map.get("orelse"));
             return new For(target, iter, body, orelse, start, end);
         }
 
         if (type.equals("FunctionDef")) {
-            Name name = (Name) deJson(map.get("name_node"));
+            Name name = (Name) convert(map.get("name_node"));
             Map<String, Object> argsMap = (Map<String, Object>) map.get("args");
             List<Node> args = convertList(argsMap.get("args"));
             List<Node> defaults = convertList(argsMap.get("defaults"));
@@ -491,8 +327,8 @@ public class PythonParser extends Parser {
         }
 
         if (type.equals("GeneratorExp")) {
-            Node elt = deJson(map.get("elt"));
-            List<Comprehension> generators = convertListComprehension(map.get("generators"));
+            Node elt = convert(map.get("elt"));
+            List<Comprehension> generators = convertList(map.get("generators"));
             return new GeneratorExp(elt, generators, start, end);
         }
 
@@ -515,41 +351,41 @@ public class PythonParser extends Parser {
         }
 
         if (type.equals("If")) {
-            Node test = deJson(map.get("test"));
+            Node test = convert(map.get("test"));
             Block body = convertBlock(map.get("body"));
             Block orelse = convertBlock(map.get("orelse"));
             return new If(test, body, orelse, start, end);
         }
 
         if (type.equals("IfExp")) {
-            Node test = deJson(map.get("test"));
-            Node body = deJson(map.get("body"));
-            Node orelse = deJson(map.get("orelse"));
+            Node test = convert(map.get("test"));
+            Node body = convert(map.get("body"));
+            Node orelse = convert(map.get("orelse"));
             return new IfExp(test, body, orelse, start, end);
         }
 
 
         if (type.equals("Import")) {
-            List<Alias> aliases = convertListAlias(map.get("names"));
+            List<Alias> aliases = convertList(map.get("names"));
             return new Import(aliases, start, end);
         }
 
         if (type.equals("ImportFrom")) {
             String module = (String) map.get("module");
             List<Name> moduleSeg = module == null ? null : segmentQname(module, start + "from ".length(), true);
-            List<Alias> names = convertListAlias(map.get("names"));
+            List<Alias> names = convertList(map.get("names"));
             int level = ((Double) map.get("level")).intValue();
             return new ImportFrom(moduleSeg, names, level, start, end);
         }
 
         if (type.equals("Index")) {
-            Node value = deJson(map.get("value"));
+            Node value = convert(map.get("value"));
             return new Index(value, start, end);
         }
 
         if (type.equals("keyword")) {
             String arg = (String) map.get("arg");
-            Node value = deJson(map.get("value"));
+            Node value = convert(map.get("value"));
             return new Keyword(arg, value, start, end);
         }
 
@@ -557,7 +393,7 @@ public class PythonParser extends Parser {
             Map<String, Object> argsMap = (Map<String, Object>) map.get("args");
             List<Node> args = convertList(argsMap.get("args"));
             List<Node> defaults = convertList(argsMap.get("defaults"));
-            Node body = deJson(map.get("body"));
+            Node body = convert(map.get("body"));
             Name vararg = argsMap.get("vararg") == null ? null : new Name((String) argsMap.get("vararg"));
             Name kwarg = argsMap.get("kwarg") == null ? null : new Name((String) argsMap.get("kwarg"));
             return new Lambda(args, body, defaults, vararg, kwarg, start, end);
@@ -569,13 +405,13 @@ public class PythonParser extends Parser {
         }
 
         if (type.equals("Starred")) { // f(*[1, 2, 3, 4])
-            Node value = deJson(map.get("value"));
+            Node value = convert(map.get("value"));
             return new Starred(value, start, end);
         }
 
         if (type.equals("ListComp")) {
-            Node elt = deJson(map.get("elt"));
-            List<Comprehension> generators = convertListComprehension(map.get("generators"));
+            Node elt = convert(map.get("elt"));
+            List<Comprehension> generators = convertList(map.get("generators"));
             return new ListComp(elt, generators, start, end);
         }
 
@@ -596,8 +432,8 @@ public class PythonParser extends Parser {
         }
 
         if (type.equals("SetComp")) {
-            Node elt = deJson(map.get("elt"));
-            List<Comprehension> generators = convertListComprehension(map.get("generators"));
+            Node elt = convert(map.get("elt"));
+            List<Comprehension> generators = convertList(map.get("generators"));
             return new SetComp(elt, generators, start, end);
         }
 
@@ -607,24 +443,24 @@ public class PythonParser extends Parser {
 
         if (type.equals("Print")) {
             List<Node> values = convertList(map.get("values"));
-            Node destination = deJson(map.get("destination"));
+            Node destination = convert(map.get("destination"));
             return new Print(destination, values, start, end);
         }
 
         if (type.equals("Raise")) {
-            Node exceptionType = deJson(map.get("type"));
-            Node inst = deJson(map.get("inst"));
-            Node tback = deJson(map.get("tback"));
+            Node exceptionType = convert(map.get("type"));
+            Node inst = convert(map.get("inst"));
+            Node tback = convert(map.get("tback"));
             return new Raise(exceptionType, inst, tback, start, end);
         }
 
         if (type.equals("Repr")) {
-            Node value = deJson(map.get("value"));
+            Node value = convert(map.get("value"));
             return new Repr(value, start, end);
         }
 
         if (type.equals("Return")) {
-            Node value = deJson(map.get("value"));
+            Node value = convert(map.get("value"));
             return new Return(value, start, end);
         }
 
@@ -634,15 +470,15 @@ public class PythonParser extends Parser {
         }
 
         if (type.equals("SetComp")) {
-            Node elt = deJson(map.get("elt"));
-            List<Comprehension> generators = convertListComprehension(map.get("generators"));
+            Node elt = convert(map.get("elt"));
+            List<Comprehension> generators = convertList(map.get("generators"));
             return new SetComp(elt, generators, start, end);
         }
 
         if (type.equals("Slice")) {
-            Node lower = deJson(map.get("lower"));
-            Node step = deJson(map.get("step"));
-            Node upper = deJson(map.get("upper"));
+            Node lower = convert(map.get("lower"));
+            Node step = convert(map.get("step"));
+            Node upper = convert(map.get("upper"));
             return new Slice(lower, step, upper, start, end);
         }
 
@@ -657,15 +493,15 @@ public class PythonParser extends Parser {
         }
 
         if (type.equals("Subscript")) {
-            Node value = deJson(map.get("value"));
-            Node slice = deJson(map.get("slice"));
+            Node value = convert(map.get("value"));
+            Node slice = convert(map.get("slice"));
             return new Subscript(value, slice, start, end);
         }
 
         if (type.equals("Try")) {
             Block body = convertBlock(map.get("body"));
             Block orelse = convertBlock(map.get("orelse"));
-            List<Handler> handlers = convertList2(map.get("handlers"));
+            List<Handler> handlers = convertList(map.get("handlers"));
             Block finalbody = convertBlock(map.get("finalbody"));
             return new Try(handlers, body, orelse, finalbody, start, end);
         }
@@ -673,7 +509,7 @@ public class PythonParser extends Parser {
         if (type.equals("TryExcept")) {
             Block body = convertBlock(map.get("body"));
             Block orelse = convertBlock(map.get("orelse"));
-            List<Handler> handlers = convertList2(map.get("handlers"));
+            List<Handler> handlers = convertList(map.get("handlers"));
             return new Try(handlers, body, orelse, null, start, end);
         }
 
@@ -690,12 +526,12 @@ public class PythonParser extends Parser {
 
         if (type.equals("UnaryOp")) {
             Op op = convertOp(map.get("op"));
-            Node operand = deJson(map.get("operand"));
+            Node operand = convert(map.get("operand"));
             return new UnaryOp(op, operand, start, end);
         }
 
         if (type.equals("While")) {
-            Node test = deJson(map.get("test"));
+            Node test = convert(map.get("test"));
             Block body = convertBlock(map.get("body"));
             Block orelse = convertBlock(map.get("orelse"));
             return new While(test, body, orelse, start, end);
@@ -704,8 +540,8 @@ public class PythonParser extends Parser {
         if (type.equals("With")) {
             List<Withitem> items = new ArrayList<>();
 
-            Node context_expr = deJson(map.get("context_expr"));
-            Node optional_vars = deJson(map.get("optional_vars"));
+            Node context_expr = convert(map.get("context_expr"));
+            Node optional_vars = convert(map.get("optional_vars"));
             Block body = convertBlock(map.get("body"));
 
             // Python 3 puts context_expr and optional_vars inside "items"
@@ -716,8 +552,8 @@ public class PythonParser extends Parser {
                 List<Map<String, Object>> itemsMap = (List<Map<String, Object>>) map.get("items");
 
                 for (Map<String, Object> m : itemsMap) {
-                    context_expr = deJson(m.get("context_expr"));
-                    optional_vars = deJson(m.get("optional_vars"));
+                    context_expr = convert(m.get("context_expr"));
+                    optional_vars = convert(m.get("optional_vars"));
                     Withitem item = new Withitem(context_expr, optional_vars, -1, -1);
                     items.add(item);
                 }
@@ -727,18 +563,88 @@ public class PythonParser extends Parser {
         }
 
         if (type.equals("Yield")) {
-            Node value = deJson(map.get("value"));
+            Node value = convert(map.get("value"));
             return new Yield(value, start, end);
         }
 
         if (type.equals("YieldFrom")) {
-            Node value = deJson(map.get("value"));
+            Node value = convert(map.get("value"));
             return new Yield(value, start, end);
         }
 
         _.die("[Please report bug]: unexpected ast node: " + map.get("type"));
 
         return null;
+    }
+
+
+    @Nullable
+    private <T> List<T> convertList(@Nullable Object o) {
+        if (o == null) {
+            return null;
+        } else {
+            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
+            List<T> out = new ArrayList<>();
+
+            for (Map<String, Object> m : in) {
+                Node n = convert(m);
+                if (n != null) {
+                    out.add((T) n);
+                }
+            }
+
+            return out;
+        }
+    }
+
+
+    @Nullable
+    private List<Node> convertListNode(@Nullable Object o) {
+        if (o == null) {
+            return null;
+        } else {
+            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
+            List<Node> out = new ArrayList<>();
+
+            for (Map<String, Object> m : in) {
+                Node n = convert(m);
+                if (n != null) {
+                    out.add(n);
+                }
+            }
+
+            return out;
+        }
+    }
+
+
+    @Nullable
+    private Block convertBlock(@Nullable Object o) {
+        if (o == null) {
+            return null;
+        } else {
+            return new Block(convertListNode(o), 0, 0);
+        }
+    }
+
+
+    @Nullable
+    private List<Op> convertListOp(@Nullable Object o) {
+        if (o == null) {
+            return null;
+        } else {
+            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
+            List<Op> out = new ArrayList<>();
+
+            for (Map<String, Object> m : in) {
+                Op n = convertOp(m);
+                if (n != null) {
+                    out.add(n);
+                }
+            }
+
+            return out;
+        }
     }
 
 
@@ -857,6 +763,36 @@ public class PythonParser extends Parser {
     }
 
 
+    @NotNull
+    List<Name> segmentQname(@NotNull String qname, int start, boolean hasLoc) {
+        List<Name> result = new ArrayList<>();
+
+        for (int i = 0; i < qname.length(); i++) {
+            String name = "";
+            while (Character.isSpaceChar(qname.charAt(i))) {
+                i++;
+            }
+            int nameStart = i;
+
+            while (i < qname.length() &&
+                    (Character.isJavaIdentifierPart(qname.charAt(i)) ||
+                            qname.charAt(i) == '*') &&
+                    qname.charAt(i) != '.')
+            {
+                name += qname.charAt(i);
+                i++;
+            }
+
+            int nameStop = i;
+            int nstart = hasLoc ? start + nameStart : -1;
+            int nstop = hasLoc ? start + nameStop : -1;
+            result.add(new Name(name, nstart, nstop));
+        }
+
+        return result;
+    }
+
+
     public String prettyJson(String json) {
         Map<String, Object> obj = gson.fromJson(json, Map.class);
         return gson.toJson(obj);
@@ -864,7 +800,7 @@ public class PythonParser extends Parser {
 
 
     @Nullable
-    public Process startPython(String pythonExe) {
+    public Process startInterpreter(String pythonExe) {
         String jsonizeStr;
         Process p;
 
@@ -878,16 +814,16 @@ public class PythonParser extends Parser {
         }
 
         try {
-            FileWriter fw = new FileWriter(pyStub);
+            FileWriter fw = new FileWriter(jsonizer);
             fw.write(jsonizeStr);
             fw.close();
         } catch (Exception e) {
-            _.die("Failed to write into: " + pyStub);
+            _.die("Failed to write into: " + jsonizer);
             return null;
         }
 
         try {
-            ProcessBuilder builder = new ProcessBuilder(pythonExe, "-i", pyStub);
+            ProcessBuilder builder = new ProcessBuilder(pythonExe, "-i", jsonizer);
             builder.redirectErrorStream(true);
             builder.environment().remove("PYTHONPATH");
             p = builder.start();
@@ -915,20 +851,6 @@ public class PythonParser extends Parser {
         } else {
             Analyzer.self.failedToParse.add(filename);
             return null;
-        }
-    }
-
-
-    private boolean sendCommand(String cmd, @NotNull Process pythonProcess) {
-        try {
-            OutputStreamWriter writer = new OutputStreamWriter(pythonProcess.getOutputStream());
-            writer.write(cmd);
-            writer.write("\n");
-            writer.flush();
-            return true;
-        } catch (Exception e) {
-            _.msg("\nFailed to send command to Ruby interpreter: " + cmd);
-            return false;
         }
     }
 
@@ -984,8 +906,22 @@ public class PythonParser extends Parser {
         exchange.delete();
         marker.delete();
 
-        Map<String, Object> map = deserialize(json);
-        return deJson(map);
+        Map<String, Object> map = gson.fromJson(json, Map.class);
+        return convert(map);
+    }
+
+
+    private boolean sendCommand(String cmd, @NotNull Process pythonProcess) {
+        try {
+            OutputStreamWriter writer = new OutputStreamWriter(pythonProcess.getOutputStream());
+            writer.write(cmd);
+            writer.write("\n");
+            writer.flush();
+            return true;
+        } catch (Exception e) {
+            _.msg("\nFailed to send command to Ruby interpreter: " + cmd);
+            return false;
+        }
     }
 
 }

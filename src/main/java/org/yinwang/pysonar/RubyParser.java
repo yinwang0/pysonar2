@@ -16,16 +16,17 @@ import java.util.Map;
 
 
 public class RubyParser extends Parser {
+
+    private static final String RUBY_EXE = "irb";
+    private static final int TIMEOUT = 5000;
+
     @Nullable
     Process rubyProcess;
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private static final String RUBY_EXE = "irb";
     private static final String dumpPythonResource = "org/yinwang/pysonar/ruby/dump_ruby.rb";
     private String exchangeFile;
     private String endMark;
-    private String rbStub;
-
-    private static final int TIMEOUT = 5000;
+    private String jsonizer;
 
 
     public RubyParser() {
@@ -34,7 +35,7 @@ public class RubyParser extends Parser {
 
         exchangeFile = _.makePathString(tmpDir, "pysonar2", "json." + sid);
         endMark = _.makePathString(tmpDir, "pysonar2", "end." + sid);
-        rbStub = _.makePathString(tmpDir, "pysonar2", "dump_ruby." + sid);
+        jsonizer = _.makePathString(tmpDir, "pysonar2", "dump_ruby." + sid);
 
         startRubyProcesses();
 
@@ -59,40 +60,15 @@ public class RubyParser extends Parser {
 
 
     public void close() {
-        new File(rbStub).delete();
+        new File(jsonizer).delete();
         new File(exchangeFile).delete();
         new File(endMark).delete();
     }
 
 
-    public Map<String, Object> deserialize(String text) {
-        return gson.fromJson(text, Map.class);
-    }
-
-
     @Nullable
-    private List<Node> convertList(@Nullable Object o) {
-        if (o == null) {
-            return null;
-        } else {
-            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
-            List<Node> out = new ArrayList<>();
-
-            for (Map<String, Object> m : in) {
-                Node n = deJson(m);
-                if (n != null) {
-                    out.add(n);
-                }
-            }
-
-            return out;
-        }
-    }
-
-
-    @Nullable
-    public Node deJson(Object o) {
-        if (!(o instanceof Map)) {
+    public Node convert(Object o) {
+        if (!(o instanceof Map) || ((Map) o).isEmpty()) {
             return null;
         }
 
@@ -106,15 +82,97 @@ public class RubyParser extends Parser {
         int end = endDouble == null ? 1 : endDouble.intValue();
 
 
+        if (type.equals("program")) {
+            Block b = (Block) convert(map.get("body"));
+            String file = (String) map.get("filename");
+            if (file != null) {
+                b.setFile(_.unifyPath(file));
+            } else {
+                _.die("program should contain a filename field, please check the parser");
+            }
+
+            return b;
+        }
+
+        if (type.equals("module")) {
+            Block b = (Block) convert(map.get("body"));
+            Module m = new Module(b, start, end);
+            try {
+                m.setFile(_.unifyPath((String) map.get("filename")));
+            } catch (Exception e) {
+
+            }
+            return m;
+        }
+
+        if (type.equals("block")) {
+            List<Node> stmts = convertList(map.get("stmts"));
+            return new Block(stmts, start, end);
+        }
+
+        if (type.equals("def")) {
+            Name name = (Name) convert(map.get("name"));
+            Block body = (Block) convert(map.get("body"));
+            Map<String, Object> argsMap = (Map<String, Object>) map.get("params");
+            List<Node> positional = convertList(argsMap.get("positional"));
+            List<Node> defaults = convertList(argsMap.get("defaults"));
+            Name var = (Name) convert(argsMap.get("rest"));
+            Name vararg = var == null ? null : var;
+            FunctionDef ret = new FunctionDef(name, positional, body, defaults, vararg, null, start, end);
+            ret.afterRest = convertList(argsMap.get("after_rest"));
+            ret.blockarg = (Name) convert(argsMap.get("block"));
+            return ret;
+        }
+
+        if (type.equals("funblock")) {
+            Block body = (Block) convert(map.get("body"));
+            Map<String, Object> argsMap = (Map<String, Object>) map.get("params");
+            List<Node> positional = convertList(argsMap.get("positional"));
+            List<Node> defaults = convertList(argsMap.get("defaults"));
+            Name var = (Name) convert(argsMap.get("rest"));
+            Name vararg = var == null ? null : var;
+            FunctionDef ret = new Lambda(positional, body, defaults, vararg, null, start, end);
+            ret.afterRest = convertList(argsMap.get("after_rest"));
+            ret.blockarg = (Name) convert(argsMap.get("block"));
+            return ret;
+        }
+
+        if (type.equals("call")) {
+            Node func = convert(map.get("func"));
+            Map<String, Object> args = (Map<String, Object>) map.get("args");
+            List<Node> posKey = convertList(args.get("positional"));
+            List<Node> pos = new ArrayList<>();
+            List<Keyword> kws = new ArrayList<>();
+            for (Node node : posKey) {
+                if (node.isAssign()) {
+                    kws.add(new Keyword(node.asAssign().target.asName().id,
+                            node.asAssign().value,
+                            node.start,
+                            node.end));
+                } else {
+                    pos.add(node);
+                }
+
+            }
+
+            Call ret = new Call(func, pos, kws, null, null, start, end);
+
+            Node blockarg = convert(map.get("block_arg"));
+            if (blockarg != null) {
+                ret.blockarg = blockarg;
+            }
+            return ret;
+        }
+
         if (type.equals("attribute")) {
-            Node value = deJson(map.get("value"));
-            Name attr = (Name) deJson(map.get("attr"));
+            Node value = convert(map.get("value"));
+            Name attr = (Name) convert(map.get("attr"));
             return new Attribute(value, attr, start, end);
         }
 
         if (type.equals("binary")) {
-            Node left = deJson(map.get("left"));
-            Node right = deJson(map.get("right"));
+            Node left = convert(map.get("left"));
+            Node right = convert(map.get("right"));
             Op op = convertOp(map.get("op"));
 
             // compositional operators
@@ -160,13 +218,13 @@ public class RubyParser extends Parser {
         }
 
         if (type.equals("class")) {
-            Name name = (Name) deJson(map.get("name"));
-            Node base = deJson(map.get("super"));
+            Name name = (Name) convert(map.get("name"));
+            Node base = convert(map.get("super"));
             List<Node> bases = new ArrayList<>();
             if (base != null) {
                 bases.add(base);
             }
-            Block body = (Block) deJson(map.get("body"));
+            Block body = (Block) convert(map.get("body"));
             return new ClassDef(name, bases, body, start, end);
         }
 
@@ -187,33 +245,33 @@ public class RubyParser extends Parser {
 
         if (type.equals("rescue")) {
             List<Node> exceptions = convertList(map.get("exceptions"));
-            Node binder = deJson(map.get("binder"));
-            Block body = (Block) deJson(map.get("body"));
+            Node binder = convert(map.get("binder"));
+            Block body = (Block) convert(map.get("body"));
             return new Handler(exceptions, binder, body, start, end);
         }
 
         if (type.equals("for")) {
-            Node target = deJson(map.get("target"));
-            Node iter = deJson(map.get("iter"));
-            Block body = (Block) deJson(map.get("body"));
+            Node target = convert(map.get("target"));
+            Node iter = convert(map.get("iter"));
+            Block body = (Block) convert(map.get("body"));
             return new For(target, iter, body, null, start, end);
         }
 
         if (type.equals("if")) {
-            Node test = deJson(map.get("test"));
-            Block body = (Block) deJson(map.get("body"));
-            Block orelse = (Block) deJson(map.get("else"));
+            Node test = convert(map.get("test"));
+            Block body = (Block) convert(map.get("body"));
+            Block orelse = (Block) convert(map.get("else"));
             return new If(test, body, orelse, start, end);
         }
 
         if (type.equals("Index")) {
-            Node value = deJson(map.get("value"));
+            Node value = convert(map.get("value"));
             return new Index(value, start, end);
         }
 
         if (type.equals("keyword")) {
             String arg = (String) map.get("arg");
-            Node value = deJson(map.get("value"));
+            Node value = convert(map.get("value"));
             return new Keyword(arg, value, start, end);
         }
 
@@ -223,7 +281,7 @@ public class RubyParser extends Parser {
         }
 
         if (type.equals("star")) { // f(*[1, 2, 3, 4])
-            Node value = deJson(map.get("value"));
+            Node value = convert(map.get("value"));
             return new Starred(value, start, end);
         }
 
@@ -234,14 +292,14 @@ public class RubyParser extends Parser {
         }
 
         if (type.equals("return")) {
-            Node value = deJson(map.get("value"));
+            Node value = convert(map.get("value"));
             return new Return(value, start, end);
         }
 
         if (type.equals("Slice")) {
-            Node lower = deJson(map.get("lower"));
-            Node step = deJson(map.get("step"));
-            Node upper = deJson(map.get("upper"));
+            Node lower = convert(map.get("lower"));
+            Node step = convert(map.get("step"));
+            Node upper = convert(map.get("upper"));
             return new Slice(lower, step, upper, start, end);
         }
 
@@ -251,15 +309,15 @@ public class RubyParser extends Parser {
         }
 
         if (type.equals("Subscript")) {
-            Node value = deJson(map.get("value"));
-            Node slice = deJson(map.get("slice"));
+            Node value = convert(map.get("value"));
+            Node slice = convert(map.get("slice"));
             return new Subscript(value, slice, start, end);
         }
 
         if (type.equals("begin")) {
-            Block body = (Block) deJson(map.get("body"));
-            Block orelse = (Block) deJson(map.get("else"));
-            Block finalbody = (Block) deJson(map.get("ensure"));
+            Block body = (Block) convert(map.get("body"));
+            Block orelse = (Block) convert(map.get("else"));
+            Block finalbody = (Block) convert(map.get("ensure"));
             return new Try(null, body, orelse, finalbody, start, end);
         }
 
@@ -270,106 +328,24 @@ public class RubyParser extends Parser {
 
         if (type.equals("unary")) {
             Op op = convertOp(map.get("op"));
-            Node operand = deJson(map.get("operand"));
+            Node operand = convert(map.get("operand"));
             return new UnaryOp(op, operand, start, end);
         }
 
         if (type.equals("while")) {
-            Node test = deJson(map.get("test"));
-            Block body = (Block) deJson(map.get("body"));
+            Node test = convert(map.get("test"));
+            Block body = (Block) convert(map.get("body"));
             return new While(test, body, null, start, end);
         }
 
         if (type.equals("yield")) {
-            Node value = deJson(map.get("value"));
+            Node value = convert(map.get("value"));
             return new Yield(value, start, end);
         }
 
-        if (type.equals("program")) {
-            Block b = (Block) deJson(map.get("body"));
-            String file = (String) map.get("filename");
-            if (file != null) {
-                b.setFile(_.unifyPath(file));
-            } else {
-                _.die("program should contain a filename field, please check the parser");
-            }
-
-            return b;
-        }
-
-        if (type.equals("module")) {
-            Block b = (Block) deJson(map.get("body"));
-            Module m = new Module(b, start, end);
-            try {
-                m.setFile(_.unifyPath((String) map.get("filename")));
-            } catch (Exception e) {
-
-            }
-            return m;
-        }
-
-        if (type.equals("block")) {
-            List<Node> stmts = convertList(map.get("stmts"));
-            return new Block(stmts, start, end);
-        }
-
-        if (type.equals("def")) {
-            Name name = (Name) deJson(map.get("name"));
-            Block body = (Block) deJson(map.get("body"));
-            Map<String, Object> argsMap = (Map<String, Object>) map.get("params");
-            List<Node> positional = convertList(argsMap.get("positional"));
-            List<Node> defaults = convertList(argsMap.get("defaults"));
-            Name var = (Name) deJson(argsMap.get("rest"));
-            Name vararg = var == null ? null : var;
-            FunctionDef ret = new FunctionDef(name, positional, body, defaults, vararg, null, start, end);
-            ret.afterRest = convertList(argsMap.get("after_rest"));
-            ret.blockarg = (Name) deJson(argsMap.get("block"));
-            return ret;
-        }
-
-        if (type.equals("funblock")) {
-            Block body = (Block) deJson(map.get("body"));
-            Map<String, Object> argsMap = (Map<String, Object>) map.get("params");
-            List<Node> positional = convertList(argsMap.get("positional"));
-            List<Node> defaults = convertList(argsMap.get("defaults"));
-            Name var = (Name) deJson(argsMap.get("rest"));
-            Name vararg = var == null ? null : var;
-            FunctionDef ret = new Lambda(positional, body, defaults, vararg, null, start, end);
-            ret.afterRest = convertList(argsMap.get("after_rest"));
-            ret.blockarg = (Name) deJson(argsMap.get("block"));
-            return ret;
-        }
-
-        if (type.equals("call")) {
-            Node func = deJson(map.get("func"));
-            Map<String, Object> args = (Map<String, Object>) map.get("args");
-            List<Node> posKey = convertList(args.get("positional"));
-            List<Node> pos = new ArrayList<>();
-            List<Keyword> kws = new ArrayList<>();
-            for (Node node : posKey) {
-                if (node.isAssign()) {
-                    kws.add(new Keyword(node.asAssign().target.asName().id,
-                            node.asAssign().value,
-                            node.start,
-                            node.end));
-                } else {
-                    pos.add(node);
-                }
-
-            }
-
-            Call ret = new Call(func, pos, kws, null, null, start, end);
-
-            Node blockarg = deJson(map.get("block_arg"));
-            if (blockarg != null) {
-                ret.blockarg = blockarg;
-            }
-            return ret;
-        }
-
         if (type.equals("assign")) {
-            Node target = deJson(map.get("target"));
-            Node value = deJson(map.get("value"));
+            Node target = convert(map.get("target"));
+            Node value = convert(map.get("value"));
             return new Assign(target, value, start, end);
         }
 
@@ -386,6 +362,26 @@ public class RubyParser extends Parser {
         _.die("[Please report bug]: unexpected ast node: " + map.get("type"));
 
         return null;
+    }
+
+
+    @Nullable
+    private <T> List<T> convertList(@Nullable Object o) {
+        if (o == null) {
+            return null;
+        } else {
+            List<Map<String, Object>> in = (List<Map<String, Object>>) o;
+            List<T> out = new ArrayList<>();
+
+            for (Map<String, Object> m : in) {
+                Node n = convert(m);
+                if (n != null) {
+                    out.add((T) n);
+                }
+            }
+
+            return out;
+        }
     }
 
 
@@ -525,11 +521,11 @@ public class RubyParser extends Parser {
         }
 
         try {
-            FileWriter fw = new FileWriter(rbStub);
+            FileWriter fw = new FileWriter(jsonizer);
             fw.write(jsonizeStr);
             fw.close();
         } catch (Exception e) {
-            _.die("Failed to write into: " + rbStub);
+            _.die("Failed to write into: " + jsonizer);
             return null;
         }
 
@@ -543,8 +539,8 @@ public class RubyParser extends Parser {
             return null;
         }
 
-        if (!sendCommand("load '" + rbStub + "'", p)) {
-            _.die("Failed to load rbStub, please report bug");
+        if (!sendCommand("load '" + jsonizer + "'", p)) {
+            _.die("Failed to load jsonizer, please report bug");
             p.destroy();
             return null;
         }
@@ -559,23 +555,8 @@ public class RubyParser extends Parser {
         if (node != null) {
             return node;
         } else {
-//            Analyzer.self.failedToParse.add(filename);
+            Analyzer.self.failedToParse.add(filename);
             return null;
-        }
-    }
-
-
-    private boolean sendCommand(String cmd, @NotNull Process rubyProcess) {
-        _.msg("sending cmd: " + cmd);
-        try {
-            OutputStreamWriter writer = new OutputStreamWriter(rubyProcess.getOutputStream());
-            writer.write(cmd);
-            writer.write("\n");
-            writer.flush();
-            return true;
-        } catch (Exception e) {
-            _.msg("\nFailed to send command to Ruby interpreter: " + cmd);
-            return false;
         }
     }
 
@@ -631,8 +612,23 @@ public class RubyParser extends Parser {
         exchange.delete();
         marker.delete();
 
-        Map<String, Object> map = deserialize(json);
-        return deJson(map);
+        Map<String, Object> map = gson.fromJson(json, Map.class);
+        return convert(map);
+    }
+
+
+    private boolean sendCommand(String cmd, @NotNull Process rubyProcess) {
+        _.msg("sending cmd: " + cmd);
+        try {
+            OutputStreamWriter writer = new OutputStreamWriter(rubyProcess.getOutputStream());
+            writer.write(cmd);
+            writer.write("\n");
+            writer.flush();
+            return true;
+        } catch (Exception e) {
+            _.msg("\nFailed to send command to Ruby interpreter: " + cmd);
+            return false;
+        }
     }
 
 
