@@ -69,27 +69,41 @@ def detect_encoding(path):
 #                   improvements to the AST
 #-------------------------------------------------------------
 def improve_ast(node, s):
-    idxmap = build_index_map(s)
-    improve_node(node, s, idxmap)
+    build_index_map(s)
+    improve_node(node, s)
 
 
-def improve_node(node, s, idxmap):
+# build global table 'idxmap' for lineno <-> index oonversion
+def build_index_map(s):
+    global idxmap
+    line = 0
+    col = 0
+    idx = 0
+    idxmap = [0]
+    while idx < len(s):
+        if s[idx] == '\n':
+            idxmap.append(idx + 1)
+            line += 1
+        idx += 1
+
+
+def improve_node(node, s):
 
     if isinstance(node, list):
         for n in node:
-            improve_node(n, s, idxmap)
+            improve_node(n, s)
 
     elif isinstance(node, AST):
 
-        find_start(node, s, idxmap)
-        find_end(node, s, idxmap)
-        add_missing_names(node, s, idxmap)
+        find_start(node, s)
+        find_end(node, s)
+        add_missing_names(node, s)
 
         for f in node_fields(node):
-            improve_node(f, s, idxmap)
+            improve_node(f, s)
 
 
-def find_start(node, s, idxmap):
+def find_start(node, s):
     ret = None    # default value
 
     if hasattr(node, 'start'):
@@ -97,24 +111,24 @@ def find_start(node, s, idxmap):
 
     elif isinstance(node, list):
         if node != []:
-            ret = find_start(node[0], s, idxmap)
+            ret = find_start(node[0], s)
 
     elif isinstance(node, Module):
         if node.body != []:
-            ret = find_start(node.body[0], s, idxmap)
+            ret = find_start(node.body[0], s)
 
     elif isinstance(node, BinOp):
-        leftstart = find_start(node.left, s, idxmap)
+        leftstart = find_start(node.left, s)
         if leftstart != None:
             ret = leftstart
         else:
-            ret = map_idx(idxmap, node.lineno, node.col_offset)
+            ret = map_idx(node.lineno, node.col_offset)
 
     elif hasattr(node, 'lineno'):
         if node.col_offset >= 0:
-            ret = map_idx(idxmap, node.lineno, node.col_offset)
+            ret = map_idx(node.lineno, node.col_offset)
         else:                           # special case for """ strings
-            i = map_idx(idxmap, node.lineno, node.col_offset)
+            i = map_idx(node.lineno, node.col_offset)
             while i > 0 and i+2 < len(s) and s[i:i+3] != '"""':
                 i -= 1
             ret = i
@@ -130,7 +144,7 @@ def find_start(node, s, idxmap):
     return ret
 
 
-def find_end(node, s, idxmap):
+def find_end(node, s):
 
     the_end = None
 
@@ -139,17 +153,17 @@ def find_end(node, s, idxmap):
 
     elif isinstance(node, list):
         if node != []:
-            the_end = find_end(node[-1], s, idxmap)
+            the_end = find_end(node[-1], s)
 
     elif isinstance(node, Module):
         if node.body != []:
-            the_end = find_end(node.body[-1], s, idxmap)
+            the_end = find_end(node.body[-1], s)
 
     elif isinstance(node, Expr):
-        the_end = find_end(node.value, s, idxmap)
+        the_end = find_end(node.value, s)
 
     elif isinstance(node, Str):
-        i = find_start(node, s, idxmap)
+        i = find_start(node, s)
         while s[i] != '"' and s[i] != "'":
             i += 1
 
@@ -170,110 +184,110 @@ def find_end(node, s, idxmap):
             the_end = end_seq(s, q, i)
 
     elif isinstance(node, Name):
-        the_end = find_start(node, s, idxmap) + len(node.id)
+        the_end = find_start(node, s) + len(node.id)
 
     elif isinstance(node, Attribute):
-        the_end = end_seq(s, node.attr, find_end(node.value, s, idxmap))
+        the_end = end_seq(s, node.attr, find_end(node.value, s))
 
     elif isinstance(node, FunctionDef):
-        the_end = find_end(node.body, s, idxmap)
+        the_end = find_end(node.body, s)
 
     elif isinstance(node, Lambda):
-        the_end = find_end(node.body, s, idxmap)
+        the_end = find_end(node.body, s)
 
     elif isinstance(node, ClassDef):
-        the_end = find_end(node.body, s, idxmap)
+        the_end = find_end(node.body, s)
 
     # print will be a Call in Python 3
     elif not is_python3 and isinstance(node, Print):
-        the_end = start_seq(s, '\n', find_start(node, s, idxmap))
+        the_end = start_seq(s, '\n', find_start(node, s))
 
     elif isinstance(node, Call):
-        start = find_end(node.func, s, idxmap)
+        start = find_end(node.func, s)
         if start != None:
             the_end = match_paren(s, '(', ')', start)
 
     elif isinstance(node, Yield):
-        the_end = find_end(node.value, s, idxmap)
+        the_end = find_end(node.value, s)
 
     elif isinstance(node, Return):
         if node.value != None:
-            the_end = find_end(node.value, s, idxmap)
+            the_end = find_end(node.value, s)
         else:
-            the_end = find_start(node, s, idxmap) + len('return')
+            the_end = find_start(node, s) + len('return')
 
     elif (isinstance(node, For) or
           isinstance(node, While) or
           isinstance(node, If) or
           isinstance(node, IfExp)):
         if node.orelse != []:
-            the_end = find_end(node.orelse, s, idxmap)
+            the_end = find_end(node.orelse, s)
         else:
-            the_end = find_end(node.body, s, idxmap)
+            the_end = find_end(node.body, s)
 
     elif isinstance(node, Assign) or isinstance(node, AugAssign):
-        the_end = find_end(node.value, s, idxmap)
+        the_end = find_end(node.value, s)
 
     elif isinstance(node, BinOp):
-        the_end = find_end(node.right, s, idxmap)
+        the_end = find_end(node.right, s)
 
     elif isinstance(node, BoolOp):
-        the_end = find_end(node.values[-1], s, idxmap)
+        the_end = find_end(node.values[-1], s)
 
     elif isinstance(node, Compare):
-        the_end = find_end(node.comparators[-1], s, idxmap)
+        the_end = find_end(node.comparators[-1], s)
 
     elif isinstance(node, UnaryOp):
-        the_end = find_end(node.operand, s, idxmap)
+        the_end = find_end(node.operand, s)
 
     elif isinstance(node, Num):
-        the_end = find_start(node, s, idxmap) + len(str(node.n))
+        the_end = find_start(node, s) + len(str(node.n))
 
     elif isinstance(node, List):
-        the_end = match_paren(s, '[', ']', find_start(node, s, idxmap));
+        the_end = match_paren(s, '[', ']', find_start(node, s));
 
     elif isinstance(node, Subscript):
-        the_end = match_paren(s, '[', ']', find_start(node, s, idxmap));
+        the_end = match_paren(s, '[', ']', find_start(node, s));
 
     elif isinstance(node, Tuple):
         if node.elts != []:
-            the_end = find_end(node.elts[-1], s, idxmap)
+            the_end = find_end(node.elts[-1], s)
 
     elif isinstance(node, Dict):
-        the_end = match_paren(s, '{', '}', find_start(node, s, idxmap));
+        the_end = match_paren(s, '{', '}', find_start(node, s));
 
     elif ((not is_python3 and isinstance(node, TryExcept)) or
           (is_python3 and isinstance(node, Try))):
         if node.orelse != []:
-            the_end = find_end(node.orelse, s, idxmap)
+            the_end = find_end(node.orelse, s)
         elif node.handlers != []:
-            the_end = find_end(node.handlers, s, idxmap)
+            the_end = find_end(node.handlers, s)
         else:
-            the_end = find_end(node.body, s, idxmap)
+            the_end = find_end(node.body, s)
 
     elif isinstance(node, ExceptHandler):
-        the_end = find_end(node.body, s, idxmap)
+        the_end = find_end(node.body, s)
 
     elif isinstance(node, Pass):
-        the_end = find_start(node, s, idxmap) + len('pass')
+        the_end = find_start(node, s) + len('pass')
 
     elif isinstance(node, Break):
-        the_end = find_start(node, s, idxmap) + len('break')
+        the_end = find_start(node, s) + len('break')
 
     elif isinstance(node, Continue):
-        the_end = find_start(node, s, idxmap) + len('continue')
+        the_end = find_start(node, s) + len('continue')
 
     elif isinstance(node, Global):
-        the_end = start_seq(s, '\n', find_start(node, s, idxmap))
+        the_end = start_seq(s, '\n', find_start(node, s))
 
     elif isinstance(node, Import):
-        the_end = find_start(node, s, idxmap) + len('import')
+        the_end = find_start(node, s) + len('import')
 
     elif isinstance(node, ImportFrom):
-        the_end = find_start(node, s, idxmap) + len('from')
+        the_end = find_start(node, s) + len('from')
 
     else:   # can't determine node end, set to 3 chars after start
-        start = find_start(node, s, idxmap)
+        start = find_start(node, s)
         if start != None:
             the_end = start + 3
 
@@ -283,41 +297,41 @@ def find_end(node, s, idxmap):
     return the_end
 
 
-def add_missing_names(node, s, idxmap):
+def add_missing_names(node, s):
 
     if hasattr(node, 'extra_attr'):
         return
 
     if isinstance(node, list):
         for n in node:
-            add_missing_names(n, s, idxmap)
+            add_missing_names(n, s)
 
     elif isinstance(node, ClassDef):
-        head = find_start(node, s, idxmap)
+        head = find_start(node, s)
         start = s.find("class", head) + len("class")
         if start != None:
-            node.name_node = str_to_name(s, start, idxmap)
+            node.name_node = str_to_name(s, start)
             node._fields += ('name_node',)
 
     elif isinstance(node, FunctionDef):
         # skip to "def" because it may contain decorators like @property
-        head = find_start(node, s, idxmap)
+        head = find_start(node, s)
         start = s.find("def", head) + len("def")
         if start != None:
-            node.name_node = str_to_name(s, start, idxmap)
+            node.name_node = str_to_name(s, start)
             node._fields += ('name_node',)
 
-        # keyword_start = find_start(node, s, idxmap)
-        # node.keyword_node = str_to_name(s, keyword_start, idxmap)
+        # keyword_start = find_start(node, s)
+        # node.keyword_node = str_to_name(s, keyword_start)
         # node._fields += ('keyword_node',)
 
         if node.args.vararg != None:
             if len(node.args.args) > 0:
-                vstart = find_end(node.args.args[-1], s, idxmap)
+                vstart = find_end(node.args.args[-1], s)
             else:
-                vstart = find_end(node.name_node, s, idxmap)
+                vstart = find_end(node.name_node, s)
             if vstart != None:
-                vname = str_to_name(s, vstart, idxmap)
+                vname = str_to_name(s, vstart)
                 node.vararg_name = vname
         else:
             node.vararg_name = None
@@ -325,27 +339,27 @@ def add_missing_names(node, s, idxmap):
 
         if node.args.kwarg != None:
             if len(node.args.args) > 0:
-                kstart = find_end(node.args.args[-1], s, idxmap)
+                kstart = find_end(node.args.args[-1], s)
             else:
-                kstart = find_end(node.vararg_name, s, idxmap)
+                kstart = find_end(node.vararg_name, s)
             if kstart:
-                kname = str_to_name(s, kstart, idxmap)
+                kname = str_to_name(s, kstart)
                 node.kwarg_name = kname
         else:
             node.kwarg_name = None
         node._fields += ('kwarg_name',)
 
     elif isinstance(node, Attribute):
-        start = find_end(node.value, s, idxmap)
+        start = find_end(node.value, s)
         if start is not None:
-            name = str_to_name(s, start, idxmap)
+            name = str_to_name(s, start)
             node.attr_name = name
             node._fields = ('value', 'attr_name')  # remove attr for node size accuracy
 
     elif isinstance(node, Compare):
-        start = find_start(node, s, idxmap)
+        start = find_start(node, s)
         if start is not None:
-            node.opsName = convert_ops(node.ops, s, start, idxmap)
+            node.opsName = convert_ops(node.ops, s, start)
             node._fields += ('opsName',)
 
     elif (isinstance(node, BoolOp) or
@@ -353,11 +367,11 @@ def add_missing_names(node, s, idxmap):
           isinstance(node, UnaryOp) or
           isinstance(node, AugAssign)):
         if hasattr(node, 'left'):
-            start = find_end(node.left, s, idxmap)
+            start = find_end(node.left, s)
         else:
-            start = find_start(node, s, idxmap)
+            start = find_start(node, s)
         if start is not None:
-            ops = convert_ops([node.op], s, start, idxmap)
+            ops = convert_ops([node.op], s, start)
         else:
             ops = []
         if ops != []:
@@ -405,27 +419,13 @@ def match_paren(s, open, close, start):
     return i
 
 
-# build table for lineno <-> index oonversion
-def build_index_map(s):
-    line = 0
-    col = 0
-    idx = 0
-    idxmap = [0]
-    while idx < len(s):
-        if s[idx] == '\n':
-            idxmap.append(idx + 1)
-            line += 1
-        idx += 1
-    return idxmap
-
-
 # convert (line, col) to offset index
-def map_idx(idxmap, line, col):
+def map_idx(line, col):
     return idxmap[line-1] + col
 
 
 # convert offset index into (line, col)
-def map_line_col(idxmap, idx):
+def map_line_col(idx):
     line = 0
     for start in idxmap:
         if idx < start:
@@ -436,7 +436,7 @@ def map_line_col(idxmap, idx):
 
 
 # convert string to Name
-def str_to_name(s, start, idxmap):
+def str_to_name(s, start):
     i = start;
     while i < len(s) and not is_alpha(s[i]):
         i += 1
@@ -455,11 +455,11 @@ def str_to_name(s, start, idxmap):
         name = Name(id1, None)
         name.start = name_start
         name.end = name_end
-        name.lineno, name.col_offset = map_line_col(idxmap, name_start)
+        name.lineno, name.col_offset = map_line_col(name_start)
         return name
 
 
-def convert_ops(ops, s, start, idxmap):
+def convert_ops(ops, s, start):
     syms = []
     for op in ops:
         if type(op) in ops_map:
@@ -477,7 +477,7 @@ def convert_ops(ops, s, start, idxmap):
             op_node = Name(syms[j], None)
             op_node.start = i
             op_node.end = i+oplen
-            op_node.lineno, op_node.col_offset = map_line_col(idxmap, i)
+            op_node.lineno, op_node.col_offset = map_line_col(i)
             ret.append(op_node)
             j += 1
             i = op_node.end
