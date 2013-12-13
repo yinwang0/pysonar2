@@ -9,7 +9,7 @@ def banner(s)
 end
 
 
-class SexpSimplifier
+class AstSimplifier
 
   def initialize(filename)
     @filename = filename
@@ -134,8 +134,8 @@ class SexpSimplifier
               :id => exp[1],
               :location => exp[2]
           }
-        when :@const
-          #:@const is just a name
+        when :@const, :@kw
+          #:@const and :@kw are just names
           {
               :type => :name,
               :id => exp[1],
@@ -203,8 +203,6 @@ class SexpSimplifier
           call
         when :method_add_arg
           call = convert(exp[1])
-          puts "call: #{call}"
-          puts "args: #{convert(exp[2])}"
           call[:args] = convert(exp[2])
           call
         when :command
@@ -360,12 +358,12 @@ class SexpSimplifier
               :ensure => convert(bodystmt[4])
           }
         when :rescue
-          ret = { :type => :rescue }
+          ret = {:type => :rescue}
           if exp[1]
             if exp[1][0].is_a? Array
               ret[:exceptions] = convert_array(exp[1])
             else
-              exceptions =  convert(exp[1])
+              exceptions = convert(exp[1])
               ret[:expections] = exceptions[:positional]
             end
           end
@@ -395,6 +393,19 @@ class SexpSimplifier
               :left => convert(exp[1]),
               :op => op(exp[2]),
               :right => convert(exp[3])
+          }
+        when :array
+          args = convert(exp[1])
+          {
+              :type => :array,
+              :elts => args[:positional]
+          }
+        when :aref, :aref_field
+          args = convert(exp[2])
+          {
+              :type => :subscript,
+              :value => convert(exp[1]),
+              :slice => args[:positional]
           }
         when :unary
           {
@@ -444,21 +455,16 @@ class SexpSimplifier
           convert(exp[2])
         when :string_concat
           convert([:binary, exp[1], :string_concat, exp[2]])
-        when :hash
-          {
-              :type => :hash,
-              :value => convert(exp[1])
-          }
         when :assoclist_from_args
           {
-              :type => :assoclist,
-              :data => convert_array(exp[1])
+              :type => :hash,
+              :entries => convert_array(exp[1])
           }
         when :assoc_new
           {
               :type => :assoc,
-              :key => exp[1],
-              :value => exp[2]
+              :key => convert(exp[1]),
+              :value => convert(exp[2])
           }
         when :const_path_ref
           {
@@ -482,6 +488,7 @@ class SexpSimplifier
             :const_ref,
             :vcall,
             :paren,
+            :hash,
             :else,
             :ensure,
             :arg_paren,
@@ -497,6 +504,7 @@ class SexpSimplifier
         else
           banner('unknown')
           puts "#{exp}"
+          exp
       end
     end
   end
@@ -523,31 +531,11 @@ class SexpSimplifier
     }
   end
 
-
-  def is_wrapper?(x)
-    wrappers = [:var_ref,
-                :var_field,
-                :const_ref,
-                :vcall,
-                :paren,
-                :else,
-                :ensure,
-                :arg_paren,
-                :bodystmt,
-                :rest_param,
-                :blockarg,
-                :symbol_literal,
-                :regexp_literal,
-                :string_literal
-    ]
-    wrappers.include?(x)
-  end
-
 end
 
 
 def parse_dump(input, output, endmark)
-  simplifier = SexpSimplifier.new(input)
+  simplifier = AstSimplifier.new(input)
   hash = simplifier.simplify
 
   json_string = JSON.pretty_generate(hash)

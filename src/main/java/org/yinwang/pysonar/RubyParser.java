@@ -18,7 +18,7 @@ import java.util.Map;
 public class RubyParser extends Parser {
 
     private static final String RUBY_EXE = "irb";
-    private static final int TIMEOUT = 5000;
+    private static final int TIMEOUT = 10000;
 
     @Nullable
     Process rubyProcess;
@@ -237,9 +237,14 @@ public class RubyParser extends Parser {
             return new Delete(targets, start, end);
         }
 
-        if (type.equals("assoclist")) {
-            List<Node> keys = convertList(map.get("keys"));
-            List<Node> values = convertList(map.get("values"));
+        if (type.equals("hash")) {
+            List<Map<String, Object>> entries = (List<Map<String, Object>>)map.get("entries");
+            List<Node> keys = new ArrayList<>();
+            List<Node> values = new ArrayList<>();
+            for (Map<String, Object> e : entries) {
+                keys.add(convert(e.get("key")));
+                values.add(convert(e.get("value")));
+            }
             return new Dict(keys, values, start, end);
         }
 
@@ -275,7 +280,7 @@ public class RubyParser extends Parser {
             return new Keyword(arg, value, start, end);
         }
 
-        if (type.equals("List")) {
+        if (type.equals("array")) {
             List<Node> elts = convertList(map.get("elts"));
             return new NList(elts, start, end);
         }
@@ -308,9 +313,11 @@ public class RubyParser extends Parser {
             return new Str(s, start, end);
         }
 
-        if (type.equals("Subscript")) {
+        // Ruby's subscript is Python's Slice with step size 1
+        if (type.equals("subscript")) {
             Node value = convert(map.get("value"));
-            Node slice = convert(map.get("slice"));
+            List<Node> s = convertList(map.get("slice"));
+            Slice slice = new Slice(s.get(0), null, s.get(1), s.get(0).start, s.get(1).end);
             return new Subscript(value, slice, start, end);
         }
 
@@ -350,6 +357,11 @@ public class RubyParser extends Parser {
         }
 
         if (type.equals("name")) {
+            String id = (String) map.get("id");
+            return new Name(id, start, end);
+        }
+
+        if (type.equals("symbol")) {
             String id = (String) map.get("id");
             return new Name(id, start, end);
         }
