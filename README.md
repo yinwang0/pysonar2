@@ -65,6 +65,13 @@ lib). This is due to the highlighting code I added to the demo not using
 sophisticated ways of doing it. The situation may change soon.
 
 
+## How to contribute
+
+PySonar2 is current a fast moving target. There are several big architectural
+changes undergoing. Please contact me before you make any substantial changes,
+otherwise it will unlikely I can merge back your changes. Thanks.
+
+
 ### Copyright (GPLv3)
 
 Copyright (c) 2013 Yin Wang
