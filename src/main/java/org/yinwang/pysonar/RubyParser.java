@@ -238,7 +238,7 @@ public class RubyParser extends Parser {
         }
 
         if (type.equals("hash")) {
-            List<Map<String, Object>> entries = (List<Map<String, Object>>)map.get("entries");
+            List<Map<String, Object>> entries = (List<Map<String, Object>>) map.get("entries");
             List<Node> keys = new ArrayList<>();
             List<Node> values = new ArrayList<>();
             for (Map<String, Object> e : entries) {
@@ -269,11 +269,6 @@ public class RubyParser extends Parser {
             return new If(test, body, orelse, start, end);
         }
 
-        if (type.equals("Index")) {
-            Node value = convert(map.get("value"));
-            return new Index(value, start, end);
-        }
-
         if (type.equals("keyword")) {
             String arg = (String) map.get("arg");
             Node value = convert(map.get("value"));
@@ -301,13 +296,6 @@ public class RubyParser extends Parser {
             return new Return(value, start, end);
         }
 
-        if (type.equals("Slice")) {
-            Node lower = convert(map.get("lower"));
-            Node step = convert(map.get("step"));
-            Node upper = convert(map.get("upper"));
-            return new Slice(lower, step, upper, start, end);
-        }
-
         if (type.equals("string")) {
             String s = (String) map.get("value");
             return new Str(s, start, end);
@@ -317,8 +305,16 @@ public class RubyParser extends Parser {
         if (type.equals("subscript")) {
             Node value = convert(map.get("value"));
             List<Node> s = convertList(map.get("slice"));
-            Slice slice = new Slice(s.get(0), null, s.get(1), s.get(0).start, s.get(1).end);
-            return new Subscript(value, slice, start, end);
+            if (s.size() == 1) {
+                Node node = s.get(0);
+                Index idx = new Index(node, node.start, node.end);
+                return new Subscript(value, idx, start, end);
+            } else if (s.size() == 2) {
+                Slice slice = new Slice(s.get(0), null, s.get(1), s.get(0).start, s.get(1).end);
+                return new Subscript(value, slice, start, end);
+            } else {
+                _.die("illegal format of subscript, please fix parser");
+            }
         }
 
         if (type.equals("begin")) {
@@ -326,11 +322,6 @@ public class RubyParser extends Parser {
             Block orelse = (Block) convert(map.get("else"));
             Block finalbody = (Block) convert(map.get("ensure"));
             return new Try(null, body, orelse, finalbody, start, end);
-        }
-
-        if (type.equals("Tuple")) {
-            List<Node> elts = convertList(map.get("elts"));
-            return new Tuple(elts, start, end);
         }
 
         if (type.equals("unary")) {
@@ -371,7 +362,7 @@ public class RubyParser extends Parser {
             return new Num(n, start, end);
         }
 
-        _.die("[Please report bug]: unexpected ast node: " + map.get("type"));
+        _.die("[please report parser bug]: unexpected ast node: " + type);
 
         return null;
     }
