@@ -26,7 +26,7 @@ public class NList extends Sequence {
         for (Node elt : elts) {
             listType.add(transformExpr(elt, s));
             if (elt instanceof Str) {
-                listType.addValue(((Str) elt).getStr());
+                listType.addValue(((Str) elt).value);
             }
         }
 

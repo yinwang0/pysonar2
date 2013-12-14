@@ -38,7 +38,7 @@ public class Ref implements Comparable<Object> {
             }
         } else if (node instanceof Str) {
             markAsString();
-            name = ((Str) node).getStr();
+            name = ((Str) node).value;
         } else {
             throw new IllegalArgumentException("I don't know what " + node + " is.");
         }

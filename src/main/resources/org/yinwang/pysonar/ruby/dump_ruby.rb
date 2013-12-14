@@ -316,6 +316,7 @@ class AstSimplifier
           ret
         when :case
           ret = {
+              :type => :case,
               :clauses => convert(exp[2])
           }
           if exp[1]
@@ -439,7 +440,7 @@ class AstSimplifier
           }
         when :regexp_literal
           regexp = convert(exp[1])
-          regexp[:end] = convert(exp[2])
+          regexp[:regexp_end] = convert(exp[2])
           regexp
         when :regexp_add
           {
@@ -467,6 +468,14 @@ class AstSimplifier
           convert(exp[2])
         when :string_concat
           convert([:binary, exp[1], :string_concat, exp[2]])
+        when :hash
+          if exp[1]
+            convert(exp[1])
+          else
+            {
+                :type => :hash,
+            }
+          end
         when :assoclist_from_args
           {
               :type => :hash,
@@ -500,7 +509,6 @@ class AstSimplifier
             :const_ref,
             :vcall,
             :paren,
-            :hash,
             :else,
             :ensure,
             :arg_paren,

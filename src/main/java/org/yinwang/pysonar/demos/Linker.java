@@ -61,9 +61,11 @@ class Linker {
             progress.tick();
         }
 
-        for (List<Diagnostic> ld: analyzer.semanticErrors.values()) {
-            for (Diagnostic d: ld) {
-                processDiagnostic(d);
+        if (Analyzer.self.debug) {
+            for (List<Diagnostic> ld : analyzer.semanticErrors.values()) {
+                for (Diagnostic d : ld) {
+                    processDiagnostic(d);
+                }
             }
         }
 
@@ -122,14 +124,16 @@ class Linker {
             // Currently jump to the first binding only. Should change to have a
             // hover menu or something later.
             String path = ref.getFile();
-            for (Binding b : bindings) {
-                if (link.url == null) {
-                    link.url = toURL(b, path);
-                }
+            if (path != null) {
+                for (Binding b : bindings) {
+                    if (link.url == null) {
+                        link.url = toURL(b, path);
+                    }
 
-                if (link.url != null) {
-                    addFileStyle(path, link);
-                    break;
+                    if (link.url != null) {
+                        addFileStyle(path, link);
+                        break;
+                    }
                 }
             }
         }

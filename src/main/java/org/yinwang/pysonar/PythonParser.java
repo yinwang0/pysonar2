@@ -808,8 +808,10 @@ public class PythonParser extends Parser {
         Process p;
 
         try {
-            InputStream jsonize = Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                    dumpPythonResource);
+            InputStream jsonize =
+                    Thread.currentThread()
+                            .getContextClassLoader()
+                            .getResourceAsStream(dumpPythonResource);
             jsonizeStr = _.readWholeStream(jsonize);
         } catch (Exception e) {
             _.die("Failed to open resource file:" + dumpPythonResource);

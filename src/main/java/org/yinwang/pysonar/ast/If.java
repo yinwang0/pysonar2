@@ -11,11 +11,11 @@ public class If extends Node {
 
     @NotNull
     public Node test;
-    public Block body;
-    public Block orelse;
+    public Node body;
+    public Node orelse;
 
 
-    public If(@NotNull Node test, Block body, Block orelse, int start, int end) {
+    public If(@NotNull Node test, Node body, Node orelse, int start, int end) {
         super(start, end);
         this.test = test;
         this.body = body;
@@ -37,13 +37,13 @@ public class If extends Node {
             s2 = conditionType.asBool().getS2();
         }
 
-        if (body != null && !body.isEmpty()) {
+        if (body != null) {
             type1 = transformExpr(body, s1);
         } else {
             type1 = Analyzer.self.builtins.Cont;
         }
 
-        if (orelse != null && !orelse.isEmpty()) {
+        if (orelse != null) {
             type2 = transformExpr(orelse, s2);
         } else {
             type2 = Analyzer.self.builtins.Cont;

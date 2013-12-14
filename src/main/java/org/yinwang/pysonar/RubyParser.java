@@ -141,27 +141,35 @@ public class RubyParser extends Parser {
 
         if (type.equals("call")) {
             Node func = convert(map.get("func"));
+            Call ret;
             Map<String, Object> args = (Map<String, Object>) map.get("args");
-            List<Node> posKey = convertList(args.get("positional"));
-            List<Node> pos = new ArrayList<>();
-            List<Keyword> kws = new ArrayList<>();
-            for (Node node : posKey) {
-                if (node.isAssign()) {
-                    kws.add(new Keyword(node.asAssign().target.asName().id,
-                            node.asAssign().value,
-                            node.start,
-                            node.end));
-                } else {
-                    pos.add(node);
+
+            if (args != null) {
+                List<Node> posKey = convertList(args.get("positional"));
+                List<Node> pos = new ArrayList<>();
+                List<Keyword> kws = new ArrayList<>();
+                for (Node node : posKey) {
+                    if (node.isAssign()) {
+                        kws.add(new Keyword(node.asAssign().target.asName().id,
+                                node.asAssign().value,
+                                node.start,
+                                node.end));
+                    } else {
+                        pos.add(node);
+                    }
+
                 }
 
+                ret = new Call(func, pos, kws, null, null, start, end);
+            } else {
+                // call with no arguments
+                ret = new Call(func, null, null, null, null, start, end);
             }
-
-            Call ret = new Call(func, pos, kws, null, null, start, end);
 
             Node blockarg = convert(map.get("block_arg"));
             if (blockarg != null) {
                 ret.blockarg = blockarg;
+                ret.addChildren(blockarg);
             }
             return ret;
         }
@@ -243,9 +251,12 @@ public class RubyParser extends Parser {
             List<Map<String, Object>> entries = (List<Map<String, Object>>) map.get("entries");
             List<Node> keys = new ArrayList<>();
             List<Node> values = new ArrayList<>();
-            for (Map<String, Object> e : entries) {
-                keys.add(convert(e.get("key")));
-                values.add(convert(e.get("value")));
+
+            if (entries != null) {
+                for (Map<String, Object> e : entries) {
+                    keys.add(convert(e.get("key")));
+                    values.add(convert(e.get("value")));
+                }
             }
             return new Dict(keys, values, start, end);
         }
@@ -266,8 +277,8 @@ public class RubyParser extends Parser {
 
         if (type.equals("if")) {
             Node test = convert(map.get("test"));
-            Block body = (Block) convert(map.get("body"));
-            Block orelse = (Block) convert(map.get("else"));
+            Node body = convert(map.get("body"));
+            Node orelse = convert(map.get("else"));
             return new If(test, body, orelse, start, end);
         }
 
@@ -301,6 +312,12 @@ public class RubyParser extends Parser {
         if (type.equals("string")) {
             String s = (String) map.get("value");
             return new Str(s, start, end);
+        }
+
+        if (type.equals("regexp")) {
+            Str pattern = (Str) convert(map.get("pattern"));
+            Str regexp_end = (Str) convert(map.get("regexp_end"));
+            return new Regexp(pattern.value, regexp_end.value, start, end);
         }
 
         // Ruby's subscript is Python's Slice with step size 1
@@ -350,6 +367,11 @@ public class RubyParser extends Parser {
         }
 
         if (type.equals("name")) {
+            String id = (String) map.get("id");
+            return new Name(id, start, end);
+        }
+
+        if (type.equals("ivar")) {
             String id = (String) map.get("id");
             return new Name(id, start, end);
         }
@@ -517,8 +539,10 @@ public class RubyParser extends Parser {
         Process p;
 
         try {
-            InputStream jsonize = Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                    dumpPythonResource);
+            InputStream jsonize =
+                    Thread.currentThread()
+                            .getContextClassLoader()
+                            .getResourceAsStream(dumpPythonResource);
             jsonizeStr = _.readWholeStream(jsonize);
         } catch (Exception e) {
             _.die("Failed to open resource file:" + dumpPythonResource);

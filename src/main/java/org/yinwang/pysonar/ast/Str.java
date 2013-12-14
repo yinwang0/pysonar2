@@ -8,17 +8,12 @@ import org.yinwang.pysonar.types.Type;
 
 public class Str extends Node {
 
-    private String value;
+    public String value;
 
 
     public Str(@NotNull Object value, int start, int end) {
         super(start, end);
         this.value = value.toString();
-    }
-
-
-    public String getStr() {
-        return value;
     }
 
 
