@@ -361,8 +361,14 @@ public class RubyParser extends Parser {
 
         if (type.equals("ivar")) {
             String id = (String) map.get("id");
-            return new Name(id, start, end);
+            return new Name(id, NameType.INSTANCE, start, end);
         }
+
+        if (type.equals("gvar")) {
+            String id = (String) map.get("id");
+            return new Name(id, NameType.GLOBAL, start, end);
+        }
+
 
         if (type.equals("symbol")) {
             String id = (String) map.get("id");

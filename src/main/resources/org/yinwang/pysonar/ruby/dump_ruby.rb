@@ -131,7 +131,7 @@ class AstSimplifier
         when :@ivar
           {
               :type => :ivar,
-              :id => exp[1],
+              :id => exp[1][1..-1],
               :location => exp[2]
           }
         when :@const, :@kw

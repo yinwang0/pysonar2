@@ -354,13 +354,13 @@ public class State {
      * Find a symbol table of a certain type in the enclosing scopes.
      */
     @Nullable
-    private State getSymtabOfType(StateType type) {
+    public State getStateOfType(StateType type) {
         if (stateType == type) {
             return this;
         } else if (parent == null) {
             return null;
         } else {
-            return parent.getSymtabOfType(type);
+            return parent.getStateOfType(type);
         }
     }
 
@@ -370,7 +370,7 @@ public class State {
      */
     @NotNull
     public State getGlobalTable() {
-        State result = getSymtabOfType(StateType.MODULE);
+        State result = getStateOfType(StateType.MODULE);
         if (result != null) {
             return result;
         } else {

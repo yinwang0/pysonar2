@@ -61,13 +61,13 @@ class Linker {
             progress.tick();
         }
 
-        if (Analyzer.self.debug) {
-            for (List<Diagnostic> ld : analyzer.semanticErrors.values()) {
-                for (Diagnostic d : ld) {
-                    processDiagnostic(d);
-                }
-            }
-        }
+//        if (Analyzer.self.debug) {
+//            for (List<Diagnostic> ld : analyzer.semanticErrors.values()) {
+//                for (Diagnostic d : ld) {
+//                    processDiagnostic(d);
+//                }
+//            }
+//        }
 
 //        for (List<Diagnostic> ld: analyzer.parseErrors.values()) {
 //            for (Diagnostic d: ld) {

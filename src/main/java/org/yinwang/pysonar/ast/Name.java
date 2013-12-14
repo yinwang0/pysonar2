@@ -13,6 +13,7 @@ public class Name extends Node {
 
     @NotNull
     public final String id;  // identifier
+    public NameType type;
 
 
     public Name(String id) {
@@ -23,6 +24,14 @@ public class Name extends Node {
     public Name(@NotNull String id, int start, int end) {
         super(start, end);
         this.id = id;
+        this.type = NameType.LOCAL;
+    }
+
+
+    public Name(@NotNull String id, NameType type, int start, int end) {
+        super(start, end);
+        this.id = id;
+        this.type = type;
     }
 
 
@@ -76,6 +85,16 @@ public class Name extends Node {
     public boolean isAttribute() {
         return parent instanceof Attribute
                 && ((Attribute) parent).getAttr() == this;
+    }
+
+
+    public boolean isInstanceVar() {
+        return type == NameType.INSTANCE;
+    }
+
+
+    public boolean isGlobal() {
+        return type == NameType.GLOBAL;
     }
 
 

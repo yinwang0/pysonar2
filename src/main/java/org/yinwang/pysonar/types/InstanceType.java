@@ -1,6 +1,8 @@
 package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.Analyzer;
+import org.yinwang.pysonar.Language;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.ast.Call;
 
@@ -22,7 +24,14 @@ public class InstanceType extends Type {
 
     public InstanceType(@NotNull Type c, Call call, List<Type> args) {
         this(c);
-        Type initFunc = this.getTable().lookupAttrType("__init__");
+
+        Type initFunc = null;
+        if (Analyzer.self.language == Language.PYTHON) {
+            initFunc = getTable().lookupAttrType("__init__");
+        } else if (Analyzer.self.language == Language.RUBY) {
+            initFunc = getTable().lookupAttrType("initialize");
+        }
+
         if (initFunc != null && initFunc.isFuncType() && initFunc.asFuncType().getFunc() != null) {
             initFunc.asFuncType().setSelfType(this);
             Call.apply(initFunc.asFuncType(), args, null, null, null, null, call);

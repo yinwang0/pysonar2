@@ -8,8 +8,7 @@ import org.yinwang.pysonar.types.*;
 import java.util.*;
 import java.util.Set;
 
-import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
-import static org.yinwang.pysonar.Binding.Kind.CLASS;
+import static org.yinwang.pysonar.Binding.Kind.*;
 
 
 public class Call extends Node {
@@ -46,6 +45,15 @@ public class Call extends Node {
     @NotNull
     @Override
     public Type transform(State s) {
+
+        // Ruby's Class.new
+        if (func instanceof Attribute) {
+            Attribute afun = (Attribute) func;
+            if (afun.attr.id.equals("new")) {
+                func = afun.target;
+            }
+        }
+
         Type fun = transformExpr(func, s);
         List<Type> pos = resolveList(args, s);
         Map<String, Type> hash = new HashMap<>();
@@ -123,10 +131,14 @@ public class Call extends Node {
         }
 
         List<Type> pTypes = new ArrayList<>();
-        if (func.getSelfType() != null) {
-            pTypes.add(func.getSelfType());
-        } else if (func.getCls() != null) {
-            pTypes.add(func.getCls().getCanon());
+
+        // Python: bind first parameter to self type
+        if (Analyzer.self.language == Language.PYTHON) {
+            if (func.getSelfType() != null) {
+                pTypes.add(func.getSelfType());
+            } else if (func.getCls() != null) {
+                pTypes.add(func.getCls().getCanon());
+            }
         }
 
 
@@ -142,6 +154,11 @@ public class Call extends Node {
             funcTable.setPath(func.getTable().parent.extendPath(func.func.name.id));
         } else {
             funcTable.setPath(func.func.name.id);
+        }
+
+        // bind a special this name to the table
+        if (func.getSelfType() != null) {
+            Binder.bind(funcTable, new Name(Constants.thisName), func.getSelfType(), PARAMETER);
         }
 
         Type fromType = bindParams(call, func.func, funcTable, func.func.args,

@@ -45,19 +45,19 @@ public class Analyzer {
     private Logger logger;
     private FancyProgress loadingProgress = null;
 
-    String projectDir;
-    String suffix;
-    String language;
+    public String projectDir;
+    public String suffix;
+    public Language language;
 
 
-    public Analyzer(@NotNull String language) {
+    public Analyzer(@NotNull Language language) {
         this.language = language;
         stats.putInt("startTime", System.currentTimeMillis());
         logger = Logger.getLogger(Analyzer.class.getCanonicalName());
         self = this;
-        if (language.equals("python")) {
+        if (language == Language.PYTHON) {
             this.suffix = ".py";
-        } else if (language.equals("ruby")) {
+        } else if (language == Language.RUBY) {
             this.suffix = ".rb";
         }
         builtins = new Builtins();
@@ -68,7 +68,7 @@ public class Analyzer {
     }
 
 
-    public Analyzer(@NotNull String language, boolean debug) {
+    public Analyzer(@NotNull Language language, boolean debug) {
         this(language);
         this.debug = debug;
     }

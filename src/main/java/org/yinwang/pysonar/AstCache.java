@@ -32,13 +32,13 @@ public class AstCache {
     }
 
 
-    public static AstCache get(String language) {
+    public static AstCache get(Language language) {
         if (INSTANCE == null) {
             INSTANCE = new AstCache();
         }
-        if (language.equals("python")) {
+        if (language == Language.PYTHON) {
             parser = new PythonParser();
-        } else if (language.equals("ruby")) {
+        } else if (language == Language.RUBY) {
             parser = new RubyParser();
         } else {
             _.die("unsupported language: " + language);
