@@ -112,10 +112,10 @@ public abstract class Node implements java.io.Serializable {
     @Nullable
     public Str getDocString() {
         Node body = null;
-        if (this instanceof FunctionDef) {
-            body = ((FunctionDef) this).body;
-        } else if (this instanceof ClassDef) {
-            body = ((ClassDef) this).body;
+        if (this instanceof Function) {
+            body = ((Function) this).body;
+        } else if (this instanceof Class) {
+            body = ((Class) this).body;
         } else if (this instanceof Module) {
             body = ((Module) this).body;
         }
@@ -172,10 +172,10 @@ public abstract class Node implements java.io.Serializable {
         return this instanceof Name;
     }
 
+
     public boolean isAssign() {
         return this instanceof Assign;
     }
-
 
 
     public boolean isGlobal() {
@@ -207,20 +207,14 @@ public abstract class Node implements java.io.Serializable {
 
 
     @NotNull
-    public ClassDef asClassDef() {
-        return (ClassDef) this;
+    public Class asClassDef() {
+        return (Class) this;
     }
 
 
     @NotNull
-    public FunctionDef asFunctionDef() {
-        return (FunctionDef) this;
-    }
-
-
-    @NotNull
-    public Lambda asLambda() {
-        return (Lambda) this;
+    public Function asFunctionDef() {
+        return (Function) this;
     }
 
 
@@ -228,6 +222,7 @@ public abstract class Node implements java.io.Serializable {
     public Name asName() {
         return (Name) this;
     }
+
 
     @NotNull
     public Assign asAssign() {

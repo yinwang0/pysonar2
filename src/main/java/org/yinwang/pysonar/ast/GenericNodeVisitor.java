@@ -58,7 +58,7 @@ public abstract class GenericNodeVisitor extends DefaultNodeVisitor {
     }
 
 
-    public boolean visit(ClassDef n) {
+    public boolean visit(Class n) {
         return traverseIntoNodes && dispatch(n);
     }
 
@@ -103,7 +103,7 @@ public abstract class GenericNodeVisitor extends DefaultNodeVisitor {
     }
 
 
-    public boolean visit(FunctionDef n) {
+    public boolean visit(Function n) {
         return traverseIntoNodes && dispatch(n);
     }
 
@@ -144,11 +144,6 @@ public abstract class GenericNodeVisitor extends DefaultNodeVisitor {
 
 
     public boolean visit(Keyword n) {
-        return traverseIntoNodes && dispatch(n);
-    }
-
-
-    public boolean visit(Lambda n) {
         return traverseIntoNodes && dispatch(n);
     }
 

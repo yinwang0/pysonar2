@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.*;
+import org.yinwang.pysonar.ast.Class;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -113,27 +114,14 @@ public class RubyParser extends Parser {
         }
 
         if (type.equals("def")) {
-            Name name = (Name) convert(map.get("name"));
+            Name name = type.equals("Lambda") ? null : (Name) convert(map.get("name"));
             Block body = (Block) convert(map.get("body"));
             Map<String, Object> argsMap = (Map<String, Object>) map.get("params");
             List<Node> positional = convertList(argsMap.get("positional"));
             List<Node> defaults = convertList(argsMap.get("defaults"));
             Name var = (Name) convert(argsMap.get("rest"));
             Name vararg = var == null ? null : var;
-            FunctionDef ret = new FunctionDef(name, positional, body, defaults, vararg, null, start, end);
-            ret.afterRest = convertList(argsMap.get("after_rest"));
-            ret.blockarg = (Name) convert(argsMap.get("block"));
-            return ret;
-        }
-
-        if (type.equals("funblock")) {
-            Block body = (Block) convert(map.get("body"));
-            Map<String, Object> argsMap = (Map<String, Object>) map.get("params");
-            List<Node> positional = convertList(argsMap.get("positional"));
-            List<Node> defaults = convertList(argsMap.get("defaults"));
-            Name var = (Name) convert(argsMap.get("rest"));
-            Name vararg = var == null ? null : var;
-            FunctionDef ret = new Lambda(positional, body, defaults, vararg, null, start, end);
+            Function ret = new Function(name, positional, body, defaults, vararg, null, start, end);
             ret.afterRest = convertList(argsMap.get("after_rest"));
             ret.blockarg = (Name) convert(argsMap.get("block"));
             return ret;
@@ -235,7 +223,7 @@ public class RubyParser extends Parser {
                 bases.add(base);
             }
             Block body = (Block) convert(map.get("body"));
-            return new ClassDef(name, bases, body, start, end);
+            return new Class(name, bases, body, start, end);
         }
 
         if (type.equals("continue")) {

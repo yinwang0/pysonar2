@@ -74,7 +74,7 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(ClassDef n) {
+    public boolean visit(Class n) {
         return traverseIntoNodes;
     }
 
@@ -129,7 +129,7 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(FunctionDef n) {
+    public boolean visit(Function n) {
         return traverseIntoNodes;
     }
 
@@ -170,11 +170,6 @@ public class DefaultNodeVisitor implements NodeVisitor {
 
 
     public boolean visit(Keyword n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(Lambda n) {
         return traverseIntoNodes;
     }
 

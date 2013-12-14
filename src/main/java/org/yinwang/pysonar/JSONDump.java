@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.ast.FunctionDef;
+import org.yinwang.pysonar.ast.Function;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Str;
 import org.yinwang.pysonar.types.Type;
@@ -98,7 +98,7 @@ public class JSONDump {
                 }
 
                 if (t != null && t.isFuncType()) {
-                    FunctionDef func = t.asFuncType().getFunc();
+                    Function func = t.asFuncType().getFunc();
 
                     if (func != null) {
                         StringBuilder args = new StringBuilder();

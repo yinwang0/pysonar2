@@ -45,7 +45,7 @@ public interface NodeVisitor {
     public boolean visit(Call m);
 
 
-    public boolean visit(ClassDef m);
+    public boolean visit(Class m);
 
 
     public boolean visit(Comprehension m);
@@ -72,7 +72,7 @@ public interface NodeVisitor {
     public boolean visit(For m);
 
 
-    public boolean visit(FunctionDef m);
+    public boolean visit(Function m);
 
 
     public boolean visit(GeneratorExp m);
@@ -97,9 +97,6 @@ public interface NodeVisitor {
 
 
     public boolean visit(Keyword m);
-
-
-    public boolean visit(Lambda m);
 
 
     public boolean visit(NList m);

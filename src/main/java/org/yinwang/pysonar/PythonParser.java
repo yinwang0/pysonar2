@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.*;
+import org.yinwang.pysonar.ast.Class;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -233,7 +234,7 @@ public class PythonParser extends Parser {
             Name name = (Name) convert(map.get("name_node"));      // hack
             List<Node> bases = convertList(map.get("bases"));
             Block body = convertBlock(map.get("body"));
-            return new ClassDef(name, bases, body, start, end);
+            return new Class(name, bases, body, start, end);
         }
 
         // left-fold Compare into
@@ -326,7 +327,7 @@ public class PythonParser extends Parser {
             Node body = type.equals("Lambda") ? convert(map.get("body")) : convertBlock(map.get("body"));
             Name vararg = argsMap.get("vararg") == null ? null : new Name((String) argsMap.get("vararg"));
             Name kwarg = argsMap.get("kwarg") == null ? null : new Name((String) argsMap.get("kwarg"));
-            return new FunctionDef(name, args, body, defaults, vararg, kwarg, start, end);
+            return new Function(name, args, body, defaults, vararg, kwarg, start, end);
         }
 
         if (type.equals("GeneratorExp")) {

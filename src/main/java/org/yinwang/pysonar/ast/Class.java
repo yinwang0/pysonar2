@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ClassDef extends Node {
+public class Class extends Node {
 
     @NotNull
     public Name name;
@@ -19,7 +19,7 @@ public class ClassDef extends Node {
     public Block body;
 
 
-    public ClassDef(@NotNull Name name, List<Node> bases, Block body, int start, int end) {
+    public Class(@NotNull Name name, List<Node> bases, Block body, int start, int end) {
         super(start, end);
         this.name = name;
         this.bases = bases;
@@ -91,7 +91,7 @@ public class ClassDef extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<ClassDef:" + name.id + ":" + start + ">";
+        return "(class:" + name.id + ":" + start + ")";
     }
 
 

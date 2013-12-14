@@ -63,8 +63,8 @@ class Styler extends DefaultNodeVisitor {
     @Override
     public boolean visit(@NotNull Name n) {
         Node parent = n.getParent();
-        if (parent instanceof FunctionDef) {
-            FunctionDef fn = (FunctionDef) parent;
+        if (parent instanceof Function) {
+            Function fn = (Function) parent;
             if (n == fn.name) {
                 addStyle(n, StyleRun.Type.FUNCTION);
             } else if (n == fn.kwarg || n == fn.vararg) {

@@ -13,7 +13,7 @@ import org.yinwang.pysonar.types.Type;
 import java.util.List;
 
 
-public class FunctionDef extends Node {
+public class Function extends Node {
 
     public Name name;
     public List<Node> args;
@@ -30,8 +30,8 @@ public class FunctionDef extends Node {
     public boolean isLamba = false;
 
 
-    public FunctionDef(Name name, List<Node> args, Node body, List<Node> defaults,
-                       Name vararg, Name kwarg, int start, int end)
+    public Function(Name name, List<Node> args, Node body, List<Node> defaults,
+                    Name vararg, Name kwarg, int start, int end)
     {
         super(start, end);
         if (name != null) {
@@ -124,8 +124,8 @@ public class FunctionDef extends Node {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof FunctionDef) {
-            FunctionDef fo = (FunctionDef) obj;
+        if (obj instanceof Function) {
+            Function fo = (Function) obj;
             return (fo.getFile().equals(getFile()) && fo.start == start);
         } else {
             return false;
