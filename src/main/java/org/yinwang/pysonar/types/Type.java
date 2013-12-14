@@ -67,15 +67,6 @@ public abstract class Type {
     }
 
 
-    /**
-     * Returns {@code true} if this Python type is implemented in native code
-     * (i.e., C, Java, C# or some other host language.)
-     */
-    public boolean isNative() {
-        return Analyzer.self.builtins.isNative(this);
-    }
-
-
     public boolean isBool() {
         return this instanceof BoolType;
     }
