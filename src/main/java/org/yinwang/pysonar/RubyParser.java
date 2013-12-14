@@ -492,7 +492,7 @@ public class RubyParser extends Parser {
             return Op.Or;
         }
 
-        if (name.equals("not")) {
+        if (name.equals("not") || name.equals("!")) {
             return Op.Not;
         }
 
