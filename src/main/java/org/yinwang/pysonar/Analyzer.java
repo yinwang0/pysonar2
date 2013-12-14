@@ -12,7 +12,6 @@ import org.yinwang.pysonar.types.Type;
 
 import java.io.File;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -540,13 +539,10 @@ public class Analyzer {
             if (!b.getType().isClassType() &&
                     !b.getType().isFuncType() &&
                     !b.getType().isModuleType()
-                    && b.getRefs().isEmpty()) {
+                    && b.getRefs().isEmpty())
+            {
                 Analyzer.self.putProblem(b.getNode(), "Unused variable: " + b.getName());
             }
-        }
-
-        for (Entry<Ref, List<Binding>> ent : references.entrySet()) {
-            convertCallToNew(ent.getKey(), ent.getValue());
         }
 
         _.msg(getAnalysisSummary());
@@ -555,31 +551,6 @@ public class Analyzer {
 
     public void close() {
         astCache.close();
-    }
-
-
-    private void convertCallToNew(@NotNull Ref ref, @NotNull List<Binding> bindings) {
-
-        if (ref.isRef()) {
-            return;
-        }
-
-        if (bindings.isEmpty()) {
-            return;
-        }
-
-        Binding nb = bindings.get(0);
-        Type t = nb.getType();
-        if (t.isUnionType()) {
-            t = t.asUnionType().firstUseful();
-            if (t == null) {
-                return;
-            }
-        }
-
-        if (!t.isUnknownType() && !t.isFuncType()) {
-            ref.markAsNew();
-        }
     }
 
 

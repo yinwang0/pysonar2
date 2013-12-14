@@ -2,28 +2,18 @@ package org.yinwang.pysonar;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.ast.Attribute;
 import org.yinwang.pysonar.ast.Name;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Str;
 
 
-/**
- * Encapsulates information about a binding reference.
- */
 public class Ref implements Comparable<Object> {
-
-    private static final int ATTRIBUTE = 0x1;
-    private static final int CALL = 0x2;    // function/method call
-    private static final int NEW = 0x4;     // instantiation
-    private static final int STRING = 0x8;  // source node is a String
 
     private int start;
     @Nullable
     private String file;
     @NotNull
     private String name;
-    private int flags;
 
 
     public Ref(@NotNull Node node) {
@@ -33,29 +23,11 @@ public class Ref implements Comparable<Object> {
         if (node instanceof Name) {
             Name n = ((Name) node);
             name = n.id;
-            if (n.isCall()) {
-                markAsCall();
-            }
         } else if (node instanceof Str) {
-            markAsString();
             name = ((Str) node).value;
         } else {
-            throw new IllegalArgumentException("I don't know what " + node + " is.");
+            throw new IllegalArgumentException("Only accept Name and Str, but got:" + node);
         }
-
-        Node parent = node.getParent();
-        if ((parent instanceof Attribute)
-                && node == ((Attribute) parent).attr)
-        {
-            markAsAttribute();
-        }
-    }
-
-
-    public Ref(@NotNull String path, int offset, @NotNull String text) {
-        file = path;
-        start = offset;
-        name = text;
     }
 
 
@@ -87,89 +59,15 @@ public class Ref implements Comparable<Object> {
     }
 
 
-    /**
-     * Returns the length of the reference text.
-     */
     public int length() {
-        return isString() ? name.length() + 2 : name.length();
-    }
-
-
-    /**
-     * Returns {@code true} if this reference was unquoted name.
-     */
-    public boolean isName() {
-        return !isString();
-    }
-
-
-    /**
-     * Returns {@code true} if this reference was an attribute
-     * of some other node.
-     */
-    public boolean isAttribute() {
-        return (flags & ATTRIBUTE) != 0;
-    }
-
-
-    public void markAsAttribute() {
-        flags |= ATTRIBUTE;
-    }
-
-
-    /**
-     * Returns {@code true} if this reference was a quoted name.
-     * If so, the {@link #start} and {@link #length} include the positions
-     * of the opening and closing quotes, but {@link #isName} returns the
-     * text within the quotes.
-     */
-    public boolean isString() {
-        return (flags & STRING) != 0;
-    }
-
-
-    public void markAsString() {
-        flags |= STRING;
-    }
-
-
-    /**
-     * Returns {@code true} if this reference is a function or method call.
-     */
-    public boolean isCall() {
-        return (flags & CALL) != 0;
-    }
-
-
-    /**
-     * Returns {@code true} if this reference is a class instantiation.
-     */
-    public void markAsCall() {
-        flags |= CALL;
-        flags &= ~NEW;
-    }
-
-
-    public boolean isNew() {
-        return (flags & NEW) != 0;
-    }
-
-
-    public void markAsNew() {
-        flags |= NEW;
-        flags &= ~CALL;
-    }
-
-
-    public boolean isRef() {
-        return !(isCall() || isNew());
+        return name.length();
     }
 
 
     @NotNull
     @Override
     public String toString() {
-        return "<Ref:" + file + ":" + name + ":" + start + ">";
+        return "(ref:" + file + ":" + name + ":" + start + ")";
     }
 
 
