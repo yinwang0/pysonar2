@@ -2,7 +2,7 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 
 
 public class ClassType extends Type {
@@ -12,9 +12,9 @@ public class ClassType extends Type {
     private Type superclass;
 
 
-    public ClassType(@NotNull String name, @Nullable Scope parent) {
+    public ClassType(@NotNull String name, @Nullable State parent) {
         this.name = name;
-        this.setTable(new Scope(parent, Scope.ScopeType.CLASS));
+        this.setTable(new State(parent, State.StateType.CLASS));
         this.getTable().setType(this);
         if (parent != null) {
             this.getTable().setPath(parent.extendPath(name));
@@ -24,7 +24,7 @@ public class ClassType extends Type {
     }
 
 
-    public ClassType(@NotNull String name, Scope parent, @Nullable ClassType superClass) {
+    public ClassType(@NotNull String name, State parent, @Nullable ClassType superClass) {
         this(name, parent);
         if (superClass != null) {
             addSuper(superClass);

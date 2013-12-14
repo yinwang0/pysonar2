@@ -3,7 +3,7 @@ package org.yinwang.pysonar.ast;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.BoolType;
 import org.yinwang.pysonar.types.NumType;
 import org.yinwang.pysonar.types.Type;
@@ -30,17 +30,17 @@ public class BinOp extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
+    public Type transform(State s) {
 
-        Type ltype = resolveExpr(left, s);
+        Type ltype = transformExpr(left, s);
         Type rtype;
 
         // boolean operations
         if (op == Op.And) {
             if (ltype.isUndecidedBool()) {
-                rtype = resolveExpr(right, ltype.asBool().getS1());
+                rtype = transformExpr(right, ltype.asBool().getS1());
             } else {
-                rtype = resolveExpr(right, s);
+                rtype = transformExpr(right, s);
             }
 
             if (ltype.isTrue() && rtype.isTrue()) {
@@ -48,7 +48,7 @@ public class BinOp extends Node {
             } else if (ltype.isFalse() || rtype.isFalse()) {
                 return Analyzer.self.builtins.False;
             } else if (ltype.isUndecidedBool() && rtype.isUndecidedBool()) {
-                Scope falseState = Scope.merge(ltype.asBool().getS2(), rtype.asBool().getS2());
+                State falseState = State.merge(ltype.asBool().getS2(), rtype.asBool().getS2());
                 return new BoolType(rtype.asBool().getS1(), falseState);
             } else {
                 return Analyzer.self.builtins.BaseBool;
@@ -57,9 +57,9 @@ public class BinOp extends Node {
 
         if (op == Op.Or) {
             if (ltype.isUndecidedBool()) {
-                rtype = resolveExpr(right, ltype.asBool().getS2());
+                rtype = transformExpr(right, ltype.asBool().getS2());
             } else {
-                rtype = resolveExpr(right, s);
+                rtype = transformExpr(right, s);
             }
 
             if (ltype.isTrue() || rtype.isTrue()) {
@@ -67,14 +67,14 @@ public class BinOp extends Node {
             } else if (ltype.isFalse() && rtype.isFalse()) {
                 return Analyzer.self.builtins.False;
             } else if (ltype.isUndecidedBool() && rtype.isUndecidedBool()) {
-                Scope trueState = Scope.merge(ltype.asBool().getS1(), rtype.asBool().getS1());
+                State trueState = State.merge(ltype.asBool().getS1(), rtype.asBool().getS1());
                 return new BoolType(trueState, rtype.asBool().getS2());
             } else {
                 return Analyzer.self.builtins.BaseBool;
             }
         }
 
-        rtype = resolveExpr(right, s);
+        rtype = transformExpr(right, s);
 
         if (ltype.isUnknownType() || rtype.isUnknownType()) {
             return Analyzer.self.builtins.unknown;
@@ -129,8 +129,8 @@ public class BinOp extends Node {
                         return Analyzer.self.builtins.False;
                     } else {
                         // transfer bound information
-                        Scope s1 = s.copy();
-                        Scope s2 = s.copy();
+                        State s1 = s.copy();
+                        State s2 = s.copy();
 
                         if (leftNode.isName()) {
                             // true branch: if l < r, then l's upper bound is r's upper bound
@@ -159,8 +159,8 @@ public class BinOp extends Node {
                         return Analyzer.self.builtins.False;
                     } else {
                         // undecided, need to transfer bound information
-                        Scope s1 = s.copy();
-                        Scope s2 = s.copy();
+                        State s1 = s.copy();
+                        State s2 = s.copy();
 
                         if (leftNode.isName()) {
                             // true branch: if l > r, then l's lower bound is r's lower bound

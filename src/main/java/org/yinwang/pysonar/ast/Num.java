@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.NumType;
 import org.yinwang.pysonar.types.Type;
 
@@ -48,7 +48,7 @@ public class Num extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
+    public Type transform(State s) {
         String typename;
         if (complex != null) {
             return new NumType("complex");

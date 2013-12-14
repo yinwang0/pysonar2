@@ -3,7 +3,7 @@ package org.yinwang.pysonar.ast;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binder;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 
@@ -26,8 +26,8 @@ public class Assign extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s) {
-        Type valueType = resolveExpr(value, s);
+    public Type transform(@NotNull State s) {
+        Type valueType = transformExpr(value, s);
         Binder.bind(s, target, valueType);
         return Analyzer.self.builtins.Cont;
     }

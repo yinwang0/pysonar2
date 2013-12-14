@@ -10,8 +10,8 @@ import java.util.*;
 import java.util.Map.Entry;
 
 
-public class Scope {
-    public enum ScopeType {
+public class State {
+    public enum StateType {
         CLASS,
         INSTANCE,
         FUNCTION,
@@ -24,24 +24,24 @@ public class Scope {
     @Nullable
     private Map<String, List<Binding>> table;  // stays null for most scopes (mem opt)
     @Nullable
-    public Scope parent;      // all are non-null except global table
+    public State parent;      // all are non-null except global table
     @Nullable
-    private Scope forwarding; // link to the closest non-class scope, for lifting functions out
+    private State forwarding; // link to the closest non-class scope, for lifting functions out
     @Nullable
-    private List<Scope> supers;
+    private List<State> supers;
     @Nullable
     private Set<String> globalNames;
-    private ScopeType scopeType;
+    private StateType stateType;
     private Type type;
     @NotNull
     private String path = "";
 
 
-    public Scope(@Nullable Scope parent, ScopeType type) {
+    public State(@Nullable State parent, StateType type) {
         this.parent = parent;
-        this.scopeType = type;
+        this.stateType = type;
 
-        if (type == ScopeType.CLASS) {
+        if (type == StateType.CLASS) {
             this.forwarding = parent == null ? null : parent.getForwarding();
         } else {
             this.forwarding = this;
@@ -49,13 +49,13 @@ public class Scope {
     }
 
 
-    public Scope(@NotNull Scope s) {
+    public State(@NotNull State s) {
         if (s.table != null) {
             this.table = new HashMap<>();
             this.table.putAll(s.table);
         }
         this.parent = s.parent;
-        this.scopeType = s.scopeType;
+        this.stateType = s.stateType;
         this.forwarding = s.forwarding;
         this.supers = s.supers;
         this.globalNames = s.globalNames;
@@ -65,10 +65,10 @@ public class Scope {
 
 
     // erase and overwrite this to s's contents
-    public void overwrite(@NotNull Scope s) {
+    public void overwrite(@NotNull State s) {
         this.table = s.table;
         this.parent = s.parent;
-        this.scopeType = s.scopeType;
+        this.stateType = s.stateType;
         this.forwarding = s.forwarding;
         this.supers = s.supers;
         this.globalNames = s.globalNames;
@@ -78,12 +78,12 @@ public class Scope {
 
 
     @NotNull
-    public Scope copy() {
-        return new Scope(this);
+    public State copy() {
+        return new State(this);
     }
 
 
-    public void merge(Scope other) {
+    public void merge(State other) {
         for (Map.Entry<String, List<Binding>> e1 : getInternalTable().entrySet()) {
             List<Binding> b1 = e1.getValue();
             List<Binding> b2 = other.getInternalTable().get(e1.getKey());
@@ -106,19 +106,19 @@ public class Scope {
     }
 
 
-    public static Scope merge(Scope scope1, Scope scope2) {
-        Scope ret = scope1.copy();
-        ret.merge(scope2);
+    public static State merge(State state1, State state2) {
+        State ret = state1.copy();
+        ret.merge(state2);
         return ret;
     }
 
 
-    public void setParent(@Nullable Scope parent) {
+    public void setParent(@Nullable State parent) {
         this.parent = parent;
     }
 
 
-    public Scope getForwarding() {
+    public State getForwarding() {
         if (forwarding != null) {
             return forwarding;
         } else {
@@ -127,7 +127,7 @@ public class Scope {
     }
 
 
-    public void addSuper(Scope sup) {
+    public void addSuper(State sup) {
         if (supers == null) {
             supers = new ArrayList<>();
         }
@@ -135,13 +135,13 @@ public class Scope {
     }
 
 
-    public void setScopeType(ScopeType type) {
-        this.scopeType = type;
+    public void setStateType(StateType type) {
+        this.stateType = type;
     }
 
 
-    public ScopeType getScopeType() {
-        return scopeType;
+    public StateType getStateType() {
+        return stateType;
     }
 
 
@@ -282,7 +282,7 @@ public class Scope {
      * much difference.
      */
     @NotNull
-    private static Set<Scope> looked = new HashSet<>();    // circularity prevention
+    private static Set<State> looked = new HashSet<>();    // circularity prevention
 
 
     @Nullable
@@ -296,7 +296,7 @@ public class Scope {
             } else {
                 if (supers != null && !supers.isEmpty()) {
                     looked.add(this);
-                    for (Scope p : supers) {
+                    for (State p : supers) {
                         b = p.lookupAttr(attr);
                         if (b != null) {
                             looked.remove(this);
@@ -354,8 +354,8 @@ public class Scope {
      * Find a symbol table of a certain type in the enclosing scopes.
      */
     @Nullable
-    private Scope getSymtabOfType(ScopeType type) {
-        if (scopeType == type) {
+    private State getSymtabOfType(StateType type) {
+        if (stateType == type) {
             return this;
         } else if (parent == null) {
             return null;
@@ -369,8 +369,8 @@ public class Scope {
      * Returns the global scope (i.e. the module scope for the current module).
      */
     @NotNull
-    public Scope getGlobalTable() {
-        Scope result = getSymtabOfType(ScopeType.MODULE);
+    public State getGlobalTable() {
+        State result = getSymtabOfType(StateType.MODULE);
         if (result != null) {
             return result;
         } else {
@@ -386,7 +386,7 @@ public class Scope {
     @Nullable
     private List<Binding> getModuleBindingIfGlobal(String name) {
         if (isGlobalName(name)) {
-            Scope module = getGlobalTable();
+            State module = getGlobalTable();
             if (module != this) {
                 return module.lookupLocal(name);
             }
@@ -395,7 +395,7 @@ public class Scope {
     }
 
 
-    public void putAll(@NotNull Scope other) {
+    public void putAll(@NotNull State other) {
         getInternalTable().putAll(other.getInternalTable());
     }
 
@@ -459,7 +459,7 @@ public class Scope {
     @NotNull
     @Override
     public String toString() {
-        return "<Scope:" + getScopeType() + ":" +
+        return "<State:" + getStateType() + ":" +
                 (table == null ? "{}" : table.keySet()) + ">";
     }
 

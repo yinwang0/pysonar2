@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 
@@ -25,8 +25,8 @@ public class Keyword extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
-        return resolveExpr(value, s);
+    public Type transform(State s) {
+        return transformExpr(value, s);
     }
 
 

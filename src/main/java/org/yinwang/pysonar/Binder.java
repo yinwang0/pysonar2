@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class Binder {
 
-    public static void bind(@NotNull Scope s, Node target, @NotNull Type rvalue, Binding.Kind kind) {
+    public static void bind(@NotNull State s, Node target, @NotNull Type rvalue, Binding.Kind kind) {
         if (target instanceof Name) {
             bind(s, (Name) target, rvalue, kind);
         } else if (target instanceof Tuple) {
@@ -25,8 +25,8 @@ public class Binder {
             ((Attribute) target).setAttr(s, rvalue);
         } else if (target instanceof Subscript) {
             Subscript sub = (Subscript) target;
-            Type valueType = Node.resolveExpr(sub.value, s);
-            Node.resolveExpr(sub.slice, s);
+            Type valueType = Node.transformExpr(sub.value, s);
+            Node.transformExpr(sub.slice, s);
             if (valueType instanceof ListType) {
                 ListType t = (ListType) valueType;
                 t.setElementType(UnionType.union(t.getElementType(), rvalue));
@@ -41,9 +41,9 @@ public class Binder {
      * Without specifying a kind, bind determines the kind according to the type
      * of the scope.
      */
-    public static void bind(@NotNull Scope s, Node target, @NotNull Type rvalue) {
+    public static void bind(@NotNull State s, Node target, @NotNull Type rvalue) {
         Binding.Kind kind;
-        if (s.getScopeType() == Scope.ScopeType.FUNCTION) {
+        if (s.getStateType() == State.StateType.FUNCTION) {
             kind = Binding.Kind.VARIABLE;
         } else {
             kind = Binding.Kind.SCOPE;
@@ -52,7 +52,7 @@ public class Binder {
     }
 
 
-    public static void bind(@NotNull Scope s, @NotNull List<Node> xs, @NotNull Type rvalue, Binding.Kind kind) {
+    public static void bind(@NotNull State s, @NotNull List<Node> xs, @NotNull Type rvalue, Binding.Kind kind) {
         if (rvalue.isTupleType()) {
             List<Type> vs = rvalue.asTupleType().getElementTypes();
             if (xs.size() != vs.size()) {
@@ -79,7 +79,7 @@ public class Binder {
     }
 
 
-    public static void bind(@NotNull Scope s, @NotNull Name name, @NotNull Type rvalue, Binding.Kind kind) {
+    public static void bind(@NotNull State s, @NotNull Name name, @NotNull Type rvalue, Binding.Kind kind) {
         if (s.isGlobalName(name.id)) {
             Binding b = new Binding(name.id, name, rvalue, kind);
             s.getGlobalTable().update(name.id, b);
@@ -91,8 +91,8 @@ public class Binder {
 
 
     // iterator
-    public static void bindIter(@NotNull Scope s, Node target, @NotNull Node iter, Binding.Kind kind) {
-        Type iterType = Node.resolveExpr(iter, s);
+    public static void bindIter(@NotNull State s, Node target, @NotNull Node iter, Binding.Kind kind) {
+        Type iterType = Node.transformExpr(iter, s);
 
         if (iterType.isListType()) {
             bind(s, target, iterType.asListType().getElementType(), kind);

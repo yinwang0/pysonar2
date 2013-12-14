@@ -3,7 +3,7 @@ package org.yinwang.pysonar.ast;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 
@@ -36,7 +36,7 @@ public class Withitem extends Node {
     // dummy, will never be called
     @NotNull
     @Override
-    public Type resolve(Scope s) {
+    public Type transform(State s) {
         return Analyzer.self.builtins.unknown;
     }
 

@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.ast.Call;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public class InstanceType extends Type {
 
 
     public InstanceType(@NotNull Type c) {
-        this.getTable().setScopeType(Scope.ScopeType.INSTANCE);
+        this.getTable().setStateType(State.StateType.INSTANCE);
         this.getTable().addSuper(c.getTable());
         this.getTable().setPath(c.getTable().getPath());
         classType = c;

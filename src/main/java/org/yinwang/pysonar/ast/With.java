@@ -2,7 +2,7 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Binder;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 import java.util.List;
@@ -26,14 +26,14 @@ public class With extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s) {
+    public Type transform(@NotNull State s) {
         for (Withitem item : items) {
-            Type val = resolveExpr(item.context_expr, s);
+            Type val = transformExpr(item.context_expr, s);
             if (item.optional_vars != null) {
                 Binder.bind(s, item.optional_vars, val);
             }
         }
-        return resolveExpr(body, s);
+        return transformExpr(body, s);
     }
 
 

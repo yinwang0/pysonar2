@@ -1,15 +1,9 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Scope;
-import org.yinwang.pysonar.types.ClassType;
-import org.yinwang.pysonar.types.InstanceType;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.SymbolType;
 import org.yinwang.pysonar.types.Type;
-
-import java.util.List;
 
 
 public class Symbol extends Node {
@@ -26,7 +20,7 @@ public class Symbol extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s) {
+    public Type transform(@NotNull State s) {
         return new SymbolType(id);
     }
 

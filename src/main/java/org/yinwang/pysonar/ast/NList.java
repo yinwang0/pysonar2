@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.ListType;
 import org.yinwang.pysonar.types.Type;
 
@@ -17,14 +17,14 @@ public class NList extends Sequence {
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
+    public Type transform(State s) {
         if (elts.size() == 0) {
             return new ListType();  // list<unknown>
         }
 
         ListType listType = new ListType();
         for (Node elt : elts) {
-            listType.add(resolveExpr(elt, s));
+            listType.add(transformExpr(elt, s));
             if (elt instanceof Str) {
                 listType.addValue(((Str) elt).getStr());
             }

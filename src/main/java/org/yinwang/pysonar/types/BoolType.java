@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.types;
 
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 
 
 public class BoolType extends Type {
@@ -14,8 +14,8 @@ public class BoolType extends Type {
 
 
     private Value value;
-    private Scope s1;
-    private Scope s2;
+    private State s1;
+    private State s2;
 
 
     public BoolType(Value value) {
@@ -23,7 +23,7 @@ public class BoolType extends Type {
     }
 
 
-    public BoolType(Scope s1, Scope s2) {
+    public BoolType(State s1, State s2) {
         this.value = Value.Undecided;
         this.s1 = s1;
         this.s2 = s2;
@@ -40,22 +40,22 @@ public class BoolType extends Type {
     }
 
 
-    public Scope getS1() {
+    public State getS1() {
         return s1;
     }
 
 
-    public void setS1(Scope s1) {
+    public void setS1(State s1) {
         this.s1 = s1;
     }
 
 
-    public Scope getS2() {
+    public State getS2() {
         return s2;
     }
 
 
-    public void setS2(Scope s2) {
+    public void setS2(State s2) {
         this.s2 = s2;
     }
 

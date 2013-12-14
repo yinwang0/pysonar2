@@ -113,13 +113,13 @@ public class Builtins {
 
 
     @NotNull
-    ClassType newClass(@NotNull String name, Scope table) {
+    ClassType newClass(@NotNull String name, State table) {
         return newClass(name, table, null);
     }
 
 
     @NotNull
-    ClassType newClass(@NotNull String name, Scope table,
+    ClassType newClass(@NotNull String name, State table,
                        ClassType superClass, @NotNull ClassType... moreSupers)
     {
         ClassType t = new ClassType(name, table, superClass);
@@ -148,7 +148,7 @@ public class Builtins {
 
 
     @NotNull
-    ClassType newException(@NotNull String name, Scope t) {
+    ClassType newException(@NotNull String name, State t) {
         return newClass(name, t, BaseException);
     }
 
@@ -221,7 +221,7 @@ public class Builtins {
         @Nullable
         protected ModuleType module;
         @Nullable
-        protected Scope table;  // the module's symbol table
+        protected State table;  // the module's symbol table
 
 
         NativeModule(String name) {
@@ -376,7 +376,7 @@ public class Builtins {
 
     private void buildTypes() {
         new BuiltinsModule();
-        Scope bt = Builtin.getTable();
+        State bt = Builtin.getTable();
 
         Object = newClass("object", bt);
         unknown = new InstanceType(newClass("?", bt));
@@ -522,7 +522,7 @@ public class Builtins {
 
 
     void buildTupleType() {
-        Scope bt = BaseTuple.getTable();
+        State bt = BaseTuple.getTable();
         String[] tuple_methods = {
                 "__add__", "__contains__", "__eq__", "__ge__", "__getnewargs__",
                 "__gt__", "__iter__", "__le__", "__len__", "__lt__", "__mul__",
@@ -585,7 +585,7 @@ public class Builtins {
 
 
     void buildNumTypes() {
-        Scope bft = BaseFloat.getTable();
+        State bft = BaseFloat.getTable();
         String[] float_methods_num = {
                 "__abs__", "__add__", "__coerce__", "__div__", "__divmod__",
                 "__eq__", "__float__", "__floordiv__", "__format__",
@@ -600,7 +600,7 @@ public class Builtins {
         for (String m : float_methods_num) {
             bft.insert(m, numUrl(), newFunc(BaseFloat), METHOD);
         }
-        Scope bnt = BaseNum.getTable();
+        State bnt = BaseNum.getTable();
         String[] num_methods_num = {
                 "__abs__", "__add__", "__and__",
                 "__class__", "__cmp__", "__coerce__", "__delattr__", "__div__",
@@ -623,7 +623,7 @@ public class Builtins {
         bnt.insert("hex", numUrl(), newFunc(BaseStr), METHOD);
         bnt.insert("conjugate", numUrl(), newFunc(BaseComplex), METHOD);
 
-        Scope bct = BaseComplex.getTable();
+        State bct = BaseComplex.getTable();
         String[] complex_methods = {
                 "__abs__", "__add__", "__div__", "__divmod__",
                 "__float__", "__floordiv__", "__format__", "__getformat__", "__int__",
@@ -698,7 +698,7 @@ public class Builtins {
 
     void buildDictType() {
         String url = "datastructures.html#dictionaries";
-        Scope bt = BaseDict.getTable();
+        State bt = BaseDict.getTable();
 
         bt.insert("__getitem__", newTutUrl(url), newFunc(), METHOD);
         bt.insert("__iter__", newTutUrl(url), newFunc(), METHOD);
@@ -727,7 +727,7 @@ public class Builtins {
 
     void buildFileType() {
         String url = "stdtypes.html#bltin-file-objects";
-        Scope table = BaseFile.getTable();
+        State table = BaseFile.getTable();
 
         String[] methods_unknown = {
                 "__enter__", "__exit__", "__iter__", "flush", "readinto", "truncate"
@@ -764,7 +764,7 @@ public class Builtins {
 
 
     void buildFunctionType() {
-        Scope t = BaseFunction.getTable();
+        State t = BaseFunction.getTable();
 
         for (String s : list("func_doc", "__doc__", "func_name", "__name__", "__module__")) {
             t.insert(s, new Url(DATAMODEL_URL), BaseStr, ATTRIBUTE);
@@ -786,7 +786,7 @@ public class Builtins {
     // XXX:  finish wiring this up.  ClassType needs to inherit from it somehow,
     // so we can remove the per-instance attributes from NClassDef.
     void buildClassType() {
-        Scope t = BaseClass.getTable();
+        State t = BaseClass.getTable();
 
         for (String s : list("__name__", "__doc__", "__module__")) {
             t.insert(s, new Url(DATAMODEL_URL), BaseStr, ATTRIBUTE);
@@ -1270,7 +1270,7 @@ public class Builtins {
 
             ClassType timedelta = Datetime_timedelta = newClass("timedelta", table, Object);
             addClass("timedelta", dtUrl("timedelta"), timedelta);
-            Scope tdtable = Datetime_timedelta.getTable();
+            State tdtable = Datetime_timedelta.getTable();
             tdtable.insert("min", dtUrl("timedelta"), timedelta, ATTRIBUTE);
             tdtable.insert("max", dtUrl("timedelta"), timedelta, ATTRIBUTE);
             tdtable.insert("resolution", dtUrl("timedelta"), timedelta, ATTRIBUTE);
@@ -1281,7 +1281,7 @@ public class Builtins {
 
             ClassType tzinfo = Datetime_tzinfo = newClass("tzinfo", table, Object);
             addClass("tzinfo", dtUrl("tzinfo"), tzinfo);
-            Scope tztable = Datetime_tzinfo.getTable();
+            State tztable = Datetime_tzinfo.getTable();
             tztable.insert("utcoffset", dtUrl("tzinfo"), newFunc(timedelta), METHOD);
             tztable.insert("dst", dtUrl("tzinfo"), newFunc(timedelta), METHOD);
             tztable.insert("tzname", dtUrl("tzinfo"), newFunc(BaseStr), METHOD);
@@ -1289,7 +1289,7 @@ public class Builtins {
 
             ClassType date = Datetime_date = newClass("date", table, Object);
             addClass("date", dtUrl("date"), date);
-            Scope dtable = Datetime_date.getTable();
+            State dtable = Datetime_date.getTable();
             dtable.insert("min", dtUrl("date"), date, ATTRIBUTE);
             dtable.insert("max", dtUrl("date"), date, ATTRIBUTE);
             dtable.insert("resolution", dtUrl("date"), timedelta, ATTRIBUTE);
@@ -1316,7 +1316,7 @@ public class Builtins {
 
             ClassType time = Datetime_time = newClass("time", table, Object);
             addClass("time", dtUrl("time"), date);
-            Scope ttable = Datetime_time.getTable();
+            State ttable = Datetime_time.getTable();
 
             ttable.insert("min", dtUrl("time"), time, ATTRIBUTE);
             ttable.insert("max", dtUrl("time"), time, ATTRIBUTE);
@@ -1339,7 +1339,7 @@ public class Builtins {
 
             ClassType datetime = Datetime_datetime = newClass("datetime", table, date, time);
             addClass("datetime", dtUrl("datetime"), datetime);
-            Scope dttable = Datetime_datetime.getTable();
+            State dttable = Datetime_datetime.getTable();
 
             for (String c : list("combine", "fromordinal", "fromtimestamp", "now",
                     "strptime", "today", "utcfromtimestamp", "utcnow"))
@@ -1938,7 +1938,7 @@ public class Builtins {
 
         private void initOsPathModule() {
             ModuleType m = newModule("path");
-            Scope ospath = m.getTable();
+            State ospath = m.getTable();
             ospath.setPath("os.path");  // make sure global qnames are correct
 
             update("path", newLibUrl("os.path.html#module-os.path"), m, MODULE);
@@ -2346,7 +2346,7 @@ public class Builtins {
 
             BaseStruct = newClass("Struct", table, Object);
             addClass("Struct", liburl("struct-objects"), BaseStruct);
-            Scope t = BaseStruct.getTable();
+            State t = BaseStruct.getTable();
             t.insert("pack", liburl("struct-objects"), newFunc(BaseStr), METHOD);
             t.insert("pack_into", liburl("struct-objects"), newFunc(), METHOD);
             t.insert("unpack", liburl("struct-objects"), newFunc(newTuple()), METHOD);
@@ -2525,7 +2525,7 @@ public class Builtins {
             addClass("ZipImportError", liburl(), newException("ZipImportError", table));
 
             ClassType zipimporter = newClass("zipimporter", table, Object);
-            Scope t = zipimporter.getTable();
+            State t = zipimporter.getTable();
             t.insert("find_module", liburl(), zipimporter, METHOD);
             t.insert("get_code", liburl(), unknown(), METHOD);  // XXX:  code object
             t.insert("get_data", liburl(), unknown(), METHOD);

@@ -3,7 +3,7 @@ package org.yinwang.pysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.TypeStack;
 import org.yinwang.pysonar.ast.FunctionDef;
 
@@ -17,7 +17,7 @@ public class FunType extends Type {
     public FunctionDef func;
     @Nullable
     public ClassType cls = null;
-    private Scope env;
+    private State env;
     @Nullable
     public Type selfType;                 // self's type for calls
     public List<Type> defaultTypes;       // types for default parameters (evaluated at def time)
@@ -27,7 +27,7 @@ public class FunType extends Type {
     }
 
 
-    public FunType(FunctionDef func, Scope env) {
+    public FunType(FunctionDef func, State env) {
         this.func = func;
         this.env = env;
     }
@@ -73,7 +73,7 @@ public class FunType extends Type {
     }
 
 
-    public Scope getEnv() {
+    public State getEnv() {
         return env;
     }
 

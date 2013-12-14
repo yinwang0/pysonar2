@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binder;
 import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.Type;
 
@@ -46,7 +46,7 @@ public class FunctionDef extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s) {
+    public Type transform(@NotNull State s) {
         resolveList(decoratorList, s);
         FunType fun = new FunType(this, s.getForwarding());
         fun.getTable().setParent(s);
@@ -55,7 +55,7 @@ public class FunctionDef extends Node {
         Analyzer.self.addUncalled(fun);
         Binding.Kind funkind;
 
-        if (s.getScopeType() == Scope.ScopeType.CLASS) {
+        if (s.getStateType() == State.StateType.CLASS) {
             if ("__init__".equals(name.id) ||
                     "initialize".equals(name.id)) {
                 funkind = Binding.Kind.CONSTRUCTOR;

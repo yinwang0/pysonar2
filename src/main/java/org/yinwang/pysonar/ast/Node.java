@@ -3,7 +3,7 @@ package org.yinwang.pysonar.ast;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar._;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
@@ -134,13 +134,13 @@ public abstract class Node implements java.io.Serializable {
 
 
     @NotNull
-    public static Type resolveExpr(@NotNull Node n, Scope s) {
-        return n.resolve(s);
+    public static Type transformExpr(@NotNull Node n, State s) {
+        return n.transform(s);
     }
 
 
     @NotNull
-    protected abstract Type resolve(Scope s);
+    protected abstract Type transform(State s);
 
 
     public boolean isCall() {
@@ -257,10 +257,10 @@ public abstract class Node implements java.io.Serializable {
      * {@code null}, returns a new {@link org.yinwang.pysonar.types.UnknownType}.
      */
     @NotNull
-    protected Type resolveUnion(@NotNull Collection<? extends Node> nodes, Scope s) {
+    protected Type resolveUnion(@NotNull Collection<? extends Node> nodes, State s) {
         Type result = Analyzer.self.builtins.unknown;
         for (Node node : nodes) {
-            Type nodeType = resolveExpr(node, s);
+            Type nodeType = transformExpr(node, s);
             result = UnionType.union(result, nodeType);
         }
         return result;
@@ -271,13 +271,13 @@ public abstract class Node implements java.io.Serializable {
      * Resolves each element, also construct a result list.
      */
     @Nullable
-    static protected List<Type> resolveList(@Nullable Collection<? extends Node> nodes, Scope s) {
+    static protected List<Type> resolveList(@Nullable Collection<? extends Node> nodes, State s) {
         if (nodes == null) {
             return null;
         } else {
             List<Type> ret = new ArrayList<>();
             for (Node n : nodes) {
-                ret.add(resolveExpr(n, s));
+                ret.add(transformExpr(n, s));
             }
             return ret;
         }

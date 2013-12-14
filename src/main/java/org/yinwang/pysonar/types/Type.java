@@ -3,7 +3,7 @@ package org.yinwang.pysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.TypeStack;
 import org.yinwang.pysonar._;
 
@@ -16,13 +16,13 @@ import java.util.Set;
 public abstract class Type {
 
     @Nullable
-    public Scope table;
+    public State table;
     public boolean mutated = false;
 
     public String file = null;
 
-    public Scope trueState;
-    public Scope falseState;
+    public State trueState;
+    public State falseState;
 
 
     @NotNull
@@ -33,15 +33,15 @@ public abstract class Type {
     }
 
 
-    public void setTable(@NotNull Scope table) {
+    public void setTable(@NotNull State table) {
         this.table = table;
     }
 
 
     @NotNull
-    public Scope getTable() {
+    public State getTable() {
         if (table == null) {
-            table = new Scope(null, Scope.ScopeType.SCOPE);
+            table = new State(null, State.StateType.SCOPE);
         }
         return table;
     }
@@ -252,22 +252,22 @@ public abstract class Type {
     }
 
 
-    public Scope getTrueState() {
+    public State getTrueState() {
         return trueState;
     }
 
 
-    public void setTrueState(Scope trueState) {
+    public void setTrueState(State trueState) {
         this.trueState = trueState;
     }
 
 
-    public Scope getFalseState() {
+    public State getFalseState() {
         return falseState;
     }
 
 
-    public void setFalseState(Scope falseState) {
+    public void setFalseState(State falseState) {
         this.falseState = falseState;
     }
 

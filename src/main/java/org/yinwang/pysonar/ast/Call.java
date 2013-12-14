@@ -45,20 +45,20 @@ public class Call extends Node {
      */
     @NotNull
     @Override
-    public Type resolve(Scope s) {
-        Type fun = resolveExpr(func, s);
+    public Type transform(State s) {
+        Type fun = transformExpr(func, s);
         List<Type> pos = resolveList(args, s);
         Map<String, Type> hash = new HashMap<>();
 
         if (keywords != null) {
             for (Keyword kw : keywords) {
-                hash.put(kw.getArg(), resolveExpr(kw.getValue(), s));
+                hash.put(kw.getArg(), transformExpr(kw.getValue(), s));
             }
         }
 
-        Type kw = kwargs == null ? null : resolveExpr(kwargs, s);
-        Type star = starargs == null ? null : resolveExpr(starargs, s);
-        Type block = blockarg == null ? null : resolveExpr(blockarg, s);
+        Type kw = kwargs == null ? null : transformExpr(kwargs, s);
+        Type star = starargs == null ? null : transformExpr(starargs, s);
+        Type block = blockarg == null ? null : transformExpr(blockarg, s);
 
         if (fun.isUnionType()) {
             Set<Type> types = fun.asUnionType().getTypes();
@@ -136,7 +136,7 @@ public class Call extends Node {
 
         bindMethodAttrs(func);
 
-        Scope funcTable = new Scope(func.getEnv(), Scope.ScopeType.FUNCTION);
+        State funcTable = new State(func.getEnv(), State.StateType.FUNCTION);
 
         if (func.getTable().parent != null) {
             funcTable.setPath(func.getTable().parent.extendPath(func.func.name.id));
@@ -153,7 +153,7 @@ public class Call extends Node {
             func.setSelfType(null);
             return cachedTo;
         } else {
-            Type toType = resolveExpr(func.func.body, funcTable);
+            Type toType = transformExpr(func.func.body, funcTable);
             if (missingReturn(toType)) {
                 Analyzer.self.putProblem(func.func.name, "Function not always return a value");
 
@@ -172,7 +172,7 @@ public class Call extends Node {
     @NotNull
     static private Type bindParams(@Nullable Node call,
                                    @NotNull FunctionDef func,
-                                   @NotNull Scope funcTable,
+                                   @NotNull State funcTable,
                                    @Nullable List<Node> args,
                                    @Nullable Name rest,
                                    @Nullable Name restKw,

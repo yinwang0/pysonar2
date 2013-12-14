@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.ListType;
 import org.yinwang.pysonar.types.Type;
 
@@ -17,7 +17,7 @@ public class Set extends Sequence {
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
+    public Type transform(State s) {
         if (elts.size() == 0) {
             return new ListType();
         }
@@ -25,9 +25,9 @@ public class Set extends Sequence {
         ListType listType = null;
         for (Node elt : elts) {
             if (listType == null) {
-                listType = new ListType(resolveExpr(elt, s));
+                listType = new ListType(transformExpr(elt, s));
             } else {
-                listType.add(resolveExpr(elt, s));
+                listType.add(transformExpr(elt, s));
             }
         }
 

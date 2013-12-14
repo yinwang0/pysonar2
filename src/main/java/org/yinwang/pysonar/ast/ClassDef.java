@@ -43,11 +43,11 @@ public class ClassDef extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s) {
+    public Type transform(@NotNull State s) {
         ClassType classType = new ClassType(getName().id, s);
         List<Type> baseTypes = new ArrayList<>();
         for (Node base : bases) {
-            Type baseType = resolveExpr(base, s);
+            Type baseType = transformExpr(base, s);
             if (baseType.isClassType()) {
                 classType.addSuper(baseType);
             } else if (baseType.isUnionType()) {
@@ -73,12 +73,12 @@ public class ClassDef extends Node {
         // Bind ClassType to name here before resolving the body because the
         // methods need this type as self.
         Binder.bind(s, name, classType, Binding.Kind.CLASS);
-        resolveExpr(body, classType.getTable());
+        transformExpr(body, classType.getTable());
         return Analyzer.self.builtins.Cont;
     }
 
 
-    private void addSpecialAttribute(@NotNull Scope s, String name, Type proptype) {
+    private void addSpecialAttribute(@NotNull State s, String name, Type proptype) {
         Binding b = new Binding(name, Builtins.newTutUrl("classes.html"), proptype, Binding.Kind.ATTRIBUTE);
         s.update(name, b);
         b.markSynthetic();
