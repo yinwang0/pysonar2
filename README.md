@@ -70,6 +70,13 @@ standard lib). This is due to the highlighting code is putting all code and
 their HTML tags into the memory.
 
 
+## How to contribute
+
+PySonar2 is current a fast moving target. There are several big architectural
+changes undergoing. Please contact me before you make any substantial changes,
+otherwise it will unlikely I can merge back your changes. Thanks.
+
+
 ### Copyright (GPLv3)
 
 Copyright (c) 2013 Yin Wang
