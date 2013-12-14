@@ -30,6 +30,7 @@ public class PythonParser extends Parser {
     private String exchangeFile;
     private String endMark;
     private String jsonizer;
+    private String parserLog;
 
 
     public PythonParser() {
@@ -39,6 +40,7 @@ public class PythonParser extends Parser {
         exchangeFile = _.makePathString(tmpDir, "pysonar2", "json." + sid);
         endMark = _.makePathString(tmpDir, "pysonar2", "end." + sid);
         jsonizer = _.makePathString(tmpDir, "pysonar2", "dump_python." + sid);
+        parserLog = _.makePathString(tmpDir, "pysonar2", "parser_log." + sid);
 
         startPythonProcesses();
 
@@ -71,9 +73,10 @@ public class PythonParser extends Parser {
 
 
     public void close() {
-        new File(jsonizer).delete();
         new File(exchangeFile).delete();
         new File(endMark).delete();
+        new File(jsonizer).delete();
+        new File(parserLog).delete();
     }
 
 
@@ -825,6 +828,8 @@ public class PythonParser extends Parser {
         try {
             ProcessBuilder builder = new ProcessBuilder(pythonExe, "-i", jsonizer);
             builder.redirectErrorStream(true);
+            builder.redirectError(new File(parserLog));
+            builder.redirectOutput(new File(parserLog));
             builder.environment().remove("PYTHONPATH");
             p = builder.start();
         } catch (Exception e) {
@@ -857,12 +862,11 @@ public class PythonParser extends Parser {
 
     @Nullable
     public Node parseFileInner(String filename, @NotNull Process pythonProcess) {
-//        Util.msg("parsing: " + filename + " using " + pythonProcess);
+//        _.msg("parsing: " + filename);
 
         File exchange = new File(exchangeFile);
         File marker = new File(endMark);
-        exchange.delete();
-        marker.delete();
+        cleanTemp();
 
         String s1 = _.escapeWindowsPath(filename);
         String s2 = _.escapeWindowsPath(exchangeFile);
@@ -870,8 +874,7 @@ public class PythonParser extends Parser {
         String dumpCommand = "parse_dump('" + s1 + "', '" + s2 + "', '" + s3 + "')";
 
         if (!sendCommand(dumpCommand, pythonProcess)) {
-            exchange.delete();
-            marker.delete();
+            cleanTemp();
             return null;
         }
 
@@ -879,8 +882,7 @@ public class PythonParser extends Parser {
         while (!marker.exists()) {
             if (System.currentTimeMillis() - waitStart > TIMEOUT) {
                 _.msg("\nTimed out while parsing: " + filename);
-                exchange.delete();
-                marker.delete();
+                cleanTemp();
                 startPythonProcesses();
                 return null;
             }
@@ -888,8 +890,7 @@ public class PythonParser extends Parser {
             try {
                 Thread.sleep(1);
             } catch (Exception e) {
-                exchange.delete();
-                marker.delete();
+                cleanTemp();
                 return null;
             }
         }
@@ -898,16 +899,20 @@ public class PythonParser extends Parser {
         try {
             json = _.readFile(exchangeFile);
         } catch (Exception e) {
-            exchange.delete();
-            marker.delete();
+            cleanTemp();
             return null;
         }
 
-        exchange.delete();
-        marker.delete();
+        cleanTemp();
 
         Map<String, Object> map = gson.fromJson(json, Map.class);
         return convert(map);
+    }
+
+
+    private void cleanTemp() {
+        new File(exchangeFile).delete();
+        new File(endMark).delete();
     }
 
 

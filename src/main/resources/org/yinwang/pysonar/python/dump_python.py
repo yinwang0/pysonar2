@@ -75,20 +75,32 @@ def improve_ast(node, s):
 
 # build global table 'idxmap' for lineno <-> index oonversion
 def build_index_map(s):
-    global idxmap
-    line = 0
-    col = 0
+    global line_starts
     idx = 0
-    idxmap = [0]
+    line_starts = [0]
     while idx < len(s):
         if s[idx] == '\n':
-            idxmap.append(idx + 1)
-            line += 1
+            line_starts.append(idx + 1)
         idx += 1
 
 
-def improve_node(node, s):
+# convert (line, col) to offset index
+def map_idx(line, col):
+    return line_starts[line - 1] + col
 
+
+# convert offset index into (line, col)
+def map_line_col(idx):
+    line = 0
+    for start in line_starts:
+        if idx < start:
+            break
+        line += 1
+    col = idx - line_starts[line - 1]
+    return (line, col)
+
+
+def improve_node(node, s):
     if isinstance(node, list):
         for n in node:
             improve_node(n, s)
@@ -129,7 +141,7 @@ def find_start(node, s):
             ret = map_idx(node.lineno, node.col_offset)
         else:                           # special case for """ strings
             i = map_idx(node.lineno, node.col_offset)
-            while i > 0 and i+2 < len(s) and s[i:i+3] != '"""':
+            while i > 0 and i + 2 < len(s) and s[i:i + 3] != '"""':
                 i -= 1
             ret = i
     else:
@@ -145,7 +157,6 @@ def find_start(node, s):
 
 
 def find_end(node, s):
-
     the_end = None
 
     if hasattr(node, 'end'):
@@ -167,7 +178,7 @@ def find_end(node, s):
         while s[i] != '"' and s[i] != "'":
             i += 1
 
-        if i+2 < len(s) and s[i:i+3] == '"""':
+        if i + 2 < len(s) and s[i:i + 3] == '"""':
             q = '"""'
             i += 3
         elif s[i] == '"':
@@ -217,9 +228,9 @@ def find_end(node, s):
             the_end = find_start(node, s) + len('return')
 
     elif (isinstance(node, For) or
-          isinstance(node, While) or
-          isinstance(node, If) or
-          isinstance(node, IfExp)):
+              isinstance(node, While) or
+              isinstance(node, If) or
+              isinstance(node, IfExp)):
         if node.orelse != []:
             the_end = find_end(node.orelse, s)
         else:
@@ -257,7 +268,7 @@ def find_end(node, s):
         the_end = match_paren(s, '{', '}', find_start(node, s));
 
     elif ((not is_python3 and isinstance(node, TryExcept)) or
-          (is_python3 and isinstance(node, Try))):
+              (is_python3 and isinstance(node, Try))):
         if node.orelse != []:
             the_end = find_end(node.orelse, s)
         elif node.handlers != []:
@@ -298,7 +309,6 @@ def find_end(node, s):
 
 
 def add_missing_names(node, s):
-
     if hasattr(node, 'extra_attr'):
         return
 
@@ -363,9 +373,9 @@ def add_missing_names(node, s):
             node._fields += ('opsName',)
 
     elif (isinstance(node, BoolOp) or
-          isinstance(node, BinOp) or
-          isinstance(node, UnaryOp) or
-          isinstance(node, AugAssign)):
+              isinstance(node, BinOp) or
+              isinstance(node, UnaryOp) or
+              isinstance(node, AugAssign)):
         if hasattr(node, 'left'):
             start = find_end(node.left, s)
         else:
@@ -419,22 +429,6 @@ def match_paren(s, open, close, start):
     return i
 
 
-# convert (line, col) to offset index
-def map_idx(line, col):
-    return idxmap[line-1] + col
-
-
-# convert offset index into (line, col)
-def map_line_col(idx):
-    line = 0
-    for start in idxmap:
-        if idx < start:
-            break
-        line += 1
-    col = idx - idxmap[line-1]
-    return (line, col)
-
-
 # convert string to Name
 def str_to_name(s, start):
     i = start;
@@ -473,10 +467,10 @@ def convert_ops(ops, s, start):
     ret = []
     while i < len(s) and j < len(syms):
         oplen = len(syms[j])
-        if s[i:i+oplen] == syms[j]:
+        if s[i:i + oplen] == syms[j]:
             op_node = Name(syms[j], None)
             op_node.start = i
-            op_node.end = i+oplen
+            op_node.end = i + oplen
             op_node.lineno, op_node.col_offset = map_line_col(i)
             ret.append(op_node)
             j += 1
@@ -489,43 +483,43 @@ def convert_ops(ops, s, start):
 # lookup table for operators for convert_ops
 ops_map = {
     # compare:
-    Eq     : '==',
-    NotEq  : '!=',
-    LtE    : '<=',
-    Lt     : '<',
-    GtE    : '>=',
-    Gt     : '>',
-    NotIn  : 'not in',
-    In     : 'in',
-    IsNot  : 'is not',
-    Is     : 'is',
+    Eq: '==',
+    NotEq: '!=',
+    LtE: '<=',
+    Lt: '<',
+    GtE: '>=',
+    Gt: '>',
+    NotIn: 'not in',
+    In: 'in',
+    IsNot: 'is not',
+    Is: 'is',
 
     # BoolOp
-    Or  : 'or',
-    And : 'and',
-    Not : 'not',
-    Invert : '~',
+    Or: 'or',
+    And: 'and',
+    Not: 'not',
+    Invert: '~',
 
     # bit operators
-    BitOr : '|',
-    BitAnd : '&',
-    BitXor : '^',
-    RShift : '>>',
-    LShift : '<<',
+    BitOr: '|',
+    BitAnd: '&',
+    BitXor: '^',
+    RShift: '>>',
+    LShift: '<<',
 
 
     # BinOp
-    Add  : '+',
-    Sub  : '-',
-    Mult : '*',
-    Div  : '/',
-    FloorDiv : '//',
-    Mod  : '%',
-    Pow  : '**',
+    Add: '+',
+    Sub: '-',
+    Mult: '*',
+    Div: '/',
+    FloorDiv: '//',
+    Mod: '%',
+    Pow: '**',
 
     # UnaryOp
-    USub : '-',
-    UAdd : '+',
+    USub: '-',
+    UAdd: '+',
 }
 
 

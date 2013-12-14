@@ -27,6 +27,7 @@ public class RubyParser extends Parser {
     private String exchangeFile;
     private String endMark;
     private String jsonizer;
+    private String parserLog;
 
 
     public RubyParser() {
@@ -36,6 +37,7 @@ public class RubyParser extends Parser {
         exchangeFile = _.makePathString(tmpDir, "pysonar2", "json." + sid);
         endMark = _.makePathString(tmpDir, "pysonar2", "end." + sid);
         jsonizer = _.makePathString(tmpDir, "pysonar2", "dump_ruby." + sid);
+        parserLog = _.makePathString(tmpDir, "pysonar2", "parser_log." + sid);
 
         startRubyProcesses();
 
@@ -535,6 +537,8 @@ public class RubyParser extends Parser {
         try {
             ProcessBuilder builder = new ProcessBuilder(interpExe);
             builder.redirectErrorStream(true);
+            builder.redirectError(new File(parserLog));
+            builder.redirectOutput(new File(parserLog));
             builder.environment().remove("PYTHONPATH");
             p = builder.start();
         } catch (Exception e) {
@@ -570,8 +574,7 @@ public class RubyParser extends Parser {
 
         File exchange = new File(exchangeFile);
         File marker = new File(endMark);
-        exchange.delete();
-        marker.delete();
+        cleanTemp();
 
         String s1 = _.escapeWindowsPath(filename);
         String s2 = _.escapeWindowsPath(exchangeFile);
@@ -579,8 +582,7 @@ public class RubyParser extends Parser {
         String dumpCommand = "parse_dump('" + s1 + "', '" + s2 + "', '" + s3 + "')";
 
         if (!sendCommand(dumpCommand, rubyProcess)) {
-            exchange.delete();
-            marker.delete();
+            cleanTemp();
             return null;
         }
 
@@ -588,8 +590,7 @@ public class RubyParser extends Parser {
         while (!marker.exists()) {
             if (System.currentTimeMillis() - waitStart > TIMEOUT) {
                 _.msg("\nTimed out while parsing: " + filename);
-                exchange.delete();
-                marker.delete();
+                cleanTemp();
                 startRubyProcesses();
                 return null;
             }
@@ -597,8 +598,7 @@ public class RubyParser extends Parser {
             try {
                 Thread.sleep(1);
             } catch (Exception e) {
-                exchange.delete();
-                marker.delete();
+                cleanTemp();
                 return null;
             }
         }
@@ -607,13 +607,11 @@ public class RubyParser extends Parser {
         try {
             json = _.readFile(exchangeFile);
         } catch (Exception e) {
-            exchange.delete();
-            marker.delete();
+            cleanTemp();
             return null;
         }
 
-        exchange.delete();
-        marker.delete();
+        cleanTemp();
 
         Map<String, Object> map = gson.fromJson(json, Map.class);
         return convert(map);
@@ -632,6 +630,12 @@ public class RubyParser extends Parser {
             _.msg("\nFailed to send command to Ruby interpreter: " + cmd);
             return false;
         }
+    }
+
+
+    private void cleanTemp() {
+        new File(exchangeFile).delete();
+        new File(endMark).delete();
     }
 
 
