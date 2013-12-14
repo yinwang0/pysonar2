@@ -153,7 +153,7 @@ public class State {
     }
 
 
-    public boolean isGlobalName(String name) {
+    public boolean isGlobalName(@NotNull String name) {
         if (globalNames != null) {
             return globalNames.contains(name);
         } else if (parent != null) {
@@ -242,7 +242,7 @@ public class State {
      * recurse on the parent table.
      */
     @Nullable
-    public List<Binding> lookup(String name) {
+    public List<Binding> lookup(@NotNull String name) {
         List<Binding> b = getModuleBindingIfGlobal(name);
         if (b != null) {
             return b;
@@ -393,7 +393,7 @@ public class State {
      * If {@code name} is declared as a global, return the module binding.
      */
     @Nullable
-    private List<Binding> getModuleBindingIfGlobal(String name) {
+    private List<Binding> getModuleBindingIfGlobal(@NotNull String name) {
         if (isGlobalName(name)) {
             State module = getGlobalTable();
             if (module != this) {

@@ -124,7 +124,7 @@ class AstSimplifier
               :id => exp[1],
               :location => exp[2]
           }
-        when :symbol
+        when :symbol, :dyna_symbol
           sym = convert(exp[1])
           sym[:type] = :symbol
           sym
@@ -440,13 +440,13 @@ class AstSimplifier
         when :@regexp_end
           {
               :type => :string,
-              :value => exp[1],
+              :id => exp[1],
               :location => exp[2]
           }
         when :@tstring_content
           {
               :type => :string,
-              :value => exp[1],
+              :id => exp[1],
               :location => exp[2]
           }
         when :string_content
@@ -454,7 +454,7 @@ class AstSimplifier
               :type => :string,
               :value => []
           }
-        when :string_add
+        when :string_add, :xstring_add
           convert(exp[2])
         when :string_concat
           convert([:binary, exp[1], :string_concat, exp[2]])
@@ -508,6 +508,7 @@ class AstSimplifier
             :symbol_literal,
             :regexp_literal,
             :string_literal,
+            :string_embexpr,
             :mrhs_new_from_args
           # superflous wrappers that contains one object, just remove it
           convert(exp[1])
@@ -540,7 +541,7 @@ class AstSimplifier
       ret = {
           :type => :if,
           :test => test,
-          :then => convert(exp[2]),
+          :body => convert(exp[2]),
       }
       if exp[3]
         ret[:else] = convert_when(exp[3], value)

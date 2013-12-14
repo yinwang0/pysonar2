@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -113,8 +114,8 @@ public class RubyParser extends Parser {
             return new Block(stmts, start, end);
         }
 
-        if (type.equals("def")) {
-            Name name = type.equals("Lambda") ? null : (Name) convert(map.get("name"));
+        if (type.equals("def") || type.equals("funblock")) {
+            Name name = type.equals("funblock") ? null : (Name) convert(map.get("name"));
             Block body = (Block) convert(map.get("body"));
             Map<String, Object> argsMap = (Map<String, Object>) map.get("params");
             List<Node> positional = convertList(argsMap.get("positional"));
@@ -278,6 +279,9 @@ public class RubyParser extends Parser {
 
         if (type.equals("array")) {
             List<Node> elts = convertList(map.get("elts"));
+            if (elts == null) {
+                elts = Collections.emptyList();
+            }
             return new NList(elts, start, end);
         }
 
@@ -307,7 +311,7 @@ public class RubyParser extends Parser {
         }
 
         if (type.equals("string")) {
-            String s = (String) map.get("value");
+            String s = (String) map.get("id");
             return new Str(s, start, end);
         }
 
@@ -422,7 +426,7 @@ public class RubyParser extends Parser {
             return Op.Add;
         }
 
-        if (name.equals("-")) {
+        if (name.equals("-") || name.equals("-@")) {
             return Op.Sub;
         }
 
