@@ -281,6 +281,17 @@ public class RubyParser extends Parser {
             return new NList(elts, start, end);
         }
 
+
+        if (type.equals("dot2") || type.equals("dot3")) {
+            Node from = convert(map.get("from"));
+            Node to = convert(map.get("to"));
+            List<Node> elts = new ArrayList<>();
+            elts.add(from);
+            elts.add(to);
+            return new NList(elts, start, end);
+        }
+
+
         if (type.equals("star")) { // f(*[1, 2, 3, 4])
             Node value = convert(map.get("value"));
             return new Starred(value, start, end);
