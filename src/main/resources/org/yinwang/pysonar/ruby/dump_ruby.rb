@@ -148,6 +148,18 @@ class AstSimplifier
               :params => convert(exp[2]),
               :body => convert(exp[3])
           }
+        when :defs
+          name = {
+              :type => :attribute,
+              :value => convert(exp[1]),
+              :attr => convert(exp[3])
+          }
+          {
+              :type => :def,
+              :name => name,
+              :params => convert(exp[4]),
+              :body => convert(exp[5])
+          }
         when :do_block
           {
               :type => :funblock,
