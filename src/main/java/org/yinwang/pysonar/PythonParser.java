@@ -165,7 +165,7 @@ public class PythonParser extends Parser {
             Node right = convert(map.get("right"));
             Op op = convertOp(map.get("op"));
 
-            // compositional operators
+            // desugar complex operators
             if (op == Op.NotEqual) {
                 Node eq = new BinOp(Op.Equal, left, right, start, end);
                 return new UnaryOp(Op.Not, eq, start, end);
@@ -214,12 +214,10 @@ public class PythonParser extends Parser {
             return new Break(start, end);
         }
 
-
         if (type.equals("Bytes")) {
             Object s = map.get("s");
             return new Bytes(s, start, end);
         }
-
 
         if (type.equals("Call")) {
             Node func = convert(map.get("func"));

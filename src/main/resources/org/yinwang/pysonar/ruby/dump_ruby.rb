@@ -315,21 +315,12 @@ class AstSimplifier
           end
           ret
         when :case
-          ret = {
-              :type => :case,
-              :clauses => convert(exp[2])
-          }
           if exp[1]
-            ret[:expr] = convert(exp[1])
+            value = convert(exp[1])
+          else
+            value = nil
           end
-          ret
-        when :when
-          {
-              :type => :when,
-              :pattern => convert(exp[1]),
-              :value => convert(exp[2]),
-              :else => convert(exp[3])
-          }
+          convert_when(exp[2], value)
         when :while, :while_mod
           {
               :type => :while,
@@ -376,8 +367,7 @@ class AstSimplifier
             if exp[1][0].is_a? Array
               ret[:exceptions] = convert_array(exp[1])
             else
-              exceptions = convert(exp[1])
-              ret[:expections] = exceptions[:positional]
+              ret[:expections] = convert(exp[1])[:positional]
             end
           end
           if exp[2]
@@ -532,6 +522,41 @@ class AstSimplifier
 
   def convert_array(arr)
     arr.map { |x| convert(x) }
+  end
+
+
+  def convert_when(exp, value)
+    if exp[0] == :when
+      if value
+        test = {
+            :type => :binary,
+            :op => op(:in),
+            :left => value,
+            :right => args_to_array(convert(exp[1]))
+        }
+      else
+        test = convert(exp[1])
+      end
+      ret = {
+          :type => :if,
+          :test => test,
+          :then => convert(exp[2]),
+      }
+      if exp[3]
+        ret[:else] = convert_when(exp[3], value)
+      end
+      ret
+    elsif exp[0] == :else
+      convert(exp[1])
+    end
+  end
+
+
+  def args_to_array(args)
+    {
+        :type => :array,
+        :elts => args[:positional]
+    }
   end
 
 

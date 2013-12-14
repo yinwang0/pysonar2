@@ -173,7 +173,7 @@ public class RubyParser extends Parser {
             Node right = convert(map.get("right"));
             Op op = convertOp(map.get("op"));
 
-            // compositional operators
+            // desugar complex operators
             if (op == Op.NotEqual) {
                 Node eq = new BinOp(Op.Equal, left, right, start, end);
                 return new UnaryOp(Op.Not, eq, start, end);
@@ -281,7 +281,6 @@ public class RubyParser extends Parser {
             return new NList(elts, start, end);
         }
 
-
         if (type.equals("dot2") || type.equals("dot3")) {
             Node from = convert(map.get("from"));
             Node to = convert(map.get("to"));
@@ -290,7 +289,6 @@ public class RubyParser extends Parser {
             elts.add(to);
             return new NList(elts, start, end);
         }
-
 
         if (type.equals("star")) { // f(*[1, 2, 3, 4])
             Node value = convert(map.get("value"));
@@ -470,17 +468,13 @@ public class RubyParser extends Parser {
         }
 
 
-        if (name.equals("In")) {
+        if (name.equals("in")) {
             return Op.In;
         }
 
 
         if (name.equals("<<")) {
             return Op.LShift;
-        }
-
-        if (name.equals("FloorDiv")) {
-            return Op.FloorDiv;
         }
 
         if (name.equals("%")) {
@@ -521,10 +515,6 @@ public class RubyParser extends Parser {
 
         if (name.equals(">=")) {
             return Op.GtE;
-        }
-
-        if (name.equals("NotIn")) {
-            return Op.NotIn;
         }
 
         _.die("illegal operator: " + name);
