@@ -6,6 +6,7 @@ import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binder;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.State;
+import org.yinwang.pysonar.types.ClassType;
 import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.Type;
 
@@ -26,12 +27,22 @@ public class FunctionDef extends Node {
     public Node body;
     private List<Node> decoratorList;
     public boolean called = false;
+    public boolean isLamba = false;
 
 
-    public FunctionDef(Name name, List<Node> args, Block body, List<Node> defaults,
-                       Name vararg, Name kwarg, int start, int end) {
+    public FunctionDef(Name name, List<Node> args, Node body, List<Node> defaults,
+                       Name vararg, Name kwarg, int start, int end)
+    {
         super(start, end);
-        this.name = name;
+        if (name != null) {
+            this.name = name;
+        } else {
+            isLamba = true;
+            String fn = genLambdaName();
+            this.name = new Name(fn, start, start + "lambda".length());
+            addChildren(this.name);
+        }
+
         this.args = args;
         this.body = body;
         this.defaults = defaults;
@@ -55,24 +66,39 @@ public class FunctionDef extends Node {
         Analyzer.self.addUncalled(fun);
         Binding.Kind funkind;
 
-        if (s.getStateType() == State.StateType.CLASS) {
-            if ("__init__".equals(name.id) ||
-                    "initialize".equals(name.id)) {
-                funkind = Binding.Kind.CONSTRUCTOR;
-            } else {
-                funkind = Binding.Kind.METHOD;
-            }
+        if (isLamba) {
+            return fun;
         } else {
-            funkind = Binding.Kind.FUNCTION;
-        }
+            if (s.getStateType() == State.StateType.CLASS) {
+                if ("__init__".equals(name.id) ||
+                        "initialize".equals(name.id))
+                {
+                    funkind = Binding.Kind.CONSTRUCTOR;
+                } else {
+                    funkind = Binding.Kind.METHOD;
+                }
+            } else {
+                funkind = Binding.Kind.FUNCTION;
+            }
 
-        Type outType = s.getType();
-        if (outType != null && outType.isClassType()) {
-            fun.setCls(outType.asClassType());
-        }
+            Type outType = s.getType();
+            if (outType instanceof ClassType) {
+                fun.setCls(outType.asClassType());
+            }
 
-        Binder.bind(s, name, fun, funkind);
-        return Analyzer.self.builtins.Cont;
+            Binder.bind(s, name, fun, funkind);
+            return Analyzer.self.builtins.Cont;
+        }
+    }
+
+
+    private static int lambdaCounter = 0;
+
+
+    @NotNull
+    public static String genLambdaName() {
+        lambdaCounter = lambdaCounter + 1;
+        return "lambda%" + lambdaCounter;
     }
 
 

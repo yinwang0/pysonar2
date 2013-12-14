@@ -318,12 +318,12 @@ public class PythonParser extends Parser {
             return new For(target, iter, body, orelse, start, end);
         }
 
-        if (type.equals("FunctionDef")) {
-            Name name = (Name) convert(map.get("name_node"));
+        if (type.equals("FunctionDef") || type.equals("Lambda")) {
+            Name name = type.equals("Lambda") ? null : (Name) convert(map.get("name_node"));
             Map<String, Object> argsMap = (Map<String, Object>) map.get("args");
             List<Node> args = convertList(argsMap.get("args"));
             List<Node> defaults = convertList(argsMap.get("defaults"));
-            Block body = convertBlock(map.get("body"));
+            Node body = type.equals("Lambda") ? convert(map.get("body")) : convertBlock(map.get("body"));
             Name vararg = argsMap.get("vararg") == null ? null : new Name((String) argsMap.get("vararg"));
             Name kwarg = argsMap.get("kwarg") == null ? null : new Name((String) argsMap.get("kwarg"));
             return new FunctionDef(name, args, body, defaults, vararg, kwarg, start, end);
@@ -392,15 +392,6 @@ public class PythonParser extends Parser {
             return new Keyword(arg, value, start, end);
         }
 
-        if (type.equals("Lambda")) {
-            Map<String, Object> argsMap = (Map<String, Object>) map.get("args");
-            List<Node> args = convertList(argsMap.get("args"));
-            List<Node> defaults = convertList(argsMap.get("defaults"));
-            Node body = convert(map.get("body"));
-            Name vararg = argsMap.get("vararg") == null ? null : new Name((String) argsMap.get("vararg"));
-            Name kwarg = argsMap.get("kwarg") == null ? null : new Name((String) argsMap.get("kwarg"));
-            return new Lambda(args, body, defaults, vararg, kwarg, start, end);
-        }
 
         if (type.equals("List")) {
             List<Node> elts = convertList(map.get("elts"));
