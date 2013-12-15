@@ -2,10 +2,7 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Binder;
-import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.State;
+import org.yinwang.pysonar.*;
 import org.yinwang.pysonar.types.ClassType;
 import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.Type;
@@ -59,7 +56,17 @@ public class Function extends Node {
     @Override
     public Type transform(@NotNull State s) {
         resolveList(decoratorList, s);
-        FunType fun = new FunType(this, s.getForwarding());
+
+        State env;
+        if (Analyzer.self.language == Language.PYTHON) {
+            // python method's outer scope is not the class...
+            env = s.getForwarding();
+        } else {
+            // all other language should be usual?
+            env = s;
+        }
+
+        FunType fun = new FunType(this, env);
         fun.getTable().setParent(s);
         fun.getTable().setPath(s.extendPath(name.id));
         fun.setDefaultTypes(resolveList(defaults, s));
