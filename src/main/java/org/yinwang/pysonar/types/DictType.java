@@ -10,11 +10,6 @@ public class DictType extends Type {
     public Type valueType;
 
 
-    public DictType() {
-        this(Analyzer.self.builtins.unknown, Analyzer.self.builtins.unknown);
-    }
-
-
     public DictType(Type key0, Type val0) {
         keyType = key0;
         valueType = val0;
@@ -64,22 +59,23 @@ public class DictType extends Type {
 
     @Override
     protected String printType(@NotNull CyclicTypeRecorder ctr) {
-        StringBuilder sb = new StringBuilder();
-
-        Integer num = ctr.visit(this);
-        if (num != null) {
-            sb.append("#").append(num);
-        } else {
-            ctr.push(this);
-            sb.append("{");
-            sb.append(keyType.printType(ctr));
-            sb.append(" : ");
-            sb.append(valueType.printType(ctr));
-            sb.append("}");
-            ctr.pop(this);
-        }
-
-        return sb.toString();
+//        StringBuilder sb = new StringBuilder();
+//
+//        Integer num = ctr.visit(this);
+//        if (num != null) {
+//            sb.append("#").append(num);
+//        } else {
+//            ctr.push(this);
+//            sb.append("{");
+//            sb.append(keyType.printType(ctr));
+//            sb.append(" : ");
+//            sb.append(valueType.printType(ctr));
+//            sb.append("}");
+//            ctr.pop(this);
+//        }
+//
+//        return sb.toString();
+        return "dict";
     }
 
 }

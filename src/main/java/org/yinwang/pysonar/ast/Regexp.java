@@ -7,11 +7,11 @@ import org.yinwang.pysonar.types.Type;
 
 
 public class Regexp extends Node {
-    public String pattern;
-    public String end;
+    public Node pattern;
+    public Node end;
 
 
-    public Regexp(String pattern, String regexpEnd, int start, int end) {
+    public Regexp(Node pattern, Node regexpEnd, int start, int end) {
         super(start, end);
         this.pattern = pattern;
         this.end = regexpEnd;

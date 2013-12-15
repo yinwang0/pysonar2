@@ -280,7 +280,7 @@ public class Call extends Node {
             }
         }
 
-        if (block != null || func.blockarg != null) {
+        if (func.blockarg != null && block != null) {
             Binder.bind(funcTable, func.blockarg, block, Binding.Kind.PARAMETER);
         }
 

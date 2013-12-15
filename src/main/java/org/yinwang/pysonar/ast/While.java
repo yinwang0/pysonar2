@@ -10,11 +10,11 @@ import org.yinwang.pysonar.types.UnionType;
 public class While extends Node {
 
     public Node test;
-    public Block body;
-    public Block orelse;
+    public Node body;
+    public Node orelse;
 
 
-    public While(Node test, Block body, Block orelse, int start, int end) {
+    public While(Node test, Node body, Node orelse, int start, int end) {
         super(start, end);
         this.test = test;
         this.body = body;

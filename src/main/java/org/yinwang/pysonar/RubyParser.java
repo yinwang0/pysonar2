@@ -20,7 +20,7 @@ import java.util.Map;
 public class RubyParser extends Parser {
 
     private static final String RUBY_EXE = "irb";
-    private static final int TIMEOUT = 10000;
+    private static final int TIMEOUT = 15000;
 
     @Nullable
     Process rubyProcess;
@@ -87,7 +87,7 @@ public class RubyParser extends Parser {
 
 
         if (type.equals("program")) {
-            Block b = (Block) convert(map.get("body"));
+            Node b = convert(map.get("body"));
             String file = (String) map.get("filename");
             if (file != null) {
                 b.setFile(_.unifyPath(file));
@@ -114,8 +114,17 @@ public class RubyParser extends Parser {
             return new Block(stmts, start, end);
         }
 
-        if (type.equals("def") || type.equals("funblock")) {
-            Name name = type.equals("funblock") ? null : (Name) convert(map.get("name"));
+        if (type.equals("def") || type.equals("lambda")) {
+            Node binder = convert(map.get("name"));
+            Name name = null;
+            if (type.equals("lambda")) {
+                name = null;
+            } else if (binder instanceof Attribute) {
+                name = ((Attribute) binder).attr;
+            } else if (binder instanceof Name) {
+                name = (Name) binder;
+            }
+
             Block body = (Block) convert(map.get("body"));
             Map<String, Object> argsMap = (Map<String, Object>) map.get("params");
             List<Node> positional = convertList(argsMap.get("positional"));
@@ -137,16 +146,17 @@ public class RubyParser extends Parser {
                 List<Node> posKey = convertList(args.get("positional"));
                 List<Node> pos = new ArrayList<>();
                 List<Keyword> kws = new ArrayList<>();
-                for (Node node : posKey) {
-                    if (node.isAssign()) {
-                        kws.add(new Keyword(node.asAssign().target.asName().id,
-                                node.asAssign().value,
-                                node.start,
-                                node.end));
-                    } else {
-                        pos.add(node);
+                if (posKey != null) {
+                    for (Node node : posKey) {
+                        if (node.isAssign() && node.asAssign().target.isName()) {
+                            kws.add(new Keyword(node.asAssign().target.asName().id,
+                                    node.asAssign().value,
+                                    node.start,
+                                    node.end));
+                        } else {
+                            pos.add(node);
+                        }
                     }
-
                 }
 
                 ret = new Call(func, pos, kws, null, null, start, end);
@@ -180,6 +190,11 @@ public class RubyParser extends Parser {
                 return new UnaryOp(Op.Not, eq, start, end);
             }
 
+            if (op == Op.NotMatch) {
+                Node eq = new BinOp(Op.Match, left, right, start, end);
+                return new UnaryOp(Op.Not, eq, start, end);
+            }
+
             if (op == Op.LtE) {
                 Node lt = new BinOp(Op.Lt, left, right, start, end);
                 Node eq = new BinOp(Op.Eq, left, right, start, end);
@@ -206,7 +221,6 @@ public class RubyParser extends Parser {
 
         }
 
-
         if (type.equals("void")) {
             return new Pass(start, end);
         }
@@ -217,13 +231,20 @@ public class RubyParser extends Parser {
         }
 
         if (type.equals("class")) {
-            Name name = (Name) convert(map.get("name"));
+            Node binder = convert(map.get("name"));
+            Name name = null;
+            if (binder instanceof Attribute) {
+                name = ((Attribute) binder).attr;
+            } else if (binder instanceof Name) {
+                name = (Name) binder;
+            }
+
             Node base = convert(map.get("super"));
             List<Node> bases = new ArrayList<>();
             if (base != null) {
                 bases.add(base);
             }
-            Block body = (Block) convert(map.get("body"));
+            Node body = convert(map.get("body"));
             return new Class(name, bases, body, start, end);
         }
 
@@ -243,8 +264,12 @@ public class RubyParser extends Parser {
 
             if (entries != null) {
                 for (Map<String, Object> e : entries) {
-                    keys.add(convert(e.get("key")));
-                    values.add(convert(e.get("value")));
+                    Node k = convert(e.get("key"));
+                    Node v = convert(e.get("value"));
+                    if (k != null && v != null) {
+                        keys.add(k);
+                        values.add(v);
+                    }
                 }
             }
             return new Dict(keys, values, start, end);
@@ -285,6 +310,21 @@ public class RubyParser extends Parser {
             return new NList(elts, start, end);
         }
 
+        if (type.equals("args")) {
+            List<Node> elts = convertList(map.get("positional"));
+            if (elts != null) {
+                return new NList(elts, start, end);
+            } else {
+                elts = convertList(map.get("star"));
+                if (elts != null) {
+                    return new NList(elts, start, end);
+                } else {
+                    elts = Collections.emptyList();
+                    return new NList(elts, start, end);
+                }
+            }
+        }
+
         if (type.equals("dot2") || type.equals("dot3")) {
             Node from = convert(map.get("from"));
             Node to = convert(map.get("to"));
@@ -316,9 +356,9 @@ public class RubyParser extends Parser {
         }
 
         if (type.equals("regexp")) {
-            Str pattern = (Str) convert(map.get("pattern"));
-            Str regexp_end = (Str) convert(map.get("regexp_end"));
-            return new Regexp(pattern.value, regexp_end.value, start, end);
+            Node pattern = convert(map.get("pattern"));
+            Node regexp_end = convert(map.get("regexp_end"));
+            return new Regexp(pattern, regexp_end, start, end);
         }
 
         // Ruby's subscript is Python's Slice with step size 1
@@ -333,7 +373,9 @@ public class RubyParser extends Parser {
                 Slice slice = new Slice(s.get(0), null, s.get(1), s.get(0).start, s.get(1).end);
                 return new Subscript(value, slice, start, end);
             } else {
-                _.die("illegal format of subscript, please fix parser");
+                // failed to parse the subscript part
+                // cheat by returning the value
+                return value;
             }
         }
 
@@ -352,7 +394,7 @@ public class RubyParser extends Parser {
 
         if (type.equals("while")) {
             Node test = convert(map.get("test"));
-            Block body = (Block) convert(map.get("body"));
+            Node body = convert(map.get("body"));
             return new While(test, body, null, start, end);
         }
 
@@ -372,6 +414,11 @@ public class RubyParser extends Parser {
             return new Name(id, start, end);
         }
 
+        if (type.equals("cvar")) {
+            String id = (String) map.get("id");
+            return new Name(id, NameType.CLASS, start, end);
+        }
+
         if (type.equals("ivar")) {
             String id = (String) map.get("id");
             return new Name(id, NameType.INSTANCE, start, end);
@@ -383,10 +430,10 @@ public class RubyParser extends Parser {
         }
 
 
-        if (type.equals("symbol")) {
-            String id = (String) map.get("id");
-            return new Name(id, start, end);
-        }
+//        if (type.equals("symbol")) {
+//            String id = (String) map.get("id");
+//            return new Name(id, start, end);
+//        }
 
         if (type.equals("int") || type.equals("float")) {
             Object n = map.get("value");
@@ -394,7 +441,6 @@ public class RubyParser extends Parser {
         }
 
         _.die("[please report parser bug]: unexpected ast node: " + type);
-
         return null;
     }
 
@@ -426,7 +472,7 @@ public class RubyParser extends Parser {
             return Op.Add;
         }
 
-        if (name.equals("-") || name.equals("-@")) {
+        if (name.equals("-") || name.equals("-@") || name.equals("<=>")) {
             return Op.Sub;
         }
 
@@ -442,12 +488,16 @@ public class RubyParser extends Parser {
             return Op.Pow;
         }
 
-        if (name.equals("==")) {
-            return Op.Equal;
+        if (name.equals("=~")) {
+            return Op.Match;
         }
 
-        if (name.equals("Is")) {
-            return Op.Eq;
+        if (name.equals("!~")) {
+            return Op.NotMatch;
+        }
+
+        if (name.equals("==") || name.equals("===")) {
+            return Op.Equal;
         }
 
         if (name.equals("<")) {
@@ -493,11 +543,11 @@ public class RubyParser extends Parser {
             return Op.Invert;
         }
 
-        if (name.equals("and")) {
+        if (name.equals("and") || name.equals("&&")) {
             return Op.And;
         }
 
-        if (name.equals("or")) {
+        if (name.equals("or") || name.equals("||")) {
             return Op.Or;
         }
 
@@ -509,16 +559,16 @@ public class RubyParser extends Parser {
             return Op.NotEqual;
         }
 
-        if (name.equals("IsNot")) {
-            return Op.NotEq;
-        }
-
         if (name.equals("<=")) {
             return Op.LtE;
         }
 
         if (name.equals(">=")) {
             return Op.GtE;
+        }
+
+        if (name.equals("defined")) {
+            return Op.Defined;
         }
 
         _.die("illegal operator: " + name);
@@ -593,7 +643,7 @@ public class RubyParser extends Parser {
 
     @Nullable
     public Node parseFileInner(String filename, @NotNull Process rubyProcess) {
-//        Util.msg("parsing: " + filename + " using " + pythonProcess);
+        _.msg("parsing: " + filename);
 
         File exchange = new File(exchangeFile);
         File marker = new File(endMark);
@@ -642,7 +692,6 @@ public class RubyParser extends Parser {
 
 
     private boolean sendCommand(String cmd, @NotNull Process rubyProcess) {
-        _.msg("sending cmd: " + cmd);
         try {
             OutputStreamWriter writer = new OutputStreamWriter(rubyProcess.getOutputStream());
             writer.write(cmd);

@@ -1,6 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.*;
 import org.yinwang.pysonar.types.ClassType;
 import org.yinwang.pysonar.types.DictType;
@@ -13,15 +14,20 @@ import java.util.List;
 
 public class Class extends Node {
 
-    @NotNull
+    @Nullable
     public Name name;
     public List<Node> bases;
-    public Block body;
+    public Node body;
 
 
-    public Class(@NotNull Name name, List<Node> bases, Block body, int start, int end) {
+    public Class(@Nullable Name name, List<Node> bases, Node body, int start, int end) {
         super(start, end);
-        this.name = name;
+        if (name != null) {
+            this.name = name;
+        } else {
+            this.name = new Name(genClassName(), start, start + 1);
+            addChildren(this.name);
+        }
         this.bases = bases;
         this.body = body;
         addChildren(name, this.body);
@@ -38,6 +44,15 @@ public class Class extends Node {
     @NotNull
     public Name getName() {
         return name;
+    }
+
+
+    private static int classCounter = 0;
+
+    @NotNull
+    public static String genClassName() {
+        classCounter = classCounter + 1;
+        return "class%" + classCounter;
     }
 
 
@@ -66,14 +81,17 @@ public class Class extends Node {
         Builtins builtins = Analyzer.self.builtins;
         addSpecialAttribute(classType.getTable(), "__bases__", new TupleType(baseTypes));
         addSpecialAttribute(classType.getTable(), "__name__", builtins.BaseStr);
-        addSpecialAttribute(classType.getTable(), "__dict__", new DictType(builtins.BaseStr, Analyzer.self.builtins.unknown));
+        addSpecialAttribute(classType.getTable(), "__dict__",
+                new DictType(builtins.BaseStr, Analyzer.self.builtins.unknown));
         addSpecialAttribute(classType.getTable(), "__module__", builtins.BaseStr);
         addSpecialAttribute(classType.getTable(), "__doc__", builtins.BaseStr);
 
         // Bind ClassType to name here before resolving the body because the
         // methods need this type as self.
         Binder.bind(s, name, classType, Binding.Kind.CLASS);
-        transformExpr(body, classType.getTable());
+        if (body != null) {
+            transformExpr(body, classType.getTable());
+        }
         return Analyzer.self.builtins.Cont;
     }
 

@@ -67,6 +67,9 @@ class AstSimplifier
 
   def convert_locations(obj)
     if obj.is_a?(Hash)
+      if obj[:type] == :binary and not obj[:left]
+        puts "problem obj: #{obj.inspect}"
+      end
       new_hash = {}
 
       obj.each do |k, v|
@@ -112,7 +115,7 @@ class AstSimplifier
               :body => convert(exp[2]),
               :filename => @filename
           }
-        when :@ident
+        when :@ident, :@op
           {
               :type => :name,
               :id => exp[1],
@@ -124,10 +127,22 @@ class AstSimplifier
               :id => exp[1],
               :location => exp[2]
           }
-        when :symbol, :dyna_symbol
+        when :dyna_symbol
+          # ignore dynamic symbols for now
+          {
+              :type => :name,
+              :id => '#dyna_symbol'
+          }
+        when :symbol
           sym = convert(exp[1])
-          sym[:type] = :symbol
+          sym[:type] = :name
           sym
+        when :@cvar
+          {
+              :type => :cvar,
+              :id => exp[1][2..-1],
+              :location => exp[2]
+          }
         when :@ivar
           {
               :type => :ivar,
@@ -139,6 +154,12 @@ class AstSimplifier
           {
               :type => :name,
               :id => exp[1],
+              :location => exp[2]
+          }
+        when :@label
+          {
+              :type => :name,
+              :id => exp[1][0..-2],
               :location => exp[2]
           }
         when :def
@@ -162,13 +183,19 @@ class AstSimplifier
           }
         when :do_block
           {
-              :type => :funblock,
+              :type => :lambda,
+              :params => convert(exp[1]),
+              :body => convert(exp[2])
+          }
+        when :lambda
+          {
+              :type => :lambda,
               :params => convert(exp[1]),
               :body => convert(exp[2])
           }
         when :brace_block
           {
-              :type => :funblock,
+              :type => :lambda,
               :params => convert(exp[1]),
               :body => convert(exp[2])
           }
@@ -179,6 +206,9 @@ class AstSimplifier
           end
           if exp[2]
             # ret[:keyword] = exp[2].map { |x| make_keyword(x) }
+            unless ret[:positional]
+              ret[:positional] = []
+            end
             exp[2].each { |x| ret[:positional].push(convert(x[0])) }
             ret[:defaults] = exp[2].map { |x| convert(x[1]) }
           end
@@ -199,7 +229,7 @@ class AstSimplifier
             params[:block_var] = convert_array(exp[2])
           end
           params
-        when :class
+        when :class, :sclass
           ret = {
               :type => :class,
               :name => convert(exp[1]),
@@ -238,7 +268,13 @@ class AstSimplifier
               :func => func,
               :args => convert(exp[4])
           }
-        when :call, :fcall, :super
+        when :super
+          {
+              :type => :call,
+              :func => {:type => :name, :id => :super},
+              :args => convert(exp[1])
+          }
+        when :call, :fcall
           if exp[2] == :'.' or exp[2] == :'::'
             func = {
                 :type => :attribute,
@@ -252,16 +288,16 @@ class AstSimplifier
               :type => :call,
               :func => func,
           }
-        when :args_new
+        when :args_new, :mlhs_new, :mrhs_new, :words_new, :word_new, :qwords_new
           {
               :type => :args,
               :positional => []
           }
-        when :args_add, :mrhs_add
+        when :args_add, :mlhs_add, :mrhs_add, :word_add, :words_add, :qwords_add
           args = convert(exp[1])
           args[:positional].push(convert(exp[2]))
           args
-        when :args_add_star
+        when :args_add_star, :mrhs_add_star, :mlhs_add_star
           args = convert(exp[1])
           if exp[2]
             args[:star] = convert(exp[2])
@@ -273,7 +309,7 @@ class AstSimplifier
             args[:block] = convert(exp[2])
           end
           args
-        when :assign
+        when :assign, :massign
           {
               :type => :assign,
               :target => convert(exp[1]),
@@ -295,16 +331,16 @@ class AstSimplifier
           }
         when :alias
           {
-              :type => :alias,
-              :name1 => convert(exp[1]),
-              :name2 => convert(exp[2])
+              :type => :assign,
+              :target => convert(exp[1]),
+              :value => convert(exp[2])
           }
         when :undef
           {
               :type => :undef,
               :names => convert_array(exp[1]),
           }
-        when :if, :if_mod, :elsif
+        when :if, :if_mod, :elsif, :ifop
           ret = {
               :type => :if,
               :test => convert(exp[1]),
@@ -327,24 +363,22 @@ class AstSimplifier
               :test => convert(exp[1]),
               :body => convert(exp[2])
           }
+        when :until, :until_mod
+          {
+              :type => :while,
+              :test => negate(convert(exp[1])),
+              :body => convert(exp[2])
+          }
         when :unless, :unless_mod
-          # to be converted to 'if not test ...'
           ret = {
-              :type => :unless,
-              :test => convert(exp[1]),
+              :type => :if,
+              :test => negate(convert(exp[1])),
               :body => convert(exp[2])
           }
           if exp[3]
             ret[:else] = convert(exp[3])
           end
           ret
-        when :until, :until_mod
-          # to be converted to 'while not test ...'
-          {
-              :type => :until,
-              :test => convert(exp[1]),
-              :body => convert(exp[2])
-          }
         when :for
           {
               :type => :for,
@@ -361,7 +395,7 @@ class AstSimplifier
               :else => convert(bodystmt[3]),
               :ensure => convert(bodystmt[4])
           }
-        when :rescue
+        when :rescue, :rescue_mod
           ret = {:type => :rescue}
           if exp[1]
             if exp[1][0].is_a? Array
@@ -432,6 +466,10 @@ class AstSimplifier
           regexp = convert(exp[1])
           regexp[:regexp_end] = convert(exp[2])
           regexp
+        when :regexp_new
+          {
+              :type => :regexp,
+          }
         when :regexp_add
           {
               :type => :regexp,
@@ -443,7 +481,13 @@ class AstSimplifier
               :id => exp[1],
               :location => exp[2]
           }
-        when :@tstring_content
+        when :@backref
+          {
+              :type => :string,
+              :id => exp[1],
+              :location => exp[2]
+          }
+        when :@tstring_content, :@CHAR
           {
               :type => :string,
               :id => exp[1],
@@ -452,12 +496,12 @@ class AstSimplifier
         when :string_content
           {
               :type => :string,
-              :value => []
+              :id => ''
           }
-        when :string_add, :xstring_add
+        when :string_add, :xstring_add, :qwords_add
           convert(exp[2])
-        when :string_concat
-          convert([:binary, exp[1], :string_concat, exp[2]])
+        when :string_concat, :xstring_concat
+          convert([:binary, exp[1], :+, exp[2]])
         when :hash
           if exp[1]
             convert(exp[1])
@@ -466,7 +510,7 @@ class AstSimplifier
                 :type => :hash,
             }
           end
-        when :assoclist_from_args
+        when :assoclist_from_args, :bare_assoc_hash
           {
               :type => :hash,
               :entries => convert_array(exp[1])
@@ -477,39 +521,72 @@ class AstSimplifier
               :key => convert(exp[1]),
               :value => convert(exp[2])
           }
-        when :const_path_ref
+        when :const_path_ref, :const_path_field
           {
               :type => :attribute,
               :value => convert(exp[1]),
               :attr => convert(exp[2])
           }
+        when :field
+          {
+              :type => :attribute,
+              :value => convert(exp[1]),
+              :attr => convert(exp[3])
+          }
         when :void_stmt
           {
               :type => :void
           }
-        when :top_const_ref, :return, :yield, :defined
-          # constructs that contains one thing
-          # but should keep the type
+        when :yield0
+          {
+              :type => :yield
+          }
+        when :return0
+          {
+              :type => :return
+          }
+        when :break
+          {
+              :type => :break
+          }
+        when :zsuper
+          {
+              :type => :name,
+              :id => :super
+          }
+        when :defined
+          {
+              :type => :unary,
+              :op => op(:defined),
+              :operand => convert(exp[1])
+          }
+        when :return, :yield
           {
               :type => exp[0],
-              :value => convert(exp[1])
+              :value => args_to_array(convert(exp[1]))
           }
         when :var_ref,
             :var_field,
             :const_ref,
+            :top_const_ref,
+            :top_const_field,
             :vcall,
             :paren,
             :else,
             :ensure,
             :arg_paren,
+            :mlhs_paren,
             :bodystmt,
             :rest_param,
             :blockarg,
             :symbol_literal,
             :regexp_literal,
             :string_literal,
+            :xstring_literal,
             :string_embexpr,
-            :mrhs_new_from_args
+            :string_dvar,
+            :mrhs_new_from_args,
+            :next
           # superflous wrappers that contains one object, just remove it
           convert(exp[1])
         else
@@ -536,7 +613,7 @@ class AstSimplifier
             :right => args_to_array(convert(exp[1]))
         }
       else
-        test = convert(exp[1])
+        test = args_to_array(convert(exp[1]))
       end
       ret = {
           :type => :if,
@@ -554,10 +631,14 @@ class AstSimplifier
 
 
   def args_to_array(args)
-    {
-        :type => :array,
-        :elts => args[:positional]
-    }
+    if args[:type] == :args
+      {
+          :type => :array,
+          :elts => args[:positional]
+      }
+    else
+      args
+    end
   end
 
 
@@ -574,6 +655,15 @@ class AstSimplifier
     {
         :type => :op,
         :name => name
+    }
+  end
+
+
+  def negate(exp)
+    {
+        :type => :unary,
+        :op => op(:not),
+        :operand => exp
     }
   end
 
