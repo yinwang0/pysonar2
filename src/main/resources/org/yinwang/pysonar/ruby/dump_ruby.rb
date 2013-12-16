@@ -67,9 +67,9 @@ class AstSimplifier
 
   def convert_locations(obj)
     if obj.is_a?(Hash)
-      if obj[:type] == :binary and not obj[:left]
-        puts "problem obj: #{obj.inspect}"
-      end
+      #if obj[:type] == :binary and not obj[:left]
+      #  puts "problem obj: #{obj.inspect}"
+      #end
       new_hash = {}
 
       obj.each do |k, v|
@@ -218,7 +218,9 @@ class AstSimplifier
           if exp[4]
             ret[:after_rest] = convert_array(exp[4])
           end
-
+          if exp[6]
+            ret[:rest_kw] = convert(exp[6])
+          end
           if exp[7]
             ret[:block] = convert(exp[7])
           end
@@ -275,7 +277,7 @@ class AstSimplifier
               :args => convert(exp[1])
           }
         when :call, :fcall
-          if exp[2] == :'.' or exp[2] == :'::'
+          if exp[3] != :call and (exp[2] == :'.' or exp[2] == :'::')
             func = {
                 :type => :attribute,
                 :value => convert(exp[1]),
@@ -329,7 +331,7 @@ class AstSimplifier
               :from => convert(exp[1]),
               :to => convert(exp[2])
           }
-        when :alias
+        when :alias, :var_alias
           {
               :type => :assign,
               :target => convert(exp[1]),
@@ -549,6 +551,14 @@ class AstSimplifier
           {
               :type => :break
           }
+        when :retry
+          {
+              :type => :retry
+          }
+        when :redo
+          {
+              :type => :redo
+          }
         when :zsuper
           {
               :type => :name,
@@ -586,7 +596,10 @@ class AstSimplifier
             :string_embexpr,
             :string_dvar,
             :mrhs_new_from_args,
-            :next
+            :assoc_splat,
+            :next,
+            :END,
+            :BEGIN
           # superflous wrappers that contains one object, just remove it
           convert(exp[1])
         else
@@ -671,16 +684,18 @@ end
 
 
 def parse_dump(input, output, endmark)
-  simplifier = AstSimplifier.new(input)
-  hash = simplifier.simplify
+  begin
+    simplifier = AstSimplifier.new(input)
+    hash = simplifier.simplify
 
-  json_string = JSON.pretty_generate(hash)
-  out = File.open(output, 'wb')
-  out.write(json_string)
-  out.close
-
-  end_file = File.open(endmark, 'wb')
-  end_file.close
+    json_string = JSON.pretty_generate(hash)
+    out = File.open(output, 'wb')
+    out.write(json_string)
+    out.close
+  ensure
+    end_file = File.open(endmark, 'wb')
+    end_file.close
+  end
 end
 
 

@@ -20,7 +20,7 @@ import java.util.Map;
 public class RubyParser extends Parser {
 
     private static final String RUBY_EXE = "irb";
-    private static final int TIMEOUT = 15000;
+    private static final int TIMEOUT = 5000;
 
     @Nullable
     Process rubyProcess;
@@ -131,7 +131,9 @@ public class RubyParser extends Parser {
             List<Node> defaults = convertList(argsMap.get("defaults"));
             Name var = (Name) convert(argsMap.get("rest"));
             Name vararg = var == null ? null : var;
-            Function ret = new Function(name, positional, body, defaults, vararg, null, start, end);
+            Name kw = (Name) convert(argsMap.get("rest_kw"));
+            Name kwarg = kw == null ? null : kw;
+            Function ret = new Function(name, positional, body, defaults, vararg, kwarg, start, end);
             ret.afterRest = convertList(argsMap.get("after_rest"));
             ret.blockarg = (Name) convert(argsMap.get("block"));
             return ret;
@@ -327,8 +329,7 @@ public class RubyParser extends Parser {
                 if (elts != null) {
                     return new NList(elts, start, end);
                 } else {
-                    elts = Collections.emptyList();
-                    return new NList(elts, start, end);
+                    return new NList(Collections.<Node>emptyList(), start, end);
                 }
             }
         }
@@ -372,18 +373,27 @@ public class RubyParser extends Parser {
         // Ruby's subscript is Python's Slice with step size 1
         if (type.equals("subscript")) {
             Node value = convert(map.get("value"));
-            List<Node> s = convertList(map.get("slice"));
-            if (s.size() == 1) {
-                Node node = s.get(0);
-                Index idx = new Index(node, node.start, node.end);
-                return new Subscript(value, idx, start, end);
-            } else if (s.size() == 2) {
-                Slice slice = new Slice(s.get(0), null, s.get(1), s.get(0).start, s.get(1).end);
-                return new Subscript(value, slice, start, end);
+            Object sliceObj = map.get("slice");
+
+            if (sliceObj instanceof List) {
+                List<Node> s = convertList(sliceObj);
+                if (s.size() == 1) {
+                    Node node = s.get(0);
+                    Index idx = new Index(node, node.start, node.end);
+                    return new Subscript(value, idx, start, end);
+                } else if (s.size() == 2) {
+                    Slice slice = new Slice(s.get(0), null, s.get(1), s.get(0).start, s.get(1).end);
+                    return new Subscript(value, slice, start, end);
+                } else {
+                    // failed to parse the subscript part
+                    // cheat by returning the value
+                    return value;
+                }
+            } else if (sliceObj == null) {
+                return new Subscript(value, null, start, end);
             } else {
-                // failed to parse the subscript part
-                // cheat by returning the value
-                return value;
+                Node sliceNode = convert(sliceObj);
+                return new Subscript(value, sliceNode, start, end);
             }
         }
 
@@ -461,6 +471,12 @@ public class RubyParser extends Parser {
             List<Map<String, Object>> in = (List<Map<String, Object>>) o;
             List<T> out = new ArrayList<>();
 
+            for (Object x : (List) in) {
+                if (!(x instanceof Map)) {
+                    _.die("not a map: " + x);
+                }
+            }
+
             for (Map<String, Object> m : in) {
                 Node n = convert(m);
                 if (n != null) {
@@ -476,7 +492,7 @@ public class RubyParser extends Parser {
     public Op convertOp(Object map) {
         String name = (String) ((Map<String, Object>) map).get("name");
 
-        if (name.equals("+")) {
+        if (name.equals("+") || name.equals("+@")) {
             return Op.Add;
         }
 

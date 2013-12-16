@@ -70,7 +70,7 @@ public class Binder {
             for (Node x : xs) {
                 bind(s, x, Analyzer.self.builtins.unknown, kind);
             }
-        } else {
+        } else if (xs.size() > 0) {
             Analyzer.self.putProblem(xs.get(0).getFile(),
                     xs.get(0).start,
                     xs.get(xs.size() - 1).end,
@@ -80,7 +80,7 @@ public class Binder {
 
 
     public static void bind(@NotNull State s, @NotNull Name name, @NotNull Type rvalue, Binding.Kind kind) {
-        if (s.isGlobalName(name.id) || name.isGlobal()) {
+        if (s.isGlobalName(name.id) || name.isGlobalVar()) {
             Binding b = new Binding(name.id, name, rvalue, kind);
             s.getGlobalTable().update(name.id, b);
             Analyzer.self.putRef(name, b);

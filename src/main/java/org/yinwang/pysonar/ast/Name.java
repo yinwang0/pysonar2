@@ -93,7 +93,7 @@ public class Name extends Node {
     }
 
 
-    public boolean isGlobal() {
+    public boolean isGlobalVar() {
         return type == NameType.GLOBAL;
     }
 

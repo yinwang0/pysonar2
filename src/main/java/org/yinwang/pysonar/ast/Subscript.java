@@ -1,6 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.DictType;
@@ -12,11 +13,11 @@ public class Subscript extends Node {
 
     @NotNull
     public Node value;
-    @NotNull
+    @Nullable
     public Node slice;  // an NIndex or NSlice
 
 
-    public Subscript(@NotNull Node value, @NotNull Node slice, int start, int end) {
+    public Subscript(@NotNull Node value, @Nullable Node slice, int start, int end) {
         super(start, end);
         this.value = value;
         this.slice = slice;
@@ -28,7 +29,7 @@ public class Subscript extends Node {
     @Override
     public Type transform(State s) {
         Type vt = transformExpr(value, s);
-        Type st = transformExpr(slice, s);
+        Type st = slice == null? null : transformExpr(slice, s);
 
         if (vt.isUnionType()) {
             Type retType = Analyzer.self.builtins.unknown;
@@ -43,7 +44,7 @@ public class Subscript extends Node {
 
 
     @NotNull
-    private Type getSubscript(@NotNull Type vt, @NotNull Type st, State s) {
+    private Type getSubscript(@NotNull Type vt, @Nullable Type st, State s) {
         if (vt.isUnknownType()) {
             return Analyzer.self.builtins.unknown;
         } else if (vt.isListType()) {
@@ -57,7 +58,7 @@ public class Subscript extends Node {
             }
             return vt.asDictType().valueType;
         } else if (vt.isStrType()) {
-            if (st.isListType() || st.isNumType()) {
+            if (st != null && (st.isListType() || st.isNumType())) {
                 return vt;
             } else {
                 addWarning("Possible KeyError (wrong type for subscript)");
@@ -70,11 +71,11 @@ public class Subscript extends Node {
 
 
     @NotNull
-    private Type getListSubscript(@NotNull Type vt, @NotNull Type st, State s) {
+    private Type getListSubscript(@NotNull Type vt, @Nullable Type st, State s) {
         if (vt.isListType()) {
-            if (st.isListType()) {
+            if (st != null && st.isListType()) {
                 return vt;
-            } else if (st.isNumType()) {
+            } else if (st == null || st.isNumType()) {
                 return vt.asListType().getElementType();
             } else {
                 Type sliceFunc = vt.getTable().lookupAttrType("__getslice__");
