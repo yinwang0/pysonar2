@@ -59,11 +59,6 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(Break n) {
-        return traverseIntoNodes;
-    }
-
-
     public boolean visit(Bytes n) {
         return traverseIntoNodes;
     }
@@ -80,11 +75,6 @@ public class DefaultNodeVisitor implements NodeVisitor {
 
 
     public boolean visit(Comprehension n) {
-        return traverseIntoNodes;
-    }
-
-
-    public boolean visit(Continue n) {
         return traverseIntoNodes;
     }
 
@@ -240,6 +230,11 @@ public class DefaultNodeVisitor implements NodeVisitor {
 
 
     public boolean visit(Return n) {
+        return traverseIntoNodes;
+    }
+
+
+    public boolean visit(Control n) {
         return traverseIntoNodes;
     }
 

@@ -211,7 +211,7 @@ public class PythonParser extends Parser {
         }
 
         if (type.equals("Break")) {
-            return new Break(start, end);
+            return new Control("break", start, end);
         }
 
         if (type.equals("Bytes")) {
@@ -256,7 +256,7 @@ public class PythonParser extends Parser {
         }
 
         if (type.equals("Continue")) {
-            return new Continue(start, end);
+            return new Control("continue", start, end);
         }
 
         if (type.equals("Delete")) {

@@ -227,7 +227,19 @@ public class RubyParser extends Parser {
 
 
         if (type.equals("break")) {
-            return new Break(start, end);
+            return new Control("break", start, end);
+        }
+
+        if (type.equals("retry")) {
+            return new Control("retry", start, end);
+        }
+
+        if (type.equals("redo")) {
+            return new Control("redo", start, end);
+        }
+
+        if (type.equals("continue")) {
+            return new Control("continue", start, end);
         }
 
         if (type.equals("class")) {
@@ -246,10 +258,6 @@ public class RubyParser extends Parser {
             }
             Node body = convert(map.get("body"));
             return new Class(name, bases, body, start, end);
-        }
-
-        if (type.equals("continue")) {
-            return new Continue(start, end);
         }
 
         if (type.equals("undef")) {

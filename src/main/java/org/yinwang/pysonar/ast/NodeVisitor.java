@@ -36,7 +36,7 @@ public interface NodeVisitor {
     public boolean visit(Block m);
 
 
-    public boolean visit(Break m);
+    public boolean visit(Control m);
 
 
     public boolean visit(Bytes m);
@@ -49,9 +49,6 @@ public interface NodeVisitor {
 
 
     public boolean visit(Comprehension m);
-
-
-    public boolean visit(Continue m);
 
 
     public boolean visit(Delete m);

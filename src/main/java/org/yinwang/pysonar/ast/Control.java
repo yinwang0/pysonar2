@@ -6,17 +6,20 @@ import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 
-public class Break extends Node {
+public class Control extends Node {
 
-    public Break(int start, int end) {
+    public String command;
+
+    public Control(String command, int start, int end) {
         super(start, end);
+        this.command = command;
     }
 
 
     @NotNull
     @Override
     public String toString() {
-        return "<Break>";
+        return "(" + command + ")";
     }
 
 
