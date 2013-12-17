@@ -199,6 +199,16 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
+    public boolean visit(PyInt n) {
+        return traverseIntoNodes;
+    }
+
+
+    public boolean visit(PyFloat n) {
+        return traverseIntoNodes;
+    }
+
+
     public boolean visit(Op n) {
         return traverseIntoNodes;
     }

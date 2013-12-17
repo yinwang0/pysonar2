@@ -388,6 +388,18 @@ def add_missing_names(node, s):
             node.op_node = ops[0]
             node._fields += ('op_node',)
 
+    elif isinstance(node, Num):
+        if isinstance(node.n, int):
+            type = 'int'
+        elif isinstance(node.n, long):
+            type = 'long'
+        elif isinstance(node.n, float):
+            type = 'float'
+        elif isinstance(node.n, complex):
+            type = 'complex'
+        node.num_type = type
+        node._fields += ('num_type',)
+
     node.extra_attr = True
 
 
