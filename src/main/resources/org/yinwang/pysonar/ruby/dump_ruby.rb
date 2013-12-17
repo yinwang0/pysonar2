@@ -1,6 +1,7 @@
 require 'ripper'
 require 'pp'
 require 'json'
+require 'optparse'
 
 
 # --------------------- utils ---------------------
@@ -54,13 +55,19 @@ class AstSimplifier
   def simplify
     tree = Ripper::SexpBuilder.new(@src).parse
 
-    banner 'sexp'
-    pp tree
+    if $options[:debug]
+      banner 'sexp'
+      pp tree
+    end
+
     simplified = convert(tree)
     simplified = convert_locations(simplified)
 
-    banner 'simplified'
-    pp simplified
+    if $options[:debug]
+      banner 'simplified'
+      pp simplified
+    end
+
     simplified
   end
 
@@ -100,6 +107,16 @@ class AstSimplifier
   def convert(exp)
     if exp == nil
       {}
+    elsif exp == false
+      {
+          :type => :name,
+          :id => 'false',
+      }
+    elsif exp == true
+      {
+          :type => :name,
+          :id => 'true',
+      }
     else
       case exp[0]
         when :program
@@ -149,7 +166,7 @@ class AstSimplifier
               :id => exp[1][1..-1],
               :location => exp[2]
           }
-        when :@const, :@kw
+        when :@const, :@kw, :@backtick
           #:@const and :@kw are just names
           {
               :type => :name,
@@ -205,14 +222,14 @@ class AstSimplifier
             ret[:positional] = convert_array(exp[1])
           end
           if exp[2]
-            # ret[:keyword] = exp[2].map { |x| make_keyword(x) }
+            # keyword arguments (converted into positionals and defaults)
             unless ret[:positional]
               ret[:positional] = []
             end
             exp[2].each { |x| ret[:positional].push(convert(x[0])) }
             ret[:defaults] = exp[2].map { |x| convert(x[1]) }
           end
-          if exp[3]
+          if exp[3] and exp[3] != 0
             ret[:rest] = convert(exp[3])
           end
           if exp[4]
@@ -290,12 +307,12 @@ class AstSimplifier
               :type => :call,
               :func => func,
           }
-        when :args_new, :mlhs_new, :mrhs_new, :words_new, :word_new, :qwords_new
+        when :args_new, :mlhs_new, :mrhs_new, :words_new, :word_new, :qwords_new, :qsymbols_new, :symbols_new
           {
               :type => :args,
               :positional => []
           }
-        when :args_add, :mlhs_add, :mrhs_add, :word_add, :words_add, :qwords_add
+        when :args_add, :mlhs_add, :mrhs_add, :word_add, :words_add, :qwords_add, :qsymbols_add, :symbols_add
           args = convert(exp[1])
           args[:positional].push(convert(exp[2]))
           args
@@ -492,7 +509,7 @@ class AstSimplifier
         when :@tstring_content, :@CHAR
           {
               :type => :string,
-              :id => exp[1],
+              :id => exp[1].force_encoding('utf-8'),
               :location => exp[2]
           }
         when :string_content
@@ -697,6 +714,17 @@ def parse_dump(input, output, endmark)
     end_file.close
   end
 end
+
+
+$options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: dump_ruby.rb [options]"
+
+  opts.on("-d", "--debug", "debug run") do |v|
+    $options[:debug] = v
+  end
+
+end.parse!
 
 
 if ARGV.length > 0
