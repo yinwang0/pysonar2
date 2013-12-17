@@ -146,7 +146,9 @@ public class Call extends Node {
             pTypes.addAll(pos);
         }
 
-        bindMethodAttrs(func);
+        if (Analyzer.self.language == Language.PYTHON) {
+            bindMethodAttrs(func);
+        }
 
         State funcTable = new State(func.getEnv(), State.StateType.FUNCTION);
 
@@ -158,7 +160,9 @@ public class Call extends Node {
 
         // bind a special this name to the table
         if (func.getSelfType() != null) {
-            Binder.bind(funcTable, new Name(Constants.thisName), func.getSelfType(), PARAMETER);
+            if (Analyzer.self.language == Language.RUBY) {
+                Binder.bind(funcTable, new Name(Constants.rbSelfName), func.getSelfType(), PARAMETER);
+            }
         }
 
         Type fromType = bindParams(call, func.func, funcTable, func.func.args,

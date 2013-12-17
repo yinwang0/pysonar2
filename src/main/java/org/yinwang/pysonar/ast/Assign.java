@@ -30,7 +30,7 @@ public class Assign extends Node {
     public Type transform(@NotNull State s) {
         Type valueType = transformExpr(value, s);
         if (target.isName() && target.asName().isInstanceVar()) {
-            Type thisType = s.lookupType(Constants.thisName);
+            Type thisType = s.lookupType(Constants.rbSelfName);
             if (thisType == null) {
                 Analyzer.self.putProblem(this, "Instance variable assignment not within class");
             } else {
