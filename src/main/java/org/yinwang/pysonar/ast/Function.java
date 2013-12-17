@@ -2,7 +2,10 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.*;
+import org.yinwang.pysonar.Analyzer;
+import org.yinwang.pysonar.Binder;
+import org.yinwang.pysonar.Binding;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.ClassType;
 import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.Type;
@@ -15,8 +18,6 @@ public class Function extends Node {
     public Name name;
     public List<Node> args;
     public List<Node> defaults;
-    @Nullable
-    public List<Type> defaultTypes;
     public Name vararg;  // *args
     public Name kwarg;   // **kwarg
     public Name blockarg = null;   // block arg of Ruby
@@ -56,16 +57,7 @@ public class Function extends Node {
     @Override
     public Type transform(@NotNull State s) {
         resolveList(decoratorList, s);
-
-        State env;
-        if (Analyzer.self.language == Language.PYTHON) {
-            // python method's outer scope is not the class...
-            env = s.getForwarding();
-        } else {
-            // all other language should be usual?
-            env = s;
-        }
-
+        State env = s.getForwarding();
         FunType fun = new FunType(this, env);
         fun.getTable().setParent(s);
         fun.getTable().setPath(s.extendPath(name.id));
@@ -77,9 +69,7 @@ public class Function extends Node {
             return fun;
         } else {
             if (s.getStateType() == State.StateType.CLASS) {
-                if ("__init__".equals(name.id) ||
-                        "initialize".equals(name.id))
-                {
+                if ("__init__".equals(name.id)) {
                     funkind = Binding.Kind.CONSTRUCTOR;
                 } else {
                     funkind = Binding.Kind.METHOD;

@@ -47,19 +47,13 @@ public class Analyzer {
 
     public String projectDir;
     public String suffix;
-    public Language language;
 
 
-    public Analyzer(@NotNull Language language) {
-        this.language = language;
+    public Analyzer() {
         stats.putInt("startTime", System.currentTimeMillis());
         logger = Logger.getLogger(Analyzer.class.getCanonicalName());
         self = this;
-        if (language == Language.PYTHON) {
-            this.suffix = ".py";
-        } else if (language == Language.RUBY) {
-            this.suffix = ".rb";
-        }
+        this.suffix = ".py";
         builtins = new Builtins();
         builtins.init();
         addPythonPath();
@@ -68,8 +62,8 @@ public class Analyzer {
     }
 
 
-    public Analyzer(@NotNull Language language, boolean debug) {
-        this(language);
+    public Analyzer(boolean debug) {
+        this();
         this.debug = debug;
     }
 
@@ -354,7 +348,7 @@ public class Analyzer {
 
     private AstCache getAstCache() {
         if (astCache == null) {
-            astCache = AstCache.get(language);
+            astCache = AstCache.get();
         }
         return astCache;
     }
@@ -574,7 +568,7 @@ public class Analyzer {
 
             for (FunType cl : uncalledDup) {
                 progress.tick();
-                Call.apply(cl, null, null, null, null, null, null);
+                Call.apply(cl, null, null, null, null, null);
             }
         }
     }

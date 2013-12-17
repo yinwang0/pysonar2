@@ -3,7 +3,6 @@ package org.yinwang.pysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Language;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.TypeStack;
 import org.yinwang.pysonar.ast.Function;
@@ -245,7 +244,7 @@ public class FunType extends Type {
 
             for (Map.Entry<Type, Type> e : arrows.entrySet()) {
                 Type from = e.getKey();
-                if (Analyzer.self.language == Language.PYTHON && from.isTupleType()) {
+                if (from.isTupleType()) {
                     from = simplifySelf(from.asTupleType());
                 }
 

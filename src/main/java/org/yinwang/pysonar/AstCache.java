@@ -32,17 +32,11 @@ public class AstCache {
     }
 
 
-    public static AstCache get(Language language) {
+    public static AstCache get() {
         if (INSTANCE == null) {
             INSTANCE = new AstCache();
         }
-        if (language == Language.PYTHON) {
-            parser = new PythonParser();
-        } else if (language == Language.RUBY) {
-            parser = new RubyParser();
-        } else {
-            _.die("unsupported language: " + language);
-        }
+        parser = new Parser();
         return INSTANCE;
     }
 

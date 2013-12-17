@@ -8,7 +8,8 @@ import org.yinwang.pysonar.types.*;
 import java.util.*;
 import java.util.Set;
 
-import static org.yinwang.pysonar.Binding.Kind.*;
+import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
+import static org.yinwang.pysonar.Binding.Kind.CLASS;
 
 
 public class Call extends Node {
@@ -19,7 +20,6 @@ public class Call extends Node {
     public List<Keyword> keywords;
     public Node kwargs;
     public Node starargs;
-    public Node blockarg = null;
 
 
     public Call(Node func, List<Node> args, @Nullable List<Keyword> keywords,
@@ -66,18 +66,17 @@ public class Call extends Node {
 
         Type kw = kwargs == null ? null : transformExpr(kwargs, s);
         Type star = starargs == null ? null : transformExpr(starargs, s);
-        Type block = blockarg == null ? null : transformExpr(blockarg, s);
 
         if (fun.isUnionType()) {
             Set<Type> types = fun.asUnionType().getTypes();
             Type retType = Analyzer.self.builtins.unknown;
             for (Type ft : types) {
-                Type t = resolveCall(ft, pos, hash, kw, star, block);
+                Type t = resolveCall(ft, pos, hash, kw, star);
                 retType = UnionType.union(retType, t);
             }
             return retType;
         } else {
-            return resolveCall(fun, pos, hash, kw, star, block);
+            return resolveCall(fun, pos, hash, kw, star);
         }
     }
 
@@ -87,12 +86,11 @@ public class Call extends Node {
                              List<Type> pos,
                              Map<String, Type> hash,
                              Type kw,
-                             Type star,
-                             Type block)
+                             Type star)
     {
         if (fun.isFuncType()) {
             FunType ft = fun.asFuncType();
-            return apply(ft, pos, hash, kw, star, block, this);
+            return apply(ft, pos, hash, kw, star, this);
         } else if (fun.isClassType()) {
             return new InstanceType(fun, this, pos);
         } else {
@@ -108,7 +106,6 @@ public class Call extends Node {
                              Map<String, Type> hash,
                              Type kw,
                              Type star,
-                             Type block,
                              @Nullable Node call)
     {
         Analyzer.self.removeUncalled(func);
@@ -133,22 +130,17 @@ public class Call extends Node {
         List<Type> pTypes = new ArrayList<>();
 
         // Python: bind first parameter to self type
-        if (Analyzer.self.language == Language.PYTHON) {
-            if (func.getSelfType() != null) {
-                pTypes.add(func.getSelfType());
-            } else if (func.getCls() != null) {
-                pTypes.add(func.getCls().getCanon());
-            }
+        if (func.getSelfType() != null) {
+            pTypes.add(func.getSelfType());
+        } else if (func.getCls() != null) {
+            pTypes.add(func.getCls().getCanon());
         }
-
 
         if (pos != null) {
             pTypes.addAll(pos);
         }
 
-        if (Analyzer.self.language == Language.PYTHON) {
-            bindMethodAttrs(func);
-        }
+        bindMethodAttrs(func);
 
         State funcTable = new State(func.getEnv(), State.StateType.FUNCTION);
 
@@ -158,16 +150,9 @@ public class Call extends Node {
             funcTable.setPath(func.func.name.id);
         }
 
-        // bind a special this name to the table
-        if (func.getSelfType() != null) {
-            if (Analyzer.self.language == Language.RUBY) {
-                Binder.bind(funcTable, new Name(Constants.rbSelfName), func.getSelfType(), PARAMETER);
-            }
-        }
-
         Type fromType = bindParams(call, func.func, funcTable, func.func.args,
                 func.func.vararg, func.func.kwarg,
-                pTypes, func.defaultTypes, hash, kw, star, block);
+                pTypes, func.defaultTypes, hash, kw, star);
 
         Type cachedTo = func.getMapping(fromType);
         if (cachedTo != null) {
@@ -201,8 +186,7 @@ public class Call extends Node {
                                    @Nullable List<Type> dTypes,
                                    @Nullable Map<String, Type> hash,
                                    @Nullable Type kw,
-                                   @Nullable Type star,
-                                   @Nullable Type block)
+                                   @Nullable Type star)
     {
         TupleType fromType = new TupleType();
         int pSize = args == null ? 0 : args.size();
@@ -282,10 +266,6 @@ public class Call extends Node {
                         Analyzer.self.builtins.unknown,
                         Binding.Kind.PARAMETER);
             }
-        }
-
-        if (func.blockarg != null && block != null) {
-            Binder.bind(funcTable, func.blockarg, block, Binding.Kind.PARAMETER);
         }
 
         return fromType;

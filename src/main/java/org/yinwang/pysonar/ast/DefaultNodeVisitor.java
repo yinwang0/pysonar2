@@ -34,11 +34,6 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(Symbol n) {
-        return traverseIntoNodes;
-    }
-
-
     public boolean visit(Assign n) {
         return traverseIntoNodes;
     }

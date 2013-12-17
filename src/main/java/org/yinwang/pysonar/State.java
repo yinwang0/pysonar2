@@ -158,8 +158,6 @@ public class State {
             return globalNames.contains(name);
         } else if (parent != null) {
             return parent.isGlobalName(name);
-        } else if (Analyzer.self.language == Language.RUBY && name.startsWith("$")) {
-            return true;
         } else {
             return false;
         }
@@ -372,14 +370,7 @@ public class State {
      */
     @NotNull
     public State getGlobalTable() {
-        State result = null;
-
-        if (Analyzer.self.language == Language.PYTHON) {
-            result = getStateOfType(StateType.MODULE);
-        } else if (Analyzer.self.language == Language.RUBY) {
-            result = getStateOfType(StateType.GLOBAL);
-        }
-
+        State result = getStateOfType(StateType.MODULE);
         if (result != null) {
             return result;
         } else {

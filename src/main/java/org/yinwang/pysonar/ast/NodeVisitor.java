@@ -30,9 +30,6 @@ public interface NodeVisitor {
     public boolean visit(BinOp m);
 
 
-    public boolean visit(Symbol m);
-
-
     public boolean visit(Block m);
 
 

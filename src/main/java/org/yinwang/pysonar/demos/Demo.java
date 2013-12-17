@@ -3,7 +3,6 @@ package org.yinwang.pysonar.demos;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.FancyProgress;
-import org.yinwang.pysonar.Language;
 import org.yinwang.pysonar._;
 
 import java.io.File;
@@ -72,7 +71,7 @@ public class Demo {
     }
 
 
-    private void start(@NotNull File fileOrDir, Language language, boolean debug) throws Exception {
+    private void start(@NotNull File fileOrDir, boolean debug) throws Exception {
         File rootDir = fileOrDir.isFile() ? fileOrDir.getParentFile() : fileOrDir;
         try {
             rootPath = _.unifyPath(rootDir);
@@ -80,7 +79,7 @@ public class Demo {
             _.die("File not found: " + fileOrDir);
         }
 
-        analyzer = new Analyzer(language, debug);
+        analyzer = new Analyzer(debug);
         _.msg("Loading and analyzing files");
         analyzer.analyze(_.unifyPath(fileOrDir));
         analyzer.finish();
@@ -204,21 +203,10 @@ public class Demo {
             }
         }
 
-        String language = args[0];
-        Language lang;
-        if (language.equals("python")) {
-            lang = Language.PYTHON;
-        } else if (language.equals("ruby")) {
-            lang = Language.RUBY;
-        } else {
-            _.die("unsupported language: " + language);
-            return;
-        }
+        File fileOrDir = checkFile(args[0]);
+        OUTPUT_DIR = new File(args[1]);
 
-        File fileOrDir = checkFile(args[1]);
-        OUTPUT_DIR = new File(args[2]);
-
-        new Demo().start(fileOrDir, lang, debug);
+        new Demo().start(fileOrDir, debug);
         _.msg(_.getGCStats());
     }
 }
