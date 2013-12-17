@@ -5,7 +5,7 @@ import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.BoolType;
-import org.yinwang.pysonar.types.NumType;
+import org.yinwang.pysonar.types.IntType;
 import org.yinwang.pysonar.types.Type;
 
 
@@ -86,36 +86,36 @@ public class BinOp extends Node {
         }
 
         // try to figure out actual result
-        if (ltype.isNumType() && rtype.isNumType()) {
-            NumType leftNum = ltype.asNumType();
-            NumType rightNum = rtype.asNumType();
+        if (ltype.isIntType() && rtype.isIntType()) {
+            IntType leftNum = ltype.asIntType();
+            IntType rightNum = rtype.asIntType();
 
             if (op == Op.Add) {
-                return NumType.add(leftNum, rightNum);
+                return IntType.add(leftNum, rightNum);
             }
 
             if (op == Op.Sub) {
-                return NumType.sub(leftNum, rightNum);
+                return IntType.sub(leftNum, rightNum);
             }
 
             if (op == Op.Mul) {
-                return NumType.mul(leftNum, rightNum);
+                return IntType.mul(leftNum, rightNum);
             }
 
             if (op == Op.Div) {
-                return NumType.div(leftNum, rightNum);
+                return IntType.div(leftNum, rightNum);
             }
 
             // comparison
             if (op == Op.Lt || op == Op.Gt) {
                 Node leftNode = left;
-                NumType trueType, falseType;
+                IntType trueType, falseType;
                 Op op1 = op;
 
                 if (!left.isName()) {
                     leftNode = right;
 
-                    NumType tmpNum = rightNum;
+                    IntType tmpNum = rightNum;
                     rightNum = leftNum;
                     leftNum = tmpNum;
 
@@ -134,11 +134,11 @@ public class BinOp extends Node {
 
                         if (leftNode.isName()) {
                             // true branch: if l < r, then l's upper bound is r's upper bound
-                            trueType = new NumType(leftNum);
+                            trueType = new IntType(leftNum);
                             trueType.setUpper(rightNum.getUpper());
 
                             // false branch: if l > r, then l's lower bound is r's lower bound
-                            falseType = new NumType(leftNum);
+                            falseType = new IntType(leftNum);
                             falseType.setLower(rightNum.getLower());
                             String id = leftNode.asName().id;
 
@@ -164,11 +164,11 @@ public class BinOp extends Node {
 
                         if (leftNode.isName()) {
                             // true branch: if l > r, then l's lower bound is r's lower bound
-                            trueType = new NumType(leftNum);
+                            trueType = new IntType(leftNum);
                             trueType.setLower(rightNum.getLower());
 
                             // false branch: if l < r, then l's upper bound is r's upper bound
-                            falseType = new NumType(leftNum);
+                            falseType = new IntType(leftNum);
                             falseType.setUpper(rightNum.getUpper());
                             String id = leftNode.asName().id;
 

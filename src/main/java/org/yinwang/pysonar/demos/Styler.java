@@ -83,13 +83,6 @@ class Styler extends DefaultNodeVisitor {
 
 
     @Override
-    public boolean visit(Num n) {
-        addStyle(n, StyleRun.Type.NUMBER);
-        return true;
-    }
-
-
-    @Override
     public boolean visit(@NotNull Str n) {
         String s = sourceString(n.start, n.end);
         if (TRISTRING_PREFIX.matcher(s).lookingAt()) {
@@ -129,8 +122,7 @@ class Styler extends DefaultNodeVisitor {
         b = Math.max(b, 0);
         try {
             return source.substring(a, b);
-        }
-        catch (StringIndexOutOfBoundsException sx) {
+        } catch (StringIndexOutOfBoundsException sx) {
             // Silent here, only happens for weird encodings in file
             return "";
         }

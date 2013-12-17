@@ -194,11 +194,6 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
-    public boolean visit(Num n) {
-        return traverseIntoNodes;
-    }
-
-
     public boolean visit(PyInt n) {
         return traverseIntoNodes;
     }

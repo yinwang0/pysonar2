@@ -111,9 +111,6 @@ public interface NodeVisitor {
     public boolean visit(Name m);
 
 
-    public boolean visit(Num m);
-
-
     public boolean visit(PyInt m);
 
 

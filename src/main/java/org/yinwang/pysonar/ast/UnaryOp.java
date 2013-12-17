@@ -35,8 +35,8 @@ public class UnaryOp extends Node {
         }
 
         if (op == Op.Sub) {
-            if (valueType.isNumType()) {
-                return valueType.asNumType().negate();
+            if (valueType.isIntType()) {
+                return valueType.asIntType().negate();
             } else {
                 Analyzer.self.putProblem(this, "- can't be applied to type: " + valueType);
                 return Analyzer.self.builtins.BaseNum;

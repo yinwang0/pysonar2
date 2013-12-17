@@ -7,6 +7,7 @@ import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.TypeStack;
 import org.yinwang.pysonar._;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -113,7 +114,17 @@ public abstract class Type {
 
 
     public boolean isNumType() {
-        return this instanceof NumType;
+        return this instanceof IntType || this instanceof FloatType;
+    }
+
+
+    public boolean isIntType() {
+        return this instanceof IntType;
+    }
+
+
+    public boolean isFloatType() {
+        return this instanceof FloatType;
     }
 
 
@@ -150,8 +161,14 @@ public abstract class Type {
 
 
     @NotNull
-    public NumType asNumType() {
-        return (NumType) this;
+    public IntType asIntType() {
+        return (IntType) this;
+    }
+
+
+    @NotNull
+    public FloatType asFloatType() {
+        return (FloatType) this;
     }
 
 
@@ -213,10 +230,16 @@ public abstract class Type {
         if (this == Analyzer.self.builtins.False || this.isUndecidedBool()) {
             return false;
         }
-        if (this.isNumType() && (this.asNumType().lt(0) || this.asNumType().gt(0))) {
+        if (this.isIntType() && (this.asIntType().lt(BigInteger.ZERO) || this.asIntType().gt(BigInteger.ZERO))) {
             return true;
         }
-        if (this.isNumType() && this.asNumType().isZero()) {
+        if (this.isIntType() && this.asIntType().isZero()) {
+            return false;
+        }
+        if (this.isFloatType() && (this.asFloatType().lt(0) || this.asFloatType().gt(0))) {
+            return true;
+        }
+        if (this.isFloatType() && this.asFloatType().isZero()) {
             return false;
         }
         if (this != Analyzer.self.builtins.None) {
@@ -233,7 +256,10 @@ public abstract class Type {
         if (this == Analyzer.self.builtins.True || this.isUndecidedBool()) {
             return false;
         }
-        if (this.isNumType() && this.asNumType().isZero()) {
+        if (this.isIntType() && this.asIntType().isZero()) {
+            return true;
+        }
+        if (this.isFloatType() && this.asFloatType().isZero()) {
             return true;
         }
         if (this == Analyzer.self.builtins.None) {

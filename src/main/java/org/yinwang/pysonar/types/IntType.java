@@ -7,6 +7,7 @@ import java.math.BigInteger;
 
 
 public class IntType extends Type {
+
     BigInteger lower;
     BigInteger upper;
     boolean lowerBounded;
@@ -91,22 +92,26 @@ public class IntType extends Type {
 
 
     public boolean lt(IntType other) {
-        return isFeasible() && this.upper.compareTo(other.lower) < 0;
+        return this.isUpperBounded() &&
+                other.isLowerBounded() &&
+                this.upper.compareTo(other.lower) < 0;
     }
 
 
     public boolean lt(BigInteger other) {
-        return isFeasible() && this.upper.compareTo(other) < 0;
+        return this.isUpperBounded() && this.upper.compareTo(other) < 0;
     }
 
 
     public boolean gt(IntType other) {
-        return isFeasible() && this.lower.compareTo(other.upper) > 0;
+        return this.isLowerBounded() &&
+                other.isUpperBounded() &&
+                this.lower.compareTo(other.upper) > 0;
     }
 
 
     public boolean gt(BigInteger other) {
-        return isFeasible() && this.lower.compareTo(other) > 0;
+        return this.isLowerBounded() && this.lower.compareTo(other) > 0;
     }
 
 
@@ -117,7 +122,7 @@ public class IntType extends Type {
 
 
     public boolean isZero() {
-        return isActualValue() && lower.equals(0);
+        return isActualValue() && lower.equals(BigInteger.ZERO);
     }
 
 
@@ -132,12 +137,34 @@ public class IntType extends Type {
 
 
     public boolean isActualValue() {
-        return lower.equals(upper);
+        return isLowerBounded() && isUpperBounded() && lower.equals(upper);
     }
 
 
     public boolean isFeasible() {
         return lower.compareTo(upper) <= 0;
+    }
+
+
+    public BigInteger getLower() {
+        return lower;
+    }
+
+
+    public void setLower(BigInteger lower) {
+        this.lower = lower;
+        this.lowerBounded = true;
+    }
+
+
+    public BigInteger getUpper() {
+        return upper;
+    }
+
+
+    public void setUpper(BigInteger upper) {
+        this.upper = upper;
+        this.upperBounded = true;
     }
 
 
@@ -152,7 +179,7 @@ public class IntType extends Type {
         StringBuilder sb = new StringBuilder("int");
 
         if (Analyzer.self.debug) {
-            if (lower.equals(upper)) {
+            if (isActualValue() && lower.equals(upper)) {
                 sb.append("(" + lower + ")");
             } else if (isLowerBounded() || isUpperBounded()) {
                 sb.append("[");

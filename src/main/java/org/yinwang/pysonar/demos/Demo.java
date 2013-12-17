@@ -192,13 +192,13 @@ public class Demo {
 
 
     public static void main(@NotNull String[] args) throws Exception {
-        if (args.length < 2 || args.length > 4) {
+        if (args.length < 2 || args.length > 3) {
             usage();
         }
 
         boolean debug = false;
-        if (args.length > 3) {
-            if (args[3].equals("--debug")) {
+        if (args.length > 2) {
+            if (args[2].equals("--debug")) {
                 debug = true;
             }
         }

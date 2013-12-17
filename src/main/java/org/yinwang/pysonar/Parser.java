@@ -420,8 +420,13 @@ public class Parser {
         }
 
         if (type.equals("Num")) {
-            Object n = map.get("n");
-            return new Num(n, start, end);
+            String s = (String) map.get("n");
+            String num_type = (String) map.get("num_type");
+            if (num_type.equals("int")) {
+                return new PyInt(s, start, end);
+            } else if (num_type.equals("float")) {
+                return new PyFloat(s, start, end);
+            }
         }
 
         if (type.equals("SetComp")) {
