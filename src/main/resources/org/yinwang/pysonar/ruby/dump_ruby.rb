@@ -495,28 +495,13 @@ class AstSimplifier
               :pattern => convert(exp[2]),
           }
         when :@regexp_end
-          {
-              :type => :string,
-              :id => exp[1],
-              :location => exp[2]
-          }
+          make_string(exp[1], exp[2])
         when :@backref
-          {
-              :type => :string,
-              :id => exp[1],
-              :location => exp[2]
-          }
+          make_string(exp[1], exp[2])
         when :@tstring_content, :@CHAR
-          {
-              :type => :string,
-              :id => exp[1].force_encoding('utf-8'),
-              :location => exp[2]
-          }
+          make_string(exp[1], exp[2])
         when :string_content
-          {
-              :type => :string,
-              :id => ''
-          }
+          make_string('')
         when :string_add, :xstring_add, :qwords_add
           convert(exp[2])
         when :string_concat, :xstring_concat
@@ -672,12 +657,15 @@ class AstSimplifier
   end
 
 
-  def make_keyword(arr)
-    {
-        :type => :keyword,
-        :key => convert(arr[0]),
-        :value => convert(arr[1])
+  def make_string(content, location=nil)
+    ret = {
+        :type => :string,
+        :id => content.force_encoding('utf-8'),
     }
+    if location
+      ret[:location] = location
+    end
+    ret
   end
 
 
