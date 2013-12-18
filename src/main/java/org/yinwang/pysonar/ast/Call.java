@@ -233,7 +233,7 @@ public class Call extends Node {
                 Binder.bind(
                         funcTable,
                         restKw,
-                        new DictType(Type.UNKNOWN_STR, hashType),
+                        new DictType(Type.STR, hashType),
                         Binding.Kind.PARAMETER);
             } else {
                 Binder.bind(funcTable,

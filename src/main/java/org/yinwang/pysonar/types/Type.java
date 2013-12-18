@@ -129,7 +129,7 @@ public abstract class Type {
 
 
     public boolean isStrType() {
-        return this == Type.UNKNOWN_STR;
+        return this == Type.STR;
     }
 
 
@@ -343,10 +343,9 @@ public abstract class Type {
     public static InstanceType NONE = new InstanceType(new ClassType("None", null, null));
     public static BoolType TRUE = new BoolType(BoolType.Value.True);
     public static BoolType FALSE = new BoolType(BoolType.Value.False);
-
-    public static StrType UNKNOWN_STR = new StrType(null);
-    public static IntType UNKNOWN_INT = new IntType();
-    public static FloatType UNKNOWN_FLOAT = new FloatType();
-    public static ComplexType UNKNOWN_COMPLEX = new ComplexType();
-    public static BoolType UNKNOWN_BOOL = new BoolType(BoolType.Value.Undecided);
+    public static StrType STR = new StrType(null);
+    public static IntType INT = new IntType();
+    public static FloatType FLOAT = new FloatType();
+    public static ComplexType COMPLEX = new ComplexType();
+    public static BoolType BOOL = new BoolType(BoolType.Value.Undecided);
 }

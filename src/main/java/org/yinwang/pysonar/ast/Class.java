@@ -79,11 +79,11 @@ public class Class extends Node {
         // XXX: Not sure if we should add "bases", "name" and "dict" here. They
         // must be added _somewhere_ but I'm just not sure if it should be HERE.
         addSpecialAttribute(classType.getTable(), "__bases__", new TupleType(baseTypes));
-        addSpecialAttribute(classType.getTable(), "__name__", Type.UNKNOWN_STR);
+        addSpecialAttribute(classType.getTable(), "__name__", Type.STR);
         addSpecialAttribute(classType.getTable(), "__dict__",
-                new DictType(Type.UNKNOWN_STR, Type.UNKNOWN));
-        addSpecialAttribute(classType.getTable(), "__module__", Type.UNKNOWN_STR);
-        addSpecialAttribute(classType.getTable(), "__doc__", Type.UNKNOWN_STR);
+                new DictType(Type.STR, Type.UNKNOWN));
+        addSpecialAttribute(classType.getTable(), "__module__", Type.STR);
+        addSpecialAttribute(classType.getTable(), "__doc__", Type.STR);
 
         // Bind ClassType to name here before resolving the body because the
         // methods need this type as self.

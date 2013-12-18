@@ -51,7 +51,7 @@ public class BinOp extends Node {
                 State falseState = State.merge(ltype.asBool().getS2(), rtype.asBool().getS2());
                 return new BoolType(rtype.asBool().getS1(), falseState);
             } else {
-                return Type.UNKNOWN_BOOL;
+                return Type.BOOL;
             }
         }
 
@@ -70,7 +70,7 @@ public class BinOp extends Node {
                 State trueState = State.merge(ltype.asBool().getS1(), rtype.asBool().getS1());
                 return new BoolType(trueState, rtype.asBool().getS2());
             } else {
-                return Type.UNKNOWN_BOOL;
+                return Type.BOOL;
             }
         }
 
@@ -81,8 +81,8 @@ public class BinOp extends Node {
         }
 
         // Don't do specific things about string types at the moment
-        if (ltype == Type.UNKNOWN_STR && rtype == Type.UNKNOWN_STR) {
-            return Type.UNKNOWN_STR;
+        if (ltype == Type.STR && rtype == Type.STR) {
+            return Type.STR;
         }
 
         // try to figure out actual result

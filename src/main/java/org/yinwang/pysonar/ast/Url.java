@@ -1,7 +1,6 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
@@ -28,7 +27,7 @@ public class Url extends Node {
     @NotNull
     @Override
     public Type transform(State s) {
-        return Type.UNKNOWN_STR;
+        return Type.STR;
     }
 
 
