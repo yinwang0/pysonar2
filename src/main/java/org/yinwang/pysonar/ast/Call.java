@@ -69,7 +69,7 @@ public class Call extends Node {
 
         if (fun.isUnionType()) {
             Set<Type> types = fun.asUnionType().getTypes();
-            Type retType = Analyzer.self.builtins.unknown;
+            Type retType = Type.UNKNOWN;
             for (Type ft : types) {
                 Type t = resolveCall(ft, pos, hash, kw, star);
                 retType = UnionType.union(retType, t);
@@ -95,7 +95,7 @@ public class Call extends Node {
             return new InstanceType(fun, this, pos);
         } else {
             addWarning("calling non-function and non-class: " + fun);
-            return Analyzer.self.builtins.unknown;
+            return Type.UNKNOWN;
         }
     }
 
@@ -120,7 +120,7 @@ public class Call extends Node {
             return func.getReturnType();
         } else if (call != null && Analyzer.self.inStack(call)) {
             func.setSelfType(null);
-            return Analyzer.self.builtins.unknown;
+            return Type.UNKNOWN;
         }
 
         if (call != null) {
@@ -216,7 +216,7 @@ public class Call extends Node {
                 {
                     aType = star.asTupleType().get(j++);
                 } else {
-                    aType = Analyzer.self.builtins.unknown;
+                    aType = Type.UNKNOWN;
                     if (call != null) {
                         Analyzer.self.putProblem(args.get(i),
                                 "unable to bind argument:" + args.get(i));
@@ -238,7 +238,7 @@ public class Call extends Node {
             } else {
                 Binder.bind(funcTable,
                         restKw,
-                        Analyzer.self.builtins.unknown,
+                        Type.UNKNOWN,
                         Binding.Kind.PARAMETER);
             }
         }
@@ -263,7 +263,7 @@ public class Call extends Node {
             } else {
                 Binder.bind(funcTable,
                         rest,
-                        Analyzer.self.builtins.unknown,
+                        Type.UNKNOWN,
                         Binding.Kind.PARAMETER);
             }
         }

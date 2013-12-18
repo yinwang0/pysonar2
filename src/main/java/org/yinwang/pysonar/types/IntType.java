@@ -6,6 +6,7 @@ import org.yinwang.pysonar.Analyzer;
 import java.math.BigInteger;
 
 
+
 public class IntType extends Type {
 
     BigInteger lower;
@@ -83,10 +84,23 @@ public class IntType extends Type {
 
 
     public static IntType div(IntType a, IntType b) {
-        BigInteger lower = a.lower.divide(b.upper);
-        BigInteger upper = a.upper.divide(b.lower);
-        boolean lowerBounded = a.lowerBounded && b.lowerBounded;
-        boolean upperBounded = a.upperBounded && b.upperBounded;
+        boolean lowerBounded = a.lowerBounded && b.upperBounded;
+        boolean upperBounded = a.upperBounded && b.lowerBounded;
+
+        BigInteger lower = BigInteger.ZERO;
+        if (lowerBounded && !b.upper.equals(BigInteger.ZERO)) {
+            lower = a.lower.divide(b.upper);
+        } else {
+            lowerBounded = false;
+        }
+
+        BigInteger upper = BigInteger.ZERO;
+        if (upperBounded && !b.lower.equals(BigInteger.ZERO)) {
+            upper = a.upper.divide(b.lower);
+        } else {
+            upperBounded = false;
+        }
+
         return new IntType(lower, upper, lowerBounded, upperBounded);
     }
 

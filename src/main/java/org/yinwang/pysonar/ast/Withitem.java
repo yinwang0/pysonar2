@@ -37,7 +37,7 @@ public class Withitem extends Node {
     @NotNull
     @Override
     public Type transform(State s) {
-        return Analyzer.self.builtins.unknown;
+        return Type.UNKNOWN;
     }
 
 

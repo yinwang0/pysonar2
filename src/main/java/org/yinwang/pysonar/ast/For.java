@@ -35,7 +35,7 @@ public class For extends Node {
 
         Type ret;
         if (body == null) {
-            ret = Analyzer.self.builtins.unknown;
+            ret = Type.UNKNOWN;
         } else {
             ret = transformExpr(body, s);
         }

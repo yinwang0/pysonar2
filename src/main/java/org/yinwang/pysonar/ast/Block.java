@@ -40,7 +40,7 @@ public class Block extends Node {
         }
 
         boolean returned = false;
-        Type retType = Analyzer.self.builtins.unknown;
+        Type retType = Type.UNKNOWN;
 
         for (Node n : seq) {
             Type t = transformExpr(n, state);

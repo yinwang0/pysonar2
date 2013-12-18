@@ -68,7 +68,7 @@ public class Binder {
             bind(s, xs, rvalue.asDictType().toTupleType(xs.size()), kind);
         } else if (rvalue.isUnknownType()) {
             for (Node x : xs) {
-                bind(s, x, Analyzer.self.builtins.unknown, kind);
+                bind(s, x, Type.UNKNOWN, kind);
             }
         } else if (xs.size() > 0) {
             Analyzer.self.putProblem(xs.get(0).getFile(),
@@ -106,13 +106,13 @@ public class Binder {
                         if (!iterType.isUnknownType()) {
                             Analyzer.self.putProblem(iter, "not an iterable type: " + iterType);
                         }
-                        bind(s, target, Analyzer.self.builtins.unknown, kind);
+                        bind(s, target, Type.UNKNOWN, kind);
                     } else {
                         bind(s, target, ent.getType().asFuncType().getReturnType(), kind);
                     }
                 }
             } else {
-                bind(s, target, Analyzer.self.builtins.unknown, kind);
+                bind(s, target, Type.UNKNOWN, kind);
             }
         }
     }

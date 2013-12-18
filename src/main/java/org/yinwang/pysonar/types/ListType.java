@@ -17,7 +17,7 @@ public class ListType extends Type {
 
 
     public ListType() {
-        this(Analyzer.self.builtins.unknown);
+        this(Type.UNKNOWN);
     }
 
 

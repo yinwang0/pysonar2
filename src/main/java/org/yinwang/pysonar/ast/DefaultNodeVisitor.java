@@ -204,6 +204,11 @@ public class DefaultNodeVisitor implements NodeVisitor {
     }
 
 
+    public boolean visit(PyComplex n) {
+        return traverseIntoNodes;
+    }
+
+
     public boolean visit(Op n) {
         return traverseIntoNodes;
     }

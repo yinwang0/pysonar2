@@ -81,7 +81,7 @@ public class Attribute extends Node {
         Type targetType = transformExpr(target, s);
         if (targetType.isUnionType()) {
             Set<Type> types = targetType.asUnionType().getTypes();
-            Type retType = Analyzer.self.builtins.unknown;
+            Type retType = Type.UNKNOWN;
             for (Type tt : types) {
                 retType = UnionType.union(retType, getAttrType(tt));
             }
@@ -96,7 +96,7 @@ public class Attribute extends Node {
         List<Binding> bs = targetType.getTable().lookupAttr(attr.id);
         if (bs == null) {
             Analyzer.self.putProblem(attr, "attribute not found in type: " + targetType);
-            Type t = Analyzer.self.builtins.unknown;
+            Type t = Type.UNKNOWN;
             t.getTable().setPath(targetType.getTable().extendPath(attr.id));
             return t;
         } else {

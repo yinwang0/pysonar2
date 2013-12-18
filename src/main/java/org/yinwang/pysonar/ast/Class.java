@@ -82,7 +82,7 @@ public class Class extends Node {
         addSpecialAttribute(classType.getTable(), "__bases__", new TupleType(baseTypes));
         addSpecialAttribute(classType.getTable(), "__name__", builtins.BaseStr);
         addSpecialAttribute(classType.getTable(), "__dict__",
-                new DictType(builtins.BaseStr, Analyzer.self.builtins.unknown));
+                new DictType(builtins.BaseStr, Type.UNKNOWN));
         addSpecialAttribute(classType.getTable(), "__module__", builtins.BaseStr);
         addSpecialAttribute(classType.getTable(), "__doc__", builtins.BaseStr);
 

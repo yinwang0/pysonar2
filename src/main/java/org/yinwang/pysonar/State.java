@@ -342,7 +342,7 @@ public class State {
 
 
     public static Type makeUnion(List<Binding> bs) {
-        Type t = Analyzer.self.builtins.unknown;
+        Type t = Type.UNKNOWN;
         for (Binding b : bs) {
             t = UnionType.union(t, b.getType());
         }

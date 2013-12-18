@@ -6,21 +6,15 @@ import org.yinwang.pysonar.types.FloatType;
 import org.yinwang.pysonar.types.Type;
 
 
-public class PyFloat extends Node {
+public class PyComplex extends Node {
 
     public double value;
 
 
-    public PyFloat(String s, int start, int end) {
+    public PyComplex(String s, int start, int end) {
         super(start, end);
         s = s.replaceAll("_", "");
-        if (s.equals("inf")) {
-            this.value = Double.POSITIVE_INFINITY;
-        } else if (s.equals("-inf")) {
-            this.value = Double.NEGATIVE_INFINITY;
-        } else {
-            this.value = Double.parseDouble(s);
-        }
+        this.value = Double.parseDouble(s);
     }
 
 
@@ -34,7 +28,7 @@ public class PyFloat extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "(float:" + value + ")";
+        return "(complex:" + value + ")";
     }
 
 

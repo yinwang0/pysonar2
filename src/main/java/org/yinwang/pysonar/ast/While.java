@@ -27,7 +27,7 @@ public class While extends Node {
     @Override
     public Type transform(State s) {
         transformExpr(test, s);
-        Type t = Analyzer.self.builtins.unknown;
+        Type t = Type.UNKNOWN;
 
         if (body != null) {
             t = transformExpr(body, s);

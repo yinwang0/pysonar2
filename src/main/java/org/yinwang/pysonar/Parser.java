@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.*;
 import org.yinwang.pysonar.ast.Class;
+import org.yinwang.pysonar.types.Type;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -420,12 +421,14 @@ public class Parser {
         }
 
         if (type.equals("Num")) {
-            String s = (String) map.get("n");
+
             String num_type = (String) map.get("num_type");
             if (num_type.equals("int")) {
-                return new PyInt(s, start, end);
+                return new PyInt((String) map.get("n"), start, end);
             } else if (num_type.equals("float")) {
-                return new PyFloat(s, start, end);
+                return new PyFloat((String) map.get("n"), start, end);
+            } else {
+                return new PyComplex((double) map.get("real"), (double) map.get("imag"), start, end);
             }
         }
 
@@ -859,7 +862,7 @@ public class Parser {
 
     @Nullable
     public Node parseFileInner(String filename, @NotNull Process pythonProcess) {
-//        _.msg("parsing: " + filename);
+        _.msg("parsing: " + filename);
 
         File exchange = new File(exchangeFile);
         File marker = new File(endMark);

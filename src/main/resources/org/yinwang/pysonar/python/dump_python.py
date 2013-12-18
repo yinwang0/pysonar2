@@ -391,12 +391,17 @@ def add_missing_names(node, s):
     elif isinstance(node, Num):
         if isinstance(node.n, int) or isinstance(node.n, long):
             type = 'int'
+            node.n = str(node.n)
         elif isinstance(node.n, float):
             type = 'float'
+            node.n = str(node.n)
         elif isinstance(node.n, complex):
             type = 'complex'
+            node.real = node.n.real
+            node.imag = node.n.imag
+            node._fields += ('real', 'imag')
+
         node.num_type = type
-        node.n = str(node.n)
         node._fields += ('num_type',)
 
     node.extra_attr = True

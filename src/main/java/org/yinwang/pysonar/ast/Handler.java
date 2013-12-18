@@ -29,7 +29,7 @@ public class Handler extends Node {
     @NotNull
     @Override
     public Type transform(@NotNull State s) {
-        Type typeval = Analyzer.self.builtins.unknown;
+        Type typeval = Type.UNKNOWN;
         if (exceptions != null) {
             typeval = resolveUnion(exceptions, s);
         }
@@ -39,7 +39,7 @@ public class Handler extends Node {
         if (body != null) {
             return transformExpr(body, s);
         } else {
-            return Analyzer.self.builtins.unknown;
+            return Type.UNKNOWN;
         }
     }
 

@@ -253,7 +253,7 @@ public abstract class Node implements java.io.Serializable {
      */
     @NotNull
     protected Type resolveUnion(@NotNull Collection<? extends Node> nodes, State s) {
-        Type result = Analyzer.self.builtins.unknown;
+        Type result = Type.UNKNOWN;
         for (Node node : nodes) {
             Type nodeType = transformExpr(node, s);
             result = UnionType.union(result, nodeType);

@@ -50,7 +50,7 @@ public class UnionType extends Type {
             types.remove(t2);
             return UnionType.newUnion(types);
         } else if (t1 == t2) {
-            return Analyzer.self.builtins.unknown;
+            return Type.UNKNOWN;
         } else {
             return t1;
         }
@@ -59,7 +59,7 @@ public class UnionType extends Type {
 
     @NotNull
     static public Type newUnion(@NotNull Collection<Type> types) {
-        Type t = Analyzer.self.builtins.unknown;
+        Type t = Type.UNKNOWN;
         for (Type nt : types) {
             t = union(t, nt);
         }
@@ -97,9 +97,9 @@ public class UnionType extends Type {
     public static Type union(@NotNull Type u, @NotNull Type v) {
         if (u.equals(v)) {
             return u;
-        } else if (u == Analyzer.self.builtins.unknown) {
+        } else if (u == Type.UNKNOWN) {
             return v;
-        } else if (v == Analyzer.self.builtins.unknown) {
+        } else if (v == Type.UNKNOWN) {
             return u;
         } else if (u == Analyzer.self.builtins.None) {
             return v;

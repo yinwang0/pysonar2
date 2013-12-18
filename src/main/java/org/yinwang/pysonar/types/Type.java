@@ -144,7 +144,7 @@ public abstract class Type {
 
 
     public boolean isUnknownType() {
-        return this == Analyzer.self.builtins.unknown;
+        return this == Type.UNKNOWN;
     }
 
 
@@ -337,4 +337,16 @@ public abstract class Type {
         return printType(new CyclicTypeRecorder());
     }
 
+
+    public static InstanceType UNKNOWN = new InstanceType(new ClassType("?", null, null));
+    public static InstanceType CONT = new InstanceType(new ClassType("cont", null, null));
+    public static InstanceType NIL = new InstanceType(new ClassType("nil", null, null));
+    public static BoolType TRUE = new BoolType(BoolType.Value.True);
+    public static BoolType FALSE = new BoolType(BoolType.Value.False);
+
+    public static StrType UNKNOWN_STR = new StrType(null);
+    public static IntType UNKNOWN_INT = new IntType();
+    public static FloatType UNKNOWN_FLOAT = new FloatType();
+    public static ComplexType UNKNOWN_COMPLEX = new ComplexType();
+    public static BoolType UNKNOWN_BOOL = new BoolType(BoolType.Value.Undecided);
 }

@@ -117,6 +117,9 @@ public interface NodeVisitor {
     public boolean visit(PyFloat m);
 
 
+    public boolean visit(PyComplex m);
+
+
     public boolean visit(Op m);
 
 

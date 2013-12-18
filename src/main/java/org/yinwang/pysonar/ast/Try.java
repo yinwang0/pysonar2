@@ -31,10 +31,10 @@ public class Try extends Node {
     @NotNull
     @Override
     public Type transform(State s) {
-        Type tp1 = Analyzer.self.builtins.unknown;
-        Type tp2 = Analyzer.self.builtins.unknown;
-        Type tph = Analyzer.self.builtins.unknown;
-        Type tpFinal = Analyzer.self.builtins.unknown;
+        Type tp1 = Type.UNKNOWN;
+        Type tp2 = Type.UNKNOWN;
+        Type tph = Type.UNKNOWN;
+        Type tpFinal = Type.UNKNOWN;
 
         if (handlers != null) {
             for (Handler h : handlers) {

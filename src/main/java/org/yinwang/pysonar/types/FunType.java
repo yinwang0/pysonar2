@@ -63,7 +63,7 @@ public class FunType extends Type {
         if (!arrows.isEmpty()) {
             return arrows.values().iterator().next();
         } else {
-            return Analyzer.self.builtins.unknown;
+            return Type.UNKNOWN;
         }
     }
 

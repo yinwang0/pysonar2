@@ -77,7 +77,7 @@ public class BinOp extends Node {
         rtype = transformExpr(right, s);
 
         if (ltype.isUnknownType() || rtype.isUnknownType()) {
-            return Analyzer.self.builtins.unknown;
+            return Type.UNKNOWN;
         }
 
         // Don't do specific things about string types at the moment

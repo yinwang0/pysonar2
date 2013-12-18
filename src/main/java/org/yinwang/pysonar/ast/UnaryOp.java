@@ -56,7 +56,7 @@ public class UnaryOp extends Node {
         }
 
         Analyzer.self.putProblem(this, "operator " + op + " cannot be applied to type: " + valueType);
-        return Analyzer.self.builtins.unknown;
+        return Type.UNKNOWN;
 
     }
 
