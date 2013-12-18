@@ -20,7 +20,7 @@ public class Str extends Node {
     @NotNull
     @Override
     public Type transform(State s) {
-        return Analyzer.self.builtins.BaseStr;
+        return Type.UNKNOWN_STR;
     }
 
 

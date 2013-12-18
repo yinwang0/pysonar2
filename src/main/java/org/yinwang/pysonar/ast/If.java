@@ -66,9 +66,9 @@ public class If extends Node {
         }
 
         // determine return type
-        if (conditionType == Analyzer.self.builtins.True) {
+        if (conditionType == Type.TRUE) {
             return type1;
-        } else if (conditionType == Analyzer.self.builtins.False) {
+        } else if (conditionType == Type.FALSE) {
             return type2;
         } else {
             return UnionType.union(type1, type2);

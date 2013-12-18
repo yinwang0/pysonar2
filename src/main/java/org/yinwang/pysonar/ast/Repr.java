@@ -24,7 +24,7 @@ public class Repr extends Node {
         if (value != null) {
             transformExpr(value, s);
         }
-        return Analyzer.self.builtins.BaseStr;
+        return Type.UNKNOWN_STR;
     }
 
 

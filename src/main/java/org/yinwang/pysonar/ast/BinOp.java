@@ -44,9 +44,9 @@ public class BinOp extends Node {
             }
 
             if (ltype.isTrue() && rtype.isTrue()) {
-                return Analyzer.self.builtins.True;
+                return Type.TRUE;
             } else if (ltype.isFalse() || rtype.isFalse()) {
-                return Analyzer.self.builtins.False;
+                return Type.FALSE;
             } else if (ltype.isUndecidedBool() && rtype.isUndecidedBool()) {
                 State falseState = State.merge(ltype.asBool().getS2(), rtype.asBool().getS2());
                 return new BoolType(rtype.asBool().getS1(), falseState);
@@ -63,9 +63,9 @@ public class BinOp extends Node {
             }
 
             if (ltype.isTrue() || rtype.isTrue()) {
-                return Analyzer.self.builtins.True;
+                return Type.TRUE;
             } else if (ltype.isFalse() && rtype.isFalse()) {
-                return Analyzer.self.builtins.False;
+                return Type.FALSE;
             } else if (ltype.isUndecidedBool() && rtype.isUndecidedBool()) {
                 State trueState = State.merge(ltype.asBool().getS1(), rtype.asBool().getS1());
                 return new BoolType(trueState, rtype.asBool().getS2());
@@ -81,8 +81,8 @@ public class BinOp extends Node {
         }
 
         // Don't do specific things about string types at the moment
-        if (ltype == Analyzer.self.builtins.BaseStr && rtype == Analyzer.self.builtins.BaseStr) {
-            return Analyzer.self.builtins.BaseStr;
+        if (ltype == Type.UNKNOWN_STR && rtype == Type.UNKNOWN_STR) {
+            return Type.UNKNOWN_STR;
         }
 
         // try to figure out actual result
@@ -124,9 +124,9 @@ public class BinOp extends Node {
 
                 if (op1 == Op.Lt) {
                     if (leftNum.lt(rightNum)) {
-                        return Analyzer.self.builtins.True;
+                        return Type.TRUE;
                     } else if (leftNum.gt(rightNum)) {
-                        return Analyzer.self.builtins.False;
+                        return Type.FALSE;
                     } else {
                         // transfer bound information
                         State s1 = s.copy();
@@ -154,9 +154,9 @@ public class BinOp extends Node {
 
                 if (op1 == Op.Gt) {
                     if (leftNum.gt(rightNum)) {
-                        return Analyzer.self.builtins.True;
+                        return Type.TRUE;
                     } else if (leftNum.lt(rightNum)) {
-                        return Analyzer.self.builtins.False;
+                        return Type.FALSE;
                     } else {
                         // undecided, need to transfer bound information
                         State s1 = s.copy();

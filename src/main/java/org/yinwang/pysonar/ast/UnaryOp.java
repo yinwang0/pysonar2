@@ -45,10 +45,10 @@ public class UnaryOp extends Node {
 
         if (op == Op.Not) {
             if (valueType.isTrue()) {
-                return Analyzer.self.builtins.False;
+                return Type.FALSE;
             }
             if (valueType.isFalse()) {
-                return Analyzer.self.builtins.True;
+                return Type.TRUE;
             }
             if (valueType.isUndecidedBool()) {
                 return valueType.asBool().swap();

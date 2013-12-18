@@ -129,7 +129,7 @@ public abstract class Type {
 
 
     public boolean isStrType() {
-        return this == Analyzer.self.builtins.BaseStr;
+        return this == Type.UNKNOWN_STR;
     }
 
 
@@ -224,10 +224,10 @@ public abstract class Type {
 
 
     public boolean isTrue() {
-        if (this == Analyzer.self.builtins.True) {
+        if (this == Type.TRUE) {
             return true;
         }
-        if (this == Analyzer.self.builtins.False || this.isUndecidedBool()) {
+        if (this == Type.FALSE || this.isUndecidedBool()) {
             return false;
         }
         if (this.isIntType() && (this.asIntType().lt(BigInteger.ZERO) || this.asIntType().gt(BigInteger.ZERO))) {
@@ -250,10 +250,10 @@ public abstract class Type {
 
 
     public boolean isFalse() {
-        if (this == Analyzer.self.builtins.False) {
+        if (this == Type.FALSE) {
             return true;
         }
-        if (this == Analyzer.self.builtins.True || this.isUndecidedBool()) {
+        if (this == Type.TRUE || this.isUndecidedBool()) {
             return false;
         }
         if (this.isIntType() && this.asIntType().isZero()) {
