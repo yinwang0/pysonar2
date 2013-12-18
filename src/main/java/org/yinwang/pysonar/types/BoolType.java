@@ -59,6 +59,7 @@ public class BoolType extends Type {
         this.s2 = s2;
     }
 
+
     public BoolType swap() {
         return new BoolType(s2, s1);
     }

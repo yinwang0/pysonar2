@@ -161,8 +161,7 @@ class StyleApplier {
                     ? source.substring(begin)
                     : source.substring(begin, end));
             buffer.append(src);
-        }
-        catch (RuntimeException x) {
+        } catch (RuntimeException x) {
             // This can happen with files with weird encodings
             // Igore them because of the rareness
         }

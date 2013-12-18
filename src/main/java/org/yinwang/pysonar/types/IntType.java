@@ -6,7 +6,6 @@ import org.yinwang.pysonar.Analyzer;
 import java.math.BigInteger;
 
 
-
 public class IntType extends Type {
 
     BigInteger lower;

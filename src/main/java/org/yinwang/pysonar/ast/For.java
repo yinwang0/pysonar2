@@ -1,7 +1,6 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binder;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.State;
@@ -18,7 +17,8 @@ public class For extends Node {
 
 
     public For(Node target, Node iter, Block body, Block orelse,
-               int start, int end) {
+               int start, int end)
+    {
         super(start, end);
         this.target = target;
         this.iter = iter;

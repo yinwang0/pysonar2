@@ -1,7 +1,6 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
@@ -16,8 +15,10 @@ public class Try extends Node {
     public Block orelse;
     public Block finalbody;
 
+
     public Try(List<Handler> handlers, Block body, Block orelse, Block finalbody,
-               int start, int end) {
+               int start, int end)
+    {
         super(start, end);
         this.handlers = handlers;
         this.body = body;

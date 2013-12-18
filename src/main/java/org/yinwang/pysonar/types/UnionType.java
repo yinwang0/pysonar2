@@ -2,7 +2,6 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.Analyzer;
 
 import java.util.Collection;
 import java.util.HashSet;

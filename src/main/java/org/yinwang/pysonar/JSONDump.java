@@ -296,12 +296,10 @@ public class JSONDump {
             docOut.flush();
             symOut.flush();
             refOut.flush();
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             System.err.println("Could not find file: " + e);
             return;
-        }
-        finally {
+        } finally {
             if (docOut != null) {
                 docOut.close();
             }

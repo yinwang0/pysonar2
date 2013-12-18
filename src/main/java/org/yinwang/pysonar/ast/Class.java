@@ -49,6 +49,7 @@ public class Class extends Node {
 
     private static int classCounter = 0;
 
+
     @NotNull
     public static String genClassName() {
         classCounter = classCounter + 1;

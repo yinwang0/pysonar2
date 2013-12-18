@@ -55,7 +55,9 @@ public class Outliner {
 
         public abstract boolean hasChildren();
 
+
         public abstract List<Entry> getChildren();
+
 
         public abstract void setChildren(List<Entry> children);
 
@@ -224,7 +226,7 @@ public class Outliner {
      * @param scope the file scope
      * @param path  the file for which to build the outline
      * @return a list of entries constituting the file outline.
-     *         Returns an empty list if the analyzer hasn't analyzed that path.
+     * Returns an empty list if the analyzer hasn't analyzed that path.
      */
     @NotNull
     public List<Entry> generate(@NotNull Analyzer idx, @NotNull String abspath) {

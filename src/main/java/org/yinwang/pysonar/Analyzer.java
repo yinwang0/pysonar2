@@ -1,6 +1,5 @@
 package org.yinwang.pysonar;
 
-import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Call;

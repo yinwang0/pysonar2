@@ -2,7 +2,6 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.DictType;
 import org.yinwang.pysonar.types.Type;
@@ -29,7 +28,7 @@ public class Subscript extends Node {
     @Override
     public Type transform(State s) {
         Type vt = transformExpr(value, s);
-        Type st = slice == null? null : transformExpr(slice, s);
+        Type st = slice == null ? null : transformExpr(slice, s);
 
         if (vt.isUnionType()) {
             Type retType = Type.UNKNOWN;
