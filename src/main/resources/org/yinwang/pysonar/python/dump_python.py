@@ -389,7 +389,7 @@ def add_missing_names(node, s):
             node._fields += ('op_node',)
 
     elif isinstance(node, Num):
-        if isinstance(node.n, int) or isinstance(node.n, long):
+        if isinstance(node.n, int) or (not is_python3 and isinstance(node.n, long)):
             type = 'int'
             node.n = str(node.n)
         elif isinstance(node.n, float):

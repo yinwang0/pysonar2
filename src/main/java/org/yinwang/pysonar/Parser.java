@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.*;
 import org.yinwang.pysonar.ast.Class;
-import org.yinwang.pysonar.types.Type;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -428,7 +427,24 @@ public class Parser {
             } else if (num_type.equals("float")) {
                 return new PyFloat((String) map.get("n"), start, end);
             } else {
-                return new PyComplex((double) map.get("real"), (double) map.get("imag"), start, end);
+                Object real = map.get("real");
+                Object imag = map.get("imag");
+
+                if (real instanceof String) {
+                    if (real.equals("Infinity")) {
+                        real = Double.POSITIVE_INFINITY;
+                    } else if (real.equals("-Infinity")) {
+                        real = Double.NEGATIVE_INFINITY;
+                    }
+                }
+                if (imag instanceof String) {
+                    if (imag.equals("Infinity")) {
+                        imag = Double.POSITIVE_INFINITY;
+                    } else if (real.equals("-Infinity")) {
+                        imag = Double.NEGATIVE_INFINITY;
+                    }
+                }
+                return new PyComplex((double) real, (double) imag, start, end);
             }
         }
 
@@ -848,12 +864,14 @@ public class Parser {
         } else if (python3Process != null) {
             Node node3 = parseFileInner(filename, python3Process);
             if (node3 == null) {
+//                _.msg("failed to parse: " + filename);
                 Analyzer.self.failedToParse.add(filename);
                 return null;
             } else {
                 return node3;
             }
         } else {
+//            _.msg("failed to parse: " + filename);
             Analyzer.self.failedToParse.add(filename);
             return null;
         }
