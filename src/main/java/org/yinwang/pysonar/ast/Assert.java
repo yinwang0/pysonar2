@@ -29,7 +29,7 @@ public class Assert extends Node {
         if (msg != null) {
             transformExpr(msg, s);
         }
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 

@@ -2,33 +2,34 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.State;
-import org.yinwang.pysonar.types.FloatType;
+import org.yinwang.pysonar.types.ComplexType;
 import org.yinwang.pysonar.types.Type;
 
 
 public class PyComplex extends Node {
 
-    public double value;
+    public double real;
+    public double imag;
 
 
-    public PyComplex(String s, int start, int end) {
+    public PyComplex(double real, double imag, int start, int end) {
         super(start, end);
-        s = s.replaceAll("_", "");
-        this.value = Double.parseDouble(s);
+        this.real = real;
+        this.imag = imag;
     }
 
 
     @NotNull
     @Override
     public Type transform(State s) {
-        return new FloatType(value);
+        return new ComplexType(real, imag);
     }
 
 
     @NotNull
     @Override
     public String toString() {
-        return "(complex:" + value + ")";
+        return "(" + real + "+" + imag + "j)";
     }
 
 

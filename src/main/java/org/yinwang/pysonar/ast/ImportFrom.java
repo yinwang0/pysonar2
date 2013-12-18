@@ -33,7 +33,7 @@ public class ImportFrom extends Node {
     @Override
     public Type transform(@NotNull State s) {
         if (module == null) {
-            return Analyzer.self.builtins.Cont;
+            return Type.CONT;
         }
 
         Type mod = Analyzer.self.loadModule(module, s);
@@ -69,7 +69,7 @@ public class ImportFrom extends Node {
             }
         }
 
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 

@@ -339,7 +339,7 @@ public abstract class Type {
 
 
     public static InstanceType UNKNOWN = new InstanceType(new ClassType("?", null, null));
-    public static InstanceType CONT = new InstanceType(new ClassType("cont", null, null));
+    public static InstanceType CONT = new InstanceType(new ClassType("none", null, null));
     public static InstanceType NONE = new InstanceType(new ClassType("none", null, null));
     public static BoolType TRUE = new BoolType(BoolType.Value.True);
     public static BoolType FALSE = new BoolType(BoolType.Value.False);

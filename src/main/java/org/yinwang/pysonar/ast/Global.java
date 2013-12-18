@@ -24,7 +24,7 @@ public class Global extends Node {
     @Override
     public Type transform(State s) {
         // Do nothing here because global names are processed by NBlock
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 

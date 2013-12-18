@@ -34,7 +34,7 @@ public class Exec extends Node {
         if (locals != null) {
             transformExpr(locals, s);
         }
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 

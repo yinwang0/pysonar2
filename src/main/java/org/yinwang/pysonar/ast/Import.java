@@ -32,7 +32,7 @@ public class Import extends Node {
                 s.insert(a.asname.id, a.asname, mod, Binding.Kind.VARIABLE);
             }
         }
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 

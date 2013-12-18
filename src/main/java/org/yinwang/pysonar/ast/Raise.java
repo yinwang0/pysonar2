@@ -34,7 +34,7 @@ public class Raise extends Node {
         if (traceback != null) {
             transformExpr(traceback, s);
         }
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 

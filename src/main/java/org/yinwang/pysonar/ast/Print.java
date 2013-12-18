@@ -32,7 +32,7 @@ public class Print extends Node {
         if (values != null) {
             resolveList(values, s);
         }
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 

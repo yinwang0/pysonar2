@@ -84,7 +84,7 @@ public class Function extends Node {
             }
 
             Binder.bind(s, name, fun, funkind);
-            return Analyzer.self.builtins.Cont;
+            return Type.CONT;
         }
     }
 

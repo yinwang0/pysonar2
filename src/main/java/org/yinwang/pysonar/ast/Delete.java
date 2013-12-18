@@ -29,7 +29,7 @@ public class Delete extends Node {
                 s.remove(n.asName().id);
             }
         }
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 

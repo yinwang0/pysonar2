@@ -56,9 +56,6 @@ public class Builtins {
     public ModuleType Builtin;
     public ClassType Object;
     public ClassType BaseType;
-    public InstanceType Cont;
-    public IntType BaseNum; // BaseNum models int, float and long
-    public FloatType BaseFloat; // BaseNum models int, float and long
     public InstanceType BaseComplex;
     public InstanceType BaseBool;
     public BoolType True;
@@ -144,15 +141,15 @@ public class Builtins {
     @Nullable
     FunType newFunc(@Nullable Type type) {
         if (type == null) {
-            type = BaseType.UNKNOWN;
+            type = Type.UNKNOWN;
         }
-        return new FunType(BaseType.UNKNOWN, type);
+        return new FunType(Type.UNKNOWN, type);
     }
 
 
     @NotNull
     ListType newList() {
-        return newList(BaseType.UNKNOWN);
+        return newList(Type.UNKNOWN);
     }
 
 
@@ -263,7 +260,7 @@ public class Builtins {
 
 
         protected void addNumFuncs(String... names) {
-            addFunctions_beCareful(BaseNum, names);
+            addFunctions_beCareful(Type.UNKNOWN_INT, names);
         }
 
 
@@ -274,7 +271,7 @@ public class Builtins {
 
         protected void addUnknownFuncs(@NotNull String... names) {
             for (String name : names) {
-                addFunction(name, liburl(), BaseType.UNKNOWN);
+                addFunction(name, liburl(), Type.UNKNOWN);
             }
         }
 
@@ -294,7 +291,7 @@ public class Builtins {
 
 
         protected void addNumAttrs(String... names) {
-            addAttributes_beCareful(BaseNum, names);
+            addAttributes_beCareful(Type.UNKNOWN_INT, names);
         }
 
 
@@ -305,7 +302,7 @@ public class Builtins {
 
         protected void addUnknownAttrs(@NotNull String... names) {
             for (String name : names) {
-                addAttr(name, liburl(), BaseType.UNKNOWN);
+                addAttr(name, liburl(), Type.UNKNOWN);
             }
         }
 
@@ -349,7 +346,6 @@ public class Builtins {
         State bt = Builtin.getTable();
 
         Object = newClass("object", bt);
-        Cont = new InstanceType(newClass("None", bt));                 // continuation (to express non-return)
         BaseType = newClass("type", bt, Object);
         BaseTuple = newClass("tuple", bt, Object);
         BaseList = newClass("list", bt, Object);
@@ -357,8 +353,6 @@ public class Builtins {
         BaseArray = newClass("array", bt);
         BaseDict = newClass("dict", bt, Object);
         ClassType numClass = newClass("int", bt, Object);
-        BaseNum = new IntType();
-        BaseFloat = new FloatType();
         BaseComplex = new InstanceType(new ClassType("complex", bt, Object));
         BaseBool = new InstanceType(newClass("bool", bt, numClass));
         True = new BoolType(BoolType.Value.True);
@@ -480,7 +474,7 @@ public class Builtins {
             Object.getTable().insert(m, newLibUrl("stdtypes"), newFunc(), METHOD);
         }
         Object.getTable().insert("__doc__", newLibUrl("stdtypes"), BaseStr, CLASS);
-        Object.getTable().insert("__class__", newLibUrl("stdtypes"), BaseType.UNKNOWN, CLASS);
+        Object.getTable().insert("__class__", newLibUrl("stdtypes"), Type.UNKNOWN, CLASS);
     }
 
 
@@ -511,7 +505,7 @@ public class Builtins {
         }
         String[] array_methods_num = {"count", "itemsize",};
         for (String m : array_methods_num) {
-            BaseArray.getTable().insert(m, newLibUrl("array"), newFunc(BaseNum), METHOD);
+            BaseArray.getTable().insert(m, newLibUrl("array"), newFunc(Type.UNKNOWN_INT), METHOD);
         }
         String[] array_methods_str = {"tostring", "tounicode",};
         for (String m : array_methods_str) {
@@ -536,7 +530,7 @@ public class Builtins {
         }
         String[] list_methods_num = {"count"};
         for (String m : list_methods_num) {
-            BaseList.getTable().insert(m, newLibUrl("stdtypes"), newFunc(BaseNum), METHOD);
+            BaseList.getTable().insert(m, newLibUrl("stdtypes"), newFunc(Type.UNKNOWN_INT), METHOD);
         }
     }
 
@@ -548,7 +542,7 @@ public class Builtins {
 
 
     void buildNumTypes() {
-        State bft = BaseFloat.getTable();
+        State bft = Type.UNKNOWN_FLOAT.getTable();
         String[] float_methods_num = {
                 "__abs__", "__add__", "__coerce__", "__div__", "__divmod__",
                 "__eq__", "__float__", "__floordiv__", "__format__",
@@ -561,9 +555,9 @@ public class Builtins {
                 "fromhex", "is_integer"
         };
         for (String m : float_methods_num) {
-            bft.insert(m, numUrl(), newFunc(BaseFloat), METHOD);
+            bft.insert(m, numUrl(), newFunc(Type.UNKNOWN_FLOAT), METHOD);
         }
-        State bnt = BaseNum.getTable();
+        State bnt = Type.UNKNOWN_INT.getTable();
         String[] num_methods_num = {
                 "__abs__", "__add__", "__and__",
                 "__class__", "__cmp__", "__coerce__", "__delattr__", "__div__",
@@ -580,9 +574,9 @@ public class Builtins {
                 "__xor__"
         };
         for (String m : num_methods_num) {
-            bnt.insert(m, numUrl(), newFunc(BaseNum), METHOD);
+            bnt.insert(m, numUrl(), newFunc(Type.UNKNOWN_INT), METHOD);
         }
-        bnt.insert("__getnewargs__", numUrl(), newFunc(newTuple(BaseNum)), METHOD);
+        bnt.insert("__getnewargs__", numUrl(), newFunc(newTuple(Type.UNKNOWN_INT)), METHOD);
         bnt.insert("hex", numUrl(), newFunc(BaseStr), METHOD);
         bnt.insert("conjugate", numUrl(), newFunc(BaseComplex), METHOD);
 
@@ -603,11 +597,11 @@ public class Builtins {
                 "__nonzero__", "__coerce__"
         };
         for (String cn : complex_methods_num) {
-            bct.insert(cn, numUrl(), newFunc(BaseNum), METHOD);
+            bct.insert(cn, numUrl(), newFunc(Type.UNKNOWN_INT), METHOD);
         }
         bct.insert("__getnewargs__", numUrl(), newFunc(newTuple(BaseComplex)), METHOD);
-        bct.insert("imag", numUrl(), BaseNum, ATTRIBUTE);
-        bct.insert("real", numUrl(), BaseNum, ATTRIBUTE);
+        bct.insert("imag", numUrl(), Type.UNKNOWN_INT, ATTRIBUTE);
+        bct.insert("real", numUrl(), Type.UNKNOWN_INT, ATTRIBUTE);
     }
 
 
@@ -636,7 +630,7 @@ public class Builtins {
         };
         for (String m : str_methods_num) {
             BaseStr.getTable().insert(m, newLibUrl("stdtypes.html#str." + m),
-                    newFunc(BaseNum), METHOD);
+                    newFunc(Type.UNKNOWN_INT), METHOD);
         }
 
         String[] str_methods_list = {"split", "splitlines"};
@@ -655,7 +649,7 @@ public class Builtins {
             BaseModule.getTable().insert(m, newTutUrl("modules.html"), BaseStr, ATTRIBUTE);
         }
         BaseModule.getTable().insert("__dict__", newLibUrl("stdtypes", "modules"),
-                newDict(BaseStr, BaseType.UNKNOWN), ATTRIBUTE);
+                newDict(BaseStr, Type.UNKNOWN), ATTRIBUTE);
     }
 
 
@@ -668,7 +662,7 @@ public class Builtins {
         bt.insert("get", newTutUrl(url), newFunc(), METHOD);
 
         bt.insert("items", newTutUrl(url),
-                newFunc(newList(newTuple(BaseType.UNKNOWN, BaseType.UNKNOWN))), METHOD);
+                newFunc(newList(newTuple(Type.UNKNOWN, Type.UNKNOWN))), METHOD);
 
         bt.insert("keys", newTutUrl(url), newFunc(BaseList), METHOD);
         bt.insert("values", newTutUrl(url), newFunc(BaseList), METHOD);
@@ -683,7 +677,7 @@ public class Builtins {
 
         String[] dict_method_num = {"has_key"};
         for (String m : dict_method_num) {
-            bt.insert(m, newTutUrl(url), newFunc(BaseNum), METHOD);
+            bt.insert(m, newTutUrl(url), newFunc(Type.UNKNOWN_INT), METHOD);
         }
     }
 
@@ -706,7 +700,7 @@ public class Builtins {
 
         String[] num = {"fileno", "isatty", "tell"};
         for (String m : num) {
-            table.insert(m, newLibUrl(url), newFunc(BaseNum), METHOD);
+            table.insert(m, newLibUrl(url), newFunc(Type.UNKNOWN_INT), METHOD);
         }
 
         String[] methods_none = {"close", "seek", "write", "writelines"};
@@ -716,12 +710,12 @@ public class Builtins {
 
         table.insert("readlines", newLibUrl(url), newFunc(newList(BaseStr)), METHOD);
         table.insert("xreadlines", newLibUrl(url), newFunc(BaseStr), METHOD);
-        table.insert("closed", newLibUrl(url), BaseNum, ATTRIBUTE);
+        table.insert("closed", newLibUrl(url), Type.UNKNOWN_INT, ATTRIBUTE);
         table.insert("encoding", newLibUrl(url), BaseStr, ATTRIBUTE);
-        table.insert("errors", newLibUrl(url), BaseType.UNKNOWN, ATTRIBUTE);
-        table.insert("mode", newLibUrl(url), BaseNum, ATTRIBUTE);
+        table.insert("errors", newLibUrl(url), Type.UNKNOWN, ATTRIBUTE);
+        table.insert("mode", newLibUrl(url), Type.UNKNOWN_INT, ATTRIBUTE);
         table.insert("name", newLibUrl(url), BaseStr, ATTRIBUTE);
-        table.insert("softspace", newLibUrl(url), BaseNum, ATTRIBUTE);
+        table.insert("softspace", newLibUrl(url), Type.UNKNOWN_INT, ATTRIBUTE);
         table.insert("newlines", newLibUrl(url), newUnion(BaseStr, newTuple(BaseStr)), ATTRIBUTE);
     }
 
@@ -734,11 +728,11 @@ public class Builtins {
         }
 
         t.insert("func_closure", new Url(DATAMODEL_URL), newTuple(), ATTRIBUTE);
-        t.insert("func_code", new Url(DATAMODEL_URL), BaseType.UNKNOWN, ATTRIBUTE);
+        t.insert("func_code", new Url(DATAMODEL_URL), Type.UNKNOWN, ATTRIBUTE);
         t.insert("func_defaults", new Url(DATAMODEL_URL), newTuple(), ATTRIBUTE);
-        t.insert("func_globals", new Url(DATAMODEL_URL), new DictType(BaseStr, BaseType.UNKNOWN),
+        t.insert("func_globals", new Url(DATAMODEL_URL), new DictType(BaseStr, Type.UNKNOWN),
                 ATTRIBUTE);
-        t.insert("func_dict", new Url(DATAMODEL_URL), new DictType(BaseStr, BaseType.UNKNOWN), ATTRIBUTE);
+        t.insert("func_dict", new Url(DATAMODEL_URL), new DictType(BaseStr, Type.UNKNOWN), ATTRIBUTE);
 
         // Assume any function can become a method, for simplicity.
         for (String s : list("__func__", "im_func")) {
@@ -756,7 +750,7 @@ public class Builtins {
             t.insert(s, new Url(DATAMODEL_URL), BaseStr, ATTRIBUTE);
         }
 
-        t.insert("__dict__", new Url(DATAMODEL_URL), new DictType(BaseStr, BaseType.UNKNOWN), ATTRIBUTE);
+        t.insert("__dict__", new Url(DATAMODEL_URL), new DictType(BaseStr, Type.UNKNOWN), ATTRIBUTE);
     }
 
 
@@ -778,9 +772,9 @@ public class Builtins {
             addFunction("complex", newLibUrl("functions", "complex"), BaseComplex);
             addClass("dict", newLibUrl("stdtypes", "typesmapping"), BaseDict);
             addFunction("file", newLibUrl("functions", "file"), BaseFileInst);
-            addFunction("int", newLibUrl("functions", "int"), BaseNum);
-            addFunction("long", newLibUrl("functions", "long"), BaseNum);
-            addFunction("float", newLibUrl("functions", "float"), BaseFloat);
+            addFunction("int", newLibUrl("functions", "int"), Type.UNKNOWN_INT);
+            addFunction("long", newLibUrl("functions", "long"), Type.UNKNOWN_INT);
+            addFunction("float", newLibUrl("functions", "float"), Type.UNKNOWN_FLOAT);
             addFunction("list", newLibUrl("functions", "list"), new InstanceType(BaseList));
             addFunction("object", newLibUrl("functions", "object"), new InstanceType(Object));
             addFunction("str", newLibUrl("functions", "str"), BaseStr);
@@ -800,7 +794,7 @@ public class Builtins {
                     "type", "unichr", "unicode",
             };
             for (String f : builtin_func_unknown) {
-                addFunction(f, newLibUrl("functions.html#" + f), BaseType.UNKNOWN);
+                addFunction(f, newLibUrl("functions.html#" + f), Type.UNKNOWN);
             }
 
             String[] builtin_func_num = {
@@ -809,7 +803,7 @@ public class Builtins {
                     "min", "ord", "pow", "round", "sum"
             };
             for (String f : builtin_func_num) {
-                addFunction(f, newLibUrl("functions.html#" + f), BaseNum);
+                addFunction(f, newLibUrl("functions.html#" + f), Type.UNKNOWN_INT);
             }
 
             for (String f : list("hex", "oct", "repr", "chr")) {
@@ -817,15 +811,15 @@ public class Builtins {
             }
 
             addFunction("dir", newLibUrl("functions", "dir"), newList(BaseStr));
-            addFunction("map", newLibUrl("functions", "map"), newList(BaseType.UNKNOWN));
-            addFunction("range", newLibUrl("functions", "range"), newList(BaseNum));
-            addFunction("xrange", newLibUrl("functions", "range"), newList(BaseNum));
-            addFunction("buffer", newLibUrl("functions", "buffer"), newList(BaseType.UNKNOWN));
-            addFunction("zip", newLibUrl("functions", "zip"), newList(newTuple(BaseType.UNKNOWN)));
+            addFunction("map", newLibUrl("functions", "map"), newList(Type.UNKNOWN));
+            addFunction("range", newLibUrl("functions", "range"), newList(Type.UNKNOWN_INT));
+            addFunction("xrange", newLibUrl("functions", "range"), newList(Type.UNKNOWN_INT));
+            addFunction("buffer", newLibUrl("functions", "buffer"), newList(Type.UNKNOWN));
+            addFunction("zip", newLibUrl("functions", "zip"), newList(newTuple(Type.UNKNOWN)));
 
 
             for (String f : list("globals", "vars", "locals")) {
-                addFunction(f, newLibUrl("functions.html#" + f), newDict(BaseStr, BaseType.UNKNOWN));
+                addFunction(f, newLibUrl("functions.html#" + f), newDict(BaseStr, Type.UNKNOWN));
             }
 
             for (String f : builtin_exception_types) {
@@ -1002,7 +996,7 @@ public class Builtins {
             addFunction("StringIO", liburl(), new InstanceType(StringIO));
             addAttr("InputType", liburl(), BaseType);
             addAttr("OutputType", liburl(), BaseType);
-            addAttr("cStringIO_CAPI", liburl(), BaseType.UNKNOWN);
+            addAttr("cStringIO_CAPI", liburl(), Type.UNKNOWN);
         }
     }
 
@@ -1015,18 +1009,18 @@ public class Builtins {
 
         @Override
         public void initBindings() {
-            addFunction("phase", liburl("conversions-to-and-from-polar-coordinates"), BaseNum);
+            addFunction("phase", liburl("conversions-to-and-from-polar-coordinates"), Type.UNKNOWN_INT);
             addFunction("polar", liburl("conversions-to-and-from-polar-coordinates"),
-                    newTuple(BaseNum, BaseNum));
+                    newTuple(Type.UNKNOWN_INT, Type.UNKNOWN_INT));
             addFunction("rect", liburl("conversions-to-and-from-polar-coordinates"),
                     BaseComplex);
 
             for (String plf : list("exp", "log", "log10", "sqrt")) {
-                addFunction(plf, liburl("power-and-logarithmic-functions"), BaseNum);
+                addFunction(plf, liburl("power-and-logarithmic-functions"), Type.UNKNOWN_INT);
             }
 
             for (String tf : list("acos", "asin", "atan", "cos", "sin", "tan")) {
-                addFunction(tf, liburl("trigonometric-functions"), BaseNum);
+                addFunction(tf, liburl("trigonometric-functions"), Type.UNKNOWN_INT);
             }
 
             for (String hf : list("acosh", "asinh", "atanh", "cosh", "sinh", "tanh")) {
@@ -1038,7 +1032,7 @@ public class Builtins {
             }
 
             for (String c : list("pi", "e")) {
-                addAttr(c, liburl("constants"), BaseNum);
+                addAttr(c, liburl("constants"), Type.UNKNOWN_INT);
             }
         }
     }
@@ -1074,15 +1068,15 @@ public class Builtins {
             addClass("Iterable", abcUrl(), Iterable);
 
             ClassType Hashable = newClass("Hashable", table, Object);
-            Hashable.getTable().insert("__hash__", abcUrl(), newFunc(BaseNum), METHOD);
+            Hashable.getTable().insert("__hash__", abcUrl(), newFunc(Type.UNKNOWN_INT), METHOD);
             addClass("Hashable", abcUrl(), Hashable);
 
             ClassType Sized = newClass("Sized", table, Object);
-            Sized.getTable().insert("__len__", abcUrl(), newFunc(BaseNum), METHOD);
+            Sized.getTable().insert("__len__", abcUrl(), newFunc(Type.UNKNOWN_INT), METHOD);
             addClass("Sized", abcUrl(), Sized);
 
             ClassType Container = newClass("Container", table, Object);
-            Container.getTable().insert("__contains__", abcUrl(), newFunc(BaseNum), METHOD);
+            Container.getTable().insert("__contains__", abcUrl(), newFunc(Type.UNKNOWN_INT), METHOD);
             addClass("Container", abcUrl(), Container);
 
             ClassType Iterator = newClass("Iterator", table, Iterable);
@@ -1091,8 +1085,8 @@ public class Builtins {
             ClassType Sequence = newClass("Sequence", table, Sized, Iterable, Container);
             Sequence.getTable().insert("__getitem__", abcUrl(), newFunc(), METHOD);
             Sequence.getTable().insert("reversed", abcUrl(), newFunc(Sequence), METHOD);
-            Sequence.getTable().insert("index", abcUrl(), newFunc(BaseNum), METHOD);
-            Sequence.getTable().insert("count", abcUrl(), newFunc(BaseNum), METHOD);
+            Sequence.getTable().insert("index", abcUrl(), newFunc(Type.UNKNOWN_INT), METHOD);
+            Sequence.getTable().insert("count", abcUrl(), newFunc(Type.UNKNOWN_INT), METHOD);
             addClass("Sequence", abcUrl(), Sequence);
 
             ClassType MutableSequence = newClass("MutableSequence", table, Sequence);
@@ -1194,7 +1188,7 @@ public class Builtins {
                     "sizeof", "string_at", "windll", "wstring_at"
             };
             for (String attr : ctypes_attrs) {
-                addAttr(attr, liburl(attr), BaseType.UNKNOWN);
+                addAttr(attr, liburl(attr), Type.UNKNOWN);
             }
         }
     }
@@ -1239,9 +1233,9 @@ public class Builtins {
             tdtable.insert("max", dtUrl("timedelta"), timedelta, ATTRIBUTE);
             tdtable.insert("resolution", dtUrl("timedelta"), timedelta, ATTRIBUTE);
 
-            tdtable.insert("days", dtUrl("timedelta"), BaseNum, ATTRIBUTE);
-            tdtable.insert("seconds", dtUrl("timedelta"), BaseNum, ATTRIBUTE);
-            tdtable.insert("microseconds", dtUrl("timedelta"), BaseNum, ATTRIBUTE);
+            tdtable.insert("days", dtUrl("timedelta"), Type.UNKNOWN_INT, ATTRIBUTE);
+            tdtable.insert("seconds", dtUrl("timedelta"), Type.UNKNOWN_INT, ATTRIBUTE);
+            tdtable.insert("microseconds", dtUrl("timedelta"), Type.UNKNOWN_INT, ATTRIBUTE);
 
             ClassType tzinfo = Datetime_tzinfo = newClass("tzinfo", table, Object);
             addClass("tzinfo", dtUrl("tzinfo"), tzinfo);
@@ -1262,21 +1256,21 @@ public class Builtins {
             dtable.insert("fromtimestamp", dtUrl("date"), newFunc(date), METHOD);
             dtable.insert("fromordinal", dtUrl("date"), newFunc(date), METHOD);
 
-            dtable.insert("year", dtUrl("date"), BaseNum, ATTRIBUTE);
-            dtable.insert("month", dtUrl("date"), BaseNum, ATTRIBUTE);
-            dtable.insert("day", dtUrl("date"), BaseNum, ATTRIBUTE);
+            dtable.insert("year", dtUrl("date"), Type.UNKNOWN_INT, ATTRIBUTE);
+            dtable.insert("month", dtUrl("date"), Type.UNKNOWN_INT, ATTRIBUTE);
+            dtable.insert("day", dtUrl("date"), Type.UNKNOWN_INT, ATTRIBUTE);
 
             dtable.insert("replace", dtUrl("date"), newFunc(date), METHOD);
             dtable.insert("timetuple", dtUrl("date"), newFunc(Time_struct_time), METHOD);
 
             for (String n : list("toordinal", "weekday", "isoweekday")) {
-                dtable.insert(n, dtUrl("date"), newFunc(BaseNum), METHOD);
+                dtable.insert(n, dtUrl("date"), newFunc(Type.UNKNOWN_INT), METHOD);
             }
             for (String r : list("ctime", "strftime", "isoformat")) {
                 dtable.insert(r, dtUrl("date"), newFunc(BaseStr), METHOD);
             }
             dtable.insert("isocalendar", dtUrl("date"),
-                    newFunc(newTuple(BaseNum, BaseNum, BaseNum)), METHOD);
+                    newFunc(newTuple(Type.UNKNOWN_INT, Type.UNKNOWN_INT, Type.UNKNOWN_INT)), METHOD);
 
             ClassType time = Datetime_time = newClass("time", table, Object);
             addClass("time", dtUrl("time"), date);
@@ -1286,10 +1280,10 @@ public class Builtins {
             ttable.insert("max", dtUrl("time"), time, ATTRIBUTE);
             ttable.insert("resolution", dtUrl("time"), timedelta, ATTRIBUTE);
 
-            ttable.insert("hour", dtUrl("time"), BaseNum, ATTRIBUTE);
-            ttable.insert("minute", dtUrl("time"), BaseNum, ATTRIBUTE);
-            ttable.insert("second", dtUrl("time"), BaseNum, ATTRIBUTE);
-            ttable.insert("microsecond", dtUrl("time"), BaseNum, ATTRIBUTE);
+            ttable.insert("hour", dtUrl("time"), Type.UNKNOWN_INT, ATTRIBUTE);
+            ttable.insert("minute", dtUrl("time"), Type.UNKNOWN_INT, ATTRIBUTE);
+            ttable.insert("second", dtUrl("time"), Type.UNKNOWN_INT, ATTRIBUTE);
+            ttable.insert("microsecond", dtUrl("time"), Type.UNKNOWN_INT, ATTRIBUTE);
             ttable.insert("tzinfo", dtUrl("time"), tzinfo, ATTRIBUTE);
 
             ttable.insert("replace", dtUrl("time"), newFunc(time), METHOD);
@@ -1383,7 +1377,7 @@ public class Builtins {
                     "WSAETOOMANYREFS", "WSAEUSERS", "WSAEWOULDBLOCK",
                     "WSANOTINITIALISED", "WSASYSNOTREADY", "WSAVERNOTSUPPORTED");
 
-            addAttr("errorcode", liburl("errorcode"), newDict(BaseNum, BaseStr));
+            addAttr("errorcode", liburl("errorcode"), newDict(Type.UNKNOWN_INT, BaseStr));
         }
     }
 
@@ -1414,7 +1408,7 @@ public class Builtins {
         @Override
         public void initBindings() {
             for (String s : list("fcntl", "ioctl")) {
-                addFunction(s, liburl(), newUnion(BaseNum, BaseStr));
+                addFunction(s, liburl(), newUnion(Type.UNKNOWN_INT, BaseStr));
             }
             addNumFuncs("flock");
             addUnknownFuncs("lockf");
@@ -1505,7 +1499,7 @@ public class Builtins {
             ClassType struct_group = newClass("struct_group", table, BaseStruct);
             struct_group.getTable().insert("gr_name", liburl(), BaseStr, ATTRIBUTE);
             struct_group.getTable().insert("gr_passwd", liburl(), BaseStr, ATTRIBUTE);
-            struct_group.getTable().insert("gr_gid", liburl(), BaseNum, ATTRIBUTE);
+            struct_group.getTable().insert("gr_gid", liburl(), Type.UNKNOWN_INT, ATTRIBUTE);
             struct_group.getTable().insert("gr_mem", liburl(), newList(BaseStr), ATTRIBUTE);
 
             addClass("struct_group", liburl(), struct_group);
@@ -1527,8 +1521,8 @@ public class Builtins {
         @Override
         public void initBindings() {
             addStrFuncs("get_magic");
-            addFunction("get_suffixes", liburl(), newList(newTuple(BaseStr, BaseStr, BaseNum)));
-            addFunction("find_module", liburl(), newTuple(BaseStr, BaseStr, BaseNum));
+            addFunction("get_suffixes", liburl(), newList(newTuple(BaseStr, BaseStr, Type.UNKNOWN_INT)));
+            addFunction("find_module", liburl(), newTuple(BaseStr, BaseStr, Type.UNKNOWN_INT));
 
             String[] module_methods = {
                     "load_module", "new_module", "init_builtin", "init_frozen",
@@ -1649,7 +1643,7 @@ public class Builtins {
                     "MAP_SHARED", "PAGESIZE", "PROT_EXEC", "PROT_READ",
                     "PROT_WRITE"))
             {
-                mmap.getTable().insert(s, liburl(), BaseNum, ATTRIBUTE);
+                mmap.getTable().insert(s, liburl(), Type.UNKNOWN_INT, ATTRIBUTE);
             }
 
             for (String fstr : list("read", "read_byte", "readline")) {
@@ -1657,7 +1651,7 @@ public class Builtins {
             }
 
             for (String fnum : list("find", "rfind", "tell")) {
-                mmap.getTable().insert(fnum, liburl(), newFunc(BaseNum), METHOD);
+                mmap.getTable().insert(fnum, liburl(), newFunc(Type.UNKNOWN_INT), METHOD);
             }
 
             for (String fnone : list("close", "flush", "move", "resize", "seek",
@@ -1707,14 +1701,14 @@ public class Builtins {
             addAttr("errno", liburl(), newModule("errno"));
 
             addFunction("urandom", liburl("miscellaneous-functions"), BaseStr);
-            addAttr("NGROUPS_MAX", liburl(), BaseNum);
+            addAttr("NGROUPS_MAX", liburl(), Type.UNKNOWN_INT);
 
             for (String s : list("_Environ", "_copy_reg", "_execvpe", "_exists",
                     "_get_exports_list", "_make_stat_result",
                     "_make_statvfs_result", "_pickle_stat_result",
                     "_pickle_statvfs_result", "_spawnvef"))
             {
-                addFunction(s, liburl(), BaseType.UNKNOWN);
+                addFunction(s, liburl(), Type.UNKNOWN);
             }
         }
 
@@ -1734,7 +1728,7 @@ public class Builtins {
             for (String s : list("getegid", "getgid", "getpgid", "getpgrp",
                     "getppid", "getuid", "getsid", "umask"))
             {
-                addFunction(s, liburl(a), BaseNum);
+                addFunction(s, liburl(a), Type.UNKNOWN_INT);
             }
 
             for (String s : list("getcwd", "ctermid", "getlogin", "getenv", "strerror")) {
@@ -1761,7 +1755,7 @@ public class Builtins {
                     "WIFSIGNALED", "WIFSTOPPED", "WNOHANG", "WSTOPSIG",
                     "WTERMSIG", "WUNTRACED"))
             {
-                addAttr(s, liburl(a), BaseNum);
+                addAttr(s, liburl(a), Type.UNKNOWN_INT);
             }
 
             for (String s : list("abort", "execl", "execle", "execlp", "execlpe",
@@ -1774,18 +1768,18 @@ public class Builtins {
             for (String s : list("nice", "spawnl", "spawnle", "spawnlp", "spawnlpe",
                     "spawnv", "spawnve", "spawnvp", "spawnvpe", "system"))
             {
-                addFunction(s, liburl(a), BaseNum);
+                addFunction(s, liburl(a), Type.UNKNOWN_INT);
             }
 
-            addFunction("fork", liburl(a), newUnion(BaseFileInst, BaseNum));
-            addFunction("times", liburl(a), newTuple(BaseNum, BaseNum, BaseNum, BaseNum, BaseNum));
+            addFunction("fork", liburl(a), newUnion(BaseFileInst, Type.UNKNOWN_INT));
+            addFunction("times", liburl(a), newTuple(Type.UNKNOWN_INT, Type.UNKNOWN_INT, Type.UNKNOWN_INT, Type.UNKNOWN_INT, Type.UNKNOWN_INT));
 
             for (String s : list("forkpty", "wait", "waitpid")) {
-                addFunction(s, liburl(a), newTuple(BaseNum, BaseNum));
+                addFunction(s, liburl(a), newTuple(Type.UNKNOWN_INT, Type.UNKNOWN_INT));
             }
 
             for (String s : list("wait3", "wait4")) {
-                addFunction(s, liburl(a), newTuple(BaseNum, BaseNum, BaseNum));
+                addFunction(s, liburl(a), newTuple(Type.UNKNOWN_INT, Type.UNKNOWN_INT, Type.UNKNOWN_INT));
             }
         }
 
@@ -1815,7 +1809,7 @@ public class Builtins {
             for (String s : list("dup2", "fpathconf", "fstat", "fstatvfs",
                     "isatty", "tcgetpgrp"))
             {
-                addFunction(s, liburl(a), BaseNum);
+                addFunction(s, liburl(a), Type.UNKNOWN_INT);
             }
 
             for (String s : list("read", "ttyname")) {
@@ -1825,7 +1819,7 @@ public class Builtins {
             for (String s : list("openpty", "pipe", "fstat", "fstatvfs",
                     "isatty"))
             {
-                addFunction(s, liburl(a), newTuple(BaseNum, BaseNum));
+                addFunction(s, liburl(a), newTuple(Type.UNKNOWN_INT, Type.UNKNOWN_INT));
             }
 
             for (String s : list("O_APPEND", "O_CREAT", "O_DIRECT", "O_DIRECTORY",
@@ -1834,7 +1828,7 @@ public class Builtins {
                     "O_RDWR", "O_RSYNC", "O_SYNC", "O_TRUNC", "O_WRONLY",
                     "SEEK_CUR", "SEEK_END", "SEEK_SET"))
             {
-                addAttr(s, liburl(a), BaseNum);
+                addAttr(s, liburl(a), Type.UNKNOWN_INT);
             }
         }
 
@@ -1843,7 +1837,7 @@ public class Builtins {
             String a = "files-and-directories";
 
             for (String s : list("F_OK", "R_OK", "W_OK", "X_OK")) {
-                addAttr(s, liburl(a), BaseNum);
+                addAttr(s, liburl(a), Type.UNKNOWN_INT);
             }
 
             for (String s : list("chflags", "chroot", "chmod", "chown", "lchflags",
@@ -1857,7 +1851,7 @@ public class Builtins {
             for (String s : list("access", "lstat", "major", "minor",
                     "makedev", "pathconf", "stat_float_times"))
             {
-                addFunction(s, liburl(a), BaseNum);
+                addFunction(s, liburl(a), Type.UNKNOWN_INT);
             }
 
             for (String s : list("getcwdu", "readlink", "tempnam", "tmpnam")) {
@@ -1870,11 +1864,11 @@ public class Builtins {
 
             addFunction("mkfifo", liburl(a), BaseFileInst);
 
-            addFunction("stat", liburl(a), newList(BaseNum));  // XXX: posix.stat_result
-            addFunction("statvfs", liburl(a), newList(BaseNum));  // XXX: pos.statvfs_result
+            addFunction("stat", liburl(a), newList(Type.UNKNOWN_INT));  // XXX: posix.stat_result
+            addFunction("statvfs", liburl(a), newList(Type.UNKNOWN_INT));  // XXX: pos.statvfs_result
 
-            addAttr("pathconf_names", liburl(a), newDict(BaseStr, BaseNum));
-            addAttr("TMP_MAX", liburl(a), BaseNum);
+            addAttr("pathconf_names", liburl(a), newDict(BaseStr, Type.UNKNOWN_INT));
+            addAttr("TMP_MAX", liburl(a), Type.UNKNOWN_INT);
 
             addFunction("walk", liburl(a), newList(newTuple(BaseStr, BaseStr, BaseStr)));
         }
@@ -1883,8 +1877,8 @@ public class Builtins {
         private void initMiscSystemInfo() {
             String a = "miscellaneous-system-information";
 
-            addAttr("confstr_names", liburl(a), newDict(BaseStr, BaseNum));
-            addAttr("sysconf_names", liburl(a), newDict(BaseStr, BaseNum));
+            addAttr("confstr_names", liburl(a), newDict(BaseStr, Type.UNKNOWN_INT));
+            addAttr("sysconf_names", liburl(a), newDict(BaseStr, Type.UNKNOWN_INT));
 
             for (String s : list("curdir", "pardir", "sep", "altsep", "extsep",
                     "pathsep", "defpath", "linesep", "devnull"))
@@ -1893,7 +1887,7 @@ public class Builtins {
             }
 
             for (String s : list("getloadavg", "sysconf")) {
-                addFunction(s, liburl(a), BaseNum);
+                addFunction(s, liburl(a), Type.UNKNOWN_INT);
             }
 
             addFunction("confstr", liburl(a), BaseStr);
@@ -1922,7 +1916,7 @@ public class Builtins {
                     "sameopenfile", "samestat", "supports_unicode_filenames",
             };
             for (String s : num_funcs) {
-                ospath.insert(s, newLibUrl("os.path", s), newFunc(BaseNum), FUNCTION);
+                ospath.insert(s, newLibUrl("os.path", s), newFunc(Type.UNKNOWN_INT), FUNCTION);
             }
 
             for (String s : list("split", "splitdrive", "splitext", "splitunc")) {
@@ -1945,7 +1939,7 @@ public class Builtins {
                     newModule("<stat-fixme>"), ATTRIBUTE);
 
             // XXX:  this is an re object, I think
-            ospath.insert("_varprog", newLibUrl("os.path"), BaseType.UNKNOWN, ATTRIBUTE);
+            ospath.insert("_varprog", newLibUrl("os.path"), Type.UNKNOWN, ATTRIBUTE);
         }
     }
 
@@ -1999,9 +1993,9 @@ public class Builtins {
             st.getTable().insert("compile", newLibUrl("parser", "st-objects"),
                     newFunc(), METHOD);
             st.getTable().insert("isexpr", newLibUrl("parser", "st-objects"),
-                    newFunc(BaseNum), METHOD);
+                    newFunc(Type.UNKNOWN_INT), METHOD);
             st.getTable().insert("issuite", newLibUrl("parser", "st-objects"),
-                    newFunc(BaseNum), METHOD);
+                    newFunc(Type.UNKNOWN_INT), METHOD);
             st.getTable().insert("tolist", newLibUrl("parser", "st-objects"),
                     newFunc(newList()), METHOD);
             st.getTable().insert("totuple", newLibUrl("parser", "st-objects"),
@@ -2015,7 +2009,7 @@ public class Builtins {
 
             addFunction("st2list", liburl("converting-st-objects"), newList());
             addFunction("st2tuple", liburl("converting-st-objects"), newTuple());
-            addFunction("compilest", liburl("converting-st-objects"), BaseType.UNKNOWN);
+            addFunction("compilest", liburl("converting-st-objects"), Type.UNKNOWN);
 
             addFunction("isexpr", liburl("queries-on-st-objects"), BaseBool);
             addFunction("issuite", liburl("queries-on-st-objects"), BaseBool);
@@ -2051,7 +2045,7 @@ public class Builtins {
             for (String s : list("pw_nam", "pw_passwd", "pw_uid", "pw_gid",
                     "pw_gecos", "pw_dir", "pw_shell"))
             {
-                struct_pwd.getTable().insert(s, liburl(), BaseNum, ATTRIBUTE);
+                struct_pwd.getTable().insert(s, liburl(), Type.UNKNOWN_INT, ATTRIBUTE);
             }
             addAttr("struct_pwd", liburl(), struct_pwd);
 
@@ -2112,8 +2106,8 @@ public class Builtins {
 
         @Override
         public void initBindings() {
-            addFunction("getrlimit", liburl(), newTuple(BaseNum, BaseNum));
-            addFunction("getrlimit", liburl(), BaseType.UNKNOWN);
+            addFunction("getrlimit", liburl(), newTuple(Type.UNKNOWN_INT, Type.UNKNOWN_INT));
+            addFunction("getrlimit", liburl(), Type.UNKNOWN);
 
             String[] constants = {
                     "RLIMIT_CORE", "RLIMIT_CPU", "RLIMIT_FSIZE", "RLIMIT_DATA",
@@ -2121,7 +2115,7 @@ public class Builtins {
                     "RLIMIT_OFILE", "RLIMIT_MEMLOCK", "RLIMIT_VMEM", "RLIMIT_AS"
             };
             for (String c : constants) {
-                addAttr(c, liburl("resource-limits"), BaseNum);
+                addAttr(c, liburl("resource-limits"), Type.UNKNOWN_INT);
             }
 
             ClassType ru = newClass("struct_rusage", table, Object);
@@ -2132,14 +2126,14 @@ public class Builtins {
                     "ru_nvcsw", "ru_nivcsw"
             };
             for (String ruf : ru_fields) {
-                ru.getTable().insert(ruf, liburl("resource-usage"), BaseNum, ATTRIBUTE);
+                ru.getTable().insert(ruf, liburl("resource-usage"), Type.UNKNOWN_INT, ATTRIBUTE);
             }
 
             addFunction("getrusage", liburl("resource-usage"), ru);
-            addFunction("getpagesize", liburl("resource-usage"), BaseNum);
+            addFunction("getpagesize", liburl("resource-usage"), Type.UNKNOWN_INT);
 
             for (String s : list("RUSAGE_SELF", "RUSAGE_CHILDREN", "RUSAGE_BOTH")) {
-                addAttr(s, liburl("resource-usage"), BaseNum);
+                addAttr(s, liburl("resource-usage"), Type.UNKNOWN_INT);
             }
         }
     }
@@ -2161,7 +2155,7 @@ public class Builtins {
 
             ClassType epoll = newClass("epoll", table, Object);
             epoll.getTable().insert("close", newLibUrl("select", a), newFunc(Type.NONE), METHOD);
-            epoll.getTable().insert("fileno", newLibUrl("select", a), newFunc(BaseNum), METHOD);
+            epoll.getTable().insert("fileno", newLibUrl("select", a), newFunc(Type.UNKNOWN_INT), METHOD);
             epoll.getTable().insert("fromfd", newLibUrl("select", a), newFunc(epoll), METHOD);
             for (String s : list("register", "modify", "unregister", "poll")) {
                 epoll.getTable().insert(s, newLibUrl("select", a), newFunc(), METHOD);
@@ -2172,7 +2166,7 @@ public class Builtins {
                     "EPOLLONESHOT", "EPOLLOUT", "EPOLLPRI", "EPOLLRDBAND",
                     "EPOLLRDNORM", "EPOLLWRBAND", "EPOLLWRNORM"))
             {
-                addAttr(s, liburl(a), BaseNum);
+                addAttr(s, liburl(a), Type.UNKNOWN_INT);
             }
 
             a = "polling-objects";
@@ -2182,31 +2176,31 @@ public class Builtins {
             poll.getTable().insert("modify", newLibUrl("select", a), newFunc(), METHOD);
             poll.getTable().insert("unregister", newLibUrl("select", a), newFunc(), METHOD);
             poll.getTable().insert("poll", newLibUrl("select", a),
-                    newFunc(newList(newTuple(BaseNum, BaseNum))), METHOD);
+                    newFunc(newList(newTuple(Type.UNKNOWN_INT, Type.UNKNOWN_INT))), METHOD);
             addClass("poll", liburl(a), poll);
 
             for (String s : list("POLLERR", "POLLHUP", "POLLIN", "POLLMSG",
                     "POLLNVAL", "POLLOUT", "POLLPRI", "POLLRDBAND",
                     "POLLRDNORM", "POLLWRBAND", "POLLWRNORM"))
             {
-                addAttr(s, liburl(a), BaseNum);
+                addAttr(s, liburl(a), Type.UNKNOWN_INT);
             }
 
             a = "kqueue-objects";
 
             ClassType kqueue = newClass("kqueue", table, Object);
             kqueue.getTable().insert("close", newLibUrl("select", a), newFunc(Type.NONE), METHOD);
-            kqueue.getTable().insert("fileno", newLibUrl("select", a), newFunc(BaseNum), METHOD);
+            kqueue.getTable().insert("fileno", newLibUrl("select", a), newFunc(Type.UNKNOWN_INT), METHOD);
             kqueue.getTable().insert("fromfd", newLibUrl("select", a), newFunc(kqueue), METHOD);
             kqueue.getTable().insert("control", newLibUrl("select", a),
-                    newFunc(newList(newTuple(BaseNum, BaseNum))), METHOD);
+                    newFunc(newList(newTuple(Type.UNKNOWN_INT, Type.UNKNOWN_INT))), METHOD);
             addClass("kqueue", liburl(a), kqueue);
 
             a = "kevent-objects";
 
             ClassType kevent = newClass("kevent", table, Object);
             for (String s : list("ident", "filter", "flags", "fflags", "data", "udata")) {
-                kevent.getTable().insert(s, newLibUrl("select", a), BaseType.UNKNOWN, ATTRIBUTE);
+                kevent.getTable().insert(s, newLibUrl("select", a), Type.UNKNOWN, ATTRIBUTE);
             }
             addClass("kevent", liburl(a), kevent);
         }
@@ -2270,7 +2264,7 @@ public class Builtins {
                     "sp_max", "sp_warn", "sp_inact", "sp_expire",
                     "sp_flag"))
             {
-                struct_spwd.getTable().insert(s, liburl(), BaseNum, ATTRIBUTE);
+                struct_spwd.getTable().insert(s, liburl(), Type.UNKNOWN_INT, ATTRIBUTE);
             }
             addAttr("struct_spwd", liburl(), struct_spwd);
 
@@ -2316,7 +2310,7 @@ public class Builtins {
             t.insert("unpack", liburl("struct-objects"), newFunc(newTuple()), METHOD);
             t.insert("unpack_from", liburl("struct-objects"), newFunc(newTuple()), METHOD);
             t.insert("format", liburl("struct-objects"), BaseStr, ATTRIBUTE);
-            t.insert("size", liburl("struct-objects"), BaseNum, ATTRIBUTE);
+            t.insert("size", liburl("struct-objects"), Type.UNKNOWN_INT, ATTRIBUTE);
         }
     }
 
@@ -2360,7 +2354,7 @@ public class Builtins {
             }
 
             for (String s : list("flags", "warnoptions", "float_info")) {
-                addAttr(s, liburl(), newDict(BaseStr, BaseNum));
+                addAttr(s, liburl(), newDict(BaseStr, Type.UNKNOWN_INT));
             }
         }
     }
@@ -2411,8 +2405,8 @@ public class Builtins {
             addClass("error", liburl(), newException("error", table));
 
             ClassType lock = newClass("lock", table, Object);
-            lock.getTable().insert("acquire", liburl(), BaseNum, METHOD);
-            lock.getTable().insert("locked", liburl(), BaseNum, METHOD);
+            lock.getTable().insert("acquire", liburl(), Type.UNKNOWN_INT, METHOD);
+            lock.getTable().insert("locked", liburl(), Type.UNKNOWN_INT, METHOD);
             lock.getTable().insert("release", liburl(), Type.NONE, METHOD);
             addAttr("LockType", liburl(), BaseType);
 
@@ -2444,7 +2438,7 @@ public class Builtins {
                     "tm_mon", "tm_wday", "tm_yday", "tm_year",
             };
             for (String s : struct_time_attrs) {
-                struct_time.getTable().insert(s, liburl("struct_time"), BaseNum, ATTRIBUTE);
+                struct_time.getTable().insert(s, liburl("struct_time"), Type.UNKNOWN_INT, ATTRIBUTE);
             }
 
             addNumAttrs("accept2dyear", "altzone", "daylight", "timezone");
@@ -2491,16 +2485,16 @@ public class Builtins {
             ClassType zipimporter = newClass("zipimporter", table, Object);
             State t = zipimporter.getTable();
             t.insert("find_module", liburl(), zipimporter, METHOD);
-            t.insert("get_code", liburl(), BaseType.UNKNOWN, METHOD);  // XXX:  code object
-            t.insert("get_data", liburl(), BaseType.UNKNOWN, METHOD);
+            t.insert("get_code", liburl(), Type.UNKNOWN, METHOD);  // XXX:  code object
+            t.insert("get_data", liburl(), Type.UNKNOWN, METHOD);
             t.insert("get_source", liburl(), BaseStr, METHOD);
-            t.insert("is_package", liburl(), BaseNum, METHOD);
+            t.insert("is_package", liburl(), Type.UNKNOWN_INT, METHOD);
             t.insert("load_module", liburl(), newModule("<?>"), METHOD);
             t.insert("archive", liburl(), BaseStr, ATTRIBUTE);
             t.insert("prefix", liburl(), BaseStr, ATTRIBUTE);
 
             addClass("zipimporter", liburl(), zipimporter);
-            addAttr("_zip_directory_cache", liburl(), newDict(BaseStr, BaseType.UNKNOWN));
+            addAttr("_zip_directory_cache", liburl(), newDict(BaseStr, Type.UNKNOWN));
         }
     }
 
@@ -2530,10 +2524,10 @@ public class Builtins {
             Decompress.getTable().insert("copy", newLibUrl("zlib"), Decompress, METHOD);
             addClass("Decompress", liburl(), Decompress);
 
-            addFunction("adler32", liburl(), BaseNum);
+            addFunction("adler32", liburl(), Type.UNKNOWN_INT);
             addFunction("compress", liburl(), BaseStr);
             addFunction("compressobj", liburl(), Compress);
-            addFunction("crc32", liburl(), BaseNum);
+            addFunction("crc32", liburl(), Type.UNKNOWN_INT);
             addFunction("decompress", liburl(), BaseStr);
             addFunction("decompressobj", liburl(), Decompress);
         }

@@ -27,7 +27,7 @@ public class Expr extends Node {
         if (value != null) {
             transformExpr(value, s);
         }
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 

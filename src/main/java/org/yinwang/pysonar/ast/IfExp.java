@@ -32,12 +32,12 @@ public class IfExp extends Node {
         if (body != null) {
             type1 = transformExpr(body, s);
         } else {
-            type1 = Analyzer.self.builtins.Cont;
+            type1 = Type.CONT;
         }
         if (orelse != null) {
             type2 = transformExpr(orelse, s);
         } else {
-            type2 = Analyzer.self.builtins.Cont;
+            type2 = Type.CONT;
         }
         return UnionType.union(type1, type2);
     }

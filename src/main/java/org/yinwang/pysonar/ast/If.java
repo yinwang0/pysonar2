@@ -40,17 +40,17 @@ public class If extends Node {
         if (body != null) {
             type1 = transformExpr(body, s1);
         } else {
-            type1 = Analyzer.self.builtins.Cont;
+            type1 = Type.CONT;
         }
 
         if (orelse != null) {
             type2 = transformExpr(orelse, s2);
         } else {
-            type2 = Analyzer.self.builtins.Cont;
+            type2 = Type.CONT;
         }
 
-        boolean cont1 = UnionType.contains(type1, Analyzer.self.builtins.Cont);
-        boolean cont2 = UnionType.contains(type2, Analyzer.self.builtins.Cont);
+        boolean cont1 = UnionType.contains(type1, Type.CONT);
+        boolean cont2 = UnionType.contains(type2, Type.CONT);
 
         // decide which branch affects the downstream state
         if (conditionType.isTrue() && cont1) {

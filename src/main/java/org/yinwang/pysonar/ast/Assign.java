@@ -39,7 +39,7 @@ public class Assign extends Node {
         } else {
             Binder.bind(s, target, valueType);
         }
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 

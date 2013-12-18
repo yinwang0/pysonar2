@@ -129,7 +129,7 @@ public class FunType extends Type {
     static Type removeNoneReturn(@NotNull Type toType) {
         if (toType.isUnionType()) {
             Set<Type> types = new HashSet<>(toType.asUnionType().getTypes());
-            types.remove(Analyzer.self.builtins.Cont);
+            types.remove(Type.CONT);
             return UnionType.newUnion(types);
         } else {
             return toType;

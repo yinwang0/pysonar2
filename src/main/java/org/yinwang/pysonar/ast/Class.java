@@ -92,7 +92,7 @@ public class Class extends Node {
         if (body != null) {
             transformExpr(body, classType.getTable());
         }
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 

@@ -305,7 +305,7 @@ public class Call extends Node {
 
         if (toType.isUnionType()) {
             for (Type t : toType.asUnionType().getTypes()) {
-                if (t == Type.NONE || t == Analyzer.self.builtins.Cont) {
+                if (t == Type.NONE || t == Type.CONT) {
                     hasNone = true;
                 } else {
                     hasOther = true;

@@ -30,7 +30,7 @@ public class UnaryOp extends Node {
                 return valueType;
             } else {
                 Analyzer.self.putProblem(this, "+ can't be applied to type: " + valueType);
-                return Analyzer.self.builtins.BaseNum;
+                return Type.UNKNOWN_INT;
             }
         }
 
@@ -39,7 +39,7 @@ public class UnaryOp extends Node {
                 return valueType.asIntType().negate();
             } else {
                 Analyzer.self.putProblem(this, "- can't be applied to type: " + valueType);
-                return Analyzer.self.builtins.BaseNum;
+                return Type.UNKNOWN_INT;
             }
         }
 

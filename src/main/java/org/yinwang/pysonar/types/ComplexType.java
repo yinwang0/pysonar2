@@ -87,7 +87,7 @@ public class ComplexType extends Type {
         StringBuilder sb = new StringBuilder("complex");
 
         if (Analyzer.self.debug) {
-            sb.append(real + " + " + imag + "j");
+            sb.append("(" + real + " + " + imag + "j)");
         }
 
         return sb.toString();
