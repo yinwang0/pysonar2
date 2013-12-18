@@ -43,7 +43,7 @@ public class Analyzer {
     public Stats stats = new Stats();
     public Builtins builtins;
     private Logger logger;
-    private FancyProgress loadingProgress = null;
+    private Progress loadingProgress = null;
 
     public String projectDir;
     public String suffix;
@@ -487,7 +487,7 @@ public class Analyzer {
     public void loadFileRecursive(String fullname) {
         int count = countFileRecursive(fullname);
         if (loadingProgress == null) {
-            loadingProgress = new FancyProgress(count, 50);
+            loadingProgress = new Progress(count, 50);
         }
 
         File file_or_dir = new File(fullname);
@@ -561,7 +561,7 @@ public class Analyzer {
 
 
     public void applyUncalled() {
-        FancyProgress progress = new FancyProgress(uncalled.size(), 50);
+        Progress progress = new Progress(uncalled.size(), 50);
 
         while (!uncalled.isEmpty()) {
             List<FunType> uncalledDup = new ArrayList<>(uncalled);

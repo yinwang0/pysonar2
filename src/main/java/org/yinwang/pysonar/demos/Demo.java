@@ -2,7 +2,7 @@ package org.yinwang.pysonar.demos;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.FancyProgress;
+import org.yinwang.pysonar.Progress;
 import org.yinwang.pysonar._;
 
 import java.io.File;
@@ -106,7 +106,7 @@ public class Demo {
             }
         }
 
-        FancyProgress progress = new FancyProgress(total, 50);
+        Progress progress = new Progress(total, 50);
 
         for (String path : analyzer.getLoadedFiles()) {
             if (path.startsWith(rootPath)) {
