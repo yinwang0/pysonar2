@@ -39,11 +39,4 @@ public class Global extends Node {
         return "<Global:" + names + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNodes(names, v);
-        }
-    }
 }

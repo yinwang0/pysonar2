@@ -132,11 +132,4 @@ public class ImportFrom extends Node {
         return "<FromImport:" + module + ":" + names + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNodes(names, v);
-        }
-    }
 }

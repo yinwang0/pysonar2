@@ -37,9 +37,4 @@ public class PyFloat extends Node {
         return "(float:" + value + ")";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        v.visit(this);
-    }
 }

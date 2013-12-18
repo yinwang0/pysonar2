@@ -36,14 +36,4 @@ public class Alias extends Node {
         return "<Alias:" + name + " as " + asname + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            for (Name n : name) {
-                visitNode(n, v);
-            }
-            visitNode(asname, v);
-        }
-    }
 }

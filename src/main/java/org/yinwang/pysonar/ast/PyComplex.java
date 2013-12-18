@@ -32,9 +32,4 @@ public class PyComplex extends Node {
         return "(" + real + "+" + imag + "j)";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        v.visit(this);
-    }
 }

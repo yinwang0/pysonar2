@@ -26,9 +26,4 @@ public class Ellipsis extends Node {
         return Type.NONE;
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        v.visit(this);
-    }
 }

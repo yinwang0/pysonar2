@@ -35,11 +35,4 @@ public class Return extends Node {
         return "<Return:" + value + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(value, v);
-        }
-    }
 }

@@ -40,12 +40,4 @@ public class Withitem extends Node {
         return Type.UNKNOWN;
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(context_expr, v);
-            visitNode(optional_vars, v);
-        }
-    }
 }

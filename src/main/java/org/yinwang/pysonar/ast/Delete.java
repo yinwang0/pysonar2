@@ -39,11 +39,4 @@ public class Delete extends Node {
         return "<Delete:" + targets + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNodes(targets, v);
-        }
-    }
 }

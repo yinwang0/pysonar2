@@ -37,12 +37,4 @@ public class SetComp extends Node {
         return "<NSetComp:" + start + ":" + elt + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(elt, v);
-            visitNodes(generators, v);
-        }
-    }
 }

@@ -39,12 +39,4 @@ public class Assert extends Node {
         return "<Assert:" + test + ":" + msg + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(test, v);
-            visitNode(msg, v);
-        }
-    }
 }

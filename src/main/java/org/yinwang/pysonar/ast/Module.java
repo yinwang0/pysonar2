@@ -36,11 +36,4 @@ public class Module extends Node {
         return "<Module:" + file + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(body, v);
-        }
-    }
 }

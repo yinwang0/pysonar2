@@ -111,9 +111,4 @@ public class Name extends Node {
         return id;
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        v.visit(this);
-    }
 }

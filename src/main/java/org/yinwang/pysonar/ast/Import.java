@@ -42,11 +42,4 @@ public class Import extends Node {
         return "<Import:" + names + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNodes(names, v);
-        }
-    }
 }

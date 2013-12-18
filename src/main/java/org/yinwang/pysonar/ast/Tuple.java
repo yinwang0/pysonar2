@@ -52,11 +52,4 @@ public class Tuple extends Sequence {
         return sb.toString();
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNodes(elts, v);
-        }
-    }
 }

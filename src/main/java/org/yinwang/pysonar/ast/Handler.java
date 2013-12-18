@@ -50,13 +50,4 @@ public class Handler extends Node {
         return "(handler:" + start + ":" + exceptions + ":" + binder + ")";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(binder, v);
-            visitNodes(exceptions, v);
-            visitNode(body, v);
-        }
-    }
 }

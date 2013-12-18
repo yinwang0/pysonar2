@@ -35,9 +35,4 @@ public class Str extends Node {
         return "'" + summary + "'";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        v.visit(this);
-    }
 }

@@ -107,19 +107,6 @@ public class Function extends Node {
 
 
     @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(name, v);
-            visitNodes(args, v);
-            visitNodes(defaults, v);
-            visitNode(kwarg, v);
-            visitNode(vararg, v);
-            visitNode(body, v);
-        }
-    }
-
-
-    @Override
     public boolean equals(Object obj) {
         if (obj instanceof Function) {
             Function fo = (Function) obj;

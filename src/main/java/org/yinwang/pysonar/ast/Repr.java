@@ -33,11 +33,4 @@ public class Repr extends Node {
         return "<Repr:" + value + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(value, v);
-        }
-    }
 }

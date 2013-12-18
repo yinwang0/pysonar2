@@ -323,15 +323,4 @@ public class Call extends Node {
         return "(call:" + func + ":" + args + ":" + start + ")";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(func, v);
-            visitNodes(args, v);
-            visitNodes(keywords, v);
-            visitNode(kwargs, v);
-            visitNode(starargs, v);
-        }
-    }
 }

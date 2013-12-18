@@ -64,13 +64,4 @@ public class Try extends Node {
         return "<Try:" + handlers + ":" + body + ":" + orelse + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNodes(handlers, v);
-            visitNode(body, v);
-            visitNode(orelse, v);
-        }
-    }
 }

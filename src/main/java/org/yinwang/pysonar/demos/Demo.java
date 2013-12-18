@@ -6,6 +6,7 @@ import org.yinwang.pysonar.Progress;
 import org.yinwang.pysonar._;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -138,7 +139,7 @@ public class Demo {
             return "";
         }
 
-        List<StyleRun> styles = new Styler(analyzer).addStyles(path, source);
+        List<StyleRun> styles = new ArrayList<>();
         styles.addAll(linker.getStyles(path));
 
         String styledSource = new StyleApplier(path, source, styles).apply();

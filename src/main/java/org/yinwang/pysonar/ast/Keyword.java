@@ -54,11 +54,4 @@ public class Keyword extends Node {
         return arg;
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(value, v);
-        }
-    }
 }

@@ -46,12 +46,4 @@ public class DictComp extends Node {
         return "<DictComp:" + start + ":" + key + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(key, v);
-            visitNodes(generators, v);
-        }
-    }
 }

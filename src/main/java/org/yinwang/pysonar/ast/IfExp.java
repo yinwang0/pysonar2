@@ -49,13 +49,4 @@ public class IfExp extends Node {
         return "<IfExp:" + start + ":" + test + ":" + body + ":" + orelse + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(test, v);
-            visitNode(body, v);
-            visitNode(orelse, v);
-        }
-    }
 }

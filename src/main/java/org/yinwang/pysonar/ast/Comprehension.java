@@ -41,13 +41,4 @@ public class Comprehension extends Node {
         return "<Comprehension:" + start + ":" + target + ":" + iter + ":" + ifs + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(target, v);
-            visitNode(iter, v);
-            visitNodes(ifs, v);
-        }
-    }
 }

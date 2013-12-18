@@ -40,11 +40,4 @@ public class NList extends Sequence {
         return "<List:" + start + ":" + elts + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNodes(elts, v);
-        }
-    }
 }

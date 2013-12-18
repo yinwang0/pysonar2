@@ -67,11 +67,4 @@ public class UnaryOp extends Node {
         return "(" + op + " " + operand + ")";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(operand, v);
-        }
-    }
 }

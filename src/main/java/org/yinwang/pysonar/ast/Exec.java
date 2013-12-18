@@ -44,13 +44,4 @@ public class Exec extends Node {
         return "<Exec:" + start + ":" + end + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(body, v);
-            visitNode(globals, v);
-            visitNode(locals, v);
-        }
-    }
 }

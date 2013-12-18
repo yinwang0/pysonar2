@@ -283,24 +283,4 @@ public abstract class Node implements java.io.Serializable {
         return "";
     }
 
-
-    public abstract void visit(NodeVisitor visitor);
-
-
-    protected void visitNode(@Nullable Node n, NodeVisitor v) {
-        if (n != null) {
-            n.visit(v);
-        }
-    }
-
-
-    protected void visitNodes(@Nullable Collection<? extends Node> nodes, NodeVisitor v) {
-        if (nodes != null) {
-            for (Node n : nodes) {
-                if (n != null) {
-                    n.visit(v);
-                }
-            }
-        }
-    }
 }

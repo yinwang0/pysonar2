@@ -37,11 +37,4 @@ public class Expr extends Node {
         return "<Expr:" + value + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(value, v);
-        }
-    }
 }

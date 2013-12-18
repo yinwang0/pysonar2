@@ -43,15 +43,4 @@ public class With extends Node {
         return "<With:" + items + ":" + body + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            for (Withitem item : items) {
-                visitNode(item, v);
-            }
-
-            visitNode(body, v);
-        }
-    }
 }

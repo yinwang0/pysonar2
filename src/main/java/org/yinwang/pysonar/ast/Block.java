@@ -72,11 +72,4 @@ public class Block extends Node {
         return "<Block:" + seq + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNodes(seq, v);
-        }
-    }
 }

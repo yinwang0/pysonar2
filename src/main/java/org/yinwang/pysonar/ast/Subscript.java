@@ -101,12 +101,4 @@ public class Subscript extends Node {
         return "<Subscript:" + value + ":" + slice + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(value, v);
-            visitNode(slice, v);
-        }
-    }
 }

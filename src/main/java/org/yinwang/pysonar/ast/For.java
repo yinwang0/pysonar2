@@ -52,14 +52,4 @@ public class For extends Node {
         return "<For:" + target + ":" + iter + ":" + body + ":" + orelse + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(target, v);
-            visitNode(iter, v);
-            visitNode(body, v);
-            visitNode(orelse, v);
-        }
-    }
 }

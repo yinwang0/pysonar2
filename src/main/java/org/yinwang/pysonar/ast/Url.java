@@ -37,9 +37,4 @@ public class Url extends Node {
         return "<Url:\"" + url + "\">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        v.visit(this);
-    }
 }

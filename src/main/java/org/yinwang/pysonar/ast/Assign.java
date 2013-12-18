@@ -49,12 +49,4 @@ public class Assign extends Node {
         return "(" + target + " = " + value + ")";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(target, v);
-            visitNode(value, v);
-        }
-    }
 }

@@ -38,13 +38,4 @@ public class Dict extends Node {
         return "<Dict>";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            // XXX:  should visit in alternating order
-            visitNodes(keys, v);
-            visitNodes(values, v);
-        }
-    }
 }

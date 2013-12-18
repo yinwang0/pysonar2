@@ -41,12 +41,4 @@ public class GeneratorExp extends Node {
         return "<GeneratorExp:" + start + ":" + elt + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(elt, v);
-            visitNodes(generators, v);
-        }
-    }
 }

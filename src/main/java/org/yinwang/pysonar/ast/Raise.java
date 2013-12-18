@@ -44,13 +44,4 @@ public class Raise extends Node {
         return "<Raise:" + traceback + ":" + exceptionType + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(exceptionType, v);
-            visitNode(inst, v);
-            visitNode(traceback, v);
-        }
-    }
 }

@@ -36,13 +36,4 @@ public class ExtSlice extends Node {
         return "<ExtSlice:" + dims + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            for (Node d : dims) {
-                visitNode(d, v);
-            }
-        }
-    }
 }

@@ -42,12 +42,4 @@ public class Print extends Node {
         return "<Print:" + values + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(dest, v);
-            visitNodes(values, v);
-        }
-    }
 }

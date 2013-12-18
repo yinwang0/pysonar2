@@ -34,9 +34,4 @@ public class Bytes extends Node {
         return "<Bytpes: " + value + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        v.visit(this);
-    }
 }

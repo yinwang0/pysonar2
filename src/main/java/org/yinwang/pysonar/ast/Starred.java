@@ -30,11 +30,4 @@ public class Starred extends Node {
         return "<starred:" + value + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(value, v);
-        }
-    }
 }

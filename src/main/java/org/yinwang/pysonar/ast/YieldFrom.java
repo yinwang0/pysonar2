@@ -36,11 +36,4 @@ public class YieldFrom extends Node {
         return "<YieldFrom:" + start + ":" + value + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(value, v);
-        }
-    }
 }

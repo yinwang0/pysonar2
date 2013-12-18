@@ -66,10 +66,4 @@ public class PyInt extends Node {
         return "(int:" + value + ")";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        v.visit(this);
-    }
-
 }

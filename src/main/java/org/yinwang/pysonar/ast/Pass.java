@@ -26,9 +26,4 @@ public class Pass extends Node {
         return "<Pass>";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        v.visit(this);
-    }
 }
