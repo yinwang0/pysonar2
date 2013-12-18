@@ -2,7 +2,6 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.TypeStack;
 import org.yinwang.pysonar._;
@@ -74,7 +73,8 @@ public abstract class Type {
 
 
     public boolean isUndecidedBool() {
-        return isBool() && asBool().getValue() == BoolType.Value.Undecided;
+        return isBool() && asBool().getValue() == BoolType.Value.Undecided &&
+                asBool().getS1() != null && asBool().getS2() != null;
     }
 
 
@@ -339,8 +339,8 @@ public abstract class Type {
 
 
     public static InstanceType UNKNOWN = new InstanceType(new ClassType("?", null, null));
-    public static InstanceType CONT = new InstanceType(new ClassType("none", null, null));
-    public static InstanceType NONE = new InstanceType(new ClassType("none", null, null));
+    public static InstanceType CONT = new InstanceType(new ClassType("None", null, null));
+    public static InstanceType NONE = new InstanceType(new ClassType("None", null, null));
     public static BoolType TRUE = new BoolType(BoolType.Value.True);
     public static BoolType FALSE = new BoolType(BoolType.Value.False);
 

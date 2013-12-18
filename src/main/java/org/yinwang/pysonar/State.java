@@ -66,7 +66,7 @@ public class State {
 
     // erase and overwrite this to s's contents
     public void overwrite(@NotNull State s) {
-        this.table = s.table;
+        this.table = s.getInternalTable();
         this.parent = s.parent;
         this.stateType = s.stateType;
         this.forwarding = s.forwarding;
