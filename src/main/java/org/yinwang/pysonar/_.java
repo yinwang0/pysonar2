@@ -1,15 +1,23 @@
 package org.yinwang.pysonar;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sun.net.www.protocol.file.FileURLConnection;
 
 import java.io.*;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 
 /**
@@ -108,8 +116,7 @@ public class _ {
             out = new PrintWriter(new BufferedWriter(new FileWriter(path)));
             out.print(contents);
             out.flush();
-        }
-        finally {
+        } finally {
             if (out != null) {
                 out.close();
             }
@@ -154,16 +161,13 @@ public class _ {
                 throw new IOException("Failed to read whole file " + file);
             }
             return bytes;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return null;
-        }
-        finally {
+        } finally {
             if (is != null) {
                 try {
                     is.close();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                 }
             }
         }
@@ -189,6 +193,51 @@ public class _ {
     }
 
 
+    public static void copyResourcesRecursively(URL originUrl, File destination) throws Exception {
+        URLConnection urlConnection = originUrl.openConnection();
+        if (urlConnection instanceof JarURLConnection) {
+            copyJarResourcesRecursively(destination, (JarURLConnection) urlConnection);
+        } else if (urlConnection instanceof FileURLConnection) {
+            FileUtils.copyDirectory(new File(originUrl.getPath()), destination);
+        } else {
+            die("Unsupported URL type: " + urlConnection);
+        }
+    }
+
+
+    public static void copyJarResourcesRecursively(File destination, JarURLConnection jarConnection) {
+        JarFile jarFile;
+        try {
+            jarFile = jarConnection.getJarFile();
+        } catch (Exception e) {
+            _.die("Failed to get jar file)");
+            return;
+        }
+
+        Enumeration<JarEntry> em = jarFile.entries();
+        while (em.hasMoreElements()) {
+            JarEntry entry = em.nextElement();
+            if (entry.getName().startsWith(jarConnection.getEntryName())) {
+                String fileName = StringUtils.removeStart(entry.getName(), jarConnection.getEntryName());
+                InputStream entryInputStream = null;
+                try {
+                    entryInputStream = jarFile.getInputStream(entry);
+                    FileUtils.copyInputStreamToFile(entryInputStream, new File(destination, fileName));
+                } catch (Exception e) {
+                    die("Failed to copy resource: " + fileName);
+                } finally {
+                    if (entryInputStream != null) {
+                        try {
+                            entryInputStream.close();
+                        } catch (Exception e) {
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
     @NotNull
     public static String getSHA1(@NotNull File path) {
         byte[] bytes = getBytesFromFile(path);
@@ -202,8 +251,7 @@ public class _ {
 
         try {
             algorithm = MessageDigest.getInstance("SHA-1");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             _.die("getSHA1: failed to get MD5, shouldn't happen");
             return "";
         }
@@ -240,7 +288,9 @@ public class _ {
 
 
     @NotNull
-    static public String joinWithSep(@NotNull Collection<String> ls, String sep, @Nullable String start, @Nullable String end) {
+    static public String joinWithSep(@NotNull Collection<String> ls, String sep, @Nullable String start,
+                                     @Nullable String end)
+    {
         StringBuilder sb = new StringBuilder();
         if (start != null && ls.size() > 1) {
             sb.append(start);
@@ -286,8 +336,7 @@ public class _ {
     public static String readWholeFile(String filename) {
         try {
             return new Scanner(new File(filename)).useDelimiter("PYSONAR2END").next();
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             return null;
         }
     }
@@ -432,6 +481,12 @@ public class _ {
         File file1 = new File(dir);
         File file2 = new File(file1, file);
         return file2;
+    }
+
+
+    public static String locateTmp(String file) {
+        String tmpDir = getSystemTempDir();
+        return makePathString(tmpDir, "pysonar2", file + "." + Analyzer.self.sid);
     }
 
 

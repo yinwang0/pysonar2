@@ -1,5 +1,6 @@
 package org.yinwang.pysonar;
 
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Call;
@@ -11,6 +12,7 @@ import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 
 import java.io.File;
+import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,8 +20,12 @@ import java.util.logging.Logger;
 
 public class Analyzer {
 
+    public static String MODEL_LOCATION = "org/yinwang/pysonar/models";
+
     // global static instance of the analyzer itself
     public static Analyzer self;
+    public String sid = _.newSessionId();
+
     public boolean debug = false;
 
     public State moduleTable = new State(null, State.StateType.GLOBAL);
@@ -57,6 +63,7 @@ public class Analyzer {
         builtins = new Builtins();
         builtins.init();
         addPythonPath();
+        copyModels();
         createCacheDir();
         getAstCache();
     }
@@ -108,6 +115,18 @@ public class Analyzer {
                 addPath(p);
             }
         }
+    }
+
+
+    private void copyModels() {
+        URL resource = Thread.currentThread().getContextClassLoader().getResource(MODEL_LOCATION);
+        String dest = _.locateTmp("models");
+        try {
+            _.copyResourcesRecursively(resource, new File(dest));
+        } catch (Exception e) {
+            _.die("Failed to copy models. Please check permissions of writing to: " + dest);
+        }
+        addPath(dest);
     }
 
 

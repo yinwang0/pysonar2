@@ -2,15 +2,15 @@ package org.yinwang.pysonar;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.*;
 import org.yinwang.pysonar.ast.Class;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,13 +35,11 @@ public class Parser {
 
 
     public Parser() {
-        String tmpDir = _.getSystemTempDir();
-        String sid = _.newSessionId();
 
-        exchangeFile = _.makePathString(tmpDir, "pysonar2", "json." + sid);
-        endMark = _.makePathString(tmpDir, "pysonar2", "end." + sid);
-        jsonizer = _.makePathString(tmpDir, "pysonar2", "dump_python." + sid);
-        parserLog = _.makePathString(tmpDir, "pysonar2", "parser_log." + sid);
+        exchangeFile = _.locateTmp("json");
+        endMark = _.locateTmp("end");
+        jsonizer = _.locateTmp("dump_python");
+        parserLog = _.locateTmp("parser_log");
 
         startPythonProcesses();
 
@@ -818,26 +816,13 @@ public class Parser {
 
     @Nullable
     public Process startInterpreter(String pythonExe) {
-        String jsonizeStr;
         Process p;
 
         try {
-            InputStream jsonize =
-                    Thread.currentThread()
-                            .getContextClassLoader()
-                            .getResourceAsStream(dumpPythonResource);
-            jsonizeStr = _.readWholeStream(jsonize);
+            URL url = Thread.currentThread().getContextClassLoader().getResource(dumpPythonResource);
+            FileUtils.copyURLToFile(url, new File(jsonizer));
         } catch (Exception e) {
-            _.die("Failed to open resource file:" + dumpPythonResource);
-            return null;
-        }
-
-        try {
-            FileWriter fw = new FileWriter(jsonizer);
-            fw.write(jsonizeStr);
-            fw.close();
-        } catch (Exception e) {
-            _.die("Failed to write into: " + jsonizer);
+            _.die("Failed to copy resource file:" + dumpPythonResource);
             return null;
         }
 
