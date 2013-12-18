@@ -56,8 +56,6 @@ public class Builtins {
     public ModuleType Builtin;
     public ClassType Object;
     public ClassType BaseType;
-    public InstanceType BaseComplex;
-    public InstanceType BaseBool;
     public BoolType True;
     public BoolType False;
     public InstanceType Infeasible;
@@ -353,8 +351,6 @@ public class Builtins {
         BaseArray = newClass("array", bt);
         BaseDict = newClass("dict", bt, Object);
         ClassType numClass = newClass("int", bt, Object);
-        BaseComplex = new InstanceType(new ClassType("complex", bt, Object));
-        BaseBool = new InstanceType(newClass("bool", bt, numClass));
         True = new BoolType(BoolType.Value.True);
         False = new BoolType(BoolType.Value.False);
         Infeasible = new InstanceType(newClass("invalid", bt, numClass));    // impossible boolean type
@@ -578,9 +574,9 @@ public class Builtins {
         }
         bnt.insert("__getnewargs__", numUrl(), newFunc(newTuple(Type.UNKNOWN_INT)), METHOD);
         bnt.insert("hex", numUrl(), newFunc(BaseStr), METHOD);
-        bnt.insert("conjugate", numUrl(), newFunc(BaseComplex), METHOD);
+        bnt.insert("conjugate", numUrl(), newFunc(Type.UNKNOWN_COMPLEX), METHOD);
 
-        State bct = BaseComplex.getTable();
+        State bct = Type.UNKNOWN_COMPLEX.getTable();
         String[] complex_methods = {
                 "__abs__", "__add__", "__div__", "__divmod__",
                 "__float__", "__floordiv__", "__format__", "__getformat__", "__int__",
@@ -590,7 +586,7 @@ public class Builtins {
                 "__rtruediv__", "__sub__", "__truediv__", "conjugate"
         };
         for (String c : complex_methods) {
-            bct.insert(c, numUrl(), newFunc(BaseComplex), METHOD);
+            bct.insert(c, numUrl(), newFunc(Type.UNKNOWN_COMPLEX), METHOD);
         }
         String[] complex_methods_num = {
                 "__eq__", "__ge__", "__gt__", "__le__", "__lt__", "__ne__",
@@ -599,7 +595,7 @@ public class Builtins {
         for (String cn : complex_methods_num) {
             bct.insert(cn, numUrl(), newFunc(Type.UNKNOWN_INT), METHOD);
         }
-        bct.insert("__getnewargs__", numUrl(), newFunc(newTuple(BaseComplex)), METHOD);
+        bct.insert("__getnewargs__", numUrl(), newFunc(newTuple(Type.UNKNOWN_COMPLEX)), METHOD);
         bct.insert("imag", numUrl(), Type.UNKNOWN_INT, ATTRIBUTE);
         bct.insert("real", numUrl(), Type.UNKNOWN_INT, ATTRIBUTE);
     }
@@ -768,8 +764,8 @@ public class Builtins {
             table.addSuper(BaseModule.getTable());
 
             addClass("None", newLibUrl("constants"), Type.NONE);
-            addFunction("bool", newLibUrl("functions", "bool"), BaseBool);
-            addFunction("complex", newLibUrl("functions", "complex"), BaseComplex);
+            addFunction("bool", newLibUrl("functions", "bool"), Type.UNKNOWN_BOOL);
+            addFunction("complex", newLibUrl("functions", "complex"), Type.UNKNOWN_COMPLEX);
             addClass("dict", newLibUrl("stdtypes", "typesmapping"), BaseDict);
             addFunction("file", newLibUrl("functions", "file"), BaseFileInst);
             addFunction("int", newLibUrl("functions", "int"), Type.UNKNOWN_INT);
@@ -829,7 +825,7 @@ public class Builtins {
             BaseException = (ClassType) table.lookupType("BaseException");
 
             for (String f : list("True", "False")) {
-                addAttr(f, newDataModelUrl("org/yinwang/pysonar/types"), BaseBool);
+                addAttr(f, newDataModelUrl("org/yinwang/pysonar/types"), Type.UNKNOWN_BOOL);
             }
 
             addAttr("None", newDataModelUrl("org/yinwang/pysonar/types"), Type.NONE);
@@ -1013,7 +1009,7 @@ public class Builtins {
             addFunction("polar", liburl("conversions-to-and-from-polar-coordinates"),
                     newTuple(Type.UNKNOWN_INT, Type.UNKNOWN_INT));
             addFunction("rect", liburl("conversions-to-and-from-polar-coordinates"),
-                    BaseComplex);
+                    Type.UNKNOWN_COMPLEX);
 
             for (String plf : list("exp", "log", "log10", "sqrt")) {
                 addFunction(plf, liburl("power-and-logarithmic-functions"), Type.UNKNOWN_INT);
@@ -1024,11 +1020,11 @@ public class Builtins {
             }
 
             for (String hf : list("acosh", "asinh", "atanh", "cosh", "sinh", "tanh")) {
-                addFunction(hf, liburl("hyperbolic-functions"), BaseComplex);
+                addFunction(hf, liburl("hyperbolic-functions"), Type.UNKNOWN_COMPLEX);
             }
 
             for (String cf : list("isinf", "isnan")) {
-                addFunction(cf, liburl("classification-functions"), BaseBool);
+                addFunction(cf, liburl("classification-functions"), Type.UNKNOWN_BOOL);
             }
 
             for (String c : list("pi", "e")) {
@@ -2011,8 +2007,8 @@ public class Builtins {
             addFunction("st2tuple", liburl("converting-st-objects"), newTuple());
             addFunction("compilest", liburl("converting-st-objects"), Type.UNKNOWN);
 
-            addFunction("isexpr", liburl("queries-on-st-objects"), BaseBool);
-            addFunction("issuite", liburl("queries-on-st-objects"), BaseBool);
+            addFunction("isexpr", liburl("queries-on-st-objects"), Type.UNKNOWN_BOOL);
+            addFunction("issuite", liburl("queries-on-st-objects"), Type.UNKNOWN_BOOL);
 
             addClass("ParserError", liburl("exceptions-and-error-handling"),
                     newException("ParserError", table));

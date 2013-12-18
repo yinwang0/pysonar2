@@ -51,7 +51,7 @@ public class BinOp extends Node {
                 State falseState = State.merge(ltype.asBool().getS2(), rtype.asBool().getS2());
                 return new BoolType(rtype.asBool().getS1(), falseState);
             } else {
-                return Analyzer.self.builtins.BaseBool;
+                return Type.UNKNOWN_BOOL;
             }
         }
 
@@ -70,7 +70,7 @@ public class BinOp extends Node {
                 State trueState = State.merge(ltype.asBool().getS1(), rtype.asBool().getS1());
                 return new BoolType(trueState, rtype.asBool().getS2());
             } else {
-                return Analyzer.self.builtins.BaseBool;
+                return Type.UNKNOWN_BOOL;
             }
         }
 
