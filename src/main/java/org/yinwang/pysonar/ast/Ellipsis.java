@@ -23,7 +23,7 @@ public class Ellipsis extends Node {
     @NotNull
     @Override
     public Type transform(State s) {
-        return Analyzer.self.builtins.None;
+        return Type.NONE;
     }
 
 

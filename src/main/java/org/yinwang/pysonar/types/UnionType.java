@@ -101,9 +101,9 @@ public class UnionType extends Type {
             return v;
         } else if (v == Type.UNKNOWN) {
             return u;
-        } else if (u == Analyzer.self.builtins.None) {
+        } else if (u == Type.NONE) {
             return v;
-        } else if (v == Analyzer.self.builtins.None) {
+        } else if (v == Type.NONE) {
             return u;
         } else {
             return new UnionType(u, v);
@@ -120,7 +120,7 @@ public class UnionType extends Type {
     @Nullable
     public Type firstUseful() {
         for (Type type : types) {
-            if (!type.isUnknownType() && type != Analyzer.self.builtins.None) {
+            if (!type.isUnknownType() && type != Type.NONE) {
                 return type;
             }
         }

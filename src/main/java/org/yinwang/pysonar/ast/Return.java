@@ -22,7 +22,7 @@ public class Return extends Node {
     @Override
     public Type transform(State s) {
         if (value == null) {
-            return Analyzer.self.builtins.None;
+            return Type.NONE;
         } else {
             return transformExpr(value, s);
         }

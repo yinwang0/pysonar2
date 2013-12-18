@@ -32,6 +32,6 @@ public class Control extends Node {
     @NotNull
     @Override
     public Type transform(State s) {
-        return Analyzer.self.builtins.None;
+        return Type.NONE;
     }
 }

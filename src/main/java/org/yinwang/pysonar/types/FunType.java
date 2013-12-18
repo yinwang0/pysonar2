@@ -153,7 +153,7 @@ public class FunType extends Type {
             return true;
         }
 
-        if (type1.isUnknownType() || type1 == Analyzer.self.builtins.None || type1.equals(type2)) {
+        if (type1.isUnknownType() || type1 == Type.NONE || type1.equals(type2)) {
             return true;
         }
 

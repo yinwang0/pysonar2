@@ -862,7 +862,7 @@ public class Parser {
 
     @Nullable
     public Node parseFileInner(String filename, @NotNull Process pythonProcess) {
-        _.msg("parsing: " + filename);
+//        _.msg("parsing: " + filename);
 
         File exchange = new File(exchangeFile);
         File marker = new File(endMark);
