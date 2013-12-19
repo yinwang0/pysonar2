@@ -17,8 +17,8 @@ public class Withitem extends Node {
     public Node context_expr;
 
 
-    public Withitem(@NotNull Node context_expr, @Nullable Node optional_vars, int start, int end) {
-        super(start, end);
+    public Withitem(@NotNull Node context_expr, @Nullable Node optional_vars, String file, int start, int end) {
+        super(file, start, end);
         this.context_expr = context_expr;
         this.optional_vars = optional_vars;
         addChildren(context_expr, optional_vars);
@@ -28,7 +28,7 @@ public class Withitem extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<withitem:" + context_expr + " as " + optional_vars + ">";
+        return "(withitem:" + context_expr + " as " + optional_vars + ")";
     }
 
 

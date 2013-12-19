@@ -12,8 +12,8 @@ public class Global extends Node {
     private List<Name> names;
 
 
-    public Global(List<Name> names, int start, int end) {
-        super(start, end);
+    public Global(List<Name> names, String file, int start, int end) {
+        super(file, start, end);
         this.names = names;
         addChildren(names);
     }

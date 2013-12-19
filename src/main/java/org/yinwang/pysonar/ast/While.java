@@ -13,8 +13,8 @@ public class While extends Node {
     public Node orelse;
 
 
-    public While(Node test, Node body, Node orelse, int start, int end) {
-        super(start, end);
+    public While(Node test, Node body, Node orelse, String file, int start, int end) {
+        super(file, start, end);
         this.test = test;
         this.body = body;
         this.orelse = orelse;

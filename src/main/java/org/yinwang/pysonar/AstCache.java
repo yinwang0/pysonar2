@@ -128,7 +128,7 @@ public class AstCache {
 
     // package-private for testing
     void serialize(@NotNull Node ast) {
-        String path = getCachePath(ast.getSHA1(), new File(ast.getFile()).getName());
+        String path = getCachePath(ast.getSHA1(), new File(ast.file).getName());
         ObjectOutputStream oos = null;
         FileOutputStream fos = null;
         try {

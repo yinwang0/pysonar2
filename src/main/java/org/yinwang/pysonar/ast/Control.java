@@ -10,8 +10,8 @@ public class Control extends Node {
     public String command;
 
 
-    public Control(String command, int start, int end) {
-        super(start, end);
+    public Control(String command, String file, int start, int end) {
+        super(file, start, end);
         this.command = command;
     }
 

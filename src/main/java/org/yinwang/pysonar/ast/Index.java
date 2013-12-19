@@ -10,8 +10,8 @@ public class Index extends Node {
     public Node value;
 
 
-    public Index(Node n, int start, int end) {
-        super(start, end);
+    public Index(Node n, String file, int start, int end) {
+        super(file, start, end);
         this.value = n;
         addChildren(n);
     }

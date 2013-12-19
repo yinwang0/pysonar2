@@ -14,8 +14,8 @@ public class Module extends Node {
     public Block body;
 
 
-    public Module(Block body, int start, int end) {
-        super(start, end);
+    public Module(Block body, String file, int start, int end) {
+        super(file, start, end);
         this.body = body;
         addChildren(this.body);
     }

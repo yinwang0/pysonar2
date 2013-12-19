@@ -7,8 +7,8 @@ import org.yinwang.pysonar.types.Type;
 
 public class Pass extends Node {
 
-    public Pass(int start, int end) {
-        super(start, end);
+    public Pass(String file, int start, int end) {
+        super(file, start, end);
     }
 
 

@@ -124,7 +124,7 @@ class Linker {
 
             // Currently jump to the first binding only. Should change to have a
             // hover menu or something later.
-            String path = ref.getFile();
+            String path = ref.file;
             if (path != null) {
                 for (Binding b : bindings) {
                     if (link.url == null) {

@@ -10,8 +10,8 @@ public class Bytes extends Node {
     private Object value;
 
 
-    public Bytes(@NotNull Object value, int start, int end) {
-        super(start, end);
+    public Bytes(@NotNull Object value, String file, int start, int end) {
+        super(file, start, end);
         this.value = value.toString();
     }
 
@@ -31,7 +31,7 @@ public class Bytes extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Bytpes: " + value + ">";
+        return "(bytes: " + value + ")";
     }
 
 }

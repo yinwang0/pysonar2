@@ -13,8 +13,8 @@ public class Alias extends Node {
     public Name asname;
 
 
-    public Alias(List<Name> name, Name asname, int start, int end) {
-        super(start, end);
+    public Alias(List<Name> name, Name asname, String file, int start, int end) {
+        super(file, start, end);
         this.name = name;
         this.asname = asname;
         addChildren(name);

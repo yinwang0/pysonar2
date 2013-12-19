@@ -14,8 +14,8 @@ public class Import extends Node {
     public List<Alias> names;
 
 
-    public Import(List<Alias> names, int start, int end) {
-        super(start, end);
+    public Import(List<Alias> names, String file, int start, int end) {
+        super(file, start, end);
         this.names = names;
         addChildren(names);
     }

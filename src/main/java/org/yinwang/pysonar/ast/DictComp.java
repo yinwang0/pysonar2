@@ -15,8 +15,8 @@ public class DictComp extends Node {
     public List<Comprehension> generators;
 
 
-    public DictComp(Node key, Node value, List<Comprehension> generators, int start, int end) {
-        super(start, end);
+    public DictComp(Node key, Node value, List<Comprehension> generators, String file, int start, int end) {
+        super(file, start, end);
         this.key = key;
         this.value = value;
         this.generators = generators;

@@ -20,8 +20,8 @@ public class ImportFrom extends Node {
     public int level;
 
 
-    public ImportFrom(List<Name> module, List<Alias> names, int level, int start, int end) {
-        super(start, end);
+    public ImportFrom(List<Name> module, List<Alias> names, int level, String file, int start, int end) {
+        super(file, start, end);
         this.module = module;
         this.level = level;
         this.names = names;

@@ -1,7 +1,6 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.*;
 import org.yinwang.pysonar.types.ClassType;
 import org.yinwang.pysonar.types.DictType;
@@ -14,20 +13,15 @@ import java.util.List;
 
 public class Class extends Node {
 
-    @Nullable
+    @NotNull
     public Name name;
     public List<Node> bases;
     public Node body;
 
 
-    public Class(@Nullable Name name, List<Node> bases, Node body, int start, int end) {
-        super(start, end);
-        if (name != null) {
-            this.name = name;
-        } else {
-            this.name = new Name(genClassName(), start, start + 1);
-            addChildren(this.name);
-        }
+    public Class(@NotNull Name name, List<Node> bases, Node body, String file, int start, int end) {
+        super(file, start, end);
+        this.name = name;
         this.bases = bases;
         this.body = body;
         addChildren(name, this.body);
@@ -42,25 +36,9 @@ public class Class extends Node {
 
 
     @NotNull
-    public Name getName() {
-        return name;
-    }
-
-
-    private static int classCounter = 0;
-
-
-    @NotNull
-    public static String genClassName() {
-        classCounter = classCounter + 1;
-        return "class%" + classCounter;
-    }
-
-
-    @NotNull
     @Override
     public Type transform(@NotNull State s) {
-        ClassType classType = new ClassType(getName().id, s);
+        ClassType classType = new ClassType(name.id, s);
         List<Type> baseTypes = new ArrayList<>();
         for (Node base : bases) {
             Type baseType = transformExpr(base, s);

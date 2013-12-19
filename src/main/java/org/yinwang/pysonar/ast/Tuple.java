@@ -10,8 +10,8 @@ import java.util.List;
 
 public class Tuple extends Sequence {
 
-    public Tuple(List<Node> elts, int start, int end) {
-        super(elts, start, end);
+    public Tuple(List<Node> elts, String file, int start, int end) {
+        super(elts, file, start, end);
     }
 
 

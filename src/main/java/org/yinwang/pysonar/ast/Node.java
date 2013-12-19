@@ -21,9 +21,9 @@ import java.util.List;
  */
 public abstract class Node implements java.io.Serializable, Comparable<Object> {
 
-    public String file = null;
-    public int start = -1;
-    public int end = -1;
+    public String file;
+    public int start;
+    public int end;
 
     public String name;
     private String sha1;   // input source file sha
@@ -34,7 +34,8 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
     }
 
 
-    public Node(int start, int end) {
+    public Node(String file, int start, int end) {
+        this.file = file;
         this.start = start;
         this.end = end;
     }
@@ -67,18 +68,6 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
 
     public int length() {
         return end - start;
-    }
-
-
-    @Nullable
-    public String getFile() {
-        if (file != null) {
-            return file;
-        } else if (parent != null) {
-            return parent.getFile();
-        } else {
-            return null;
-        }
     }
 
 
@@ -292,18 +281,18 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
             return false;
         } else {
             Node node = (Node) obj;
-            String file = getFile();
+            String file = this.file;
             return (start == node.start &&
                     end == node.end &&
-                    (file == null && node.getFile() == null) ||
-                    (file != null && node.getFile() != null && file.equals(node.getFile())));
+                    (file == null && node.file == null) ||
+                    (file != null && node.file != null && file.equals(node.file)));
         }
     }
 
 
     @Override
     public int hashCode() {
-        return (getFile() + ":" + start + ":" + end).hashCode();
+        return (file + ":" + start + ":" + end).hashCode();
     }
 
 

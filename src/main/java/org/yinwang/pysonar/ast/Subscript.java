@@ -16,8 +16,8 @@ public class Subscript extends Node {
     public Node slice;  // an NIndex or NSlice
 
 
-    public Subscript(@NotNull Node value, @Nullable Node slice, int start, int end) {
-        super(start, end);
+    public Subscript(@NotNull Node value, @Nullable Node slice, String file, int start, int end) {
+        super(file, start, end);
         this.value = value;
         this.slice = slice;
         addChildren(value, slice);

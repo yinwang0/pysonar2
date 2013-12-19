@@ -11,11 +11,8 @@ import org.yinwang.pysonar.types.Type;
  */
 public class Dummy extends Node {
 
-    public Dummy(String name, String file, int start, int end) {
-        this.name = name;
-        this.file = file;
-        this.start = start;
-        this.end = end;
+    public Dummy(String file, int start, int end) {
+        super(file, start, end);
     }
 
 

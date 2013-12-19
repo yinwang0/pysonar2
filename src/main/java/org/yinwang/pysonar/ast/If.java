@@ -14,8 +14,8 @@ public class If extends Node {
     public Node orelse;
 
 
-    public If(@NotNull Node test, Node body, Node orelse, int start, int end) {
-        super(start, end);
+    public If(@NotNull Node test, Node body, Node orelse, String file, int start, int end) {
+        super(file, start, end);
         this.test = test;
         this.body = body;
         this.orelse = orelse;

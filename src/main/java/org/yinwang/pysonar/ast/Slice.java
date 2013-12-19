@@ -13,8 +13,8 @@ public class Slice extends Node {
     public Node upper;
 
 
-    public Slice(Node lower, Node step, Node upper, int start, int end) {
-        super(start, end);
+    public Slice(Node lower, Node step, Node upper, String file, int start, int end) {
+        super(file, start, end);
         this.lower = lower;
         this.step = step;
         this.upper = upper;

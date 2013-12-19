@@ -10,8 +10,8 @@ import java.util.List;
 
 public class NList extends Sequence {
 
-    public NList(@NotNull List<Node> elts, int start, int end) {
-        super(elts, start, end);
+    public NList(@NotNull List<Node> elts, String file, int start, int end) {
+        super(elts, file, start, end);
     }
 
 

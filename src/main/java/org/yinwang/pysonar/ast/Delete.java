@@ -12,8 +12,8 @@ public class Delete extends Node {
     public List<Node> targets;
 
 
-    public Delete(List<Node> elts, int start, int end) {
-        super(start, end);
+    public Delete(List<Node> elts, String file, int start, int end) {
+        super(file, start, end);
         this.targets = elts;
         addChildren(elts);
     }

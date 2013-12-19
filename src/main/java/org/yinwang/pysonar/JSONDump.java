@@ -156,7 +156,7 @@ public class JSONDump {
             if (binding.getStart() >= 0 && ref.start >= 0 && !binding.isBuiltin()) {
                 json.writeStartObject();
                 json.writeStringField("sym", path);
-                json.writeStringField("file", ref.getFile());
+                json.writeStringField("file", ref.file);
                 json.writeNumberField("start", ref.start);
                 json.writeNumberField("end", ref.end);
                 json.writeBooleanField("builtin", binding.isBuiltin());
@@ -235,9 +235,9 @@ public class JSONDump {
             }
 
             for (Node ref : b.getRefs()) {
-                if (ref.getFile() != null) {
-                    String key = ref.getFile() + ":" + ref.start;
-                    if (!seenRef.contains(key) && shouldEmit(ref.getFile(), srcpath)) {
+                if (ref.file != null) {
+                    String key = ref.file + ":" + ref.start;
+                    if (!seenRef.contains(key) && shouldEmit(ref.file, srcpath)) {
                         writeRefJson(ref, b, refJson);
                         seenRef.add(key);
                     }

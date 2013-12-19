@@ -36,7 +36,7 @@ public class Test {
             List<Map<String, Object>> refs = new ArrayList<>();
             for (Map.Entry<Node, List<Binding>> e : analyzer.getReferences().entrySet()) {
 
-                String file = e.getKey().getFile();
+                String file = e.getKey().file;
 
                 // only record those in the inputDir
                 if (file != null && !file.startsWith("/")) {
@@ -138,11 +138,10 @@ public class Test {
 
 
     Dummy createRef(Map<String, Object> m) {
-        String name = (String) m.get("name");
         String file = (String) m.get("file");
         int start = (int) Math.floor((double) m.get("start"));
         int end = (int) Math.floor((double) m.get("end"));
-        return new Dummy(name, file, start, end);
+        return new Dummy(file, start, end);
     }
 
 

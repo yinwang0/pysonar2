@@ -10,8 +10,8 @@ public class Str extends Node {
     public String value;
 
 
-    public Str(@NotNull Object value, int start, int end) {
-        super(start, end);
+    public Str(@NotNull Object value, String file, int start, int end) {
+        super(file, start, end);
         this.value = value.toString();
     }
 

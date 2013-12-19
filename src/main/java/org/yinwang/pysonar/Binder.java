@@ -71,7 +71,7 @@ public class Binder {
                 bind(s, x, Type.UNKNOWN, kind);
             }
         } else if (xs.size() > 0) {
-            Analyzer.self.putProblem(xs.get(0).getFile(),
+            Analyzer.self.putProblem(xs.get(0).file,
                     xs.get(0).start,
                     xs.get(xs.size() - 1).end,
                     "unpacking non-iterable: " + rvalue);
@@ -129,6 +129,6 @@ public class Binder {
         } else {
             msg = "ValueError: too many values to unpack";
         }
-        Analyzer.self.putProblem(xs.get(0).getFile(), beg, end, msg);
+        Analyzer.self.putProblem(xs.get(0).file, beg, end, msg);
     }
 }

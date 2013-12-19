@@ -17,19 +17,20 @@ public class Name extends Node {
 
 
     public Name(String id) {
-        this(id, -1, -1);
+        // generated name
+        this(id, null, -1, -1);
     }
 
 
-    public Name(@NotNull String id, int start, int end) {
-        super(start, end);
+    public Name(@NotNull String id, String file, int start, int end) {
+        super(file, start, end);
         this.id = id;
         this.type = NameType.LOCAL;
     }
 
 
-    public Name(@NotNull String id, NameType type, int start, int end) {
-        super(start, end);
+    public Name(@NotNull String id, NameType type, String file, int start, int end) {
+        super(file, start, end);
         this.id = id;
         this.type = type;
     }

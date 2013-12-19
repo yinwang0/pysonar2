@@ -13,8 +13,8 @@ public class PyInt extends Node {
     public BigInteger value;
 
 
-    public PyInt(String s, int start, int end) {
-        super(start, end);
+    public PyInt(String s, String file, int start, int end) {
+        super(file, start, end);
 
         s = s.replaceAll("_", "");
         int sign = 1;

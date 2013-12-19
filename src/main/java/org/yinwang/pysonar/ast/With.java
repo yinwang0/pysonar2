@@ -15,8 +15,8 @@ public class With extends Node {
     public Block body;
 
 
-    public With(@NotNull List<Withitem> items, Block body, int start, int end) {
-        super(start, end);
+    public With(@NotNull List<Withitem> items, Block body, String file, int start, int end) {
+        super(file, start, end);
         this.items = items;
         this.body = body;
         addChildren(items);

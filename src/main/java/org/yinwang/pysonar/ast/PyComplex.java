@@ -12,8 +12,8 @@ public class PyComplex extends Node {
     public double imag;
 
 
-    public PyComplex(double real, double imag, int start, int end) {
-        super(start, end);
+    public PyComplex(double real, double imag, String file, int start, int end) {
+        super(file, start, end);
         this.real = real;
         this.imag = imag;
     }

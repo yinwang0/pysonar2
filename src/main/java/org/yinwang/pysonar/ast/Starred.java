@@ -10,8 +10,8 @@ public class Starred extends Node {
     public Node value;
 
 
-    public Starred(Node n, int start, int end) {
-        super(start, end);
+    public Starred(Node n, String file, int start, int end) {
+        super(file, start, end);
         this.value = n;
         addChildren(n);
     }

@@ -22,9 +22,7 @@ public class Parser {
     private static final String PYTHON3_EXE = "python3";
     private static final int TIMEOUT = 5000;
 
-    @Nullable
     Process python2Process;
-    @Nullable
     Process python3Process;
     private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final String dumpPythonResource = "org/yinwang/pysonar/python/dump_python.py";
@@ -32,6 +30,7 @@ public class Parser {
     private String endMark;
     private String jsonizer;
     private String parserLog;
+    private String file;
 
 
     public Parser() {
@@ -97,7 +96,7 @@ public class Parser {
 
         if (type.equals("Module")) {
             Block b = convertBlock(map.get("body"));
-            Module m = new Module(b, start, end);
+            Module m = new Module(b, file, start, end);
             try {
                 m.setFile(_.unifyPath((String) map.get("filename")));
             } catch (Exception e) {
@@ -110,13 +109,13 @@ public class Parser {
             String qname = (String) map.get("name");
             List<Name> names = segmentQname(qname, start + "import ".length(), false);
             Name asname = map.get("asname") == null ? null : new Name((String) map.get("asname"));
-            return new Alias(names, asname, start, end);
+            return new Alias(names, asname, file, start, end);
         }
 
         if (type.equals("Assert")) {
             Node test = convert(map.get("test"));
             Node msg = convert(map.get("msg"));
-            return new Assert(test, msg, start, end);
+            return new Assert(test, msg, file, start, end);
         }
 
         // assign could be x=y=z=1
@@ -126,18 +125,18 @@ public class Parser {
             List<Node> targets = convertList(map.get("targets"));
             Node value = convert(map.get("value"));
             if (targets.size() == 1) {
-                return new Assign(targets.get(0), value, start, end);
+                return new Assign(targets.get(0), value, file, start, end);
             } else {
                 List<Node> assignments = new ArrayList<>();
                 Node lastTarget = targets.get(targets.size() - 1);
-                assignments.add(new Assign(lastTarget, value, start, end));
+                assignments.add(new Assign(lastTarget, value, file, start, end));
 
                 for (int i = targets.size() - 2; i >= 0; i--) {
-                    Node nextAssign = new Assign(targets.get(i), lastTarget, start, end);
+                    Node nextAssign = new Assign(targets.get(i), lastTarget, file, start, end);
                     assignments.add(nextAssign);
                 }
 
-                return new Block(assignments, start, end);
+                return new Block(assignments, file, start, end);
             }
         }
 
@@ -147,15 +146,15 @@ public class Parser {
             if (attr == null) {
                 attr = new Name((String) map.get("attr"));
             }
-            return new Attribute(value, attr, start, end);
+            return new Attribute(value, attr, file, start, end);
         }
 
         if (type.equals("AugAssign")) {
             Node target = convert(map.get("target"));
             Node value = convert(map.get("value"));
             Op op = convertOp(map.get("op"));
-            Node operation = new BinOp(op, target, value, target.start, value.end);
-            return new Assign(target, operation, start, end);
+            Node operation = new BinOp(op, target, value, file, target.start, value.end);
+            return new Assign(target, operation, file, start, end);
         }
 
         if (type.equals("BinOp")) {
@@ -165,33 +164,33 @@ public class Parser {
 
             // desugar complex operators
             if (op == Op.NotEqual) {
-                Node eq = new BinOp(Op.Equal, left, right, start, end);
-                return new UnaryOp(Op.Not, eq, start, end);
+                Node eq = new BinOp(Op.Equal, left, right, file, start, end);
+                return new UnaryOp(Op.Not, eq, file, start, end);
             }
 
             if (op == Op.LtE) {
-                Node lt = new BinOp(Op.Lt, left, right, start, end);
-                Node eq = new BinOp(Op.Eq, left, right, start, end);
-                return new BinOp(Op.Or, lt, eq, start, end);
+                Node lt = new BinOp(Op.Lt, left, right, file, start, end);
+                Node eq = new BinOp(Op.Eq, left, right, file, start, end);
+                return new BinOp(Op.Or, lt, eq, file, start, end);
             }
 
             if (op == Op.GtE) {
-                Node gt = new BinOp(Op.Gt, left, right, start, end);
-                Node eq = new BinOp(Op.Eq, left, right, start, end);
-                return new BinOp(Op.Or, gt, eq, start, end);
+                Node gt = new BinOp(Op.Gt, left, right, file, start, end);
+                Node eq = new BinOp(Op.Eq, left, right, file, start, end);
+                return new BinOp(Op.Or, gt, eq, file, start, end);
             }
 
             if (op == Op.NotIn) {
-                Node in = new BinOp(Op.In, left, right, start, end);
-                return new UnaryOp(Op.Not, in, start, end);
+                Node in = new BinOp(Op.In, left, right, file, start, end);
+                return new UnaryOp(Op.Not, in, file, start, end);
             }
 
             if (op == Op.NotEq) {
-                Node in = new BinOp(Op.Eq, left, right, start, end);
-                return new UnaryOp(Op.Not, in, start, end);
+                Node in = new BinOp(Op.Eq, left, right, file, start, end);
+                return new UnaryOp(Op.Not, in, file, start, end);
             }
 
-            return new BinOp(op, left, right, start, end);
+            return new BinOp(op, left, right, file, start, end);
 
         }
 
@@ -201,20 +200,20 @@ public class Parser {
                 _.die("impossible number of arguments, please fix the Python parser");
             }
             Op op = convertOp(map.get("op"));
-            BinOp ret = new BinOp(op, values.get(0), values.get(1), start, end);
+            BinOp ret = new BinOp(op, values.get(0), values.get(1), file, start, end);
             for (int i = 2; i < values.size(); i++) {
-                ret = new BinOp(op, ret, values.get(i), start, end);
+                ret = new BinOp(op, ret, values.get(i), file, start, end);
             }
             return ret;
         }
 
         if (type.equals("Break")) {
-            return new Control("break", start, end);
+            return new Control("break", file, start, end);
         }
 
         if (type.equals("Bytes")) {
             Object s = map.get("s");
-            return new Bytes(s, start, end);
+            return new Bytes(s, file, start, end);
         }
 
         if (type.equals("Call")) {
@@ -223,14 +222,14 @@ public class Parser {
             List<Keyword> keywords = convertList(map.get("keywords"));
             Node kwargs = convert(map.get("kwarg"));
             Node starargs = convert(map.get("starargs"));
-            return new Call(func, args, keywords, kwargs, starargs, start, end);
+            return new Call(func, args, keywords, kwargs, starargs, file, start, end);
         }
 
         if (type.equals("ClassDef")) {
             Name name = (Name) convert(map.get("name_node"));      // hack
             List<Node> bases = convertList(map.get("bases"));
             Block body = convertBlock(map.get("body"));
-            return new Class(name, bases, body, start, end);
+            return new Class(name, bases, body, file, start, end);
         }
 
         // left-fold Compare into
@@ -238,10 +237,10 @@ public class Parser {
             Node left = convert(map.get("left"));
             List<Op> ops = convertListOp(map.get("ops"));
             List<Node> comparators = convertList(map.get("comparators"));
-            Node result = new BinOp(ops.get(0), left, comparators.get(0), start, end);
+            Node result = new BinOp(ops.get(0), left, comparators.get(0), file, start, end);
             for (int i = 1; i < comparators.size(); i++) {
-                Node compNext = new BinOp(ops.get(i), comparators.get(i - 1), comparators.get(i), start, end);
-                result = new BinOp(Op.And, result, compNext, start, end);
+                Node compNext = new BinOp(ops.get(i), comparators.get(i - 1), comparators.get(i), file, start, end);
+                result = new BinOp(Op.And, result, compNext, file, start, end);
             }
             return result;
         }
@@ -250,33 +249,33 @@ public class Parser {
             Node target = convert(map.get("target"));
             Node iter = convert(map.get("iter"));
             List<Node> ifs = convertList(map.get("ifs"));
-            return new Comprehension(target, iter, ifs, start, end);
+            return new Comprehension(target, iter, ifs, file, start, end);
         }
 
         if (type.equals("Continue")) {
-            return new Control("continue", start, end);
+            return new Control("continue", file, start, end);
         }
 
         if (type.equals("Delete")) {
             List<Node> targets = convertList(map.get("targets"));
-            return new Delete(targets, start, end);
+            return new Delete(targets, file, start, end);
         }
 
         if (type.equals("Dict")) {
             List<Node> keys = convertList(map.get("keys"));
             List<Node> values = convertList(map.get("values"));
-            return new Dict(keys, values, start, end);
+            return new Dict(keys, values, file, start, end);
         }
 
         if (type.equals("DictComp")) {
             Node key = convert(map.get("key"));
             Node value = convert(map.get("value"));
             List<Comprehension> generators = convertList(map.get("generators"));
-            return new DictComp(key, value, generators, start, end);
+            return new DictComp(key, value, generators, file, start, end);
         }
 
         if (type.equals("Ellipsis")) {
-            return new Ellipsis(start, end);
+            return new Ellipsis(file, start, end);
         }
 
         if (type.equals("ExceptHandler")) {
@@ -292,19 +291,19 @@ public class Parser {
 
             Node binder = convert(map.get("name"));
             Block body = convertBlock(map.get("body"));
-            return new Handler(exceptions, binder, body, start, end);
+            return new Handler(exceptions, binder, body, file, start, end);
         }
 
         if (type.equals("Exec")) {
             Node body = convert(map.get("body"));
             Node globals = convert(map.get("globals"));
             Node locals = convert(map.get("locals"));
-            return new Exec(body, globals, locals, start, end);
+            return new Exec(body, globals, locals, file, start, end);
         }
 
         if (type.equals("Expr")) {
             Node value = convert(map.get("value"));
-            return new Expr(value, start, end);
+            return new Expr(value, file, start, end);
         }
 
         if (type.equals("For")) {
@@ -312,7 +311,7 @@ public class Parser {
             Node iter = convert(map.get("iter"));
             Block body = convertBlock(map.get("body"));
             Block orelse = convertBlock(map.get("orelse"));
-            return new For(target, iter, body, orelse, start, end);
+            return new For(target, iter, body, orelse, file, start, end);
         }
 
         if (type.equals("FunctionDef") || type.equals("Lambda")) {
@@ -323,13 +322,13 @@ public class Parser {
             Node body = type.equals("Lambda") ? convert(map.get("body")) : convertBlock(map.get("body"));
             Name vararg = argsMap.get("vararg") == null ? null : new Name((String) argsMap.get("vararg"));
             Name kwarg = argsMap.get("kwarg") == null ? null : new Name((String) argsMap.get("kwarg"));
-            return new Function(name, args, body, defaults, vararg, kwarg, start, end);
+            return new Function(name, args, body, defaults, vararg, kwarg, file, start, end);
         }
 
         if (type.equals("GeneratorExp")) {
             Node elt = convert(map.get("elt"));
             List<Comprehension> generators = convertList(map.get("generators"));
-            return new GeneratorExp(elt, generators, start, end);
+            return new GeneratorExp(elt, generators, file, start, end);
         }
 
         if (type.equals("Global")) {
@@ -338,7 +337,7 @@ public class Parser {
             for (String name : names) {
                 nameNodes.add(new Name(name));
             }
-            return new Global(nameNodes, start, end);
+            return new Global(nameNodes, file, start, end);
         }
 
         if (type.equals("Nonlocal")) {
@@ -347,27 +346,27 @@ public class Parser {
             for (String name : names) {
                 nameNodes.add(new Name(name));
             }
-            return new Global(nameNodes, start, end);
+            return new Global(nameNodes, file, start, end);
         }
 
         if (type.equals("If")) {
             Node test = convert(map.get("test"));
             Block body = convertBlock(map.get("body"));
             Block orelse = convertBlock(map.get("orelse"));
-            return new If(test, body, orelse, start, end);
+            return new If(test, body, orelse, file, start, end);
         }
 
         if (type.equals("IfExp")) {
             Node test = convert(map.get("test"));
             Node body = convert(map.get("body"));
             Node orelse = convert(map.get("orelse"));
-            return new IfExp(test, body, orelse, start, end);
+            return new IfExp(test, body, orelse, file, start, end);
         }
 
 
         if (type.equals("Import")) {
             List<Alias> aliases = convertList(map.get("names"));
-            return new Import(aliases, start, end);
+            return new Import(aliases, file, start, end);
         }
 
         if (type.equals("ImportFrom")) {
@@ -375,55 +374,55 @@ public class Parser {
             List<Name> moduleSeg = module == null ? null : segmentQname(module, start + "from ".length(), true);
             List<Alias> names = convertList(map.get("names"));
             int level = ((Double) map.get("level")).intValue();
-            return new ImportFrom(moduleSeg, names, level, start, end);
+            return new ImportFrom(moduleSeg, names, level, file, start, end);
         }
 
         if (type.equals("Index")) {
             Node value = convert(map.get("value"));
-            return new Index(value, start, end);
+            return new Index(value, file, start, end);
         }
 
         if (type.equals("keyword")) {
             String arg = (String) map.get("arg");
             Node value = convert(map.get("value"));
-            return new Keyword(arg, value, start, end);
+            return new Keyword(arg, value, file, start, end);
         }
 
 
         if (type.equals("List")) {
             List<Node> elts = convertList(map.get("elts"));
-            return new NList(elts, start, end);
+            return new NList(elts, file, start, end);
         }
 
         if (type.equals("Starred")) { // f(*[1, 2, 3, 4])
             Node value = convert(map.get("value"));
-            return new Starred(value, start, end);
+            return new Starred(value, file, start, end);
         }
 
         if (type.equals("ListComp")) {
             Node elt = convert(map.get("elt"));
             List<Comprehension> generators = convertList(map.get("generators"));
-            return new ListComp(elt, generators, start, end);
+            return new ListComp(elt, generators, file, start, end);
         }
 
         if (type.equals("Name")) {
             String id = (String) map.get("id");
-            return new Name(id, start, end);
+            return new Name(id, file, start, end);
         }
 
         // another name for Name in Python3 func parameters?
         if (type.equals("arg")) {
             String id = (String) map.get("arg");
-            return new Name(id, start, end);
+            return new Name(id, file, start, end);
         }
 
         if (type.equals("Num")) {
 
             String num_type = (String) map.get("num_type");
             if (num_type.equals("int")) {
-                return new PyInt((String) map.get("n"), start, end);
+                return new PyInt((String) map.get("n"), file, start, end);
             } else if (num_type.equals("float")) {
-                return new PyFloat((String) map.get("n"), start, end);
+                return new PyFloat((String) map.get("n"), file, start, end);
             } else {
                 Object real = map.get("real");
                 Object imag = map.get("imag");
@@ -442,75 +441,75 @@ public class Parser {
                         imag = Double.NEGATIVE_INFINITY;
                     }
                 }
-                return new PyComplex((double) real, (double) imag, start, end);
+                return new PyComplex((double) real, (double) imag, file, start, end);
             }
         }
 
         if (type.equals("SetComp")) {
             Node elt = convert(map.get("elt"));
             List<Comprehension> generators = convertList(map.get("generators"));
-            return new SetComp(elt, generators, start, end);
+            return new SetComp(elt, generators, file, start, end);
         }
 
         if (type.equals("Pass")) {
-            return new Pass(start, end);
+            return new Pass(file, start, end);
         }
 
         if (type.equals("Print")) {
             List<Node> values = convertList(map.get("values"));
             Node destination = convert(map.get("destination"));
-            return new Print(destination, values, start, end);
+            return new Print(destination, values, file, start, end);
         }
 
         if (type.equals("Raise")) {
             Node exceptionType = convert(map.get("type"));
             Node inst = convert(map.get("inst"));
             Node tback = convert(map.get("tback"));
-            return new Raise(exceptionType, inst, tback, start, end);
+            return new Raise(exceptionType, inst, tback, file, start, end);
         }
 
         if (type.equals("Repr")) {
             Node value = convert(map.get("value"));
-            return new Repr(value, start, end);
+            return new Repr(value, file, start, end);
         }
 
         if (type.equals("Return")) {
             Node value = convert(map.get("value"));
-            return new Return(value, start, end);
+            return new Return(value, file, start, end);
         }
 
         if (type.equals("Set")) {
             List<Node> elts = convertList(map.get("elts"));
-            return new Set(elts, start, end);
+            return new Set(elts, file, start, end);
         }
 
         if (type.equals("SetComp")) {
             Node elt = convert(map.get("elt"));
             List<Comprehension> generators = convertList(map.get("generators"));
-            return new SetComp(elt, generators, start, end);
+            return new SetComp(elt, generators, file, start, end);
         }
 
         if (type.equals("Slice")) {
             Node lower = convert(map.get("lower"));
             Node step = convert(map.get("step"));
             Node upper = convert(map.get("upper"));
-            return new Slice(lower, step, upper, start, end);
+            return new Slice(lower, step, upper, file, start, end);
         }
 
         if (type.equals("ExtSlice")) {
             List<Node> dims = convertList(map.get("dims"));
-            return new ExtSlice(dims, start, end);
+            return new ExtSlice(dims, file, start, end);
         }
 
         if (type.equals("Str")) {
             String s = (String) map.get("s");
-            return new Str(s, start, end);
+            return new Str(s, file, start, end);
         }
 
         if (type.equals("Subscript")) {
             Node value = convert(map.get("value"));
             Node slice = convert(map.get("slice"));
-            return new Subscript(value, slice, start, end);
+            return new Subscript(value, slice, file, start, end);
         }
 
         if (type.equals("Try")) {
@@ -518,38 +517,38 @@ public class Parser {
             Block orelse = convertBlock(map.get("orelse"));
             List<Handler> handlers = convertList(map.get("handlers"));
             Block finalbody = convertBlock(map.get("finalbody"));
-            return new Try(handlers, body, orelse, finalbody, start, end);
+            return new Try(handlers, body, orelse, finalbody, file, start, end);
         }
 
         if (type.equals("TryExcept")) {
             Block body = convertBlock(map.get("body"));
             Block orelse = convertBlock(map.get("orelse"));
             List<Handler> handlers = convertList(map.get("handlers"));
-            return new Try(handlers, body, orelse, null, start, end);
+            return new Try(handlers, body, orelse, null, file, start, end);
         }
 
         if (type.equals("TryFinally")) {
             Block body = convertBlock(map.get("body"));
             Block finalbody = convertBlock(map.get("finalbody"));
-            return new Try(null, body, null, finalbody, start, end);
+            return new Try(null, body, null, finalbody, file, start, end);
         }
 
         if (type.equals("Tuple")) {
             List<Node> elts = convertList(map.get("elts"));
-            return new Tuple(elts, start, end);
+            return new Tuple(elts, file, start, end);
         }
 
         if (type.equals("UnaryOp")) {
             Op op = convertOp(map.get("op"));
             Node operand = convert(map.get("operand"));
-            return new UnaryOp(op, operand, start, end);
+            return new UnaryOp(op, operand, file, start, end);
         }
 
         if (type.equals("While")) {
             Node test = convert(map.get("test"));
             Block body = convertBlock(map.get("body"));
             Block orelse = convertBlock(map.get("orelse"));
-            return new While(test, body, orelse, start, end);
+            return new While(test, body, orelse, file, start, end);
         }
 
         if (type.equals("With")) {
@@ -561,7 +560,7 @@ public class Parser {
 
             // Python 3 puts context_expr and optional_vars inside "items"
             if (context_expr != null) {
-                Withitem item = new Withitem(context_expr, optional_vars, -1, -1);
+                Withitem item = new Withitem(context_expr, optional_vars, file, -1, -1);
                 items.add(item);
             } else {
                 List<Map<String, Object>> itemsMap = (List<Map<String, Object>>) map.get("items");
@@ -569,22 +568,22 @@ public class Parser {
                 for (Map<String, Object> m : itemsMap) {
                     context_expr = convert(m.get("context_expr"));
                     optional_vars = convert(m.get("optional_vars"));
-                    Withitem item = new Withitem(context_expr, optional_vars, -1, -1);
+                    Withitem item = new Withitem(context_expr, optional_vars, file, -1, -1);
                     items.add(item);
                 }
             }
 
-            return new With(items, body, start, end);
+            return new With(items, body, file, start, end);
         }
 
         if (type.equals("Yield")) {
             Node value = convert(map.get("value"));
-            return new Yield(value, start, end);
+            return new Yield(value, file, start, end);
         }
 
         if (type.equals("YieldFrom")) {
             Node value = convert(map.get("value"));
-            return new Yield(value, start, end);
+            return new Yield(value, file, start, end);
         }
 
         _.die("[Please report bug]: unexpected ast node: " + map.get("type"));
@@ -638,7 +637,7 @@ public class Parser {
         if (o == null) {
             return null;
         } else {
-            return new Block(convertListNode(o), 0, 0);
+            return new Block(convertListNode(o), file, 0, 0);
         }
     }
 
@@ -801,7 +800,7 @@ public class Parser {
             int nameStop = i;
             int nstart = hasLoc ? start + nameStart : -1;
             int nstop = hasLoc ? start + nameStop : -1;
-            result.add(new Name(name, nstart, nstop));
+            result.add(new Name(name, file, nstart, nstop));
         }
 
         return result;
@@ -843,6 +842,8 @@ public class Parser {
 
     @Nullable
     public Node parseFile(String filename) {
+        file = filename;
+
         Node node2 = parseFileInner(filename, python2Process);
         if (node2 != null) {
             return node2;

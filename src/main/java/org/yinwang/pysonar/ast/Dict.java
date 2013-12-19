@@ -14,8 +14,8 @@ public class Dict extends Node {
     public List<Node> values;
 
 
-    public Dict(List<Node> keys, List<Node> values, int start, int end) {
-        super(start, end);
+    public Dict(List<Node> keys, List<Node> values, String file, int start, int end) {
+        super(file, start, end);
         this.keys = keys;
         this.values = values;
         addChildren(keys);

@@ -11,8 +11,8 @@ public class Yield extends Node {
     public Node value;
 
 
-    public Yield(Node n, int start, int end) {
-        super(start, end);
+    public Yield(Node n, String file, int start, int end) {
+        super(file, start, end);
         this.value = n;
         addChildren(n);
     }

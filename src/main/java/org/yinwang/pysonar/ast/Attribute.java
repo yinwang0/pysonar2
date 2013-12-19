@@ -22,8 +22,8 @@ public class Attribute extends Node {
     public Name attr;
 
 
-    public Attribute(@Nullable Node target, @NotNull Name attr, int start, int end) {
-        super(start, end);
+    public Attribute(@Nullable Node target, @NotNull Name attr, String file, int start, int end) {
+        super(file, start, end);
         this.target = target;
         this.attr = attr;
         addChildren(target, attr);

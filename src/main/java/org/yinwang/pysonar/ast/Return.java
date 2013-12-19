@@ -10,8 +10,8 @@ public class Return extends Node {
     public Node value;
 
 
-    public Return(Node n, int start, int end) {
-        super(start, end);
+    public Return(Node n, String file, int start, int end) {
+        super(file, start, end);
         this.value = n;
         addChildren(n);
     }

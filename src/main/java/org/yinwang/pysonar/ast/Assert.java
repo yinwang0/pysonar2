@@ -11,8 +11,8 @@ public class Assert extends Node {
     public Node msg;
 
 
-    public Assert(Node test, Node msg, int start, int end) {
-        super(start, end);
+    public Assert(Node test, Node msg, String file, int start, int end) {
+        super(file, start, end);
         this.test = test;
         this.msg = msg;
         addChildren(test, msg);

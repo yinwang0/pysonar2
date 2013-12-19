@@ -68,7 +68,7 @@ public class Binding implements Comparable<Object> {
                 fileOrUrl = url;
             }
         } else {
-            fileOrUrl = node.getFile();
+            fileOrUrl = node.file;
             if (node instanceof Name) {
                 name = node.asName().id;
             }

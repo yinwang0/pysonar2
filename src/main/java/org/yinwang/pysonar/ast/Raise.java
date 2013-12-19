@@ -12,8 +12,8 @@ public class Raise extends Node {
     public Node traceback;
 
 
-    public Raise(Node exceptionType, Node inst, Node traceback, int start, int end) {
-        super(start, end);
+    public Raise(Node exceptionType, Node inst, Node traceback, String file, int start, int end) {
+        super(file, start, end);
         this.exceptionType = exceptionType;
         this.inst = inst;
         this.traceback = traceback;
