@@ -3,6 +3,7 @@ package org.yinwang.pysonar.demos;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.*;
+import org.yinwang.pysonar.ast.Node;
 
 import java.io.File;
 import java.util.*;
@@ -56,7 +57,7 @@ class Linker {
         _.msg("\nAdding ref links");
         progress = new Progress(analyzer.getReferences().size(), 50);
 
-        for (Entry<Ref, List<Binding>> e : analyzer.getReferences().entrySet()) {
+        for (Entry<Node, List<Binding>> e : analyzer.getReferences().entrySet()) {
             processRef(e.getKey(), e.getValue());
             progress.tick();
         }
@@ -90,24 +91,24 @@ class Linker {
         style.url = binding.getQname();
         style.id = "" + Math.abs(binding.hashCode());
 
-        Set<Ref> refs = binding.getRefs();
+        Set<Node> refs = binding.getRefs();
         style.highlight = new ArrayList<>();
 
 
-        for (Ref r : refs) {
+        for (Node r : refs) {
             style.highlight.add(Integer.toString(Math.abs(r.hashCode())));
         }
         addFileStyle(binding.getFile(), style);
     }
 
 
-    void processRef(@NotNull Ref ref, @NotNull List<Binding> bindings) {
+    void processRef(@NotNull Node ref, @NotNull List<Binding> bindings) {
         int hash = ref.hashCode();
 
         if (!seenRef.contains(hash)) {
             seenRef.add(hash);
 
-            StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start(), ref.length());
+            StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start, ref.length());
             link.id = Integer.toString(Math.abs(hash));
 
             List<String> typings = new ArrayList<>();

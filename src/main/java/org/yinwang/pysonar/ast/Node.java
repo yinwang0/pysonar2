@@ -14,7 +14,12 @@ import java.util.Collection;
 import java.util.List;
 
 
-public abstract class Node implements java.io.Serializable {
+/**
+ * A Node is a junction in the program.
+ * Since there is no way to put different things in the same segment of the same file,
+ * a node is uniquely identified by a file, a start and end point.
+ */
+public abstract class Node implements java.io.Serializable, Comparable<Object> {
 
     public String file = null;
     public int start = -1;
@@ -22,9 +27,6 @@ public abstract class Node implements java.io.Serializable {
 
     public String name;
     private String sha1;   // input source file sha
-
-
-    @Nullable
     protected Node parent = null;
 
 
@@ -103,6 +105,10 @@ public abstract class Node implements java.io.Serializable {
 
 
     public void setFile(String file) {
+        if (file.startsWith(Analyzer.self.projectDir)) {
+            file = file.substring(Analyzer.self.projectDir.length() + 1);
+        }
+
         this.file = file;
         this.name = _.moduleName(file);
         this.sha1 = _.getSHA1(new File(file));
@@ -286,16 +292,40 @@ public abstract class Node implements java.io.Serializable {
             return false;
         } else {
             Node node = (Node) obj;
+            String file = getFile();
             return (start == node.start &&
                     end == node.end &&
-                    (file == null && node.file == null) ||
-                    (file != null && node.file != null && file.equals(node.file)));
+                    (file == null && node.getFile() == null) ||
+                    (file != null && node.getFile() != null && file.equals(node.getFile())));
+        }
+    }
+
+
+    @Override
+    public int hashCode() {
+        return (getFile() + ":" + start + ":" + end).hashCode();
+    }
+
+
+    @Override
+    public int compareTo(@NotNull Object o) {
+        if (o instanceof Node) {
+            return start - ((Node) o).start;
+        } else {
+            return -1;
         }
     }
 
 
     public String toDisplay() {
         return "";
+    }
+
+
+    @NotNull
+    @Override
+    public String toString() {
+        return "(node:" + file + ":" + name + ":" + start + ")";
     }
 
 }

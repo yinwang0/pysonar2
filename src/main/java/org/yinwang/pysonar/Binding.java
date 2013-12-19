@@ -41,7 +41,7 @@ public class Binding implements Comparable<Object> {
     private Type type;       // inferred type
     public Kind kind;        // name usage context
 
-    private Set<Ref> refs;
+    private Set<Node> refs;
 
     // fields from Def
     private int start = -1;
@@ -131,8 +131,8 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    public void addRef(Ref ref) {
-        getRefs().add(ref);
+    public void addRef(Node node) {
+        getRefs().add(node);
     }
 
 
@@ -186,7 +186,7 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    public Set<Ref> getRefs() {
+    public Set<Node> getRefs() {
         if (refs == null) {
             refs = new LinkedHashSet<>(1);
         }

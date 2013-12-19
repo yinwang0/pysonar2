@@ -2,6 +2,7 @@ package org.yinwang.pysonar;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.yinwang.pysonar.ast.Node;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -33,7 +34,7 @@ public class Test {
         if (exp) {
 
             List<Map<String, Object>> refs = new ArrayList<>();
-            for (Map.Entry<Ref, List<Binding>> e : analyzer.getReferences().entrySet()) {
+            for (Map.Entry<Node, List<Binding>> e : analyzer.getReferences().entrySet()) {
 
                 String file = e.getKey().getFile();
 
@@ -42,27 +43,31 @@ public class Test {
                     Map<String, Object> writeout = new LinkedHashMap<>();
 
                     Map<String, Object> ref = new LinkedHashMap<>();
-                    ref.put("name", e.getKey().getName());
+                    ref.put("name", e.getKey().name);
                     ref.put("file", file);
-                    ref.put("start", e.getKey().start());
+                    ref.put("start", e.getKey().start);
+                    ref.put("end", e.getKey().end);
 
                     List<Map<String, Object>> dests = new ArrayList<>();
                     for (Binding b : e.getValue()) {
                         String destFile = b.getFile();
-                        if (destFile != null && destFile.startsWith(inputDir)) {
-                            destFile = destFile.substring(inputDir.length() + 1);
+                        if (destFile != null && !destFile.startsWith("/")) {
                             Map<String, Object> dest = new LinkedHashMap<>();
                             dest.put("name", b.getName());
                             dest.put("file", destFile);
                             dest.put("start", b.getStart());
+                            dest.put("end", b.getEnd());
                             dests.add(dest);
                         }
                     }
-                    writeout.put("ref", ref);
-                    writeout.put("dests", dests);
-                    refs.add(writeout);
+                    if (!dests.isEmpty()) {
+                        writeout.put("ref", ref);
+                        writeout.put("dests", dests);
+                        refs.add(writeout);
+                    }
                 }
             }
+
             String json = gson.toJson(refs);
             _.writeFile(expecteRefs, json);
             return true;
@@ -78,10 +83,10 @@ public class Test {
             List<Map<String, Object>> expectedRefs = gson.fromJson(json, List.class);
             for (Map<String, Object> r : expectedRefs) {
                 Map<String, Object> refMap = (Map<String, Object>) r.get("ref");
-                Ref ref = createRef(refMap);
+                Dummy dummy = createRef(refMap);
 
                 List<Map<String, Object>> dests = (List<Map<String, Object>>) r.get("dests");
-                List<Binding> actualDests = analyzer.getReferences().get(ref);
+                List<Binding> actualDests = analyzer.getReferences().get(dummy);
                 List<Map<String, Object>> failedDests = new ArrayList<>();
 
                 for (Map<String, Object> d : dests) {
@@ -120,27 +125,24 @@ public class Test {
 
         for (Binding b : bs) {
             String actualFile = b.getFile();
-
-            if (actualFile != null && actualFile.startsWith(inputDir)) {
-                actualFile = actualFile.substring(inputDir.length() + 1);
-
-                if (b.getName().equals(name) &&
-                        actualFile.equals(file) &&
-                        b.getStart() == start)
-                {
-                    return true;
-                }
+            if (b.getName().equals(name) &&
+                    actualFile.equals(file) &&
+                    b.getStart() == start)
+            {
+                return true;
             }
         }
+
         return false;
     }
 
 
-    Ref createRef(Map<String, Object> m) {
+    Dummy createRef(Map<String, Object> m) {
         String name = (String) m.get("name");
         String file = (String) m.get("file");
         int start = (int) Math.floor((double) m.get("start"));
-        return new Ref(name, file, start);
+        int end = (int) Math.floor((double) m.get("end"));
+        return new Dummy(name, file, start, end);
     }
 
 

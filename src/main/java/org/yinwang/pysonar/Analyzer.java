@@ -31,7 +31,7 @@ public class Analyzer {
     public List<String> loadedFiles = new ArrayList<>();
     public State globaltable = new State(null, State.StateType.GLOBAL);
     public List<Binding> allBindings = new ArrayList<>();
-    private Map<Ref, List<Binding>> references = new LinkedHashMap<>();
+    private Map<Node, List<Binding>> references = new LinkedHashMap<>();
     public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
     public Map<String, List<Diagnostic>> parseErrors = new HashMap<>();
     public String cwd = null;
@@ -210,17 +210,16 @@ public class Analyzer {
 
     public void putRef(@NotNull Node node, @NotNull List<Binding> bs) {
         if (!(node instanceof Url)) {
-            Ref ref = new Ref(node);
-            List<Binding> bindings = references.get(ref);
+            List<Binding> bindings = references.get(node);
             if (bindings == null) {
                 bindings = new ArrayList<>(1);
-                references.put(ref, bindings);
+                references.put(node, bindings);
             }
             for (Binding b : bs) {
                 if (!bindings.contains(b)) {
                     bindings.add(b);
                 }
-                b.addRef(ref);
+                b.addRef(node);
             }
         }
     }
@@ -234,7 +233,7 @@ public class Analyzer {
 
 
     @NotNull
-    public Map<Ref, List<Binding>> getReferences() {
+    public Map<Node, List<Binding>> getReferences() {
         return references;
     }
 
@@ -677,7 +676,7 @@ public class Analyzer {
     @NotNull
     @Override
     public String toString() {
-        return "<Analyzer:locs=" + references.size() + ":probs="
-                + semanticErrors.size() + ":files=" + loadedFiles.size() + ">";
+        return "(analyzer:[" + references.size() + " refs] " +
+                "[" + loadedFiles.size() + " files])";
     }
 }

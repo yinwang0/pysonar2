@@ -149,16 +149,16 @@ public class JSONDump {
     }
 
 
-    private static void writeRefJson(Ref ref, Binding binding, JsonGenerator json) throws IOException {
+    private static void writeRefJson(Node ref, Binding binding, JsonGenerator json) throws IOException {
         if (binding.getFile() != null) {
             String path = binding.getQname().replace(".", "/").replace("%20", ".");
 
-            if (binding.getStart() >= 0 && ref.start() >= 0 && !binding.isBuiltin()) {
+            if (binding.getStart() >= 0 && ref.start >= 0 && !binding.isBuiltin()) {
                 json.writeStartObject();
                 json.writeStringField("sym", path);
                 json.writeStringField("file", ref.getFile());
-                json.writeNumberField("start", ref.start());
-                json.writeNumberField("end", ref.end());
+                json.writeNumberField("start", ref.start);
+                json.writeNumberField("end", ref.end);
                 json.writeBooleanField("builtin", binding.isBuiltin());
                 json.writeEndObject();
             }
@@ -234,9 +234,9 @@ public class JSONDump {
                 }
             }
 
-            for (Ref ref : b.getRefs()) {
+            for (Node ref : b.getRefs()) {
                 if (ref.getFile() != null) {
-                    String key = ref.getFile() + ":" + ref.start();
+                    String key = ref.getFile() + ":" + ref.start;
                     if (!seenRef.contains(key) && shouldEmit(ref.getFile(), srcpath)) {
                         writeRefJson(ref, b, refJson);
                         seenRef.add(key);
