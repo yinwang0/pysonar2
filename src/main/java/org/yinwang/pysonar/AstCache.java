@@ -69,7 +69,7 @@ public class AstCache {
 
     public void close() {
         parser.close();
-        clearDiskCache();
+//        clearDiskCache();
     }
 
 
