@@ -59,9 +59,7 @@ public class AstCache {
             _.deleteDirectory(new File(Analyzer.self.cacheDir));
             return true;
         } catch (Exception x) {
-
             LOG.log(Level.SEVERE, "Failed to clear disk cache: " + x);
-
             return false;
         }
     }
