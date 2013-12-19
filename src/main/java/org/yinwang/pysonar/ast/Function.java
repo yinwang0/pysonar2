@@ -104,15 +104,4 @@ public class Function extends Node {
         return "(func:" + start + ":" + name + ")";
     }
 
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Function) {
-            Function fo = (Function) obj;
-            return (fo.getFile().equals(getFile()) && fo.start == start);
-        } else {
-            return false;
-        }
-    }
-
 }
