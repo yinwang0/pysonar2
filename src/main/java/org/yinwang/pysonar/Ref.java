@@ -9,15 +9,19 @@ import org.yinwang.pysonar.ast.Str;
 
 public class Ref implements Comparable<Object> {
 
-    private int start;
-    @Nullable
-    private String file;
     @NotNull
     private String name;
+    @Nullable
+    private String file;
+    private int start;
 
 
     public Ref(@NotNull Node node) {
         file = node.getFile();
+        if (file != null && file.startsWith(Analyzer.self.projectDir)) {
+            file = file.substring(Analyzer.self.projectDir.length() + 1);
+        }
+
         start = node.start;
 
         if (node instanceof Name) {
@@ -28,6 +32,13 @@ public class Ref implements Comparable<Object> {
         } else {
             throw new IllegalArgumentException("Only accept Name and Str, but got:" + node);
         }
+    }
+
+
+    public Ref(@NotNull String name, String file, int start) {
+        this.name = name;
+        this.file = file;
+        this.start = start;
     }
 
 

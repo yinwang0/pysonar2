@@ -110,13 +110,16 @@ public class _ {
     }
 
 
-    public static void writeFile(String path, String contents) throws Exception {
+    public static void writeFile(String path, String contents) {
         PrintWriter out = null;
         try {
             out = new PrintWriter(new BufferedWriter(new FileWriter(path)));
             out.print(contents);
             out.flush();
-        } finally {
+        } catch (Exception e) {
+            _.die("Failed to write: " + path);
+        }
+        finally {
             if (out != null) {
                 out.close();
             }
@@ -124,21 +127,26 @@ public class _ {
     }
 
 
-    @NotNull
-    public static String readFile(String filename) throws Exception {
+    @Nullable
+    public static String readFile(String filename) {
         return readFile(new File(filename));
     }
 
 
-    @NotNull
-    public static String readFile(@NotNull File path) throws Exception {
+    @Nullable
+    public static String readFile(@NotNull File path) {
         // Don't use line-oriented file read -- need to retain CRLF if present
         // so the style-run and link offsets are correct.
-        return new String(getBytesFromFile(path), UTF_8);
+        byte[] content = getBytesFromFile(path);
+        if (content == null) {
+            return null;
+        } else {
+            return new String(content, UTF_8);
+        }
     }
 
 
-    @NotNull
+    @Nullable
     public static byte[] getBytesFromFile(@NotNull File file) {
         InputStream is = null;
 
@@ -168,6 +176,7 @@ public class _ {
                 try {
                     is.close();
                 } catch (Exception e) {
+                    die("Failed to close file: " + file);
                 }
             }
         }

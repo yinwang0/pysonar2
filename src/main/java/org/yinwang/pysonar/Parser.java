@@ -898,18 +898,15 @@ public class Parser {
             }
         }
 
-        String json;
-        try {
-            json = _.readFile(exchangeFile);
-        } catch (Exception e) {
+        String json = _.readFile(exchangeFile);
+        if (json != null) {
+            cleanTemp();
+            Map<String, Object> map = gson.fromJson(json, Map.class);
+            return convert(map);
+        } else {
             cleanTemp();
             return null;
         }
-
-        cleanTemp();
-
-        Map<String, Object> map = gson.fromJson(json, Map.class);
-        return convert(map);
     }
 
 

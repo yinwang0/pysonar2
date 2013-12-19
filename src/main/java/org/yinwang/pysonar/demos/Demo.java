@@ -82,7 +82,7 @@ public class Demo {
 
         analyzer = new Analyzer(debug);
         _.msg("Loading and analyzing files");
-        analyzer.analyze(_.unifyPath(fileOrDir));
+        analyzer.analyze(fileOrDir.getPath());
         analyzer.finish();
 
         generateHtml();
