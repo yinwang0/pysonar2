@@ -194,17 +194,19 @@ public class _ {
             JarEntry entry = em.nextElement();
             if (entry.getName().startsWith(jarConnection.getEntryName())) {
                 String fileName = StringUtils.removeStart(entry.getName(), jarConnection.getEntryName());
-                InputStream entryInputStream = null;
-                try {
-                    entryInputStream = jarFile.getInputStream(entry);
-                    FileUtils.copyInputStreamToFile(entryInputStream, new File(destination, fileName));
-                } catch (Exception e) {
-                    die("Failed to copy resource: " + fileName);
-                } finally {
-                    if (entryInputStream != null) {
-                        try {
-                            entryInputStream.close();
-                        } catch (Exception e) {
+                if (!fileName.equals("/")) {  // exclude the directory
+                    InputStream entryInputStream = null;
+                    try {
+                        entryInputStream = jarFile.getInputStream(entry);
+                        FileUtils.copyInputStreamToFile(entryInputStream, new File(destination, fileName));
+                    } catch (Exception e) {
+                        die("Failed to copy resource: " + fileName);
+                    } finally {
+                        if (entryInputStream != null) {
+                            try {
+                                entryInputStream.close();
+                            } catch (Exception e) {
+                            }
                         }
                     }
                 }
@@ -286,7 +288,7 @@ public class _ {
 
 
     public static void msg(String m) {
-        if (!Analyzer.self.hasOption("quiet")) {
+        if (Analyzer.self != null && !Analyzer.self.hasOption("quiet")) {
             System.out.println(m);
         }
     }
@@ -414,7 +416,12 @@ public class _ {
 
 
     public static String unifyPath(File file) {
-        return file.getAbsolutePath();
+        try {
+            return file.getCanonicalPath();
+        } catch (Exception e) {
+            die("Failed to get canonical path");
+            return "";
+        }
     }
 
 

@@ -1,4 +1,4 @@
 import mod2
 
 o = mod2.B()
-print o.b
+print o.a

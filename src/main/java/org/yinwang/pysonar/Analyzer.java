@@ -48,6 +48,7 @@ public class Analyzer {
     private Progress loadingProgress = null;
 
     public String projectDir;
+    public String modelDir;
     public String suffix;
 
     public Map<String, Object> options;
@@ -59,17 +60,17 @@ public class Analyzer {
 
 
     public Analyzer(Map<String, Object> options) {
+        self = this;
         if (options != null) {
             this.options = options;
         } else {
             this.options = new HashMap<>();
         }
-        stats.putInt("startTime", System.currentTimeMillis());
-        logger = Logger.getLogger(Analyzer.class.getCanonicalName());
-        self = this;
+        this.stats.putInt("startTime", System.currentTimeMillis());
+        this.logger = Logger.getLogger(Analyzer.class.getCanonicalName());
         this.suffix = ".py";
-        builtins = new Builtins();
-        builtins.init();
+        this.builtins = new Builtins();
+        this.builtins.init();
         addPythonPath();
         copyModels();
         createCacheDir();
@@ -140,8 +141,11 @@ public class Analyzer {
     private void copyModels() {
         URL resource = Thread.currentThread().getContextClassLoader().getResource(MODEL_LOCATION);
         String dest = _.locateTmp("models");
+        this.modelDir = dest;
+
         try {
             _.copyResourcesRecursively(resource, new File(dest));
+            _.msg("copied models to: " + modelDir);
         } catch (Exception e) {
             _.die("Failed to copy models. Please check permissions of writing to: " + dest);
         }
