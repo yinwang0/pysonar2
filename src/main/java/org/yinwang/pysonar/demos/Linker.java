@@ -48,9 +48,11 @@ class Linker {
         Progress progress = new Progress(analyzer.getAllBindings().size(), 50);
 
         for (Binding b : analyzer.getAllBindings()) {
-            addSemanticStyles(b);
-            processDef(b);
-            progress.tick();
+            if (b.kind != Binding.Kind.MODULE) {
+                addSemanticStyles(b);
+                processDef(b);
+                progress.tick();
+            }
         }
 
         // highlight definitions
@@ -153,6 +155,9 @@ class Linker {
 
 
     private List<StyleRun> stylesForFile(String path) {
+        if (!path.startsWith("/")) {
+            path = _.makePathString(Analyzer.self.projectDir, path);
+        }
         List<StyleRun> styles = fileStyles.get(path);
         if (styles == null) {
             styles = new ArrayList<StyleRun>();

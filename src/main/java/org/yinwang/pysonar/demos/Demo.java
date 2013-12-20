@@ -104,7 +104,6 @@ public class Demo {
         linker.findLinks(analyzer);
 
         int rootLength = rootPath.length();
-        _.msg("\nGenerating HTML");
 
         int total = 0;
         for (String path : analyzer.getLoadedFiles()) {

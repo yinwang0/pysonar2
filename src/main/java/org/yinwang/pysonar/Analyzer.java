@@ -696,7 +696,10 @@ public class Analyzer {
     @NotNull
     @Override
     public String toString() {
-        return "(analyzer:[" + references.size() + " refs] " +
-                "[" + loadedFiles.size() + " files])";
+        return "(analyzer:" +
+                "[" + allBindings.size() + " bindings] " +
+                "[" + references.size() + " refs] " +
+                "[" + loadedFiles.size() + " files] " +
+                ")";
     }
 }

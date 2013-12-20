@@ -297,7 +297,7 @@ public class Binding implements Comparable<Object> {
 
     @Override
     public int hashCode() {
-        return ("" + fileOrUrl + start).hashCode();
+        return node.hashCode();
     }
 
 }
