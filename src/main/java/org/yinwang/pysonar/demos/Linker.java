@@ -27,8 +27,8 @@ class Linker {
     private String rootPath;
 
     // prevent duplication in def and ref links
-    Set<Integer> seenDef = new HashSet<>();
-    Set<Integer> seenRef = new HashSet<>();
+    Set<Object> seenDef = new HashSet<>();
+    Set<Object> seenRef = new HashSet<>();
 
 
     /**
@@ -49,8 +49,11 @@ class Linker {
 
         for (Binding b : analyzer.getAllBindings()) {
             if (b.kind != Binding.Kind.MODULE) {
-                addSemanticStyles(b);
-                processDef(b);
+                if (Analyzer.self.hasOption("debug")) {
+                    processDefDebug(b);
+                } else {
+                    processDef(b);
+                }
                 progress.tick();
             }
         }
@@ -60,7 +63,11 @@ class Linker {
         progress = new Progress(analyzer.getReferences().size(), 50);
 
         for (Entry<Node, List<Binding>> e : analyzer.getReferences().entrySet()) {
-            processRef(e.getKey(), e.getValue());
+            if (Analyzer.self.hasOption("debug")) {
+                processRefDebug(e.getKey(), e.getValue());
+            } else {
+                processRef(e.getKey(), e.getValue());
+            }
             progress.tick();
         }
 
@@ -81,6 +88,23 @@ class Linker {
 
 
     private void processDef(@NotNull Binding binding) {
+        String qname = binding.getQname();
+        int hash = binding.hashCode();
+
+        if (binding.isURL() || binding.start < 0 || seenDef.contains(hash)) {
+            return;
+        }
+
+        seenDef.add(hash);
+        StyleRun style = new StyleRun(StyleRun.Type.ANCHOR, binding.start, binding.getLength());
+        style.message = binding.getType().toString();
+        style.url = binding.getQname();
+        style.id = qname;
+        addFileStyle(binding.getFile(), style);
+    }
+
+
+    private void processDefDebug(@NotNull Binding binding) {
         int hash = binding.hashCode();
 
         if (binding.isURL() || binding.start < 0 || seenDef.contains(hash)) {
@@ -105,6 +129,41 @@ class Linker {
 
 
     void processRef(@NotNull Node ref, @NotNull List<Binding> bindings) {
+        String qname = bindings.iterator().next().getQname();
+        int hash = ref.hashCode();
+
+        if (!seenRef.contains(hash)) {
+            seenRef.add(hash);
+
+            StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start, ref.length());
+            link.id = qname;
+
+            List<String> typings = new ArrayList<>();
+            for (Binding b : bindings) {
+                typings.add(b.getType().toString());
+            }
+            link.message = _.joinWithSep(typings, " | ", "{", "}");
+
+            // Currently jump to the first binding only. Should change to have a
+            // hover menu or something later.
+            String path = ref.file;
+            if (path != null) {
+                for (Binding b : bindings) {
+                    if (link.url == null) {
+                        link.url = toURL(b, path);
+                    }
+
+                    if (link.url != null) {
+                        addFileStyle(path, link);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+
+    void processRefDebug(@NotNull Node ref, @NotNull List<Binding> bindings) {
         int hash = ref.hashCode();
 
         if (!seenRef.contains(hash)) {

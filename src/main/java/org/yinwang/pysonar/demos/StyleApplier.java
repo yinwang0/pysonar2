@@ -1,6 +1,7 @@
 package org.yinwang.pysonar.demos;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar._;
 
 import java.util.List;
@@ -66,27 +67,44 @@ class StyleApplier {
         @Override
         void insert() {
             super.insert();
-            switch (style.type) {
-                case ANCHOR:
-                    buffer.append("<a name='" + style.url + "'");
-                    buffer.append(", id ='" + style.id + "'");
-                    if (style.highlight != null && !style.highlight.isEmpty()) {
-                        String ids = _.joinWithSep(style.highlight, "\",\"", "\"", "\"");
-                        buffer.append(", onmouseover='highlight(").append(ids).append(")'");
-                    }
-                    break;
-                case LINK:
-                    buffer.append("<a href='" + style.url + "'");
-                    buffer.append(", id ='" + style.id + "'");
-                    if (style.highlight != null && !style.highlight.isEmpty()) {
-                        String ids = _.joinWithSep(style.highlight, "\",\"", "\"", "\"");
-                        buffer.append(", onmouseover='highlight(").append(ids).append(")'");
-                    }
-                    break;
-                default:
-                    buffer.append("<span class='");
-                    buffer.append(toCSS(style)).append("'");
-                    break;
+            if (Analyzer.self.hasOption("debug")) {
+                switch (style.type) {
+                    case ANCHOR:
+                        buffer.append("<a name='" + style.url + "'");
+                        buffer.append(", id ='" + style.id + "'");
+                        if (style.highlight != null && !style.highlight.isEmpty()) {
+                            String ids = _.joinWithSep(style.highlight, "\",\"", "\"", "\"");
+                            buffer.append(", onmouseover='highlight(").append(ids).append(")'");
+                        }
+                        break;
+                    case LINK:
+                        buffer.append("<a href='" + style.url + "'");
+                        buffer.append(", id ='" + style.id + "'");
+                        if (style.highlight != null && !style.highlight.isEmpty()) {
+                            String ids = _.joinWithSep(style.highlight, "\",\"", "\"", "\"");
+                            buffer.append(", onmouseover='highlight(").append(ids).append(")'");
+                        }
+                        break;
+                    default:
+                        buffer.append("<span class='");
+                        buffer.append(toCSS(style)).append("'");
+                        break;
+                }
+            } else {
+                switch (style.type) {
+                    case ANCHOR:
+                        buffer.append("<a name='" + style.url + "'");
+                        buffer.append(", xid ='" + style.id + "'");
+                        break;
+                    case LINK:
+                        buffer.append("<a href='" + style.url + "'");
+                        buffer.append(", xid ='" + style.id + "'");
+                        break;
+                    default:
+                        buffer.append("<span class='");
+                        buffer.append(toCSS(style)).append("'");
+                        break;
+                }
             }
             if (style.message != null) {
                 buffer.append(", title='");

@@ -215,6 +215,12 @@ public class _ {
     }
 
 
+    public static String readResource(String resource) {
+        InputStream s = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+        return readWholeStream(s);
+    }
+
+
     @NotNull
     public static String getSHA(@NotNull String path) {
         byte[] bytes = getBytesFromFile(path);
@@ -326,7 +332,7 @@ public class _ {
     }
 
 
-    public static String readWholeStream(InputStream in) throws Exception {
+    public static String readWholeStream(InputStream in) {
         return new Scanner(in).useDelimiter("\\Z").next();
     }
 
