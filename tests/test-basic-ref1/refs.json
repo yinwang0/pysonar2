@@ -1,6 +1,7 @@
 [
   {
     "ref": {
+      "name": "x",
       "file": "basic.py",
       "start": 12,
       "end": 13

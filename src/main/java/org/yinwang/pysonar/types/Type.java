@@ -242,9 +242,6 @@ public abstract class Type {
         if (this.isFloatType() && this.asFloatType().isZero()) {
             return false;
         }
-        if (this != Type.NONE) {
-            return true;
-        }
         return false;
     }
 

@@ -1,6 +1,7 @@
 [
   {
     "ref": {
+      "name": "x",
       "file": "mod2.py",
       "start": 30,
       "end": 31
@@ -16,6 +17,7 @@
   },
   {
     "ref": {
+      "name": "B",
       "file": "mod2.py",
       "start": 57,
       "end": 58
@@ -31,6 +33,7 @@
   },
   {
     "ref": {
+      "name": "o",
       "file": "mod1.py",
       "start": 98,
       "end": 99
@@ -46,6 +49,7 @@
   },
   {
     "ref": {
+      "name": "y",
       "file": "mod1.py",
       "start": 79,
       "end": 80
@@ -61,6 +65,7 @@
   },
   {
     "ref": {
+      "name": "x",
       "file": "mod1.py",
       "start": 56,
       "end": 57
