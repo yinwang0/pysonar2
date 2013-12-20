@@ -118,8 +118,7 @@ public class _ {
             out.flush();
         } catch (Exception e) {
             _.die("Failed to write: " + path);
-        }
-        finally {
+        } finally {
             if (out != null) {
                 out.close();
             }
@@ -128,13 +127,7 @@ public class _ {
 
 
     @Nullable
-    public static String readFile(String filename) {
-        return readFile(new File(filename));
-    }
-
-
-    @Nullable
-    public static String readFile(@NotNull File path) {
+    public static String readFile(@NotNull String path) {
         // Don't use line-oriented file read -- need to retain CRLF if present
         // so the style-run and link offsets are correct.
         byte[] content = getBytesFromFile(path);
@@ -147,38 +140,11 @@ public class _ {
 
 
     @Nullable
-    public static byte[] getBytesFromFile(@NotNull File file) {
-        InputStream is = null;
-
+    public static byte[] getBytesFromFile(@NotNull String filename) {
         try {
-            is = new FileInputStream(file);
-            long length = file.length();
-            if (length > Integer.MAX_VALUE) {
-                throw new IOException("file too large: " + file);
-            }
-
-            byte[] bytes = new byte[(int) length];
-            int offset = 0;
-            int numRead = 0;
-            while (offset < bytes.length
-                    && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0)
-            {
-                offset += numRead;
-            }
-            if (offset < bytes.length) {
-                throw new IOException("Failed to read whole file " + file);
-            }
-            return bytes;
+            return FileUtils.readFileToByteArray(new File(filename));
         } catch (Exception e) {
             return null;
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (Exception e) {
-                    die("Failed to close file: " + file);
-                }
-            }
         }
     }
 
@@ -248,20 +214,20 @@ public class _ {
 
 
     @NotNull
-    public static String getSHA1(@NotNull File path) {
+    public static String getSHA(@NotNull String path) {
         byte[] bytes = getBytesFromFile(path);
-        return getMD5(bytes);
+        return getSHA(bytes);
     }
 
 
     @NotNull
-    public static String getMD5(byte[] fileContents) {
+    public static String getSHA(byte[] fileContents) {
         MessageDigest algorithm;
 
         try {
             algorithm = MessageDigest.getInstance("SHA-1");
         } catch (Exception e) {
-            _.die("getSHA1: failed to get MD5, shouldn't happen");
+            _.die("Failed to get SHA, shouldn't happen");
             return "";
         }
 
@@ -475,6 +441,15 @@ public class _ {
             return null;
         } else {
             return res.getPath();
+        }
+    }
+
+
+    public static String projRelPath(String file) {
+        if (file.startsWith(Analyzer.self.projectDir)) {
+            return file.substring(Analyzer.self.projectDir.length() + 1);
+        } else {
+            return file;
         }
     }
 

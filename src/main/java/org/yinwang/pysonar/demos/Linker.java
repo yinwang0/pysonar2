@@ -81,12 +81,12 @@ class Linker {
     private void processDef(@NotNull Binding binding) {
         int hash = binding.hashCode();
 
-        if (binding.isURL() || binding.getStart() < 0 || seenDef.contains(hash)) {
+        if (binding.isURL() || binding.start < 0 || seenDef.contains(hash)) {
             return;
         }
 
         seenDef.add(hash);
-        StyleRun style = new StyleRun(StyleRun.Type.ANCHOR, binding.getStart(), binding.getLength());
+        StyleRun style = new StyleRun(StyleRun.Type.ANCHOR, binding.start, binding.getLength());
         style.message = binding.getType().toString();
         style.url = binding.getQname();
         style.id = "" + Math.abs(binding.hashCode());
@@ -195,7 +195,7 @@ class Linker {
     private void addSemanticStyle(@NotNull Binding binding, StyleRun.Type type) {
         String path = binding.getFile();
         if (path != null) {
-            addFileStyle(path, new StyleRun(type, binding.getStart(), binding.getLength()));
+            addFileStyle(path, new StyleRun(type, binding.start, binding.getLength()));
         }
     }
 

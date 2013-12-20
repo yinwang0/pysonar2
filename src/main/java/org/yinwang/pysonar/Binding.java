@@ -28,8 +28,6 @@ public class Binding implements Comparable<Object> {
 
     private boolean isStatic = false;         // static fields/methods
     private boolean isSynthetic = false;      // auto-generated bindings
-    private boolean isReadonly = false;       // non-writable attributes
-    private boolean isDeprecated = false;     // documented as deprecated
     private boolean isBuiltin = false;        // not from a source file
 
     @NotNull
@@ -44,10 +42,10 @@ public class Binding implements Comparable<Object> {
     private Set<Node> refs;
 
     // fields from Def
-    private int start = -1;
-    private int end = -1;
-    private int bodyStart = -1;
-    private int bodyEnd = -1;
+    public int start = -1;
+    public int end = -1;
+    public int bodyStart = -1;
+    public int bodyEnd = -1;
 
     @Nullable
     private String fileOrUrl;
@@ -83,7 +81,7 @@ public class Binding implements Comparable<Object> {
         start = node.start;
         end = node.end;
 
-        Node parent = node.getParent();
+        Node parent = node.parent;
         if ((parent instanceof Function && ((Function) parent).name == node) ||
                 (parent instanceof Class && ((Class) parent).name == node))
         {
@@ -103,7 +101,7 @@ public class Binding implements Comparable<Object> {
 
 
     public Str getDocstring() {
-        Node parent = node.getParent();
+        Node parent = node.parent;
         if ((parent instanceof Function && ((Function) parent).name == node) ||
                 (parent instanceof Class && ((Class) parent).name == node))
         {
@@ -176,11 +174,6 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    public void markReadOnly() {
-        isReadonly = true;
-    }
-
-
     public boolean isBuiltin() {
         return isBuiltin;
     }
@@ -234,16 +227,6 @@ public class Binding implements Comparable<Object> {
     }
 
 
-    public int getStart() {
-        return start;
-    }
-
-
-    public int getEnd() {
-        return end;
-    }
-
-
     public int getLength() {
         return end - start;
     }
@@ -269,7 +252,7 @@ public class Binding implements Comparable<Object> {
      * Bindings can be sorted by their location for outlining purposes.
      */
     public int compareTo(@NotNull Object o) {
-        return getStart() - ((Binding) o).getStart();
+        return start - ((Binding) o).start;
     }
 
 

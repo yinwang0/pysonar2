@@ -276,7 +276,7 @@ public class Outliner {
             }
 
             Entry kid = kids != null ? new Branch() : new Leaf();
-            kid.setOffset(nb.getStart());
+            kid.setOffset(nb.start);
             kid.setQname(nb.getQname());
             kid.setKind(nb.getKind());
 

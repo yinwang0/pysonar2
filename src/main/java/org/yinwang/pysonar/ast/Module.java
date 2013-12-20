@@ -16,6 +16,7 @@ public class Module extends Node {
 
     public Module(Block body, String file, int start, int end) {
         super(file, start, end);
+        this.name = _.moduleName(file);
         this.body = body;
         addChildren(this.body);
     }
@@ -34,7 +35,7 @@ public class Module extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Module:" + file + ">";
+        return "(module:" + file + ")";
     }
 
 }

@@ -79,7 +79,6 @@ public class Class extends Node {
         s.update(name, b);
         b.markSynthetic();
         b.markStatic();
-        b.markReadOnly();
 
     }
 

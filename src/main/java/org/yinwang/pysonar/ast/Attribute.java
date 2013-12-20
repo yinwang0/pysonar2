@@ -102,7 +102,7 @@ public class Attribute extends Node {
         } else {
             for (Binding b : bs) {
                 Analyzer.self.putRef(attr, b);
-                if (getParent() != null && getParent().isCall() &&
+                if (parent != null && parent.isCall() &&
                         b.getType().isFuncType() && targetType.isInstanceType())
                 {  // method call
                     b.getType().asFuncType().setSelfType(targetType);

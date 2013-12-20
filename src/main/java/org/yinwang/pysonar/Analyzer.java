@@ -76,8 +76,10 @@ public class Analyzer {
 
     // main entry to the analyzer
     public void analyze(String path) {
-        projectDir = _.unifyPath(path);
-        loadFileRecursive(projectDir);
+        String upath = _.unifyPath(path);
+        File f = new File(upath);
+        projectDir = f.isDirectory() ? f.getPath() : f.getParent();
+        loadFileRecursive(upath);
     }
 
 

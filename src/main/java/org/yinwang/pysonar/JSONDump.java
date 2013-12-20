@@ -56,7 +56,7 @@ public class JSONDump {
 
 
     private static void writeSymJson(Binding binding, JsonGenerator json) throws IOException {
-        if (binding.getStart() < 0) {
+        if (binding.start < 0) {
             return;
         }
 
@@ -76,8 +76,8 @@ public class JSONDump {
             json.writeStringField("name", name);
             json.writeStringField("path", path);
             json.writeStringField("file", binding.getFileOrUrl());
-            json.writeNumberField("identStart", binding.getStart());
-            json.writeNumberField("identEnd", binding.getEnd());
+            json.writeNumberField("identStart", binding.start);
+            json.writeNumberField("identEnd", binding.end);
             json.writeNumberField("defStart", binding.getBodyStart());
             json.writeNumberField("defEnd", binding.getBodyEnd());
             json.writeBooleanField("exported", isExported);
@@ -153,7 +153,7 @@ public class JSONDump {
         if (binding.getFile() != null) {
             String path = binding.getQname().replace(".", "/").replace("%20", ".");
 
-            if (binding.getStart() >= 0 && ref.start >= 0 && !binding.isBuiltin()) {
+            if (binding.start >= 0 && ref.start >= 0 && !binding.isBuiltin()) {
                 json.writeStartObject();
                 json.writeStringField("sym", path);
                 json.writeStringField("file", ref.file);

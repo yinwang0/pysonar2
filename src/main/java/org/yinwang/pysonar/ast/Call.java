@@ -295,7 +295,6 @@ public class Call extends Node {
         fun.getTable().update(name, b);
         b.markSynthetic();
         b.markStatic();
-        b.markReadOnly();
     }
 
 

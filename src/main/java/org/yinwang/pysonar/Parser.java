@@ -96,13 +96,7 @@ public class Parser {
 
         if (type.equals("Module")) {
             Block b = convertBlock(map.get("body"));
-            Module m = new Module(b, file, start, end);
-            try {
-                m.setFile(_.unifyPath((String) map.get("filename")));
-            } catch (Exception e) {
-
-            }
-            return m;
+            return new Module(b, file, start, end);
         }
 
         if (type.equals("alias")) {         // lower case alias

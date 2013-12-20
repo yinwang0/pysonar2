@@ -8,7 +8,6 @@ import org.yinwang.pysonar._;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,8 +25,7 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
     public int end;
 
     public String name;
-    private String sha1;   // input source file sha
-    protected Node parent = null;
+    public Node parent = null;
 
 
     public Node() {
@@ -35,25 +33,23 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
 
 
     public Node(String file, int start, int end) {
-        this.file = file;
+        this.file = file != null ? _.projRelPath(file) : null;
         this.start = start;
         this.end = end;
     }
 
 
+    public String getFullPath() {
+        if (!file.startsWith("/")) {
+            return _.makePathString(Analyzer.self.projectDir, file);
+        } else {
+            return file;
+        }
+    }
+
+
     public void setParent(Node parent) {
         this.parent = parent;
-    }
-
-
-    @Nullable
-    public Node getParent() {
-        return parent;
-    }
-
-
-    public String getSHA1() {
-        return sha1;
     }
 
 
@@ -90,17 +86,6 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
                 }
             }
         }
-    }
-
-
-    public void setFile(String file) {
-        if (file.startsWith(Analyzer.self.projectDir)) {
-            file = file.substring(Analyzer.self.projectDir.length() + 1);
-        }
-
-        this.file = file;
-        this.name = _.moduleName(file);
-        this.sha1 = _.getSHA1(new File(file));
     }
 
 
