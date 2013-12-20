@@ -53,7 +53,8 @@ public class Test {
             String file = e.getKey().file;
 
             // only record those in the inputDir
-            if (file != null && !file.startsWith("/")) {
+            if (file != null && file.startsWith(Analyzer.self.projectDir)) {
+                file = _.projRelPath(file);
                 Map<String, Object> writeout = new LinkedHashMap<>();
 
                 Map<String, Object> ref = new LinkedHashMap<>();
@@ -65,7 +66,8 @@ public class Test {
                 List<Map<String, Object>> dests = new ArrayList<>();
                 for (Binding b : e.getValue()) {
                     String destFile = b.getFile();
-                    if (destFile != null && !destFile.startsWith("/")) {
+                    if (destFile != null && destFile.startsWith(Analyzer.self.projectDir)) {
+                        destFile = _.projRelPath(destFile);
                         Map<String, Object> dest = new LinkedHashMap<>();
                         dest.put("name", b.getName());
                         dest.put("file", destFile);
@@ -105,8 +107,8 @@ public class Test {
             List<Map<String, Object>> failedDests = new ArrayList<>();
 
             for (Map<String, Object> d : dests) {
-                String name = (String) d.get("name");
-                String file = (String) d.get("file");
+                // names are ignored, they are only for human readers
+                String file = _.projAbsPath((String) d.get("file"));
                 int start = (int) Math.floor((double) d.get("start"));
                 int end = (int) Math.floor((double) d.get("end"));
 
@@ -154,7 +156,7 @@ public class Test {
 
 
     public static Dummy makeDummy(Map<String, Object> m) {
-        String file = (String) m.get("file");
+        String file = _.projAbsPath((String) m.get("file"));
         int start = (int) Math.floor((double) m.get("start"));
         int end = (int) Math.floor((double) m.get("end"));
         return new Dummy(file, start, end);

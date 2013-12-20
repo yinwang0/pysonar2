@@ -33,7 +33,7 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
 
 
     public Node(String file, int start, int end) {
-        this.file = file != null ? _.projRelPath(file) : null;
+        this.file = file; // file != null ? _.projRelPath(file) : null;
         this.start = start;
         this.end = end;
     }

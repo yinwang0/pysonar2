@@ -64,13 +64,13 @@ class Linker {
             progress.tick();
         }
 
-//        if (Analyzer.self.debug) {
-//            for (List<Diagnostic> ld : analyzer.semanticErrors.values()) {
-//                for (Diagnostic d : ld) {
-//                    processDiagnostic(d);
-//                }
-//            }
-//        }
+        if (Analyzer.self.hasOption("semantic-errors")) {
+            for (List<Diagnostic> ld : analyzer.semanticErrors.values()) {
+                for (Diagnostic d : ld) {
+                    processDiagnostic(d);
+                }
+            }
+        }
 
 //        for (List<Diagnostic> ld: analyzer.parseErrors.values()) {
 //            for (Diagnostic d: ld) {
@@ -155,12 +155,9 @@ class Linker {
 
 
     private List<StyleRun> stylesForFile(String path) {
-        if (!path.startsWith("/")) {
-            path = _.makePathString(Analyzer.self.projectDir, path);
-        }
         List<StyleRun> styles = fileStyles.get(path);
         if (styles == null) {
-            styles = new ArrayList<StyleRun>();
+            styles = new ArrayList<>();
             fileStyles.put(path, styles);
         }
         return styles;

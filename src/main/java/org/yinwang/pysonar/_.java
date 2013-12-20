@@ -461,6 +461,15 @@ public class _ {
     }
 
 
+    public static String projAbsPath(String file) {
+        if (file.startsWith("/") || file.startsWith(Analyzer.self.projectDir)) {
+            return file;
+        } else {
+            return makePathString(Analyzer.self.projectDir, file);
+        }
+    }
+
+
     @NotNull
     public static File joinPath(@NotNull File dir, String file) {
         return joinPath(dir.getAbsolutePath(), file);

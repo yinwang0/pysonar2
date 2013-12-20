@@ -201,6 +201,7 @@ public class Demo {
         Options options = new Options();
         options.addOption("d", "debug", false, "display debug information");
         options.addOption("q", "quiet", false, "quiet");
+        options.addOption("E", "semantic-errors", false, "report semantic errors");
         CommandLineParser parser = new BasicParser();
         CommandLine cmd = parser.parse(options, args);
 
@@ -214,6 +215,9 @@ public class Demo {
         }
         if (cmd.hasOption("debug")) {
             analyzerOptions.put("debug", true);
+        }
+        if (cmd.hasOption("semantic-errors")) {
+            analyzerOptions.put("semantic-errors", true);
         }
 
         new Demo().start(fileOrDir, analyzerOptions);
