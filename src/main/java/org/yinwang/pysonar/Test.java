@@ -2,30 +2,39 @@ package org.yinwang.pysonar;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
 import org.yinwang.pysonar.ast.Node;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Test {
 
-    private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    Analyzer analyzer = new Analyzer();
+    static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    Analyzer analyzer;
     String inputDir;
     boolean exp;
-    String expecteRefs;
+    String expecteRefsFile;
+    String failedRefsFile;
 
 
     public Test(String inputDir, boolean exp) {
+        // make a quiet analyzer
+        Map<String, Object> options = new HashMap<>();
+        options.put("quiet", true);
+        this.analyzer = new Analyzer(options);
+
         this.inputDir = inputDir;
         this.exp = exp;
         if (new File(inputDir).isDirectory()) {
-            expecteRefs = _.makePathString(inputDir, "refs.json");
+            expecteRefsFile = _.makePathString(inputDir, "refs.json");
+            failedRefsFile = _.makePathString(inputDir, "failed_refs.json");
         } else {
-            expecteRefs = _.makePathString(inputDir + ".refs.json");
+            expecteRefsFile = _.makePathString(inputDir + ".refs.json");
+            failedRefsFile = _.makePathString(inputDir, ".failed_refs.json");
         }
     }
 
@@ -36,7 +45,7 @@ public class Test {
     }
 
 
-    public boolean generateRefs() {
+    public void generateRefs() {
 
         List<Map<String, Object>> refs = new ArrayList<>();
         for (Map.Entry<Node, List<Binding>> e : analyzer.getReferences().entrySet()) {
@@ -74,16 +83,15 @@ public class Test {
         }
 
         String json = gson.toJson(refs);
-        _.writeFile(expecteRefs, json);
-        return true;
+        _.writeFile(expecteRefsFile, json);
     }
 
 
     public boolean checkRefs() {
         List<Map<String, Object>> failedRefs = new ArrayList<>();
-        String json = _.readFile(expecteRefs);
+        String json = _.readFile(expecteRefsFile);
         if (json == null) {
-            _.msg("Expected refs not found in: " + expecteRefs +
+            _.msg("Expected refs not found in: " + expecteRefsFile +
                     "Please run Test with -exp to generate");
             return false;
         }
@@ -119,7 +127,9 @@ public class Test {
         if (failedRefs.isEmpty()) {
             return true;
         } else {
-            _.msg("Failed refs: " + gson.toJson(failedRefs));
+            String failedJson = gson.toJson(failedRefs);
+            _.testmsg("Failed to find refs: " + failedJson);
+            _.writeFile(failedRefsFile, failedJson);
             return false;
         }
     }
@@ -143,7 +153,7 @@ public class Test {
     }
 
 
-    Dummy makeDummy(Map<String, Object> m) {
+    public static Dummy makeDummy(Map<String, Object> m) {
         String file = (String) m.get("file");
         int start = (int) Math.floor((double) m.get("start"));
         int end = (int) Math.floor((double) m.get("end"));
@@ -151,22 +161,66 @@ public class Test {
     }
 
 
-    public static void main(String[] args) {
+    public boolean runTest() {
+        runAnalysis(inputDir);
+        if (exp) {
+            generateRefs();
+            _.testmsg("generating expected results for: " + inputDir);
+            return true;
+        } else {
+            _.testmsg("testing: " + inputDir);
+            return checkRefs();
+        }
+    }
+
+
+    // ------------------------- static part -----------------------
+
+
+    public static void testAll(String path, boolean exp) {
+        List<String> failed = new ArrayList<>();
+        testRecursive(path, exp, failed);
+        if (failed.isEmpty()) {
+            _.testmsg("All tests passed!");
+        } else {
+            _.testmsg("Failed some tests: ");
+            for (String f : failed) {
+                _.testmsg("  * " + f);
+            }
+        }
+    }
+
+
+    public static void testRecursive(String path, boolean exp, List<String> failed) {
+        File file_or_dir = new File(path);
+
+        if (file_or_dir.isDirectory() && !path.contains("test-")) {
+            for (File file : file_or_dir.listFiles()) {
+                testRecursive(file.getPath(), exp, failed);
+            }
+        } else {
+            if (file_or_dir.isDirectory() && path.contains("test-")) {
+                Test test = new Test(path, exp);
+                if (!test.runTest()) {
+                    failed.add(path);
+                }
+            }
+        }
+    }
+
+
+    public static void main(String[] args) throws Exception {
+        Options options = new Options();
+        options.addOption("exp", "exp", false, "generate expected result (for setting up tests)");
+        CommandLineParser parser = new BasicParser();
+        CommandLine cmd = parser.parse(options, args);
+
+        args = cmd.getArgs();
         String inputDir = _.unifyPath(args[0]);
 
         // generate expected file?
-        boolean exp = false;
-        if (args.length > 1 && args[1].equals("-exp")) {
-            exp = true;
-        }
-
-        Test test = new Test(inputDir, exp);
-        test.runAnalysis(inputDir);
-
-        if (exp) {
-            test.generateRefs();
-        } else {
-            test.checkRefs();
-        }
+        boolean exp = cmd.hasOption("exp");
+        testAll(inputDir, exp);
     }
+
 }

@@ -158,7 +158,7 @@ public class FloatType extends Type {
     protected String printType(CyclicTypeRecorder ctr) {
         StringBuilder sb = new StringBuilder("float");
 
-        if (Analyzer.self.debug) {
+        if (Analyzer.self.hasOption("debug")) {
             if (lower == upper) {
                 sb.append("(" + lower + ")");
             } else if (isLowerBounded() || isUpperBounded()) {

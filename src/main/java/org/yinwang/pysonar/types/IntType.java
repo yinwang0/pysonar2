@@ -191,7 +191,7 @@ public class IntType extends Type {
     protected String printType(Type.CyclicTypeRecorder ctr) {
         StringBuilder sb = new StringBuilder("int");
 
-        if (Analyzer.self.debug) {
+        if (Analyzer.self.hasOption("debug")) {
             if (isActualValue() && lower.equals(upper)) {
                 sb.append("(" + lower + ")");
             } else if (isLowerBounded() || isUpperBounded()) {

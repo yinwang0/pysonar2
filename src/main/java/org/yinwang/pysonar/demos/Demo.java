@@ -1,5 +1,9 @@
 package org.yinwang.pysonar.demos;
 
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Progress;
@@ -7,7 +11,9 @@ import org.yinwang.pysonar._;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class Demo {
@@ -72,7 +78,7 @@ public class Demo {
     }
 
 
-    private void start(@NotNull File fileOrDir, boolean debug) throws Exception {
+    private void start(@NotNull File fileOrDir, Map<String, Object> options) throws Exception {
         File rootDir = fileOrDir.isFile() ? fileOrDir.getParentFile() : fileOrDir;
         try {
             rootPath = _.unifyPath(rootDir);
@@ -80,7 +86,7 @@ public class Demo {
             _.die("File not found: " + fileOrDir);
         }
 
-        analyzer = new Analyzer(debug);
+        analyzer = new Analyzer(options);
         _.msg("Loading and analyzing files");
         analyzer.analyze(fileOrDir.getPath());
         analyzer.finish();
@@ -193,21 +199,25 @@ public class Demo {
 
 
     public static void main(@NotNull String[] args) throws Exception {
-        if (args.length < 2 || args.length > 3) {
-            usage();
-        }
+        Options options = new Options();
+        options.addOption("d", "debug", false, "display debug information");
+        options.addOption("q", "quiet", false, "quiet");
+        CommandLineParser parser = new BasicParser();
+        CommandLine cmd = parser.parse(options, args);
 
-        boolean debug = false;
-        if (args.length > 2) {
-            if (args[2].equals("--debug")) {
-                debug = true;
-            }
-        }
-
+        args = cmd.getArgs();
         File fileOrDir = checkFile(args[0]);
         OUTPUT_DIR = new File(args[1]);
 
-        new Demo().start(fileOrDir, debug);
+        Map<String, Object> analyzerOptions = new HashMap<>();
+        if (cmd.hasOption("quiet")) {
+            analyzerOptions.put("quiet", true);
+        }
+        if (cmd.hasOption("debug")) {
+            analyzerOptions.put("debug", true);
+        }
+
+        new Demo().start(fileOrDir, analyzerOptions);
         _.msg(_.getGCStats());
     }
 }

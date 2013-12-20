@@ -86,7 +86,7 @@ public class ComplexType extends Type {
     protected String printType(CyclicTypeRecorder ctr) {
         StringBuilder sb = new StringBuilder("complex");
 
-        if (Analyzer.self.debug) {
+        if (Analyzer.self.hasOption("debug")) {
             sb.append("(" + real + " + " + imag + "j)");
         }
 

@@ -10,4 +10,4 @@ def g(y):
   print y+1
 
 o = B()
-print B.a
+print o.a

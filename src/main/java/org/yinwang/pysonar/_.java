@@ -286,6 +286,13 @@ public class _ {
 
 
     public static void msg(String m) {
+        if (!Analyzer.self.hasOption("quiet")) {
+            System.out.println(m);
+        }
+    }
+
+
+    public static void testmsg(String m) {
         System.out.println(m);
     }
 

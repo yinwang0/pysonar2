@@ -24,9 +24,6 @@ public class Analyzer {
     // global static instance of the analyzer itself
     public static Analyzer self;
     public String sid = _.newSessionId();
-
-    public boolean debug = false;
-
     public State moduleTable = new State(null, State.StateType.GLOBAL);
     public List<String> loadedFiles = new ArrayList<>();
     public State globaltable = new State(null, State.StateType.GLOBAL);
@@ -53,8 +50,20 @@ public class Analyzer {
     public String projectDir;
     public String suffix;
 
+    public Map<String, Object> options;
+
 
     public Analyzer() {
+        this(null);
+    }
+
+
+    public Analyzer(Map<String, Object> options) {
+        if (options != null) {
+            this.options = options;
+        } else {
+            this.options = new HashMap<>();
+        }
         stats.putInt("startTime", System.currentTimeMillis());
         logger = Logger.getLogger(Analyzer.class.getCanonicalName());
         self = this;
@@ -68,9 +77,18 @@ public class Analyzer {
     }
 
 
-    public Analyzer(boolean debug) {
-        this();
-        this.debug = debug;
+    public boolean hasOption(String option) {
+        Object op = options.get(option);
+        if (op != null && op.equals(true)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public void setOption(String option) {
+        options.put(option, true);
     }
 
 
