@@ -21,7 +21,7 @@ class Linker {
 
     // Map of file-path to semantic styles & links for that path.
     @NotNull
-    private Map<String, List<StyleRun>> fileStyles = new HashMap<>();
+    private Map<String, List<Style>> fileStyles = new HashMap<>();
 
     private File outDir;  // where we're generating the output html
     private String rootPath;
@@ -96,7 +96,7 @@ class Linker {
         }
 
         seenDef.add(hash);
-        StyleRun style = new StyleRun(StyleRun.Type.ANCHOR, binding.start, binding.getLength());
+        Style style = new Style(Style.Type.ANCHOR, binding.start, binding.end);
         style.message = binding.getType().toString();
         style.url = binding.getQname();
         style.id = qname;
@@ -112,7 +112,7 @@ class Linker {
         }
 
         seenDef.add(hash);
-        StyleRun style = new StyleRun(StyleRun.Type.ANCHOR, binding.start, binding.getLength());
+        Style style = new Style(Style.Type.ANCHOR, binding.start, binding.end);
         style.message = binding.getType().toString();
         style.url = binding.getQname();
         style.id = "" + Math.abs(binding.hashCode());
@@ -135,7 +135,7 @@ class Linker {
         if (!seenRef.contains(hash)) {
             seenRef.add(hash);
 
-            StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start, ref.length());
+            Style link = new Style(Style.Type.LINK, ref.start, ref.end);
             link.id = qname;
 
             List<String> typings = new ArrayList<>();
@@ -169,7 +169,7 @@ class Linker {
         if (!seenRef.contains(hash)) {
             seenRef.add(hash);
 
-            StyleRun link = new StyleRun(StyleRun.Type.LINK, ref.start, ref.length());
+            Style link = new Style(Style.Type.LINK, ref.start, ref.end);
             link.id = Integer.toString(Math.abs(hash));
 
             List<String> typings = new ArrayList<>();
@@ -208,13 +208,13 @@ class Linker {
      * @param path an absolute source path
      * @return a possibly-empty list of styles for that path
      */
-    public List<StyleRun> getStyles(String path) {
+    public List<Style> getStyles(String path) {
         return stylesForFile(path);
     }
 
 
-    private List<StyleRun> stylesForFile(String path) {
-        List<StyleRun> styles = fileStyles.get(path);
+    private List<Style> stylesForFile(String path) {
+        List<Style> styles = fileStyles.get(path);
         if (styles == null) {
             styles = new ArrayList<>();
             fileStyles.put(path, styles);
@@ -223,7 +223,7 @@ class Linker {
     }
 
 
-    private void addFileStyle(String path, StyleRun style) {
+    private void addFileStyle(String path, Style style) {
         stylesForFile(path).add(style);
     }
 
@@ -237,32 +237,32 @@ class Linker {
         switch (nb.getKind()) {
             case SCOPE:
                 if (isConst) {
-                    addSemanticStyle(nb, StyleRun.Type.CONSTANT);
+                    addSemanticStyle(nb, Style.Type.CONSTANT);
                 }
                 break;
             case VARIABLE:
-                addSemanticStyle(nb, isConst ? StyleRun.Type.CONSTANT : StyleRun.Type.IDENTIFIER);
+                addSemanticStyle(nb, isConst ? Style.Type.CONSTANT : Style.Type.IDENTIFIER);
                 break;
             case PARAMETER:
-                addSemanticStyle(nb, StyleRun.Type.PARAMETER);
+                addSemanticStyle(nb, Style.Type.PARAMETER);
                 break;
             case CLASS:
-                addSemanticStyle(nb, StyleRun.Type.TYPE_NAME);
+                addSemanticStyle(nb, Style.Type.TYPE_NAME);
                 break;
         }
     }
 
 
-    private void addSemanticStyle(@NotNull Binding binding, StyleRun.Type type) {
+    private void addSemanticStyle(@NotNull Binding binding, Style.Type type) {
         String path = binding.getFile();
         if (path != null) {
-            addFileStyle(path, new StyleRun(type, binding.start, binding.getLength()));
+            addFileStyle(path, new Style(type, binding.start, binding.end));
         }
     }
 
 
     private void processDiagnostic(@NotNull Diagnostic d) {
-        StyleRun style = new StyleRun(StyleRun.Type.WARNING, d.start, d.end - d.start);
+        Style style = new Style(Style.Type.WARNING, d.start, d.end);
         style.message = d.msg;
         style.url = d.file;
         addFileStyle(d.file, style);

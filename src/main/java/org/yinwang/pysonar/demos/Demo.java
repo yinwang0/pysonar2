@@ -104,7 +104,7 @@ public class Demo {
             return "";
         }
 
-        List<StyleRun> styles = new ArrayList<>();
+        List<Style> styles = new ArrayList<>();
         styles.addAll(linker.getStyles(path));
 
         String styledSource = new StyleApplier(path, source, styles).apply();
