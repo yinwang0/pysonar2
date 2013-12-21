@@ -255,11 +255,11 @@ public class Binding implements Comparable<Object> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("<Binding:");
-        sb.append(":qname=").append(qname);
-        sb.append(":type=").append(type);
+        sb.append("(binding:");
         sb.append(":kind=").append(kind);
         sb.append(":node=").append(node);
+        sb.append(":type=").append(type);
+        sb.append(":qname=").append(qname);
         sb.append(":refs=");
         if (getRefs().size() > 10) {
             sb.append("[");
