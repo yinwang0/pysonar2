@@ -33,6 +33,15 @@ public class _ {
     }
 
 
+    public static boolean same(@Nullable Object o1, @Nullable Object o2) {
+        if (o1 == null) {
+            return o2 == null;
+        } else {
+            return o1.equals(o2);
+        }
+    }
+
+
     public static String getSystemTempDir() {
         String tmp = System.getProperty("java.io.tmpdir");
         String sep = System.getProperty("file.separator");

@@ -2,6 +2,7 @@ package org.yinwang.pysonar.demos;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.yinwang.pysonar._;
 
 import java.util.List;
 
@@ -75,17 +76,8 @@ public class Style implements Comparable<Style> {
         return other.type == this.type
                 && other.start == this.start
                 && other.end == this.end
-                && equalFields(other.message, this.message)
-                && equalFields(other.url, this.url);
-    }
-
-
-    private boolean equalFields(@Nullable Object o1, @Nullable Object o2) {
-        if (o1 == null) {
-            return o2 == null;
-        } else {
-            return o1.equals(o2);
-        }
+                && _.same(other.message, this.message)
+                && _.same(other.url, this.url);
     }
 
 

@@ -269,8 +269,7 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
             String file = this.file;
             return (start == node.start &&
                     end == node.end &&
-                    (file == null && node.file == null) ||
-                    (file != null && node.file != null && file.equals(node.file)));
+                    _.same(file, node.file));
         }
     }
 

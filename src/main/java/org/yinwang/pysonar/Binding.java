@@ -281,11 +281,9 @@ public class Binding implements Comparable<Object> {
             return false;
         } else {
             Binding b = (Binding) obj;
-            return (start == b.start
-                    && end == b.end
-                    && ((fileOrUrl == null && b.fileOrUrl == null)
-                    || (fileOrUrl != null && b.fileOrUrl != null &&
-                    fileOrUrl.equals(b.fileOrUrl))));
+            return (start == b.start &&
+                    end == b.end &&
+                    _.same(fileOrUrl, b.fileOrUrl));
         }
     }
 
