@@ -56,7 +56,7 @@ class StyleApplier {
 
     class StartTag extends Tag {
         public StartTag(@NotNull Style style) {
-            offset = style.start();
+            offset = style.start;
             this.style = style;
         }
 
@@ -115,7 +115,7 @@ class StyleApplier {
 
     class EndTag extends Tag {
         public EndTag(@NotNull Style style) {
-            offset = style.end();
+            offset = style.end;
             this.style = style;
         }
 
