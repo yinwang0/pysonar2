@@ -71,10 +71,12 @@ public class Parser {
 
 
     public void close() {
-        new File(exchangeFile).delete();
-        new File(endMark).delete();
-        new File(jsonizer).delete();
-        new File(parserLog).delete();
+        if (!Analyzer.self.hasOption("debug")) {
+            new File(exchangeFile).delete();
+            new File(endMark).delete();
+            new File(jsonizer).delete();
+            new File(parserLog).delete();
+        }
     }
 
 
