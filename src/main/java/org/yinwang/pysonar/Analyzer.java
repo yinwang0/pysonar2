@@ -13,8 +13,6 @@ import org.yinwang.pysonar.types.Type;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class Analyzer {
@@ -44,7 +42,6 @@ public class Analyzer {
     public Set<String> failedToParse = new HashSet<>();
     public Stats stats = new Stats();
     public Builtins builtins;
-    private Logger logger;
     private Progress loadingProgress = null;
 
     public String projectDir;
@@ -67,7 +64,6 @@ public class Analyzer {
             this.options = new HashMap<>();
         }
         this.stats.putInt("startTime", System.currentTimeMillis());
-        this.logger = Logger.getLogger(Analyzer.class.getCanonicalName());
         this.suffix = ".py";
         this.builtins = new Builtins();
         this.builtins.init();
@@ -284,11 +280,6 @@ public class Analyzer {
     }
 
 
-    List<Diagnostic> getParseErrs(String file) {
-        return getFileErrs(file, parseErrors);
-    }
-
-
     List<Diagnostic> getFileErrs(String file, @NotNull Map<String, List<Diagnostic>> map) {
         List<Diagnostic> msgs = map.get(file);
         if (msgs == null) {
@@ -301,19 +292,15 @@ public class Analyzer {
 
     @Nullable
     public Type loadFile(String path) {
-//        Util.msg("loading: " + path);
-
         path = _.unifyPath(path);
         File f = new File(path);
 
         if (!f.canRead()) {
-            finer("\nfile not not found or cannot be read: " + path);
             return null;
         }
 
         Type module = getCachedModule(path);
         if (module != null) {
-            finer("\nusing cached module " + path + " [succeeded]");
             return module;
         }
 
@@ -335,19 +322,8 @@ public class Analyzer {
     }
 
 
-    private boolean isInLoadPath(File dir) {
-        for (String s : getLoadPath()) {
-            if (new File(s).equals(dir)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
     @Nullable
     private Type parseAndResolve(String file) {
-        finer("Analyzing: " + file);
         loadingProgress.tick();
 
         try {
@@ -357,9 +333,7 @@ public class Analyzer {
                 failedToParse.add(file);
                 return null;
             } else {
-                finer("resolving: " + file);
                 Type type = Node.transformExpr(ast, moduleTable);
-                finer("[success]");
                 loadedFiles.add(file);
                 return type;
             }
@@ -564,7 +538,6 @@ public class Analyzer {
 
 
     public void finish() {
-//        progress.end();
         _.msg("\nFinished loading files. " + nCalled + " functions were called.");
         _.msg("Analyzing uncalled functions");
         applyUncalled();
@@ -662,38 +635,6 @@ public class Analyzer {
 
     public void registerBinding(@NotNull Binding b) {
         allBindings.add(b);
-    }
-
-
-    public void log(Level level, String msg) {
-        if (logger.isLoggable(level)) {
-            logger.log(level, msg);
-        }
-    }
-
-
-    public void severe(String msg) {
-        log(Level.SEVERE, msg);
-    }
-
-
-    public void warn(String msg) {
-        log(Level.WARNING, msg);
-    }
-
-
-    public void info(String msg) {
-        log(Level.INFO, msg);
-    }
-
-
-    public void fine(String msg) {
-        log(Level.FINE, msg);
-    }
-
-
-    public void finer(String msg) {
-        log(Level.FINER, msg);
     }
 
 
