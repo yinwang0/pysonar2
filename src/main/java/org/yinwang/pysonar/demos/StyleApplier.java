@@ -14,9 +14,6 @@ import java.util.TreeSet;
  */
 class StyleApplier {
 
-    // Empirically, adding the span tags multiplies length by 6 or more.
-    private static final int SOURCE_BUF_MULTIPLIER = 6;
-
     @NotNull
     private SortedSet<Tag> tags = new TreeSet<Tag>();
 
@@ -153,7 +150,7 @@ class StyleApplier {
      */
     @NotNull
     public String apply() {
-        buffer = new StringBuilder(source.length() * SOURCE_BUF_MULTIPLIER);
+        buffer = new StringBuilder();
 
         for (Tag tag : tags) {
             tag.insert();

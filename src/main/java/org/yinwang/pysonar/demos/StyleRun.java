@@ -111,6 +111,6 @@ public class StyleRun implements Comparable<StyleRun> {
     @NotNull
     @Override
     public String toString() {
-        return "[" + type + " beg=" + offset + " len=" + length + "]";
+        return "[" + type + " start=" + offset + " len=" + length + "]";
     }
 }
