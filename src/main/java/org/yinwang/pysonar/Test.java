@@ -164,16 +164,17 @@ public class Test {
     }
 
 
+    public void generateTest() {
+        runAnalysis(inputDir);
+        generateRefs();
+        _.testmsg("  * " + inputDir);
+    }
+
+
     public boolean runTest() {
         runAnalysis(inputDir);
-        if (exp) {
-            generateRefs();
-            _.testmsg("generating expected results for: " + inputDir);
-            return true;
-        } else {
-            _.testmsg("testing: " + inputDir);
-            return checkRefs();
-        }
+        _.testmsg("  * " + inputDir);
+        return checkRefs();
     }
 
 
@@ -182,11 +183,20 @@ public class Test {
 
     public static void testAll(String path, boolean exp) {
         List<String> failed = new ArrayList<>();
-        testRecursive(path, exp, failed);
-        if (failed.isEmpty()) {
-            _.testmsg("All tests passed!");
+        if (exp) {
+            _.testmsg("generating tests");
         } else {
-            _.testmsg("Failed some tests: ");
+            _.testmsg("verifying tests");
+        }
+
+        testRecursive(path, exp, failed);
+
+        if (exp) {
+            _.testmsg("all tests generated");
+        } else if (failed.isEmpty()) {
+            _.testmsg("all tests passed!");
+        } else {
+            _.testmsg("failed some tests: ");
             for (String f : failed) {
                 _.testmsg("  * " + f);
             }
@@ -204,8 +214,12 @@ public class Test {
         } else {
             if (file_or_dir.isDirectory() && path.contains("test-")) {
                 Test test = new Test(path, exp);
-                if (!test.runTest()) {
-                    failed.add(path);
+                if (exp) {
+                    test.generateTest();
+                } else {
+                    if (!test.runTest()) {
+                        failed.add(path);
+                    }
                 }
             }
         }
@@ -214,7 +228,7 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
         Options options = new Options();
-        options.addOption("exp", "exp", false, "generate expected result (for setting up tests)");
+        options.addOption("exp", "expected", false, "generate expected result (for setting up tests)");
         CommandLineParser parser = new BasicParser();
         CommandLine cmd = parser.parse(options, args);
 
@@ -222,7 +236,7 @@ public class Test {
         String inputDir = _.unifyPath(args[0]);
 
         // generate expected file?
-        boolean exp = cmd.hasOption("exp");
+        boolean exp = cmd.hasOption("expected");
         testAll(inputDir, exp);
     }
 

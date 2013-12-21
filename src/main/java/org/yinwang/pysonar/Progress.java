@@ -39,9 +39,9 @@ public class Progress {
         long elapsed = System.currentTimeMillis() - lastTickTime;
 
         if (elapsed > 500 || count == total) {
-            System.out.print("\r");
+            _.msg_("\r");
             int dlen = (int) Math.ceil(Math.log10((double) total));
-            System.out.print(_.percent(count, total) + " (" +
+            _.msg_(_.percent(count, total) + " (" +
                     _.formatNumber(count, dlen) +
                     " of " + _.formatNumber(total, dlen) + ")");
 
@@ -53,7 +53,7 @@ public class Progress {
             }
 
             lastRate = rate;
-            System.out.print("   SPEED: " + _.formatNumber(rate, MAX_SPEED_DIGITS) + "/s");
+            _.msg_("   SPEED: " + _.formatNumber(rate, MAX_SPEED_DIGITS) + "/s");
 
             long totalElapsed = System.currentTimeMillis() - startTime;
             int avgRate;
@@ -65,14 +65,14 @@ public class Progress {
             }
             avgRate = avgRate == 0 ? 1 : avgRate;
 
-            System.out.print("   AVG SPEED: " + _.formatNumber(avgRate, MAX_SPEED_DIGITS) + "/s");
+            _.msg_("   AVG SPEED: " + _.formatNumber(avgRate, MAX_SPEED_DIGITS) + "/s");
 
             long remain = total - count;
             long remainTime = remain / avgRate * 1000;
-            System.out.print("   ETA: " + _.formatTime(remainTime));
+            _.msg_("   ETA: " + _.formatTime(remainTime));
 
 
-            System.out.print("       ");      // overflow area
+            _.msg_("       ");      // overflow area
 
             lastTickTime = System.currentTimeMillis();
             lastAvgRate = avgRate;
