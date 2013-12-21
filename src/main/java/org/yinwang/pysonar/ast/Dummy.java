@@ -1,6 +1,7 @@
-package org.yinwang.pysonar;
+package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.types.Type;
 

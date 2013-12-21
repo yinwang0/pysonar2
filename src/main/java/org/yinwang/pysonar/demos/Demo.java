@@ -20,7 +20,7 @@ public class Demo {
 
     private static File OUTPUT_DIR;
 
-    private static final String CSS = _.readResource("org/yinwang/pysonar/javascript/demo.css");
+    private static final String CSS = _.readResource("org/yinwang/pysonar/css/demo.css");
     private static final String JS = _.readResource("org/yinwang/pysonar/javascript/highlight.js");
     private static final String JS_DEBUG = _.readResource("org/yinwang/pysonar/javascript/highlight-debug.js");
 
@@ -118,7 +118,7 @@ public class Demo {
                 .append(CSS)
                 .append("</style>\n")
                 .append("<script language=\"JavaScript\" type=\"text/javascript\">\n")
-                .append(Analyzer.self.hasOption("debug")? JS_DEBUG : JS)
+                .append(Analyzer.self.hasOption("debug") ? JS_DEBUG : JS)
                 .append("</script>\n")
                 .append("</head>\n<body>\n")
                 .append("<table width=100% border='1px solid gray'><tr><td valign='top'>")
