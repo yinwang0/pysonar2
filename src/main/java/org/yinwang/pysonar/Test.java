@@ -207,12 +207,8 @@ public class Test {
     public static void testRecursive(String path, boolean exp, List<String> failed) {
         File file_or_dir = new File(path);
 
-        if (file_or_dir.isDirectory() && !path.contains("test-")) {
-            for (File file : file_or_dir.listFiles()) {
-                testRecursive(file.getPath(), exp, failed);
-            }
-        } else {
-            if (file_or_dir.isDirectory() && path.contains("test-")) {
+        if (file_or_dir.isDirectory()) {
+            if (path.endsWith(".test")) {
                 Test test = new Test(path, exp);
                 if (exp) {
                     test.generateTest();
@@ -220,6 +216,10 @@ public class Test {
                     if (!test.runTest()) {
                         failed.add(path);
                     }
+                }
+            } else {
+                for (File file : file_or_dir.listFiles()) {
+                    testRecursive(file.getPath(), exp, failed);
                 }
             }
         }
