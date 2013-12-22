@@ -1,0 +1,322 @@
+[
+  {
+    "ref": {
+      "name": "oven",
+      "file": "bedroom.py",
+      "start": 34,
+      "end": 38
+    },
+    "dests": [
+      {
+        "name": "oven",
+        "file": "bedroom.py",
+        "start": -1,
+        "end": -1
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "Pizza",
+      "file": "bedroom.py",
+      "start": 39,
+      "end": 44
+    },
+    "dests": [
+      {
+        "name": "Pizza",
+        "file": "kitchen/oven.py",
+        "start": 6,
+        "end": 11
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "toppings",
+      "file": "kitchen/oven.py",
+      "start": 65,
+      "end": 73
+    },
+    "dests": [
+      {
+        "name": "toppings",
+        "file": "kitchen/oven.py",
+        "start": 34,
+        "end": 42
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "kitchen/oven.py",
+      "start": 49,
+      "end": 53
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "kitchen/oven.py",
+        "start": 28,
+        "end": 32
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "pizza",
+      "file": "bedroom.py",
+      "start": 85,
+      "end": 90
+    },
+    "dests": [
+      {
+        "name": "pizza",
+        "file": "bedroom.py",
+        "start": 26,
+        "end": 31
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "first_topping",
+      "file": "bedroom.py",
+      "start": 91,
+      "end": 104
+    },
+    "dests": [
+      {
+        "name": "first_topping",
+        "file": "kitchen/oven.py",
+        "start": 81,
+        "end": 94
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "kitchen/oven.py",
+      "start": 113,
+      "end": 117
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "kitchen/oven.py",
+        "start": 95,
+        "end": 99
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "toppings",
+      "file": "kitchen/oven.py",
+      "start": 118,
+      "end": 126
+    },
+    "dests": [
+      {
+        "name": "toppings",
+        "file": "kitchen/oven.py",
+        "start": 54,
+        "end": 62
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "Pizza",
+      "file": "livingroom.py",
+      "start": 36,
+      "end": 41
+    },
+    "dests": [
+      {
+        "name": "Pizza",
+        "file": "kitchen/oven.py",
+        "start": 6,
+        "end": 11
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "pizza",
+      "file": "livingroom.py",
+      "start": 80,
+      "end": 85
+    },
+    "dests": [
+      {
+        "name": "pizza",
+        "file": "livingroom.py",
+        "start": 28,
+        "end": 33
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "first_topping",
+      "file": "livingroom.py",
+      "start": 86,
+      "end": 99
+    },
+    "dests": [
+      {
+        "name": "first_topping",
+        "file": "kitchen/oven.py",
+        "start": 81,
+        "end": 94
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "Bread",
+      "file": "livingroom.py",
+      "start": 111,
+      "end": 116
+    },
+    "dests": [
+      {
+        "name": "Bread",
+        "file": "kitchen/oven.py",
+        "start": 138,
+        "end": 143
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "size",
+      "file": "kitchen/oven.py",
+      "start": 189,
+      "end": 193
+    },
+    "dests": [
+      {
+        "name": "size",
+        "file": "kitchen/oven.py",
+        "start": 166,
+        "end": 170
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "kitchen/oven.py",
+      "start": 177,
+      "end": 181
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "kitchen/oven.py",
+        "start": 160,
+        "end": 164
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "bread",
+      "file": "livingroom.py",
+      "start": 121,
+      "end": 126
+    },
+    "dests": [
+      {
+        "name": "bread",
+        "file": "livingroom.py",
+        "start": 103,
+        "end": 108
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "grow",
+      "file": "livingroom.py",
+      "start": 127,
+      "end": 131
+    },
+    "dests": [
+      {
+        "name": "grow",
+        "file": "kitchen/oven.py",
+        "start": 201,
+        "end": 205
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "kitchen/oven.py",
+      "start": 217,
+      "end": 221
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "kitchen/oven.py",
+        "start": 206,
+        "end": 210
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "size",
+      "file": "kitchen/oven.py",
+      "start": 222,
+      "end": 226
+    },
+    "dests": [
+      {
+        "name": "size",
+        "file": "kitchen/oven.py",
+        "start": 182,
+        "end": 186
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "bread",
+      "file": "livingroom.py",
+      "start": 140,
+      "end": 145
+    },
+    "dests": [
+      {
+        "name": "bread",
+        "file": "livingroom.py",
+        "start": 103,
+        "end": 108
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "size",
+      "file": "livingroom.py",
+      "start": 146,
+      "end": 150
+    },
+    "dests": [
+      {
+        "name": "size",
+        "file": "kitchen/oven.py",
+        "start": 222,
+        "end": 226
+      }
+    ]
+  }
+]
