@@ -1,10 +1,26 @@
 [
   {
     "ref": {
+      "name": "spoon",
+      "file": "bedroom.py",
+      "start": -1,
+      "end": -1
+    },
+    "dests": [
+      {
+        "name": "spoon",
+        "file": "kitchen/__init__.py",
+        "start": 34,
+        "end": 39
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "oven",
       "file": "bedroom.py",
-      "start": 34,
-      "end": 38
+      "start": 60,
+      "end": 64
     },
     "dests": [
       {
@@ -19,8 +35,8 @@
     "ref": {
       "name": "Pizza",
       "file": "bedroom.py",
-      "start": 39,
-      "end": 44
+      "start": 65,
+      "end": 70
     },
     "dests": [
       {
@@ -67,15 +83,15 @@
     "ref": {
       "name": "pizza",
       "file": "bedroom.py",
-      "start": 85,
-      "end": 90
+      "start": 110,
+      "end": 115
     },
     "dests": [
       {
         "name": "pizza",
         "file": "bedroom.py",
-        "start": 26,
-        "end": 31
+        "start": 52,
+        "end": 57
       }
     ]
   },
@@ -83,8 +99,8 @@
     "ref": {
       "name": "first_topping",
       "file": "bedroom.py",
-      "start": 91,
-      "end": 104
+      "start": 116,
+      "end": 129
     },
     "dests": [
       {
@@ -129,10 +145,58 @@
   },
   {
     "ref": {
+      "name": "spoon",
+      "file": "bedroom.py",
+      "start": 138,
+      "end": 143
+    },
+    "dests": [
+      {
+        "name": "spoon",
+        "file": "kitchen/__init__.py",
+        "start": 34,
+        "end": 39
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "t1",
+      "file": "bedroom.py",
+      "start": 144,
+      "end": 146
+    },
+    "dests": [
+      {
+        "name": "t1",
+        "file": "bedroom.py",
+        "start": 105,
+        "end": 107
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "kitchen/__init__.py",
+      "start": 55,
+      "end": 56
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "kitchen/__init__.py",
+        "start": 40,
+        "end": 41
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "Pizza",
       "file": "livingroom.py",
-      "start": 36,
-      "end": 41
+      "start": 58,
+      "end": 63
     },
     "dests": [
       {
@@ -147,15 +211,15 @@
     "ref": {
       "name": "pizza",
       "file": "livingroom.py",
-      "start": 80,
-      "end": 85
+      "start": 101,
+      "end": 106
     },
     "dests": [
       {
         "name": "pizza",
         "file": "livingroom.py",
-        "start": 28,
-        "end": 33
+        "start": 50,
+        "end": 55
       }
     ]
   },
@@ -163,8 +227,8 @@
     "ref": {
       "name": "first_topping",
       "file": "livingroom.py",
-      "start": 86,
-      "end": 99
+      "start": 107,
+      "end": 120
     },
     "dests": [
       {
@@ -177,10 +241,90 @@
   },
   {
     "ref": {
+      "name": "spoon",
+      "file": "livingroom.py",
+      "start": 129,
+      "end": 134
+    },
+    "dests": [
+      {
+        "name": "spoon",
+        "file": "kitchen/__init__.py",
+        "start": 34,
+        "end": 39
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "t1",
+      "file": "livingroom.py",
+      "start": 135,
+      "end": 137
+    },
+    "dests": [
+      {
+        "name": "t1",
+        "file": "livingroom.py",
+        "start": 96,
+        "end": 98
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "fork",
+      "file": "livingroom.py",
+      "start": 145,
+      "end": 149
+    },
+    "dests": [
+      {
+        "name": "fork",
+        "file": "kitchen/__init__.py",
+        "start": 63,
+        "end": 67
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "kitchen/__init__.py",
+      "start": 84,
+      "end": 85
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "kitchen/__init__.py",
+        "start": 68,
+        "end": 69
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "kitchen/__init__.py",
+      "start": 86,
+      "end": 87
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "kitchen/__init__.py",
+        "start": 68,
+        "end": 69
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "Bread",
       "file": "livingroom.py",
-      "start": 111,
-      "end": 116
+      "start": 165,
+      "end": 170
     },
     "dests": [
       {
@@ -227,15 +371,15 @@
     "ref": {
       "name": "bread",
       "file": "livingroom.py",
-      "start": 121,
-      "end": 126
+      "start": 175,
+      "end": 180
     },
     "dests": [
       {
         "name": "bread",
         "file": "livingroom.py",
-        "start": 103,
-        "end": 108
+        "start": 157,
+        "end": 162
       }
     ]
   },
@@ -243,8 +387,8 @@
     "ref": {
       "name": "grow",
       "file": "livingroom.py",
-      "start": 127,
-      "end": 131
+      "start": 181,
+      "end": 185
     },
     "dests": [
       {
@@ -291,15 +435,15 @@
     "ref": {
       "name": "bread",
       "file": "livingroom.py",
-      "start": 140,
-      "end": 145
+      "start": 194,
+      "end": 199
     },
     "dests": [
       {
         "name": "bread",
         "file": "livingroom.py",
-        "start": 103,
-        "end": 108
+        "start": 157,
+        "end": 162
       }
     ]
   },
@@ -307,8 +451,8 @@
     "ref": {
       "name": "size",
       "file": "livingroom.py",
-      "start": 146,
-      "end": 150
+      "start": 200,
+      "end": 204
     },
     "dests": [
       {

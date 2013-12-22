@@ -1,7 +1,10 @@
+from kitchen import *
 from kitchen.oven import *
 
 pizza = Pizza(['sauage', 'tomato', 'cheeze'])
-print pizza.first_topping()
+t1 = pizza.first_topping()
+print spoon(t1)
+print fork(True)
 
 bread = Bread(10)
 bread.grow()

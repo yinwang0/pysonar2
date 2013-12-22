@@ -1,4 +1,6 @@
 from kitchen import oven
+from kitchen import spoon
 
 pizza = oven.Pizza(['mushroom', 'sauage', 'cheeze'])
-print pizza.first_topping()
+t1 = pizza.first_topping()
+print spoon(t1)
