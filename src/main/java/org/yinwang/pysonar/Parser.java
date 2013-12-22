@@ -20,7 +20,7 @@ public class Parser {
 
     private static final String PYTHON2_EXE = "python";
     private static final String PYTHON3_EXE = "python3";
-    private static final int TIMEOUT = 5000;
+    private static final int TIMEOUT = 10000;
 
     Process python2Process;
     Process python3Process;
