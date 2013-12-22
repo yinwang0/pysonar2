@@ -1,6 +1,7 @@
 import ast
 import re
 import sys
+import codecs
 
 from json import JSONEncoder
 from ast import *
@@ -20,12 +21,15 @@ class AstEncoder(JSONEncoder):
             return str(o)
 
 
+enc = 'latin1'
+
+
 def parse_dump(filename, output, end_mark):
     try:
         if is_python3:
             encoder = AstEncoder()
         else:
-            encoder = AstEncoder(encoding="latin1")
+            encoder = AstEncoder(encoding=enc)
 
         tree = parse_file(filename)
         encoded = encoder.encode(tree)
@@ -39,8 +43,20 @@ def parse_dump(filename, output, end_mark):
 
 
 def parse_file(filename):
-    f = open(filename)
+    global enc
+    enc, enc_len = detect_encoding(filename)
+    f = codecs.open(filename, 'r', enc)
     lines = f.read()
+
+    # remove BOM
+    lines = re.sub(u'\ufeff', ' ', lines)
+
+    # replace the encoding decl by spaces to fool python parser
+    # otherwise you get 'encoding decl in unicode string' syntax error
+    # print('enc:', enc, 'enc_len', enc_len)
+    if enc_len > 0:
+        lines = re.sub('#.*coding\s*[:=]\s*[\w\d\-]+',  '#' + ' ' * (enc_len-1), lines)
+
     f.close()
     return parse_string(lines, filename)
 
@@ -60,9 +76,22 @@ def p(filename):
 
 def detect_encoding(path):
     fin = open(path, 'rb')
-    prefix = fin.read(80)
-    encs = re.findall('#.*coding\s*:\s*([\w\d\-]+)\s+', prefix)
-    return encs[0] if encs else 'utf8'
+    prefix = str(fin.read(80))
+    encs = re.findall('#.*coding\s*[:=]\s*([\w\d\-]+)', prefix)
+    decl = re.findall('#.*coding\s*[:=]\s*[\w\d\-]+', prefix)
+
+    if encs:
+        enc1 = encs[0]
+        enc_len = len(decl[0])
+        try:
+            info = codecs.lookup(enc1)
+            # print('lookedup: ', info)
+        except LookupError:
+            # print('encoding not exist: ' + enc1)
+            return 'latin1', enc_len
+        return enc1, enc_len
+    else:
+        return 'latin1', -1
 
 
 #-------------------------------------------------------------
@@ -580,3 +609,14 @@ def is_alpha(c):
             or ('0' <= c <= '9')
             or ('a' <= c <= 'z')
             or ('A' <= c <= 'Z'))
+
+
+# p('/Users/yinwang/Code/django/tests/invalid_models/invalid_models/models.py')
+# p('/Users/yinwang/Dropbox/prog/pysonar2/tests/test-unicode/test1.py')
+# p('/Users/yinwang/Code/cpython/Lib/lib2to3/tests/data/bom.py')
+# p('/Users/yinwang/Code/cpython/Lib/test/test_decimal.py')
+# p('/Users/yinwang/Code/cpython/Lib/test/test_pep3131.py')
+# p('/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/tarfile.py')
+# p('/Users/yinwang/Code/cpython/Lib/lib2to3/tests/data/false_encoding.py')
+# p('/System/Library/Frameworks/Python.framework/Versions/2.5/lib/python2.5/test/test_marshal.py')
+# p('/System/Library/Frameworks/Python.framework/Versions/2.5/lib/python2.5/lib-tk/Tix.py')
