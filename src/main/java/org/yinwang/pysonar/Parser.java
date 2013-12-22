@@ -43,11 +43,11 @@ public class Parser {
         startPythonProcesses();
 
         if (python2Process != null) {
-            _.msg("Started: " + PYTHON2_EXE);
+            _.msg("started: " + PYTHON2_EXE);
         }
 
         if (python3Process != null) {
-            _.msg("Started: " + PYTHON3_EXE);
+            _.msg("started: " + PYTHON3_EXE);
         }
     }
 
