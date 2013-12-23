@@ -11,16 +11,11 @@ import org.yinwang.pysonar.types.Type;
  */
 public class Url extends Node {
 
-    private String url;
+    public String url;
 
 
     public Url(String url) {
         this.url = url;
-    }
-
-
-    public String getURL() {
-        return url;
     }
 
 

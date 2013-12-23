@@ -5,8 +5,8 @@ import org.yinwang.pysonar.Analyzer;
 
 
 public class FloatType extends Type {
-    private double upper = Double.POSITIVE_INFINITY;
-    private double lower = Double.NEGATIVE_INFINITY;
+    public double upper = Double.POSITIVE_INFINITY;
+    public double lower = Double.NEGATIVE_INFINITY;
 
 
     public FloatType() {
@@ -123,18 +123,8 @@ public class FloatType extends Type {
     }
 
 
-    public double getUpper() {
-        return upper;
-    }
-
-
     public void setUpper(double upper) {
         this.upper = upper;
-    }
-
-
-    public double getLower() {
-        return lower;
     }
 
 

@@ -8,10 +8,10 @@ import java.math.BigInteger;
 
 public class IntType extends Type {
 
-    BigInteger lower;
-    BigInteger upper;
-    boolean lowerBounded;
-    boolean upperBounded;
+    public BigInteger lower;
+    public BigInteger upper;
+    public boolean lowerBounded;
+    public boolean upperBounded;
 
 
     public IntType() {
@@ -159,19 +159,9 @@ public class IntType extends Type {
     }
 
 
-    public BigInteger getLower() {
-        return lower;
-    }
-
-
     public void setLower(BigInteger lower) {
         this.lower = lower;
         this.lowerBounded = true;
-    }
-
-
-    public BigInteger getUpper() {
-        return upper;
     }
 
 

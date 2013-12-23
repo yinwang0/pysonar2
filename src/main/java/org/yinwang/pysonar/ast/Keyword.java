@@ -30,21 +30,10 @@ public class Keyword extends Node {
     }
 
 
-    public String getArg() {
-        return arg;
-    }
-
-
-    @NotNull
-    public Node getValue() {
-        return value;
-    }
-
-
     @NotNull
     @Override
     public String toString() {
-        return "<Keyword:" + arg + ":" + value + ">";
+        return "(keyword:" + arg + ":" + value + ")";
     }
 
 

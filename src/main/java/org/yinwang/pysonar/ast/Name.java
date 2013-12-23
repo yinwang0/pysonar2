@@ -74,7 +74,7 @@ public class Name extends Node {
             Analyzer.self.putProblem(this, "unbound variable " + id);
             Analyzer.self.stats.inc("unresolved");
             Type t = Type.UNKNOWN;
-            t.getTable().setPath(s.extendPath(id));
+            t.table.setPath(s.extendPath(id));
             return t;
         }
     }
@@ -86,7 +86,7 @@ public class Name extends Node {
      */
     public boolean isAttribute() {
         return parent instanceof Attribute
-                && ((Attribute) parent).getAttr() == this;
+                && ((Attribute) parent).attr == this;
     }
 
 

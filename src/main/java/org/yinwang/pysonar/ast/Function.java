@@ -19,7 +19,6 @@ public class Function extends Node {
     public List<Node> defaults;
     public Name vararg;  // *args
     public Name kwarg;   // **kwarg
-    public Name blockarg = null;   // block arg of Ruby
     public List<Node> afterRest = null;   // after rest arg of Ruby
     public Node body;
     private List<Node> decoratorList;
@@ -58,8 +57,8 @@ public class Function extends Node {
         resolveList(decoratorList, s);
         State env = s.getForwarding();
         FunType fun = new FunType(this, env);
-        fun.getTable().setParent(s);
-        fun.getTable().setPath(s.extendPath(name.id));
+        fun.table.setParent(s);
+        fun.table.setPath(s.extendPath(name.id));
         fun.setDefaultTypes(resolveList(defaults, s));
         Analyzer.self.addUncalled(fun);
         Binding.Kind funkind;
@@ -67,7 +66,7 @@ public class Function extends Node {
         if (isLamba) {
             return fun;
         } else {
-            if (s.getStateType() == State.StateType.CLASS) {
+            if (s.stateType == State.StateType.CLASS) {
                 if ("__init__".equals(name.id)) {
                     funkind = Binding.Kind.CONSTRUCTOR;
                 } else {
@@ -77,7 +76,7 @@ public class Function extends Node {
                 funkind = Binding.Kind.FUNCTION;
             }
 
-            Type outType = s.getType();
+            Type outType = s.type;
             if (outType instanceof ClassType) {
                 fun.setCls(outType.asClassType());
             }

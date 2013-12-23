@@ -5,8 +5,8 @@ import org.yinwang.pysonar.Analyzer;
 
 
 public class ComplexType extends Type {
-    private double real;
-    private double imag;
+    public double real;
+    public double imag;
 
 
     public ComplexType() {
@@ -62,18 +62,8 @@ public class ComplexType extends Type {
     }
 
 
-    public double getReal() {
-        return real;
-    }
-
-
     public void setReal(double real) {
         this.real = real;
-    }
-
-
-    public double getImag() {
-        return imag;
     }
 
 

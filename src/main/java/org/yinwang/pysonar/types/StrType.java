@@ -5,7 +5,7 @@ import org.yinwang.pysonar.Analyzer;
 
 public class StrType extends Type {
 
-    private String value;
+    public String value;
 
 
     public StrType(String value) {

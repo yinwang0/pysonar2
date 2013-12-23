@@ -29,7 +29,7 @@ public class Block extends Node {
         // find global names and mark them
         for (Node n : seq) {
             if (n.isGlobal()) {
-                for (Name name : n.asGlobal().getNames()) {
+                for (Name name : n.asGlobal().names) {
                     state.addGlobalName(name.id);
                     List<Binding> nb = state.lookup(name.id);
                     if (nb != null) {
@@ -50,8 +50,8 @@ public class Block extends Node {
                     returned = true;
                     retType = UnionType.remove(retType, Type.CONT);
                 }
-            } else if (state.getStateType() != State.StateType.GLOBAL &&
-                    state.getStateType() != State.StateType.MODULE)
+            } else if (state.stateType != State.StateType.GLOBAL &&
+                    state.stateType != State.StateType.MODULE)
             {
                 Analyzer.self.putProblem(n, "unreachable code");
             }

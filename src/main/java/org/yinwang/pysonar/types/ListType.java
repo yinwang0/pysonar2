@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ListType extends Type {
 
-    private Type eltType;
+    public Type eltType;
     @NotNull
     public List<Type> positional = new ArrayList<>();
     @NotNull
@@ -23,18 +23,13 @@ public class ListType extends Type {
 
     public ListType(Type elt0) {
         eltType = elt0;
-        getTable().addSuper(Analyzer.self.builtins.BaseList.getTable());
-        getTable().setPath(Analyzer.self.builtins.BaseList.getTable().getPath());
+        table.addSuper(Analyzer.self.builtins.BaseList.table);
+        table.setPath(Analyzer.self.builtins.BaseList.table.path);
     }
 
 
     public void setElementType(Type eltType) {
         this.eltType = eltType;
-    }
-
-
-    public Type getElementType() {
-        return eltType;
     }
 
 
@@ -77,7 +72,7 @@ public class ListType extends Type {
         } else if (other instanceof ListType) {
             ListType co = (ListType) other;
             typeStack.push(this, other);
-            boolean ret = co.getElementType().equals(getElementType());
+            boolean ret = co.eltType.equals(eltType);
             typeStack.pop(this, other);
             return ret;
         } else {
@@ -102,7 +97,7 @@ public class ListType extends Type {
         } else {
             ctr.push(this);
             sb.append("[");
-            sb.append(getElementType().printType(ctr));
+            sb.append(eltType.printType(ctr));
             sb.append("]");
             ctr.pop(this);
         }

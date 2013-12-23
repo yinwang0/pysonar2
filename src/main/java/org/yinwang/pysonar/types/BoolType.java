@@ -13,9 +13,9 @@ public class BoolType extends Type {
     }
 
 
-    private Value value;
-    private State s1;
-    private State s2;
+    public Value value;
+    public State s1;
+    public State s2;
 
 
     public BoolType(Value value) {
@@ -30,28 +30,13 @@ public class BoolType extends Type {
     }
 
 
-    public Value getValue() {
-        return value;
-    }
-
-
     public void setValue(Value value) {
         this.value = value;
     }
 
 
-    public State getS1() {
-        return s1;
-    }
-
-
     public void setS1(State s1) {
         this.s1 = s1;
-    }
-
-
-    public State getS2() {
-        return s2;
     }
 
 

@@ -205,7 +205,7 @@ public class Analyzer {
         if (t == null) {
             return null;
         } else if (t.isUnionType()) {
-            for (Type tt : t.asUnionType().getTypes()) {
+            for (Type tt : t.asUnionType().types) {
                 if (tt.isModuleType()) {
                     return (ModuleType) tt;
                 }
@@ -438,7 +438,7 @@ public class Analyzer {
         Type mt = getBuiltinModule(qname);
         if (mt != null) {
             state.insert(name.get(0).id,
-                    new Url(Builtins.LIBRARY_URL + mt.getTable().getPath() + ".html"),
+                    new Url(Builtins.LIBRARY_URL + mt.table.path + ".html"),
                     mt, Binding.Kind.SCOPE);
             return mt;
         }
@@ -465,7 +465,7 @@ public class Analyzer {
                 }
 
                 if (prev != null) {
-                    prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+                    prev.table.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                 } else {
                     state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                 }
@@ -480,7 +480,7 @@ public class Analyzer {
                         return null;
                     }
                     if (prev != null) {
-                        prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+                        prev.table.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                     } else {
                         state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                     }
@@ -544,12 +544,12 @@ public class Analyzer {
 
         // mark unused variables
         for (Binding b : allBindings) {
-            if (!b.getType().isClassType() &&
-                    !b.getType().isFuncType() &&
-                    !b.getType().isModuleType()
-                    && b.getRefs().isEmpty())
+            if (!b.type.isClassType() &&
+                    !b.type.isFuncType() &&
+                    !b.type.isModuleType()
+                    && b.refs.isEmpty())
             {
-                Analyzer.self.putProblem(b.getNode(), "Unused variable: " + b.getName());
+                Analyzer.self.putProblem(b.node, "Unused variable: " + b.name);
             }
         }
 
@@ -603,7 +603,7 @@ public class Analyzer {
         int nDef = 0, nXRef = 0;
         for (Binding b : getAllBindings()) {
             nDef += 1;
-            nXRef += b.getRefs().size();
+            nXRef += b.refs.size();
         }
 
         sb.append("\n- number of definitions: " + nDef);

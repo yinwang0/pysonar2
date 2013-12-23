@@ -13,8 +13,8 @@ public class DictType extends Type {
     public DictType(Type key0, Type val0) {
         keyType = key0;
         valueType = val0;
-        getTable().addSuper(Analyzer.self.builtins.BaseDict.getTable());
-        getTable().setPath(Analyzer.self.builtins.BaseDict.getTable().getPath());
+        table.addSuper(Analyzer.self.builtins.BaseDict.table);
+        table.setPath(Analyzer.self.builtins.BaseDict.table.path);
     }
 
 

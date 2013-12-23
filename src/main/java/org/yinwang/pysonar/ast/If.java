@@ -32,8 +32,8 @@ public class If extends Node {
 
         Type conditionType = transformExpr(test, s);
         if (conditionType.isUndecidedBool()) {
-            s1 = conditionType.asBool().getS1();
-            s2 = conditionType.asBool().getS2();
+            s1 = conditionType.asBool().s1;
+            s2 = conditionType.asBool().s2;
         }
 
         if (body != null) {

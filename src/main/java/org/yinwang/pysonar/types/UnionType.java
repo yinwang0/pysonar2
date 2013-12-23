@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class UnionType extends Type {
 
-    private Set<Type> types;
+    public Set<Type> types;
 
 
     public UnionType() {
@@ -45,7 +45,7 @@ public class UnionType extends Type {
 
     static public Type remove(Type t1, Type t2) {
         if (t1 instanceof UnionType) {
-            Set<Type> types = new HashSet<>(((UnionType) t1).getTypes());
+            Set<Type> types = new HashSet<>(((UnionType) t1).types);
             types.remove(t2);
             return UnionType.newUnion(types);
         } else if (t1 == t2) {
@@ -68,11 +68,6 @@ public class UnionType extends Type {
 
     public void setTypes(Set<Type> types) {
         this.types = types;
-    }
-
-
-    public Set<Type> getTypes() {
-        return types;
     }
 
 
@@ -132,8 +127,8 @@ public class UnionType extends Type {
         if (typeStack.contains(this, other)) {
             return true;
         } else if (other instanceof UnionType) {
-            Set<Type> types1 = getTypes();
-            Set<Type> types2 = ((UnionType) other).getTypes();
+            Set<Type> types1 = types;
+            Set<Type> types2 = ((UnionType) other).types;
             if (types1.size() != types2.size()) {
                 return false;
             } else {

@@ -22,19 +22,19 @@ public class State {
 
 
     @Nullable
-    private Map<String, List<Binding>> table;  // stays null for most scopes (mem opt)
+    public Map<String, List<Binding>> table = new HashMap<>();
     @Nullable
     public State parent;      // all are non-null except global table
     @Nullable
-    private State forwarding; // link to the closest non-class scope, for lifting functions out
+    public State forwarding; // link to the closest non-class scope, for lifting functions out
     @Nullable
-    private List<State> supers;
+    public List<State> supers;
     @Nullable
-    private Set<String> globalNames;
-    private StateType stateType;
-    private Type type;
+    public Set<String> globalNames;
+    public StateType stateType;
+    public Type type;
     @NotNull
-    private String path = "";
+    public String path = "";
 
 
     public State(@Nullable State parent, StateType type) {
@@ -66,7 +66,7 @@ public class State {
 
     // erase and overwrite this to s's contents
     public void overwrite(@NotNull State s) {
-        this.table = s.getInternalTable();
+        this.table = s.table;
         this.parent = s.parent;
         this.stateType = s.stateType;
         this.forwarding = s.forwarding;
@@ -84,9 +84,9 @@ public class State {
 
 
     public void merge(State other) {
-        for (Map.Entry<String, List<Binding>> e1 : getInternalTable().entrySet()) {
+        for (Map.Entry<String, List<Binding>> e1 : table.entrySet()) {
             List<Binding> b1 = e1.getValue();
-            List<Binding> b2 = other.getInternalTable().get(e1.getKey());
+            List<Binding> b2 = other.table.get(e1.getKey());
 
             // both branch have the same name, need merge
             if (b2 != null && b1 != b2) {
@@ -94,8 +94,8 @@ public class State {
             }
         }
 
-        for (Map.Entry<String, List<Binding>> e2 : other.getInternalTable().entrySet()) {
-            List<Binding> b1 = getInternalTable().get(e2.getKey());
+        for (Map.Entry<String, List<Binding>> e2 : other.table.entrySet()) {
+            List<Binding> b1 = table.get(e2.getKey());
             List<Binding> b2 = e2.getValue();
 
             // both branch have the same name, need merge
@@ -140,11 +140,6 @@ public class State {
     }
 
 
-    public StateType getStateType() {
-        return stateType;
-    }
-
-
     public void addGlobalName(@NotNull String name) {
         if (globalNames == null) {
             globalNames = new HashSet<>();
@@ -175,7 +170,7 @@ public class State {
     public void insert(String id, Node node, Type type, Binding.Kind kind) {
         Binding b = new Binding(id, node, type, kind);
         if (type.isModuleType()) {
-            b.setQname(type.asModuleType().getQname());
+            b.setQname(type.asModuleType().qname);
         } else {
             b.setQname(extendPath(id));
         }
@@ -186,7 +181,7 @@ public class State {
     // directly insert a given binding
     @NotNull
     public List<Binding> update(String id, @NotNull List<Binding> bs) {
-        getInternalTable().put(id, bs);
+        table.put(id, bs);
         return bs;
     }
 
@@ -195,24 +190,13 @@ public class State {
     public List<Binding> update(String id, @NotNull Binding b) {
         List<Binding> bs = new ArrayList<>();
         bs.add(b);
-        getInternalTable().put(id, bs);
+        table.put(id, bs);
         return bs;
     }
 
 
     public void setPath(@NotNull String path) {
         this.path = path;
-    }
-
-
-    @NotNull
-    public String getPath() {
-        return path;
-    }
-
-
-    public Type getType() {
-        return type;
     }
 
 
@@ -344,7 +328,7 @@ public class State {
     public static Type makeUnion(List<Binding> bs) {
         Type t = Type.UNKNOWN;
         for (Binding b : bs) {
-            t = UnionType.union(t, b.getType());
+            t = UnionType.union(t, b.type);
         }
         return t;
     }
@@ -396,7 +380,7 @@ public class State {
 
 
     public void putAll(@NotNull State other) {
-        getInternalTable().putAll(other.getInternalTable());
+        table.putAll(other.table);
     }
 
 
@@ -448,18 +432,9 @@ public class State {
 
 
     @NotNull
-    private Map<String, List<Binding>> getInternalTable() {
-        if (this.table == null) {
-            this.table = new HashMap<>();
-        }
-        return this.table;
-    }
-
-
-    @NotNull
     @Override
     public String toString() {
-        return "<State:" + getStateType() + ":" +
+        return "<State:" + stateType + ":" +
                 (table == null ? "{}" : table.keySet()) + ">";
     }
 

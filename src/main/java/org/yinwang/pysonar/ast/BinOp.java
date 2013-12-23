@@ -38,7 +38,7 @@ public class BinOp extends Node {
         // boolean operations
         if (op == Op.And) {
             if (ltype.isUndecidedBool()) {
-                rtype = transformExpr(right, ltype.asBool().getS1());
+                rtype = transformExpr(right, ltype.asBool().s1);
             } else {
                 rtype = transformExpr(right, s);
             }
@@ -48,8 +48,8 @@ public class BinOp extends Node {
             } else if (ltype.isFalse() || rtype.isFalse()) {
                 return Type.FALSE;
             } else if (ltype.isUndecidedBool() && rtype.isUndecidedBool()) {
-                State falseState = State.merge(ltype.asBool().getS2(), rtype.asBool().getS2());
-                return new BoolType(rtype.asBool().getS1(), falseState);
+                State falseState = State.merge(ltype.asBool().s2, rtype.asBool().s2);
+                return new BoolType(rtype.asBool().s1, falseState);
             } else {
                 return Type.BOOL;
             }
@@ -57,7 +57,7 @@ public class BinOp extends Node {
 
         if (op == Op.Or) {
             if (ltype.isUndecidedBool()) {
-                rtype = transformExpr(right, ltype.asBool().getS2());
+                rtype = transformExpr(right, ltype.asBool().s2);
             } else {
                 rtype = transformExpr(right, s);
             }
@@ -67,8 +67,8 @@ public class BinOp extends Node {
             } else if (ltype.isFalse() && rtype.isFalse()) {
                 return Type.FALSE;
             } else if (ltype.isUndecidedBool() && rtype.isUndecidedBool()) {
-                State trueState = State.merge(ltype.asBool().getS1(), rtype.asBool().getS1());
-                return new BoolType(trueState, rtype.asBool().getS2());
+                State trueState = State.merge(ltype.asBool().s1, rtype.asBool().s1);
+                return new BoolType(trueState, rtype.asBool().s2);
             } else {
                 return Type.BOOL;
             }
@@ -135,17 +135,17 @@ public class BinOp extends Node {
                         if (leftNode.isName()) {
                             // true branch: if l < r, then l's upper bound is r's upper bound
                             trueType = new IntType(leftNum);
-                            trueType.setUpper(rightNum.getUpper());
+                            trueType.setUpper(rightNum.upper);
 
                             // false branch: if l > r, then l's lower bound is r's lower bound
                             falseType = new IntType(leftNum);
-                            falseType.setLower(rightNum.getLower());
+                            falseType.setLower(rightNum.lower);
                             String id = leftNode.asName().id;
 
                             for (Binding b : s.lookup(id)) {
-                                Node loc = b.getNode();
-                                s1.update(id, new Binding(id, loc, trueType, b.getKind()));
-                                s2.update(id, new Binding(id, loc, falseType, b.getKind()));
+                                Node loc = b.node;
+                                s1.update(id, new Binding(id, loc, trueType, b.kind));
+                                s2.update(id, new Binding(id, loc, falseType, b.kind));
                             }
                         }
                         return new BoolType(s1, s2);
@@ -165,17 +165,17 @@ public class BinOp extends Node {
                         if (leftNode.isName()) {
                             // true branch: if l > r, then l's lower bound is r's lower bound
                             trueType = new IntType(leftNum);
-                            trueType.setLower(rightNum.getLower());
+                            trueType.setLower(rightNum.lower);
 
                             // false branch: if l < r, then l's upper bound is r's upper bound
                             falseType = new IntType(leftNum);
-                            falseType.setUpper(rightNum.getUpper());
+                            falseType.setUpper(rightNum.upper);
                             String id = leftNode.asName().id;
 
                             for (Binding b : s.lookup(id)) {
-                                Node loc = b.getNode();
-                                s1.update(id, new Binding(id, loc, trueType, b.getKind()));
-                                s2.update(id, new Binding(id, loc, falseType, b.getKind()));
+                                Node loc = b.node;
+                                s1.update(id, new Binding(id, loc, trueType, b.kind));
+                                s2.update(id, new Binding(id, loc, falseType, b.kind));
                             }
                         }
                         return new BoolType(s1, s2);

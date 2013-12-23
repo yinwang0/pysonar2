@@ -7,19 +7,19 @@ import org.yinwang.pysonar.State;
 
 public class ClassType extends Type {
 
-    private String name;
-    private InstanceType canon;
-    private Type superclass;
+    public String name;
+    public InstanceType canon;
+    public Type superclass;
 
 
     public ClassType(@NotNull String name, @Nullable State parent) {
         this.name = name;
         this.setTable(new State(parent, State.StateType.CLASS));
-        this.getTable().setType(this);
+        table.setType(this);
         if (parent != null) {
-            this.getTable().setPath(parent.extendPath(name));
+            table.setPath(parent.extendPath(name));
         } else {
-            this.getTable().setPath(name);
+            table.setPath(name);
         }
     }
 
@@ -37,14 +37,9 @@ public class ClassType extends Type {
     }
 
 
-    public String getName() {
-        return name;
-    }
-
-
     public void addSuper(@NotNull Type superclass) {
         this.superclass = superclass;
-        getTable().addSuper(superclass.getTable());
+        table.addSuper(superclass.table);
     }
 
 
@@ -65,7 +60,7 @@ public class ClassType extends Type {
     @Override
     protected String printType(CyclicTypeRecorder ctr) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<").append(getName()).append(">");
+        sb.append("<").append(name).append(">");
         return sb.toString();
     }
 }

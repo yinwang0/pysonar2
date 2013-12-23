@@ -2,13 +2,9 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.*;
-import org.yinwang.pysonar.types.ClassType;
-import org.yinwang.pysonar.types.DictType;
-import org.yinwang.pysonar.types.TupleType;
-import org.yinwang.pysonar.types.Type;
+import org.yinwang.pysonar.types.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class Class extends Node {
@@ -45,7 +41,7 @@ public class Class extends Node {
             if (baseType.isClassType()) {
                 classType.addSuper(baseType);
             } else if (baseType.isUnionType()) {
-                for (Type b : baseType.asUnionType().getTypes()) {
+                for (Type b : baseType.asUnionType().types) {
                     classType.addSuper(b);
                     break;
                 }
@@ -57,18 +53,18 @@ public class Class extends Node {
 
         // XXX: Not sure if we should add "bases", "name" and "dict" here. They
         // must be added _somewhere_ but I'm just not sure if it should be HERE.
-        addSpecialAttribute(classType.getTable(), "__bases__", new TupleType(baseTypes));
-        addSpecialAttribute(classType.getTable(), "__name__", Type.STR);
-        addSpecialAttribute(classType.getTable(), "__dict__",
+        addSpecialAttribute(classType.table, "__bases__", new TupleType(baseTypes));
+        addSpecialAttribute(classType.table, "__name__", Type.STR);
+        addSpecialAttribute(classType.table, "__dict__",
                 new DictType(Type.STR, Type.UNKNOWN));
-        addSpecialAttribute(classType.getTable(), "__module__", Type.STR);
-        addSpecialAttribute(classType.getTable(), "__doc__", Type.STR);
+        addSpecialAttribute(classType.table, "__module__", Type.STR);
+        addSpecialAttribute(classType.table, "__doc__", Type.STR);
 
         // Bind ClassType to name here before resolving the body because the
         // methods need this type as self.
         Binder.bind(s, name, classType, Binding.Kind.CLASS);
         if (body != null) {
-            transformExpr(body, classType.getTable());
+            transformExpr(body, classType.table);
         }
         return Type.CONT;
     }

@@ -7,17 +7,12 @@ import org.yinwang.pysonar.types.Type;
 
 public class Bytes extends Node {
 
-    private Object value;
+    public Object value;
 
 
     public Bytes(@NotNull Object value, String file, int start, int end) {
         super(file, start, end);
         this.value = value.toString();
-    }
-
-
-    public Object getStr() {
-        return value;
     }
 
 

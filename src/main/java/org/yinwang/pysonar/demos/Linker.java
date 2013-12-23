@@ -88,7 +88,7 @@ class Linker {
 
 
     private void processDef(@NotNull Binding binding) {
-        String qname = binding.getQname();
+        String qname = binding.qname;
         int hash = binding.hashCode();
 
         if (binding.isURL() || binding.start < 0 || seenDef.contains(hash)) {
@@ -97,8 +97,8 @@ class Linker {
 
         seenDef.add(hash);
         Style style = new Style(Style.Type.ANCHOR, binding.start, binding.end);
-        style.message = binding.getType().toString();
-        style.url = binding.getQname();
+        style.message = binding.type.toString();
+        style.url = binding.qname;
         style.id = qname;
         addFileStyle(binding.getFile(), style);
     }
@@ -113,11 +113,11 @@ class Linker {
 
         seenDef.add(hash);
         Style style = new Style(Style.Type.ANCHOR, binding.start, binding.end);
-        style.message = binding.getType().toString();
-        style.url = binding.getQname();
+        style.message = binding.type.toString();
+        style.url = binding.qname;
         style.id = "" + Math.abs(binding.hashCode());
 
-        Set<Node> refs = binding.getRefs();
+        Set<Node> refs = binding.refs;
         style.highlight = new ArrayList<>();
 
 
@@ -129,7 +129,7 @@ class Linker {
 
 
     void processRef(@NotNull Node ref, @NotNull List<Binding> bindings) {
-        String qname = bindings.iterator().next().getQname();
+        String qname = bindings.iterator().next().qname;
         int hash = ref.hashCode();
 
         if (!seenRef.contains(hash)) {
@@ -140,7 +140,7 @@ class Linker {
 
             List<String> typings = new ArrayList<>();
             for (Binding b : bindings) {
-                typings.add(b.getType().toString());
+                typings.add(b.type.toString());
             }
             link.message = _.joinWithSep(typings, " | ", "{", "}");
 
@@ -174,7 +174,7 @@ class Linker {
 
             List<String> typings = new ArrayList<>();
             for (Binding b : bindings) {
-                typings.add(b.getType().toString());
+                typings.add(b.type.toString());
             }
             link.message = _.joinWithSep(typings, " | ", "{", "}");
 
@@ -233,8 +233,8 @@ class Linker {
      * the AST.
      */
     private void addSemanticStyles(@NotNull Binding nb) {
-        boolean isConst = CONSTANT.matcher(nb.getName()).matches();
-        switch (nb.getKind()) {
+        boolean isConst = CONSTANT.matcher(nb.name).matches();
+        switch (nb.kind) {
             case SCOPE:
                 if (isConst) {
                     addSemanticStyle(nb, Style.Type.CONSTANT);
@@ -277,8 +277,8 @@ class Linker {
         }
 
         String destPath;
-        if (binding.getType().isModuleType()) {
-            destPath = binding.getType().asModuleType().getFile();
+        if (binding.type.isModuleType()) {
+            destPath = binding.type.asModuleType().file;
         } else {
             destPath = binding.getFile();
         }
@@ -287,7 +287,7 @@ class Linker {
             return null;
         }
 
-        String anchor = "#" + binding.getQname();
+        String anchor = "#" + binding.qname;
         if (binding.getFirstFile().equals(filename)) {
             return anchor;
         }

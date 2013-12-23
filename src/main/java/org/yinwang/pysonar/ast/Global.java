@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Global extends Node {
 
-    private List<Name> names;
+    public List<Name> names;
 
 
     public Global(List<Name> names, String file, int start, int end) {
@@ -24,11 +24,6 @@ public class Global extends Node {
     public Type transform(State s) {
         // Do nothing here because global names are processed by NBlock
         return Type.CONT;
-    }
-
-
-    public List<Name> getNames() {
-        return names;
     }
 
 

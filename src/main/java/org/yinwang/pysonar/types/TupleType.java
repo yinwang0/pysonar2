@@ -10,13 +10,13 @@ import java.util.List;
 
 public class TupleType extends Type {
 
-    private List<Type> eltTypes;
+    public List<Type> eltTypes;
 
 
     public TupleType() {
         this.eltTypes = new ArrayList<>();
-        getTable().addSuper(Analyzer.self.builtins.BaseTuple.getTable());
-        getTable().setPath(Analyzer.self.builtins.BaseTuple.getTable().getPath());
+        table.addSuper(Analyzer.self.builtins.BaseTuple.table);
+        table.setPath(Analyzer.self.builtins.BaseTuple.table.path);
     }
 
 
@@ -50,11 +50,6 @@ public class TupleType extends Type {
     }
 
 
-    public List<Type> getElementTypes() {
-        return eltTypes;
-    }
-
-
     public void add(Type elt) {
         eltTypes.add(elt);
     }
@@ -80,8 +75,8 @@ public class TupleType extends Type {
         if (typeStack.contains(this, other)) {
             return true;
         } else if (other instanceof TupleType) {
-            List<Type> types1 = getElementTypes();
-            List<Type> types2 = ((TupleType) other).getElementTypes();
+            List<Type> types1 = eltTypes;
+            List<Type> types2 = ((TupleType) other).eltTypes;
 
             if (types1.size() == types2.size()) {
                 typeStack.push(this, other);
@@ -119,11 +114,11 @@ public class TupleType extends Type {
         } else {
             int newNum = ctr.push(this);
             boolean first = true;
-            if (getElementTypes().size() != 1) {
+            if (eltTypes.size() != 1) {
                 sb.append("(");
             }
 
-            for (Type t : getElementTypes()) {
+            for (Type t : eltTypes) {
                 if (!first) {
                     sb.append(", ");
                 }
@@ -135,7 +130,7 @@ public class TupleType extends Type {
                 sb.append("=#").append(newNum).append(":");
             }
 
-            if (getElementTypes().size() != 1) {
+            if (eltTypes.size() != 1) {
                 sb.append(")");
             }
             ctr.pop(this);

@@ -32,7 +32,7 @@ public class Subscript extends Node {
 
         if (vt.isUnionType()) {
             Type retType = Type.UNKNOWN;
-            for (Type t : vt.asUnionType().getTypes()) {
+            for (Type t : vt.asUnionType().types) {
                 retType = UnionType.union(retType, getSubscript(t, st, s));
             }
             return retType;
@@ -75,9 +75,9 @@ public class Subscript extends Node {
             if (st != null && st.isListType()) {
                 return vt;
             } else if (st == null || st.isNumType()) {
-                return vt.asListType().getElementType();
+                return vt.asListType().eltType;
             } else {
-                Type sliceFunc = vt.getTable().lookupAttrType("__getslice__");
+                Type sliceFunc = vt.table.lookupAttrType("__getslice__");
                 if (sliceFunc == null) {
                     addError("The type can't be sliced: " + vt);
                     return Type.UNKNOWN;

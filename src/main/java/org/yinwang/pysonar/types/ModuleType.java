@@ -10,9 +10,9 @@ import org.yinwang.pysonar._;
 public class ModuleType extends Type {
 
     @NotNull
-    private String name;
+    public String name;
     @Nullable
-    private String qname;
+    public String qname;
 
 
     public ModuleType(@NotNull String name, @Nullable String file, @NotNull State parent) {
@@ -28,29 +28,18 @@ public class ModuleType extends Type {
             qname = name;
         }
         setTable(new State(parent, State.StateType.MODULE));
-        getTable().setPath(qname);
-        getTable().setType(this);
+        table.setPath(qname);
+        table.setType(this);
 
         // null during bootstrapping of built-in types
         if (Analyzer.self.builtins != null) {
-            getTable().addSuper(Analyzer.self.builtins.BaseModule.getTable());
+            table.addSuper(Analyzer.self.builtins.BaseModule.table);
         }
-    }
-
-
-    public String getName() {
-        return name;
     }
 
 
     public void setName(String name) {
         this.name = name;
-    }
-
-
-    @Nullable
-    public String getQname() {
-        return qname;
     }
 
 
@@ -74,6 +63,6 @@ public class ModuleType extends Type {
 
     @Override
     protected String printType(CyclicTypeRecorder ctr) {
-        return getName();
+        return name;
     }
 }

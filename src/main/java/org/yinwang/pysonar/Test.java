@@ -25,7 +25,7 @@ public class Test {
     public Test(String inputDir, boolean exp) {
         // make a quiet analyzer
         Map<String, Object> options = new HashMap<>();
-        options.put("quiet", true);
+//        options.put("quiet", true);
         this.analyzer = new Analyzer(options);
 
         this.inputDir = inputDir;
@@ -70,7 +70,7 @@ public class Test {
                     if (destFile != null && destFile.startsWith(Analyzer.self.projectDir)) {
                         destFile = _.projRelPath(destFile);
                         Map<String, Object> dest = new LinkedHashMap<>();
-                        dest.put("name", b.getName());
+                        dest.put("name", b.name);
                         dest.put("file", destFile);
                         dest.put("start", b.start);
                         dest.put("end", b.end);

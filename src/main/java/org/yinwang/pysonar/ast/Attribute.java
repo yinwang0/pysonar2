@@ -30,22 +30,10 @@ public class Attribute extends Node {
     }
 
 
-    @Nullable
-    public String getAttributeName() {
-        return attr.id;
-    }
-
-
-    @NotNull
-    public Name getAttr() {
-        return attr;
-    }
-
-
     public void setAttr(State s, @NotNull Type v) {
         Type targetType = transformExpr(target, s);
         if (targetType.isUnionType()) {
-            Set<Type> types = targetType.asUnionType().getTypes();
+            Set<Type> types = targetType.asUnionType().types;
             for (Type tp : types) {
                 setAttrType(tp, v);
             }
@@ -61,12 +49,12 @@ public class Attribute extends Node {
             return;
         }
         // new attr, mark the type as "mutated"
-        if (targetType.getTable().lookupAttr(attr.id) == null ||
-                !targetType.getTable().lookupAttrType(attr.id).equals(v))
+        if (targetType.table.lookupAttr(attr.id) == null ||
+                !targetType.table.lookupAttrType(attr.id).equals(v))
         {
             targetType.setMutated(true);
         }
-        targetType.getTable().insert(attr.id, attr, v, ATTRIBUTE);
+        targetType.table.insert(attr.id, attr, v, ATTRIBUTE);
     }
 
 
@@ -80,7 +68,7 @@ public class Attribute extends Node {
 
         Type targetType = transformExpr(target, s);
         if (targetType.isUnionType()) {
-            Set<Type> types = targetType.asUnionType().getTypes();
+            Set<Type> types = targetType.asUnionType().types;
             Type retType = Type.UNKNOWN;
             for (Type tt : types) {
                 retType = UnionType.union(retType, getAttrType(tt));
@@ -93,19 +81,19 @@ public class Attribute extends Node {
 
 
     private Type getAttrType(@NotNull Type targetType) {
-        List<Binding> bs = targetType.getTable().lookupAttr(attr.id);
+        List<Binding> bs = targetType.table.lookupAttr(attr.id);
         if (bs == null) {
             Analyzer.self.putProblem(attr, "attribute not found in type: " + targetType);
             Type t = Type.UNKNOWN;
-            t.getTable().setPath(targetType.getTable().extendPath(attr.id));
+            t.table.setPath(targetType.table.extendPath(attr.id));
             return t;
         } else {
             for (Binding b : bs) {
                 Analyzer.self.putRef(attr, b);
                 if (parent != null && parent.isCall() &&
-                        b.getType().isFuncType() && targetType.isInstanceType())
+                        b.type.isFuncType() && targetType.isInstanceType())
                 {  // method call
-                    b.getType().asFuncType().setSelfType(targetType);
+                    b.type.asFuncType().setSelfType(targetType);
                 }
             }
 
@@ -117,7 +105,7 @@ public class Attribute extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Attribute:" + start + ":" + target + "." + getAttributeName() + ">";
+        return "<Attribute:" + start + ":" + target + "." + attr.id + ">";
     }
 
 }

@@ -18,10 +18,10 @@ public class Outliner {
 
     public static abstract class Entry {
         @Nullable
-        protected String qname;  // entry qualified name
-        protected int offset;  // file offset of referenced declaration
+        public String qname;  // entry qualified name
+        public int offset;  // file offset of referenced declaration
         @Nullable
-        protected Binding.Kind kind;  // binding kind of outline entry
+        public Binding.Kind kind;  // binding kind of outline entry
 
 
         public Entry() {
@@ -90,12 +90,6 @@ public class Outliner {
         }
 
 
-        @Nullable
-        public Binding.Kind getKind() {
-            return kind;
-        }
-
-
         public void setKind(@Nullable Binding.Kind kind) {
             if (kind == null) {
                 throw new IllegalArgumentException("kind param cannot be null");
@@ -125,7 +119,7 @@ public class Outliner {
             for (int i = 0; i < depth; i++) {
                 sb.append("  ");
             }
-            sb.append(getKind());
+            sb.append(kind);
             sb.append(" ");
             sb.append(getName());
             sb.append("\n");
@@ -142,7 +136,7 @@ public class Outliner {
      * An outline entry with children.
      */
     public static class Branch extends Entry {
-        private List<Entry> children = new ArrayList<Entry>();
+        private List<Entry> children = new ArrayList<>();
 
 
         public Branch() {
@@ -210,7 +204,7 @@ public class Outliner {
 
         @NotNull
         public List<Entry> getChildren() {
-            return new ArrayList<Entry>();
+            return new ArrayList<>();
         }
 
 
@@ -234,7 +228,7 @@ public class Outliner {
         if (mt == null) {
             return new ArrayList<>();
         }
-        return generate(mt.getTable(), abspath);
+        return generate(mt.table, abspath);
     }
 
 
@@ -262,23 +256,23 @@ public class Outliner {
         for (Binding nb : entries) {
             List<Entry> kids = null;
 
-            if (nb.getKind() == Binding.Kind.CLASS) {
-                Type realType = nb.getType();
+            if (nb.kind == Binding.Kind.CLASS) {
+                Type realType = nb.type;
                 if (realType.isUnionType()) {
-                    for (Type t : realType.asUnionType().getTypes()) {
+                    for (Type t : realType.asUnionType().types) {
                         if (t.isClassType()) {
                             realType = t;
                             break;
                         }
                     }
                 }
-                kids = generate(realType.getTable(), path);
+                kids = generate(realType.table, path);
             }
 
             Entry kid = kids != null ? new Branch() : new Leaf();
             kid.setOffset(nb.start);
-            kid.setQname(nb.getQname());
-            kid.setKind(nb.getKind());
+            kid.setQname(nb.qname);
+            kid.setKind(nb.kind);
 
             if (kids != null) {
                 kid.setChildren(kids);
