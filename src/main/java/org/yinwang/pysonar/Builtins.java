@@ -412,7 +412,7 @@ public class Builtins {
         new SpwdModule();
         new StropModule();
         new StructModule();
-//        new SysModule();
+        new SysModule();
         new SyslogModule();
         new TermiosModule();
         new ThreadModule();

@@ -30,11 +30,8 @@ public class If extends Node {
         State s1 = s.copy();
         State s2 = s.copy();
 
-        Type conditionType = transformExpr(test, s);
-        if (conditionType.isUndecidedBool()) {
-            s1 = conditionType.asBool().s1;
-            s2 = conditionType.asBool().s2;
-        }
+        // ignore condition for now
+        transformExpr(test, s);
 
         if (body != null) {
             type1 = transformExpr(body, s1);
@@ -52,11 +49,7 @@ public class If extends Node {
         boolean cont2 = UnionType.contains(type2, Type.CONT);
 
         // decide which branch affects the downstream state
-        if (conditionType.isTrue() && cont1) {
-            s.overwrite(s1);
-        } else if (conditionType.isFalse() && cont2) {
-            s.overwrite(s2);
-        } else if (cont1 && cont2) {
+        if (cont1 && cont2) {
             s.overwrite(State.merge(s1, s2));
         } else if (cont1) {
             s.overwrite(s1);
@@ -64,14 +57,7 @@ public class If extends Node {
             s.overwrite(s2);
         }
 
-        // determine return type
-        if (conditionType == Type.TRUE) {
-            return type1;
-        } else if (conditionType == Type.FALSE) {
-            return type2;
-        } else {
-            return UnionType.union(type1, type2);
-        }
+        return UnionType.union(type1, type2);
     }
 
 
