@@ -51,7 +51,7 @@ class HtmlOutline {
         add("<li>");
 
         String style = null;
-        switch (e.getKind()) {
+        switch (e.kind) {
             case FUNCTION:
             case METHOD:
             case CONSTRUCTOR:

@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 
@@ -15,8 +15,8 @@ public class Keyword extends Node {
     public Node value;
 
 
-    public Keyword(String arg, @NotNull Node value, int start, int end) {
-        super(start, end);
+    public Keyword(String arg, @NotNull Node value, String file, int start, int end) {
+        super(file, start, end);
         this.arg = arg;
         this.value = value;
         addChildren(value);
@@ -25,26 +25,15 @@ public class Keyword extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
-        return resolveExpr(value, s);
-    }
-
-
-    public String getArg() {
-        return arg;
-    }
-
-
-    @NotNull
-    public Node getValue() {
-        return value;
+    public Type transform(State s) {
+        return transformExpr(value, s);
     }
 
 
     @NotNull
     @Override
     public String toString() {
-        return "<Keyword:" + arg + ":" + value + ">";
+        return "(keyword:" + arg + ":" + value + ")";
     }
 
 
@@ -54,11 +43,4 @@ public class Keyword extends Node {
         return arg;
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(value, v);
-        }
-    }
 }

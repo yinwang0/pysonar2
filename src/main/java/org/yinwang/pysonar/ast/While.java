@@ -1,8 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
@@ -10,12 +9,12 @@ import org.yinwang.pysonar.types.UnionType;
 public class While extends Node {
 
     public Node test;
-    public Block body;
-    public Block orelse;
+    public Node body;
+    public Node orelse;
 
 
-    public While(Node test, Block body, Block orelse, int start, int end) {
-        super(start, end);
+    public While(Node test, Node body, Node orelse, String file, int start, int end) {
+        super(file, start, end);
         this.test = test;
         this.body = body;
         this.orelse = orelse;
@@ -25,16 +24,16 @@ public class While extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
-        resolveExpr(test, s);
-        Type t = Analyzer.self.builtins.unknown;
+    public Type transform(State s) {
+        transformExpr(test, s);
+        Type t = Type.UNKNOWN;
 
         if (body != null) {
-            t = resolveExpr(body, s);
+            t = transformExpr(body, s);
         }
 
         if (orelse != null) {
-            t = UnionType.union(t, resolveExpr(orelse, s));
+            t = UnionType.union(t, transformExpr(orelse, s));
         }
 
         return t;
@@ -47,13 +46,4 @@ public class While extends Node {
         return "<While:" + test + ":" + body + ":" + orelse + ":" + start + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(test, v);
-            visitNode(body, v);
-            visitNode(orelse, v);
-        }
-    }
 }

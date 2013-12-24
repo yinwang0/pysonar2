@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.TupleType;
 import org.yinwang.pysonar.types.Type;
 
@@ -10,17 +10,17 @@ import java.util.List;
 
 public class Tuple extends Sequence {
 
-    public Tuple(List<Node> elts, int start, int end) {
-        super(elts, start, end);
+    public Tuple(List<Node> elts, String file, int start, int end) {
+        super(elts, file, start, end);
     }
 
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
+    public Type transform(State s) {
         TupleType t = new TupleType();
         for (Node e : elts) {
-            t.add(resolveExpr(e, s));
+            t.add(transformExpr(e, s));
         }
         return t;
     }
@@ -52,11 +52,4 @@ public class Tuple extends Sequence {
         return sb.toString();
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNodeList(elts, v);
-        }
-    }
 }

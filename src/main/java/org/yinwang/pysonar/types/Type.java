@@ -1,12 +1,11 @@
 package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.TypeStack;
 import org.yinwang.pysonar._;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -15,8 +14,9 @@ import java.util.Set;
 
 public abstract class Type {
 
-    @Nullable
-    public Scope table;
+    @NotNull
+    public State table = new State(null, State.StateType.SCOPE);
+    public String file = null;
     public boolean mutated = false;
 
 
@@ -28,22 +28,13 @@ public abstract class Type {
     }
 
 
-    public void setTable(@NotNull Scope table) {
+    public void setTable(@NotNull State table) {
         this.table = table;
     }
 
 
-    @NotNull
-    public Scope getTable() {
-        if (table == null) {
-            table = new Scope(null, Scope.ScopeType.SCOPE);
-        }
-        return table;
-    }
-
-
-    public boolean isMutated() {
-        return mutated;
+    public void setFile(String file) {
+        this.file = file;
     }
 
 
@@ -52,12 +43,19 @@ public abstract class Type {
     }
 
 
-    /**
-     * Returns {@code true} if this Python type is implemented in native code
-     * (i.e., C, Java, C# or some other host language.)
-     */
-    public boolean isNative() {
-        return Analyzer.self.builtins.isNative(this);
+    public boolean isBool() {
+        return this instanceof BoolType;
+    }
+
+
+    public boolean isUndecidedBool() {
+        return isBool() && asBool().value == BoolType.Value.Undecided &&
+                asBool().s1 != null && asBool().s2 != null;
+    }
+
+
+    public BoolType asBool() {
+        return (BoolType) this;
     }
 
 
@@ -92,14 +90,22 @@ public abstract class Type {
 
 
     public boolean isNumType() {
-        return (this == Analyzer.self.builtins.BaseNum ||
-                this == Analyzer.self.builtins.BaseFloat ||
-                this == Analyzer.self.builtins.BaseComplex);
+        return this instanceof IntType || this instanceof FloatType;
+    }
+
+
+    public boolean isIntType() {
+        return this instanceof IntType;
+    }
+
+
+    public boolean isFloatType() {
+        return this instanceof FloatType;
     }
 
 
     public boolean isStrType() {
-        return this == Analyzer.self.builtins.BaseStr;
+        return this == Type.STR;
     }
 
 
@@ -114,7 +120,7 @@ public abstract class Type {
 
 
     public boolean isUnknownType() {
-        return this == Analyzer.self.builtins.unknown;
+        return this == Type.UNKNOWN;
     }
 
 
@@ -127,6 +133,18 @@ public abstract class Type {
     @NotNull
     public DictType asDictType() {
         return (DictType) this;
+    }
+
+
+    @NotNull
+    public IntType asIntType() {
+        return (IntType) this;
+    }
+
+
+    @NotNull
+    public FloatType asFloatType() {
+        return (FloatType) this;
     }
 
 
@@ -151,7 +169,7 @@ public abstract class Type {
     @NotNull
     public ModuleType asModuleType() {
         if (this.isUnionType()) {
-            for (Type t : this.asUnionType().getTypes()) {
+            for (Type t : this.asUnionType().types) {
                 if (t.isModuleType()) {
                     return t.asModuleType();
                 }
@@ -178,6 +196,49 @@ public abstract class Type {
     @NotNull
     public UnionType asUnionType() {
         return (UnionType) this;
+    }
+
+
+    public boolean isTrue() {
+        if (this == Type.TRUE) {
+            return true;
+        }
+        if (this == Type.FALSE || this.isUndecidedBool()) {
+            return false;
+        }
+        if (this.isIntType() && (this.asIntType().lt(BigInteger.ZERO) || this.asIntType().gt(BigInteger.ZERO))) {
+            return true;
+        }
+        if (this.isIntType() && this.asIntType().isZero()) {
+            return false;
+        }
+        if (this.isFloatType() && (this.asFloatType().lt(0) || this.asFloatType().gt(0))) {
+            return true;
+        }
+        if (this.isFloatType() && this.asFloatType().isZero()) {
+            return false;
+        }
+        return false;
+    }
+
+
+    public boolean isFalse() {
+        if (this == Type.FALSE) {
+            return true;
+        }
+        if (this == Type.TRUE || this.isUndecidedBool()) {
+            return false;
+        }
+        if (this.isIntType() && this.asIntType().isZero()) {
+            return true;
+        }
+        if (this.isFloatType() && this.asFloatType().isZero()) {
+            return true;
+        }
+        if (this == Type.NONE) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -229,4 +290,15 @@ public abstract class Type {
         return printType(new CyclicTypeRecorder());
     }
 
+
+    public static InstanceType UNKNOWN = new InstanceType(new ClassType("?", null, null));
+    public static InstanceType CONT = new InstanceType(new ClassType("None", null, null));
+    public static InstanceType NONE = new InstanceType(new ClassType("None", null, null));
+    public static BoolType TRUE = new BoolType(BoolType.Value.True);
+    public static BoolType FALSE = new BoolType(BoolType.Value.False);
+    public static StrType STR = new StrType(null);
+    public static IntType INT = new IntType();
+    public static FloatType FLOAT = new FloatType();
+    public static ComplexType COMPLEX = new ComplexType();
+    public static BoolType BOOL = new BoolType(BoolType.Value.Undecided);
 }

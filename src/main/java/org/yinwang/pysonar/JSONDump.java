@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.ast.FunctionDef;
+import org.yinwang.pysonar.ast.Function;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Str;
 import org.yinwang.pysonar.types.Type;
@@ -56,56 +56,56 @@ public class JSONDump {
 
 
     private static void writeSymJson(Binding binding, JsonGenerator json) throws IOException {
-        if (binding.getStart() < 0) {
+        if (binding.start < 0) {
             return;
         }
 
-        String name = binding.getName();
+        String name = binding.name;
         boolean isExported = !(
-                Binding.Kind.VARIABLE == binding.getKind() ||
-                        Binding.Kind.PARAMETER == binding.getKind() ||
-                        Binding.Kind.SCOPE == binding.getKind() ||
-                        Binding.Kind.ATTRIBUTE == binding.getKind() ||
+                Binding.Kind.VARIABLE == binding.kind ||
+                        Binding.Kind.PARAMETER == binding.kind ||
+                        Binding.Kind.SCOPE == binding.kind ||
+                        Binding.Kind.ATTRIBUTE == binding.kind ||
                         (name.length() == 0 || name.charAt(0) == '_' || name.startsWith("lambda%")));
 
-        String path = binding.getQname().replace('.', '/').replace("%20", ".");
+        String path = binding.qname.replace('.', '/').replace("%20", ".");
 
         if (!seenDef.contains(path)) {
             seenDef.add(path);
             json.writeStartObject();
             json.writeStringField("name", name);
             json.writeStringField("path", path);
-            json.writeStringField("file", binding.getFileOrUrl());
-            json.writeNumberField("identStart", binding.getStart());
-            json.writeNumberField("identEnd", binding.getEnd());
-            json.writeNumberField("defStart", binding.getBodyStart());
-            json.writeNumberField("defEnd", binding.getBodyEnd());
+            json.writeStringField("file", binding.fileOrUrl);
+            json.writeNumberField("identStart", binding.start);
+            json.writeNumberField("identEnd", binding.end);
+            json.writeNumberField("defStart", binding.bodyStart);
+            json.writeNumberField("defEnd", binding.bodyEnd);
             json.writeBooleanField("exported", isExported);
-            json.writeStringField("kind", binding.getKind().toString());
+            json.writeStringField("kind", binding.kind.toString());
 
-            if (Binding.Kind.FUNCTION == binding.getKind() ||
-                    Binding.Kind.METHOD == binding.getKind() ||
-                    Binding.Kind.CONSTRUCTOR == binding.getKind())
+            if (Binding.Kind.FUNCTION == binding.kind ||
+                    Binding.Kind.METHOD == binding.kind ||
+                    Binding.Kind.CONSTRUCTOR == binding.kind)
             {
                 json.writeObjectFieldStart("funcData");
 
                 // get args expression
                 String argExpr = null;
-                Type t = binding.getType();
+                Type t = binding.type;
 
                 if (t.isUnionType()) {
                     t = t.asUnionType().firstUseful();
                 }
 
                 if (t != null && t.isFuncType()) {
-                    FunctionDef func = t.asFuncType().getFunc();
+                    Function func = t.asFuncType().func;
 
                     if (func != null) {
                         StringBuilder args = new StringBuilder();
                         args.append("(");
                         boolean first = true;
 
-                        for (Node n : func.getArgs()) {
+                        for (Node n : func.args) {
                             if (!first) {
                                 args.append(", ");
                             }
@@ -113,20 +113,20 @@ public class JSONDump {
                             args.append(n.toDisplay());
                         }
 
-                        if (func.getVararg() != null) {
+                        if (func.vararg != null) {
                             if (!first) {
                                 args.append(", ");
                             }
                             first = false;
-                            args.append("*" + func.getVararg().toDisplay());
+                            args.append("*" + func.vararg.toDisplay());
                         }
 
-                        if (func.getKwarg() != null) {
+                        if (func.kwarg != null) {
                             if (!first) {
                                 args.append(", ");
                             }
                             first = false;
-                            args.append("**" + func.getKwarg().toDisplay());
+                            args.append("**" + func.kwarg.toDisplay());
                         }
 
                         args.append(")");
@@ -135,7 +135,7 @@ public class JSONDump {
                     }
                 }
 
-                String typeExpr = binding.getType().toString();
+                String typeExpr = binding.type.toString();
 
                 json.writeNullField("params");
 
@@ -149,16 +149,16 @@ public class JSONDump {
     }
 
 
-    private static void writeRefJson(Ref ref, Binding binding, JsonGenerator json) throws IOException {
+    private static void writeRefJson(Node ref, Binding binding, JsonGenerator json) throws IOException {
         if (binding.getFile() != null) {
-            String path = binding.getQname().replace(".", "/").replace("%20", ".");
+            String path = binding.qname.replace(".", "/").replace("%20", ".");
 
-            if (binding.getStart() >= 0 && ref.start() >= 0 && !binding.isBuiltin()) {
+            if (binding.start >= 0 && ref.start >= 0 && !binding.isBuiltin()) {
                 json.writeStartObject();
                 json.writeStringField("sym", path);
-                json.writeStringField("file", ref.getFile());
-                json.writeNumberField("start", ref.start());
-                json.writeNumberField("end", ref.end());
+                json.writeStringField("file", ref.file);
+                json.writeNumberField("start", ref.start);
+                json.writeNumberField("end", ref.end);
                 json.writeBooleanField("builtin", binding.isBuiltin());
                 json.writeEndObject();
             }
@@ -167,7 +167,7 @@ public class JSONDump {
 
 
     private static void writeDocJson(Binding binding, Analyzer idx, JsonGenerator json) throws Exception {
-        String path = binding.getQname().replace('.', '/').replace("%20", ".");
+        String path = binding.qname.replace('.', '/').replace("%20", ".");
 
         if (!seenDocs.contains(path)) {
             seenDocs.add(path);
@@ -177,8 +177,8 @@ public class JSONDump {
             if (doc != null) {
                 json.writeStartObject();
                 json.writeStringField("sym", path);
-                json.writeStringField("file", binding.getFileOrUrl());
-                json.writeStringField("body", doc.getStr());
+                json.writeStringField("file", binding.fileOrUrl);
+                json.writeStringField("body", doc.value);
                 json.writeNumberField("start", doc.start);
                 json.writeNumberField("end", doc.end);
                 json.writeEndObject();
@@ -234,10 +234,10 @@ public class JSONDump {
                 }
             }
 
-            for (Ref ref : b.getRefs()) {
-                if (ref.getFile() != null) {
-                    String key = ref.getFile() + ":" + ref.start();
-                    if (!seenRef.contains(key) && shouldEmit(ref.getFile(), srcpath)) {
+            for (Node ref : b.refs) {
+                if (ref.file != null) {
+                    String key = ref.file + ":" + ref.start;
+                    if (!seenRef.contains(key) && shouldEmit(ref.file, srcpath)) {
                         writeRefJson(ref, b, refJson);
                         seenRef.add(key);
                     }
@@ -296,12 +296,10 @@ public class JSONDump {
             docOut.flush();
             symOut.flush();
             refOut.flush();
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             System.err.println("Could not find file: " + e);
             return;
-        }
-        finally {
+        } finally {
             if (docOut != null) {
                 docOut.close();
             }

@@ -1,8 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 import java.util.List;
@@ -10,11 +9,11 @@ import java.util.List;
 
 public class Global extends Node {
 
-    private List<Name> names;
+    public List<Name> names;
 
 
-    public Global(List<Name> names, int start, int end) {
-        super(start, end);
+    public Global(List<Name> names, String file, int start, int end) {
+        super(file, start, end);
         this.names = names;
         addChildren(names);
     }
@@ -22,14 +21,9 @@ public class Global extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
+    public Type transform(State s) {
         // Do nothing here because global names are processed by NBlock
-        return Analyzer.self.builtins.Cont;
-    }
-
-
-    public List<Name> getNames() {
-        return names;
+        return Type.CONT;
     }
 
 
@@ -39,11 +33,4 @@ public class Global extends Node {
         return "<Global:" + names + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNodeList(names, v);
-        }
-    }
 }

@@ -1,8 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 
@@ -14,8 +13,8 @@ public class Expr extends Node {
     public Node value;
 
 
-    public Expr(Node n, int start, int end) {
-        super(start, end);
+    public Expr(Node n, String file, int start, int end) {
+        super(file, start, end);
         this.value = n;
         addChildren(n);
     }
@@ -23,11 +22,11 @@ public class Expr extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
+    public Type transform(State s) {
         if (value != null) {
-            resolveExpr(value, s);
+            transformExpr(value, s);
         }
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 
@@ -37,11 +36,4 @@ public class Expr extends Node {
         return "<Expr:" + value + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(value, v);
-        }
-    }
 }

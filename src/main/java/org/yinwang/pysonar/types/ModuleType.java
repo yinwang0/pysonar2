@@ -3,21 +3,19 @@ package org.yinwang.pysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar._;
 
 
 public class ModuleType extends Type {
 
-    @Nullable
-    private String file;
     @NotNull
-    private String name;
+    public String name;
     @Nullable
-    private String qname;
+    public String qname;
 
 
-    public ModuleType(@NotNull String name, @Nullable String file, @NotNull Scope parent) {
+    public ModuleType(@NotNull String name, @Nullable String file, @NotNull State parent) {
         this.name = name;
         this.file = file;  // null for builtin modules
         if (file != null) {
@@ -29,41 +27,19 @@ public class ModuleType extends Type {
         if (qname == null) {
             qname = name;
         }
-        setTable(new Scope(parent, Scope.ScopeType.MODULE));
-        getTable().setPath(qname);
-        getTable().setType(this);
+        setTable(new State(parent, State.StateType.MODULE));
+        table.setPath(qname);
+        table.setType(this);
 
         // null during bootstrapping of built-in types
         if (Analyzer.self.builtins != null) {
-            getTable().addSuper(Analyzer.self.builtins.BaseModule.getTable());
+            table.addSuper(Analyzer.self.builtins.BaseModule.table);
         }
-    }
-
-
-    public void setFile(String file) {
-        this.file = file;
-    }
-
-
-    @Nullable
-    public String getFile() {
-        return file;
     }
 
 
     public void setName(String name) {
         this.name = name;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-
-    @Nullable
-    public String getQname() {
-        return qname;
     }
 
 
@@ -87,6 +63,6 @@ public class ModuleType extends Type {
 
     @Override
     protected String printType(CyclicTypeRecorder ctr) {
-        return getName();
+        return name;
     }
 }

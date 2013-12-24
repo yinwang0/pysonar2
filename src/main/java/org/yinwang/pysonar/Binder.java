@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class Binder {
 
-    public static void bind(@NotNull Scope s, Node target, @NotNull Type rvalue, Binding.Kind kind) {
+    public static void bind(@NotNull State s, Node target, @NotNull Type rvalue, Binding.Kind kind) {
         if (target instanceof Name) {
             bind(s, (Name) target, rvalue, kind);
         } else if (target instanceof Tuple) {
@@ -25,11 +25,11 @@ public class Binder {
             ((Attribute) target).setAttr(s, rvalue);
         } else if (target instanceof Subscript) {
             Subscript sub = (Subscript) target;
-            Type valueType = Node.resolveExpr(sub.value, s);
-            Node.resolveExpr(sub.slice, s);
+            Type valueType = Node.transformExpr(sub.value, s);
+            Node.transformExpr(sub.slice, s);
             if (valueType instanceof ListType) {
                 ListType t = (ListType) valueType;
-                t.setElementType(UnionType.union(t.getElementType(), rvalue));
+                t.setElementType(UnionType.union(t.eltType, rvalue));
             }
         } else if (target != null) {
             Analyzer.self.putProblem(target, "invalid location for assignment");
@@ -41,9 +41,9 @@ public class Binder {
      * Without specifying a kind, bind determines the kind according to the type
      * of the scope.
      */
-    public static void bind(@NotNull Scope s, Node target, @NotNull Type rvalue) {
+    public static void bind(@NotNull State s, Node target, @NotNull Type rvalue) {
         Binding.Kind kind;
-        if (s.getScopeType() == Scope.ScopeType.FUNCTION) {
+        if (s.stateType == State.StateType.FUNCTION) {
             kind = Binding.Kind.VARIABLE;
         } else {
             kind = Binding.Kind.SCOPE;
@@ -52,9 +52,9 @@ public class Binder {
     }
 
 
-    public static void bind(@NotNull Scope s, @NotNull List<Node> xs, @NotNull Type rvalue, Binding.Kind kind) {
+    public static void bind(@NotNull State s, @NotNull List<Node> xs, @NotNull Type rvalue, Binding.Kind kind) {
         if (rvalue.isTupleType()) {
-            List<Type> vs = rvalue.asTupleType().getElementTypes();
+            List<Type> vs = rvalue.asTupleType().eltTypes;
             if (xs.size() != vs.size()) {
                 reportUnpackMismatch(xs, vs.size());
             } else {
@@ -68,10 +68,10 @@ public class Binder {
             bind(s, xs, rvalue.asDictType().toTupleType(xs.size()), kind);
         } else if (rvalue.isUnknownType()) {
             for (Node x : xs) {
-                bind(s, x, Analyzer.self.builtins.unknown, kind);
+                bind(s, x, Type.UNKNOWN, kind);
             }
-        } else {
-            Analyzer.self.putProblem(xs.get(0).getFile(),
+        } else if (xs.size() > 0) {
+            Analyzer.self.putProblem(xs.get(0).file,
                     xs.get(0).start,
                     xs.get(xs.size() - 1).end,
                     "unpacking non-iterable: " + rvalue);
@@ -79,8 +79,8 @@ public class Binder {
     }
 
 
-    public static void bind(@NotNull Scope s, @NotNull Name name, @NotNull Type rvalue, Binding.Kind kind) {
-        if (s.isGlobalName(name.id)) {
+    public static void bind(@NotNull State s, @NotNull Name name, @NotNull Type rvalue, Binding.Kind kind) {
+        if (s.isGlobalName(name.id) || name.isGlobalVar()) {
             Binding b = new Binding(name.id, name, rvalue, kind);
             s.getGlobalTable().update(name.id, b);
             Analyzer.self.putRef(name, b);
@@ -91,28 +91,28 @@ public class Binder {
 
 
     // iterator
-    public static void bindIter(@NotNull Scope s, Node target, @NotNull Node iter, Binding.Kind kind) {
-        Type iterType = Node.resolveExpr(iter, s);
+    public static void bindIter(@NotNull State s, Node target, @NotNull Node iter, Binding.Kind kind) {
+        Type iterType = Node.transformExpr(iter, s);
 
         if (iterType.isListType()) {
-            bind(s, target, iterType.asListType().getElementType(), kind);
+            bind(s, target, iterType.asListType().eltType, kind);
         } else if (iterType.isTupleType()) {
-            bind(s, target, iterType.asTupleType().toListType().getElementType(), kind);
+            bind(s, target, iterType.asTupleType().toListType().eltType, kind);
         } else {
-            List<Binding> ents = iterType.getTable().lookupAttr("__iter__");
+            List<Binding> ents = iterType.table.lookupAttr("__iter__");
             if (ents != null) {
                 for (Binding ent : ents) {
-                    if (ent == null || !ent.getType().isFuncType()) {
+                    if (ent == null || !ent.type.isFuncType()) {
                         if (!iterType.isUnknownType()) {
                             Analyzer.self.putProblem(iter, "not an iterable type: " + iterType);
                         }
-                        bind(s, target, Analyzer.self.builtins.unknown, kind);
+                        bind(s, target, Type.UNKNOWN, kind);
                     } else {
-                        bind(s, target, ent.getType().asFuncType().getReturnType(), kind);
+                        bind(s, target, ent.type.asFuncType().getReturnType(), kind);
                     }
                 }
             } else {
-                bind(s, target, Analyzer.self.builtins.unknown, kind);
+                bind(s, target, Type.UNKNOWN, kind);
             }
         }
     }
@@ -129,6 +129,6 @@ public class Binder {
         } else {
             msg = "ValueError: too many values to unpack";
         }
-        Analyzer.self.putProblem(xs.get(0).getFile(), beg, end, msg);
+        Analyzer.self.putProblem(xs.get(0).file, beg, end, msg);
     }
 }

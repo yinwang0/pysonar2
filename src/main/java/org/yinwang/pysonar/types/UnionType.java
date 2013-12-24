@@ -2,7 +2,6 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.Analyzer;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -11,7 +10,7 @@ import java.util.Set;
 
 public class UnionType extends Type {
 
-    private Set<Type> types;
+    public Set<Type> types;
 
 
     public UnionType() {
@@ -46,11 +45,11 @@ public class UnionType extends Type {
 
     static public Type remove(Type t1, Type t2) {
         if (t1 instanceof UnionType) {
-            Set<Type> types = new HashSet<>(((UnionType) t1).getTypes());
+            Set<Type> types = new HashSet<>(((UnionType) t1).types);
             types.remove(t2);
             return UnionType.newUnion(types);
         } else if (t1 == t2) {
-            return Analyzer.self.builtins.unknown;
+            return Type.UNKNOWN;
         } else {
             return t1;
         }
@@ -59,7 +58,7 @@ public class UnionType extends Type {
 
     @NotNull
     static public Type newUnion(@NotNull Collection<Type> types) {
-        Type t = Analyzer.self.builtins.unknown;
+        Type t = Type.UNKNOWN;
         for (Type nt : types) {
             t = union(t, nt);
         }
@@ -69,11 +68,6 @@ public class UnionType extends Type {
 
     public void setTypes(Set<Type> types) {
         this.types = types;
-    }
-
-
-    public Set<Type> getTypes() {
-        return types;
     }
 
 
@@ -97,13 +91,13 @@ public class UnionType extends Type {
     public static Type union(@NotNull Type u, @NotNull Type v) {
         if (u.equals(v)) {
             return u;
-        } else if (u == Analyzer.self.builtins.unknown) {
+        } else if (u == Type.UNKNOWN) {
             return v;
-        } else if (v == Analyzer.self.builtins.unknown) {
+        } else if (v == Type.UNKNOWN) {
             return u;
-        } else if (u == Analyzer.self.builtins.None) {
+        } else if (u == Type.NONE) {
             return v;
-        } else if (v == Analyzer.self.builtins.None) {
+        } else if (v == Type.NONE) {
             return u;
         } else {
             return new UnionType(u, v);
@@ -120,7 +114,7 @@ public class UnionType extends Type {
     @Nullable
     public Type firstUseful() {
         for (Type type : types) {
-            if (!type.isUnknownType() && type != Analyzer.self.builtins.None) {
+            if (!type.isUnknownType() && type != Type.NONE) {
                 return type;
             }
         }
@@ -133,8 +127,8 @@ public class UnionType extends Type {
         if (typeStack.contains(this, other)) {
             return true;
         } else if (other instanceof UnionType) {
-            Set<Type> types1 = getTypes();
-            Set<Type> types2 = ((UnionType) other).getTypes();
+            Set<Type> types1 = types;
+            Set<Type> types2 = ((UnionType) other).types;
             if (types1.size() != types2.size()) {
                 return false;
             } else {

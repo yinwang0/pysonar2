@@ -1,8 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 import java.util.List;
@@ -14,8 +13,8 @@ public class Alias extends Node {
     public Name asname;
 
 
-    public Alias(List<Name> name, Name asname, int start, int end) {
-        super(start, end);
+    public Alias(List<Name> name, Name asname, String file, int start, int end) {
+        super(file, start, end);
         this.name = name;
         this.asname = asname;
         addChildren(name);
@@ -25,8 +24,8 @@ public class Alias extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
-        return Analyzer.self.builtins.unknown;
+    public Type transform(State s) {
+        return Type.UNKNOWN;
     }
 
 
@@ -36,14 +35,4 @@ public class Alias extends Node {
         return "<Alias:" + name + " as " + asname + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            for (Name n : name) {
-                visitNode(n, v);
-            }
-            visitNode(asname, v);
-        }
-    }
 }

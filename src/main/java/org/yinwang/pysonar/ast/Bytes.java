@@ -1,43 +1,32 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 
 public class Bytes extends Node {
 
-    private Object value;
+    public Object value;
 
 
-    public Bytes(@NotNull Object value, int start, int end) {
-        super(start, end);
+    public Bytes(@NotNull Object value, String file, int start, int end) {
+        super(file, start, end);
         this.value = value.toString();
-    }
-
-
-    public Object getStr() {
-        return value;
     }
 
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
-        return Analyzer.self.builtins.BaseStr;
+    public Type transform(State s) {
+        return Type.STR;
     }
 
 
     @NotNull
     @Override
     public String toString() {
-        return "<Bytpes: " + value + ">";
+        return "(bytes: " + value + ")";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        v.visit(this);
-    }
 }

@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.ast.Call;
 
 import java.util.List;
@@ -9,30 +9,26 @@ import java.util.List;
 
 public class InstanceType extends Type {
 
-    private Type classType;
+    public Type classType;
 
 
     public InstanceType(@NotNull Type c) {
-        this.getTable().setScopeType(Scope.ScopeType.INSTANCE);
-        this.getTable().addSuper(c.getTable());
-        this.getTable().setPath(c.getTable().getPath());
+        table.setStateType(State.StateType.INSTANCE);
+        table.addSuper(c.table);
+        table.setPath(c.table.path);
         classType = c;
     }
 
 
     public InstanceType(@NotNull Type c, Call call, List<Type> args) {
         this(c);
-        Type initFunc = this.getTable().lookupAttrType("__init__");
-        if (initFunc != null && initFunc.isFuncType() && initFunc.asFuncType().getFunc() != null) {
+        Type initFunc = table.lookupAttrType("__init__");
+
+        if (initFunc != null && initFunc.isFuncType() && initFunc.asFuncType().func != null) {
             initFunc.asFuncType().setSelfType(this);
             Call.apply(initFunc.asFuncType(), args, null, null, null, call);
             initFunc.asFuncType().setSelfType(null);
         }
-    }
-
-
-    public Type getClassType() {
-        return classType;
     }
 
 
@@ -42,7 +38,7 @@ public class InstanceType extends Type {
             InstanceType iother = (InstanceType) other;
             // for now ignore the case where an instance of the same class is modified
             if (classType.equals(iother.classType) &&
-                    getTable().keySet().equals(iother.getTable().keySet()))
+                    table.keySet().equals(iother.table.keySet()))
             {
                 return true;
             }
@@ -59,6 +55,6 @@ public class InstanceType extends Type {
 
     @Override
     protected String printType(CyclicTypeRecorder ctr) {
-        return getClassType().asClassType().getName();
+        return classType.asClassType().name;
     }
 }

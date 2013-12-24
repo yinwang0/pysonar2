@@ -2,8 +2,7 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 
@@ -18,8 +17,8 @@ public class Withitem extends Node {
     public Node context_expr;
 
 
-    public Withitem(@NotNull Node context_expr, @Nullable Node optional_vars, int start, int end) {
-        super(start, end);
+    public Withitem(@NotNull Node context_expr, @Nullable Node optional_vars, String file, int start, int end) {
+        super(file, start, end);
         this.context_expr = context_expr;
         this.optional_vars = optional_vars;
         addChildren(context_expr, optional_vars);
@@ -29,23 +28,15 @@ public class Withitem extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<withitem:" + context_expr + " as " + optional_vars + ">";
+        return "(withitem:" + context_expr + " as " + optional_vars + ")";
     }
 
 
     // dummy, will never be called
     @NotNull
     @Override
-    public Type resolve(Scope s) {
-        return Analyzer.self.builtins.unknown;
+    public Type transform(State s) {
+        return Type.UNKNOWN;
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(context_expr, v);
-            visitNode(optional_vars, v);
-        }
-    }
 }

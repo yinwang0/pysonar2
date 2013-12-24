@@ -3,61 +3,50 @@ package org.yinwang.pysonar.ast;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binder;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.Constants;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
-
-import java.util.List;
 
 
 public class Assign extends Node {
 
-    public List<Node> targets;
-    public Node rvalue;
+    @NotNull
+    public Node target;
+    @NotNull
+    public Node value;
 
 
-    public Assign(List<Node> targets, Node rvalue, int start, int end) {
-        super(start, end);
-        this.targets = targets;
-        this.rvalue = rvalue;
-        addChildren(targets);
-        addChildren(rvalue);
-    }
-
-
-    @Override
-    public boolean bindsName() {
-        return true;
+    public Assign(@NotNull Node target, @NotNull Node value, String file, int start, int end) {
+        super(file, start, end);
+        this.target = target;
+        this.value = value;
+        addChildren(target);
+        addChildren(value);
     }
 
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s) {
-        if (rvalue == null) {
-            Analyzer.self.putProblem(this, "missing RHS of assignment");
-        } else {
-            Type valueType = resolveExpr(rvalue, s);
-            for (Node t : targets) {
-                Binder.bind(s, t, valueType);
+    public Type transform(@NotNull State s) {
+        Type valueType = transformExpr(value, s);
+        if (target.isName() && target.asName().isInstanceVar()) {
+            Type thisType = s.lookupType(Constants.rbSelfName);
+            if (thisType == null) {
+                Analyzer.self.putProblem(this, "Instance variable assignment not within class");
+            } else {
+                Binder.bind(thisType.table, target, valueType);
             }
+        } else {
+            Binder.bind(s, target, valueType);
         }
-
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 
     @NotNull
     @Override
     public String toString() {
-        return "<Assign:" + targets + "=" + rvalue + ">";
+        return "(" + target + " = " + value + ")";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNodeList(targets, v);
-            visitNode(rvalue, v);
-        }
-    }
 }

@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
@@ -16,36 +16,24 @@ import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
 
 public class Attribute extends Node {
 
-    @NotNull
+    @Nullable
     public Node target;
     @NotNull
     public Name attr;
 
 
-    public Attribute(@NotNull Node target, @NotNull Name attr, int start, int end) {
-        super(start, end);
+    public Attribute(@Nullable Node target, @NotNull Name attr, String file, int start, int end) {
+        super(file, start, end);
         this.target = target;
         this.attr = attr;
         addChildren(target, attr);
     }
 
 
-    @Nullable
-    public String getAttributeName() {
-        return attr.id;
-    }
-
-
-    @NotNull
-    public Name getAttr() {
-        return attr;
-    }
-
-
-    public void setAttr(Scope s, @NotNull Type v) {
-        Type targetType = resolveExpr(target, s);
+    public void setAttr(State s, @NotNull Type v) {
+        Type targetType = transformExpr(target, s);
         if (targetType.isUnionType()) {
-            Set<Type> types = targetType.asUnionType().getTypes();
+            Set<Type> types = targetType.asUnionType().types;
             for (Type tp : types) {
                 setAttrType(tp, v);
             }
@@ -61,22 +49,27 @@ public class Attribute extends Node {
             return;
         }
         // new attr, mark the type as "mutated"
-        if (targetType.getTable().lookupAttr(attr.id) == null ||
-                !targetType.getTable().lookupAttrType(attr.id).equals(v))
+        if (targetType.table.lookupAttr(attr.id) == null ||
+                !targetType.table.lookupAttrType(attr.id).equals(v))
         {
             targetType.setMutated(true);
         }
-        targetType.getTable().insert(attr.id, attr, v, ATTRIBUTE);
+        targetType.table.insert(attr.id, attr, v, ATTRIBUTE);
     }
 
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
-        Type targetType = resolveExpr(target, s);
+    public Type transform(State s) {
+        // the form of ::A in ruby
+        if (target == null) {
+            return transformExpr(attr, s);
+        }
+
+        Type targetType = transformExpr(target, s);
         if (targetType.isUnionType()) {
-            Set<Type> types = targetType.asUnionType().getTypes();
-            Type retType = Analyzer.self.builtins.unknown;
+            Set<Type> types = targetType.asUnionType().types;
+            Type retType = Type.UNKNOWN;
             for (Type tt : types) {
                 retType = UnionType.union(retType, getAttrType(tt));
             }
@@ -88,23 +81,23 @@ public class Attribute extends Node {
 
 
     private Type getAttrType(@NotNull Type targetType) {
-        List<Binding> bs = targetType.getTable().lookupAttr(attr.id);
+        List<Binding> bs = targetType.table.lookupAttr(attr.id);
         if (bs == null) {
             Analyzer.self.putProblem(attr, "attribute not found in type: " + targetType);
-            Type t = Analyzer.self.builtins.unknown;
-            t.getTable().setPath(targetType.getTable().extendPath(attr.id));
+            Type t = Type.UNKNOWN;
+            t.table.setPath(targetType.table.extendPath(attr.id));
             return t;
         } else {
             for (Binding b : bs) {
                 Analyzer.self.putRef(attr, b);
-                if (getParent() != null && getParent().isCall() &&
-                        b.getType().isFuncType() && targetType.isInstanceType())
+                if (parent != null && parent.isCall() &&
+                        b.type.isFuncType() && targetType.isInstanceType())
                 {  // method call
-                    b.getType().asFuncType().setSelfType(targetType);
+                    b.type.asFuncType().setSelfType(targetType);
                 }
             }
 
-            return Scope.makeUnion(bs);
+            return State.makeUnion(bs);
         }
     }
 
@@ -112,15 +105,7 @@ public class Attribute extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "<Attribute:" + start + ":" + target + "." + getAttributeName() + ">";
+        return "<Attribute:" + start + ":" + target + "." + attr.id + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(target, v);
-            visitNode(attr, v);
-        }
-    }
 }

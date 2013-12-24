@@ -1,8 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
@@ -11,12 +10,12 @@ public class If extends Node {
 
     @NotNull
     public Node test;
-    public Block body;
-    public Block orelse;
+    public Node body;
+    public Node orelse;
 
 
-    public If(@NotNull Node test, Block body, Block orelse, int start, int end) {
-        super(start, end);
+    public If(@NotNull Node test, Node body, Node orelse, String file, int start, int end) {
+        super(file, start, end);
         this.test = test;
         this.body = body;
         this.orelse = orelse;
@@ -26,29 +25,32 @@ public class If extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s) {
+    public Type transform(@NotNull State s) {
         Type type1, type2;
-        resolveExpr(test, s);
-        Scope s1 = s.copy();
-        Scope s2 = s.copy();
+        State s1 = s.copy();
+        State s2 = s.copy();
 
-        if (body != null && !body.isEmpty()) {
-            type1 = resolveExpr(body, s1);
+        // ignore condition for now
+        transformExpr(test, s);
+
+        if (body != null) {
+            type1 = transformExpr(body, s1);
         } else {
-            type1 = Analyzer.self.builtins.Cont;
+            type1 = Type.CONT;
         }
 
-        if (orelse != null && !orelse.isEmpty()) {
-            type2 = resolveExpr(orelse, s2);
+        if (orelse != null) {
+            type2 = transformExpr(orelse, s2);
         } else {
-            type2 = Analyzer.self.builtins.Cont;
+            type2 = Type.CONT;
         }
 
-        boolean cont1 = UnionType.contains(type1, Analyzer.self.builtins.Cont);
-        boolean cont2 = UnionType.contains(type2, Analyzer.self.builtins.Cont);
+        boolean cont1 = UnionType.contains(type1, Type.CONT);
+        boolean cont2 = UnionType.contains(type2, Type.CONT);
 
+        // decide which branch affects the downstream state
         if (cont1 && cont2) {
-            s.overwrite(Scope.merge(s1, s2));
+            s.overwrite(State.merge(s1, s2));
         } else if (cont1) {
             s.overwrite(s1);
         } else if (cont2) {
@@ -65,13 +67,4 @@ public class If extends Node {
         return "<If:" + start + ":" + test + ":" + body + ":" + orelse + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(test, v);
-            visitNode(body, v);
-            visitNode(orelse, v);
-        }
-    }
 }

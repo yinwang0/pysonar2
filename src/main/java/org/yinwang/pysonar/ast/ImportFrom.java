@@ -4,9 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.ListType;
-import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 
 import java.util.ArrayList;
@@ -21,8 +20,8 @@ public class ImportFrom extends Node {
     public int level;
 
 
-    public ImportFrom(List<Name> module, List<Alias> names, int level, int start, int end) {
-        super(start, end);
+    public ImportFrom(List<Name> module, List<Alias> names, int level, String file, int start, int end) {
+        super(file, start, end);
         this.module = module;
         this.level = level;
         this.names = names;
@@ -30,20 +29,14 @@ public class ImportFrom extends Node {
     }
 
 
-    @Override
-    public boolean bindsName() {
-        return true;
-    }
-
-
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s) {
+    public Type transform(@NotNull State s) {
         if (module == null) {
-            return Analyzer.self.builtins.Cont;
+            return Type.CONT;
         }
 
-        ModuleType mod = Analyzer.self.loadModule(module, s);
+        Type mod = Analyzer.self.loadModule(module, s);
 
         if (mod == null) {
             Analyzer.self.putProblem(this, "Cannot load module");
@@ -52,7 +45,7 @@ public class ImportFrom extends Node {
         } else {
             for (Alias a : names) {
                 Name first = a.name.get(0);
-                List<Binding> bs = mod.getTable().lookup(first.id);
+                List<Binding> bs = mod.table.lookup(first.id);
                 if (bs != null) {
                     if (a.asname != null) {
                         s.update(a.asname.id, bs);
@@ -64,7 +57,7 @@ public class ImportFrom extends Node {
                 } else {
                     List<Name> ext = new ArrayList<>(module);
                     ext.add(first);
-                    ModuleType mod2 = Analyzer.self.loadModule(ext, s);
+                    Type mod2 = Analyzer.self.loadModule(ext, s);
                     if (mod2 != null) {
                         if (a.asname != null) {
                             s.insert(a.asname.id, a.asname, mod2, Binding.Kind.VARIABLE);
@@ -76,7 +69,7 @@ public class ImportFrom extends Node {
             }
         }
 
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 
@@ -85,18 +78,18 @@ public class ImportFrom extends Node {
     }
 
 
-    private void importStar(@NotNull Scope s, @Nullable ModuleType mt) {
-        if (mt == null || mt.getFile() == null) {
+    private void importStar(@NotNull State s, @Nullable Type mt) {
+        if (mt == null || mt.file == null) {
             return;
         }
 
-        Module mod = Analyzer.self.getAstForFile(mt.getFile());
-        if (mod == null) {
+        Node node = Analyzer.self.getAstForFile(mt.file);
+        if (node == null) {
             return;
         }
 
         List<String> names = new ArrayList<>();
-        Type allType = mt.getTable().lookupType("__all__");
+        Type allType = mt.table.lookupType("__all__");
 
         if (allType != null && allType.isListType()) {
             ListType lt = allType.asListType();
@@ -110,21 +103,21 @@ public class ImportFrom extends Node {
 
         if (!names.isEmpty()) {
             for (String name : names) {
-                List<Binding> b = mt.getTable().lookupLocal(name);
+                List<Binding> b = mt.table.lookupLocal(name);
                 if (b != null) {
                     s.update(name, b);
                 } else {
                     List<Name> m2 = new ArrayList<>(module);
                     m2.add(new Name(name));
-                    ModuleType mod2 = Analyzer.self.loadModule(m2, s);
-                    if (mod2 != null) {
-                        s.insert(name, null, mod2, Binding.Kind.VARIABLE);
+                    Type type = Analyzer.self.loadModule(m2, s);
+                    if (type != null) {
+                        s.insert(name, null, type, Binding.Kind.VARIABLE);
                     }
                 }
             }
         } else {
             // Fall back to importing all names not starting with "_".
-            for (Entry<String, List<Binding>> e : mt.getTable().entrySet()) {
+            for (Entry<String, List<Binding>> e : mt.table.entrySet()) {
                 if (!e.getKey().startsWith("_")) {
                     s.update(e.getKey(), e.getValue());
                 }
@@ -139,11 +132,4 @@ public class ImportFrom extends Node {
         return "<FromImport:" + module + ":" + names + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNodeList(names, v);
-        }
-    }
 }

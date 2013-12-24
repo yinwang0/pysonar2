@@ -3,7 +3,7 @@ package org.yinwang.pysonar.ast;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 import java.util.List;
@@ -13,16 +13,27 @@ public class Name extends Node {
 
     @NotNull
     public final String id;  // identifier
+    public NameType type;
 
 
     public Name(String id) {
-        this(id, -1, -1);
+        // generated name
+        this(id, null, -1, -1);
     }
 
 
-    public Name(@NotNull String id, int start, int end) {
-        super(start, end);
+    public Name(@NotNull String id, String file, int start, int end) {
+        super(file, start, end);
         this.id = id;
+        this.name = id;
+        this.type = NameType.LOCAL;
+    }
+
+
+    public Name(@NotNull String id, NameType type, String file, int start, int end) {
+        super(file, start, end);
+        this.id = id;
+        this.type = type;
     }
 
 
@@ -51,19 +62,19 @@ public class Name extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s) {
+    public Type transform(@NotNull State s) {
         List<Binding> b = s.lookup(id);
         if (b != null) {
             Analyzer.self.putRef(this, b);
             Analyzer.self.stats.inc("resolved");
-            return Scope.makeUnion(b);
+            return State.makeUnion(b);
         } else if (id.equals("True") || id.equals("False")) {
-            return Analyzer.self.builtins.BaseBool;
+            return Type.BOOL;
         } else {
             Analyzer.self.putProblem(this, "unbound variable " + id);
             Analyzer.self.stats.inc("unresolved");
-            Type t = Analyzer.self.builtins.unknown;
-            t.getTable().setPath(s.extendPath(id));
+            Type t = Type.UNKNOWN;
+            t.table.setPath(s.extendPath(id));
             return t;
         }
     }
@@ -75,14 +86,24 @@ public class Name extends Node {
      */
     public boolean isAttribute() {
         return parent instanceof Attribute
-                && ((Attribute) parent).getAttr() == this;
+                && ((Attribute) parent).attr == this;
+    }
+
+
+    public boolean isInstanceVar() {
+        return type == NameType.INSTANCE;
+    }
+
+
+    public boolean isGlobalVar() {
+        return type == NameType.GLOBAL;
     }
 
 
     @NotNull
     @Override
     public String toString() {
-        return "<Name:" + start + ":" + id + ">";
+        return "(" + id + ":" + start + ")";
     }
 
 
@@ -92,9 +113,4 @@ public class Name extends Node {
         return id;
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        v.visit(this);
-    }
 }

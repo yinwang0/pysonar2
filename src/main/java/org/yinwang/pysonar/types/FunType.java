@@ -3,9 +3,9 @@ package org.yinwang.pysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.TypeStack;
-import org.yinwang.pysonar.ast.FunctionDef;
+import org.yinwang.pysonar.ast.Function;
 
 import java.util.*;
 
@@ -14,10 +14,10 @@ public class FunType extends Type {
 
     @NotNull
     public Map<Type, Type> arrows = new HashMap<>();
-    public FunctionDef func;
+    public Function func;
     @Nullable
     public ClassType cls = null;
-    private Scope env;
+    public State env;
     @Nullable
     public Type selfType;                 // self's type for calls
     public List<Type> defaultTypes;       // types for default parameters (evaluated at def time)
@@ -27,7 +27,7 @@ public class FunType extends Type {
     }
 
 
-    public FunType(FunctionDef func, Scope env) {
+    public FunType(Function func, State env) {
         this.func = func;
         this.env = env;
     }
@@ -35,8 +35,8 @@ public class FunType extends Type {
 
     public FunType(Type from, Type to) {
         addMapping(from, to);
-        getTable().addSuper(Analyzer.self.builtins.BaseFunction.getTable());
-        getTable().setPath(Analyzer.self.builtins.BaseFunction.getTable().getPath());
+        table.addSuper(Analyzer.self.builtins.BaseFunction.table);
+        table.setPath(Analyzer.self.builtins.BaseFunction.table.path);
     }
 
 
@@ -63,24 +63,8 @@ public class FunType extends Type {
         if (!arrows.isEmpty()) {
             return arrows.values().iterator().next();
         } else {
-            return Analyzer.self.builtins.unknown;
+            return Type.UNKNOWN;
         }
-    }
-
-
-    public FunctionDef getFunc() {
-        return func;
-    }
-
-
-    public Scope getEnv() {
-        return env;
-    }
-
-
-    @Nullable
-    public ClassType getCls() {
-        return cls;
     }
 
 
@@ -89,24 +73,8 @@ public class FunType extends Type {
     }
 
 
-    @Nullable
-    public Type getSelfType() {
-        return selfType;
-    }
-
-
     public void setSelfType(Type selfType) {
         this.selfType = selfType;
-    }
-
-
-    public void clearSelfType() {
-        this.selfType = null;
-    }
-
-
-    public List<Type> getDefaultTypes() {
-        return defaultTypes;
     }
 
 
@@ -119,7 +87,7 @@ public class FunType extends Type {
     public boolean equals(Object other) {
         if (other instanceof FunType) {
             FunType fo = (FunType) other;
-            return fo.getTable().getPath().equals(getTable().getPath()) || this == other;
+            return fo.table.path.equals(table.path) || this == other;
         } else {
             return false;
         }
@@ -128,8 +96,8 @@ public class FunType extends Type {
 
     static Type removeNoneReturn(@NotNull Type toType) {
         if (toType.isUnionType()) {
-            Set<Type> types = new HashSet<>(toType.asUnionType().getTypes());
-            types.remove(Analyzer.self.builtins.Cont);
+            Set<Type> types = new HashSet<>(toType.asUnionType().types);
+            types.remove(Type.CONT);
             return UnionType.newUnion(types);
         } else {
             return toType;
@@ -153,13 +121,13 @@ public class FunType extends Type {
             return true;
         }
 
-        if (type1.isUnknownType() || type1 == Analyzer.self.builtins.None || type1.equals(type2)) {
+        if (type1.isUnknownType() || type1 == Type.NONE || type1.equals(type2)) {
             return true;
         }
 
         if (type1 instanceof TupleType && type2 instanceof TupleType) {
-            List<Type> elems1 = ((TupleType) type1).getElementTypes();
-            List<Type> elems2 = ((TupleType) type2).getElementTypes();
+            List<Type> elems1 = ((TupleType) type1).eltTypes;
+            List<Type> elems2 = ((TupleType) type2).eltTypes;
 
             if (elems1.size() == elems2.size()) {
                 typeStack.push(type1, type2);
@@ -209,7 +177,7 @@ public class FunType extends Type {
     //   correct wrt some pathological programs
     private TupleType simplifySelf(TupleType from) {
         TupleType simplified = new TupleType();
-        if (from.getElementTypes().size() > 0) {
+        if (from.eltTypes.size() > 0) {
             if (cls != null) {
                 simplified.add(cls.getCanon());
             } else {
@@ -217,7 +185,7 @@ public class FunType extends Type {
             }
         }
 
-        for (int i = 1; i < from.getElementTypes().size(); i++) {
+        for (int i = 1; i < from.eltTypes.size(); i++) {
             simplified.add(from.get(i));
         }
         return simplified;

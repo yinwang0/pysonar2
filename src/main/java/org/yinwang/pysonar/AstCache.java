@@ -3,6 +3,7 @@ package org.yinwang.pysonar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Module;
+import org.yinwang.pysonar.ast.Node;
 
 import java.io.*;
 import java.util.HashMap;
@@ -22,9 +23,9 @@ public class AstCache {
     private static AstCache INSTANCE;
 
     @NotNull
-    private Map<String, Module> cache = new HashMap<>();
+    private Map<String, Node> cache = new HashMap<>();
     @NotNull
-    private static PythonParser parser;
+    private static Parser parser;
 
 
     private AstCache() {
@@ -35,7 +36,7 @@ public class AstCache {
         if (INSTANCE == null) {
             INSTANCE = new AstCache();
         }
-        parser = new PythonParser();
+        parser = new Parser();
         return INSTANCE;
     }
 
@@ -57,11 +58,8 @@ public class AstCache {
         try {
             _.deleteDirectory(new File(Analyzer.self.cacheDir));
             return true;
-        }
-        catch (Exception x) {
-
+        } catch (Exception x) {
             LOG.log(Level.SEVERE, "Failed to clear disk cache: " + x);
-
             return false;
         }
     }
@@ -81,34 +79,33 @@ public class AstCache {
      * @return the AST, or {@code null} if the parse failed for any reason
      */
     @Nullable
-    public Module getAST(@NotNull String path) {
+    public Node getAST(@NotNull String path) {
         // Cache stores null value if the parse failed.
         if (cache.containsKey(path)) {
             return cache.get(path);
         }
 
         // Might be cached on disk but not in memory.
-        Module mod = getSerializedModule(path);
-        if (mod != null) {
+        Node node = getSerializedModule(path);
+        if (node != null) {
             LOG.log(Level.FINE, "reusing " + path);
-            cache.put(path, mod);
-            return mod;
+            cache.put(path, node);
+            return node;
         }
 
-        mod = null;
+        node = null;
         try {
             LOG.log(Level.FINE, "parsing " + path);
-            mod = (Module) parser.parseFile(path);
-        }
-        finally {
-            cache.put(path, mod);  // may be null
-        }
-
-        if (mod != null) {
-            serialize(mod);
+            node = parser.parseFile(path);
+        } finally {
+            cache.put(path, node);  // may be null
         }
 
-        return mod;
+        if (node != null) {
+            serialize(node);
+        }
+
+        return node;
     }
 
 
@@ -118,8 +115,8 @@ public class AstCache {
      * file's base name is included for ease of debugging.
      */
     @NotNull
-    public String getCachePath(@NotNull File sourcePath) {
-        return getCachePath(_.getSHA1(sourcePath), sourcePath.getName());
+    public String getCachePath(@NotNull String sourcePath) {
+        return getCachePath(_.getSHA(sourcePath), sourcePath);
     }
 
 
@@ -130,27 +127,24 @@ public class AstCache {
 
 
     // package-private for testing
-    void serialize(@NotNull Module ast) {
-        String path = getCachePath(ast.getSHA1(), new File(ast.getFile()).getName());
+    void serialize(@NotNull Node ast) {
+        String path = getCachePath(_.getSHA(ast.file), new File(ast.file).getName());
         ObjectOutputStream oos = null;
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(path);
             oos = new ObjectOutputStream(fos);
             oos.writeObject(ast);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             _.msg("Failed to serialize: " + path);
-        }
-        finally {
+        } finally {
             try {
                 if (oos != null) {
                     oos.close();
                 } else if (fos != null) {
                     fos.close();
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
             }
         }
     }
@@ -159,44 +153,37 @@ public class AstCache {
     // package-private for testing
     @Nullable
     Module getSerializedModule(String sourcePath) {
-        File sourceFile = new File(sourcePath);
-        if (!sourceFile.canRead()) {
+        if (!new File(sourcePath).canRead()) {
             return null;
         }
-        File cached = new File(getCachePath(sourceFile));
+        File cached = new File(getCachePath(sourcePath));
         if (!cached.canRead()) {
             return null;
         }
-        return deserialize(sourceFile);
+        return deserialize(sourcePath);
     }
 
 
     // package-private for testing
     @Nullable
-    Module deserialize(@NotNull File sourcePath) {
+    Module deserialize(@NotNull String sourcePath) {
         String cachePath = getCachePath(sourcePath);
         FileInputStream fis = null;
         ObjectInputStream ois = null;
         try {
             fis = new FileInputStream(cachePath);
             ois = new ObjectInputStream(fis);
-            Module mod = (Module) ois.readObject();
-            // Files in different dirs may have the same base name and contents.
-            mod.setFile(sourcePath);
-            return mod;
-        }
-        catch (Exception e) {
+            return (Module) ois.readObject();
+        } catch (Exception e) {
             return null;
-        }
-        finally {
+        } finally {
             try {
                 if (ois != null) {
                     ois.close();
                 } else if (fis != null) {
                     fis.close();
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
 
             }
         }

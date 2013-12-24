@@ -1,8 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 import java.util.List;
@@ -13,8 +12,8 @@ public class Delete extends Node {
     public List<Node> targets;
 
 
-    public Delete(List<Node> elts, int start, int end) {
-        super(start, end);
+    public Delete(List<Node> elts, String file, int start, int end) {
+        super(file, start, end);
         this.targets = elts;
         addChildren(elts);
     }
@@ -22,14 +21,14 @@ public class Delete extends Node {
 
     @NotNull
     @Override
-    public Type resolve(@NotNull Scope s) {
+    public Type transform(@NotNull State s) {
         for (Node n : targets) {
-            resolveExpr(n, s);
+            transformExpr(n, s);
             if (n instanceof Name) {
                 s.remove(n.asName().id);
             }
         }
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 
@@ -39,11 +38,4 @@ public class Delete extends Node {
         return "<Delete:" + targets + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNodeList(targets, v);
-        }
-    }
 }

@@ -1,15 +1,23 @@
 package org.yinwang.pysonar;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sun.net.www.protocol.file.FileURLConnection;
 
 import java.io.*;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 
 /**
@@ -22,6 +30,15 @@ public class _ {
 
     public static String baseFileName(String filename) {
         return new File(filename).getName();
+    }
+
+
+    public static boolean same(@Nullable Object o1, @Nullable Object o2) {
+        if (o1 == null) {
+            return o2 == null;
+        } else {
+            return o1.equals(o2);
+        }
     }
 
 
@@ -57,8 +74,8 @@ public class _ {
 
         if (f.getName().endsWith("__init__.py")) {
             file = f.getParent();
-        } else if (file.endsWith(".py")) {
-            file = file.substring(0, file.length() - ".py".length());
+        } else if (file.endsWith(Analyzer.self.suffix)) {
+            file = file.substring(0, file.length() - Analyzer.self.suffix.length());
         }
 
         return file.replace(".", "%20").replace('/', '.').replace('\\', '.');
@@ -76,8 +93,8 @@ public class _ {
         String name = f.getName();
         if (name.equals("__init__.py")) {
             return f.getParentFile().getName();
-        } else if (name.endsWith(".py")) {
-            return name.substring(0, name.length() - ".py".length());
+        } else if (name.endsWith(Analyzer.self.suffix)) {
+            return name.substring(0, name.length() - Analyzer.self.suffix.length());
         } else {
             return name;
         }
@@ -102,14 +119,15 @@ public class _ {
     }
 
 
-    public static void writeFile(String path, String contents) throws Exception {
+    public static void writeFile(String path, String contents) {
         PrintWriter out = null;
         try {
             out = new PrintWriter(new BufferedWriter(new FileWriter(path)));
             out.print(contents);
             out.flush();
-        }
-        finally {
+        } catch (Exception e) {
+            _.die("Failed to write: " + path);
+        } finally {
             if (out != null) {
                 out.close();
             }
@@ -117,55 +135,25 @@ public class _ {
     }
 
 
-    @NotNull
-    public static String readFile(String filename) throws Exception {
-        return readFile(new File(filename));
-    }
-
-
-    @NotNull
-    public static String readFile(@NotNull File path) throws Exception {
+    @Nullable
+    public static String readFile(@NotNull String path) {
         // Don't use line-oriented file read -- need to retain CRLF if present
         // so the style-run and link offsets are correct.
-        return new String(getBytesFromFile(path), UTF_8);
+        byte[] content = getBytesFromFile(path);
+        if (content == null) {
+            return null;
+        } else {
+            return new String(content, UTF_8);
+        }
     }
 
 
-    @NotNull
-    public static byte[] getBytesFromFile(@NotNull File file) {
-        InputStream is = null;
-
+    @Nullable
+    public static byte[] getBytesFromFile(@NotNull String filename) {
         try {
-            is = new FileInputStream(file);
-            long length = file.length();
-            if (length > Integer.MAX_VALUE) {
-                throw new IOException("file too large: " + file);
-            }
-
-            byte[] bytes = new byte[(int) length];
-            int offset = 0;
-            int numRead = 0;
-            while (offset < bytes.length
-                    && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0)
-            {
-                offset += numRead;
-            }
-            if (offset < bytes.length) {
-                throw new IOException("Failed to read whole file " + file);
-            }
-            return bytes;
-        }
-        catch (Exception e) {
+            return FileUtils.readFileToByteArray(new File(filename));
+        } catch (Exception e) {
             return null;
-        }
-        finally {
-            if (is != null) {
-                try {
-                    is.close();
-                }
-                catch (Exception e) {
-                }
-            }
         }
     }
 
@@ -189,22 +177,74 @@ public class _ {
     }
 
 
-    @NotNull
-    public static String getSHA1(@NotNull File path) {
-        byte[] bytes = getBytesFromFile(path);
-        return getMD5(bytes);
+    public static void copyResourcesRecursively(URL originUrl, File destination) throws Exception {
+        URLConnection urlConnection = originUrl.openConnection();
+        if (urlConnection instanceof JarURLConnection) {
+            copyJarResourcesRecursively(destination, (JarURLConnection) urlConnection);
+        } else if (urlConnection instanceof FileURLConnection) {
+            FileUtils.copyDirectory(new File(originUrl.getPath()), destination);
+        } else {
+            die("Unsupported URL type: " + urlConnection);
+        }
+    }
+
+
+    public static void copyJarResourcesRecursively(File destination, JarURLConnection jarConnection) {
+        JarFile jarFile;
+        try {
+            jarFile = jarConnection.getJarFile();
+        } catch (Exception e) {
+            _.die("Failed to get jar file)");
+            return;
+        }
+
+        Enumeration<JarEntry> em = jarFile.entries();
+        while (em.hasMoreElements()) {
+            JarEntry entry = em.nextElement();
+            if (entry.getName().startsWith(jarConnection.getEntryName())) {
+                String fileName = StringUtils.removeStart(entry.getName(), jarConnection.getEntryName());
+                if (!fileName.equals("/")) {  // exclude the directory
+                    InputStream entryInputStream = null;
+                    try {
+                        entryInputStream = jarFile.getInputStream(entry);
+                        FileUtils.copyInputStreamToFile(entryInputStream, new File(destination, fileName));
+                    } catch (Exception e) {
+                        die("Failed to copy resource: " + fileName);
+                    } finally {
+                        if (entryInputStream != null) {
+                            try {
+                                entryInputStream.close();
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    public static String readResource(String resource) {
+        InputStream s = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+        return readWholeStream(s);
     }
 
 
     @NotNull
-    public static String getMD5(byte[] fileContents) {
+    public static String getSHA(@NotNull String path) {
+        byte[] bytes = getBytesFromFile(path);
+        return getSHA(bytes);
+    }
+
+
+    @NotNull
+    public static String getSHA(byte[] fileContents) {
         MessageDigest algorithm;
 
         try {
             algorithm = MessageDigest.getInstance("SHA-1");
-        }
-        catch (Exception e) {
-            _.die("getSHA1: failed to get MD5, shouldn't happen");
+        } catch (Exception e) {
+            _.die("Failed to get SHA, shouldn't happen");
             return "";
         }
 
@@ -240,7 +280,9 @@ public class _ {
 
 
     @NotNull
-    static public String joinWithSep(@NotNull Collection<String> ls, String sep, @Nullable String start, @Nullable String end) {
+    static public String joinWithSep(@NotNull Collection<String> ls, String sep, @Nullable String start,
+                                     @Nullable String end)
+    {
         StringBuilder sb = new StringBuilder();
         if (start != null && ls.size() > 1) {
             sb.append(start);
@@ -261,6 +303,20 @@ public class _ {
 
 
     public static void msg(String m) {
+        if (Analyzer.self != null && !Analyzer.self.hasOption("quiet")) {
+            System.out.println(m);
+        }
+    }
+
+
+    public static void msg_(String m) {
+        if (Analyzer.self != null && !Analyzer.self.hasOption("quiet")) {
+            System.out.print(m);
+        }
+    }
+
+
+    public static void testmsg(String m) {
         System.out.println(m);
     }
 
@@ -286,14 +342,13 @@ public class _ {
     public static String readWholeFile(String filename) {
         try {
             return new Scanner(new File(filename)).useDelimiter("PYSONAR2END").next();
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             return null;
         }
     }
 
 
-    public static String readWholeStream(InputStream in) throws Exception {
+    public static String readWholeStream(InputStream in) {
         return new Scanner(in).useDelimiter("\\Z").next();
     }
 
@@ -383,7 +438,12 @@ public class _ {
 
 
     public static String unifyPath(File file) {
-        return file.getAbsolutePath();
+        try {
+            return file.getCanonicalPath();
+        } catch (Exception e) {
+            die("Failed to get canonical path");
+            return "";
+        }
     }
 
 
@@ -421,6 +481,24 @@ public class _ {
     }
 
 
+    public static String projRelPath(String file) {
+        if (file.startsWith(Analyzer.self.projectDir)) {
+            return file.substring(Analyzer.self.projectDir.length() + 1);
+        } else {
+            return file;
+        }
+    }
+
+
+    public static String projAbsPath(String file) {
+        if (file.startsWith("/") || file.startsWith(Analyzer.self.projectDir)) {
+            return file;
+        } else {
+            return makePathString(Analyzer.self.projectDir, file);
+        }
+    }
+
+
     @NotNull
     public static File joinPath(@NotNull File dir, String file) {
         return joinPath(dir.getAbsolutePath(), file);
@@ -432,6 +510,12 @@ public class _ {
         File file1 = new File(dir);
         File file2 = new File(file1, file);
         return file2;
+    }
+
+
+    public static String locateTmp(String file) {
+        String tmpDir = getSystemTempDir();
+        return makePathString(tmpDir, "pysonar2", file + "." + Analyzer.self.sid);
     }
 
 

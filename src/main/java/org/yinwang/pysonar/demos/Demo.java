@@ -1,62 +1,28 @@
 package org.yinwang.pysonar.demos;
 
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.FancyProgress;
+import org.yinwang.pysonar.Progress;
 import org.yinwang.pysonar._;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class Demo {
 
     private static File OUTPUT_DIR;
 
-    private static final String CSS =
-            "body { color: #666666; } \n" +
-                    "a {text-decoration: none; color: #5A82F7}\n" +
-                    "table, th, td { border: 1px solid lightgrey; padding: 5px; corner: rounded; }\n" +
-                    ".builtin {color: #B17E41;}\n" +
-                    ".comment, .block-comment {color: #aaaaaa; font-style: italic;}\n" +
-                    ".constant {color: #888888;}\n" +
-                    ".decorator {color: #778899;}\n" +
-                    ".doc-string {color: #aaaaaa;}\n" +
-                    ".error {border-bottom: 1px solid red;}\n" +
-                    ".field-name {color: #2e8b57;}\n" +
-                    ".function {color: #4682b4;}\n" +
-                    ".identifier {color: #8b7765;}\n" +
-                    ".info {border-bottom: 1px dotted RoyalBlue;}\n" +
-                    ".keyword {color: #0000cd;}\n" +
-                    ".lineno {color: #aaaaaa;}\n" +
-                    ".number {color: #483d8b;}\n" +
-                    ".parameter {color: #777777;}\n" +
-                    ".string {color: #999999;}\n" +
-                    ".type-name {color: #4682b4;}\n" +
-                    ".warning {border-bottom: 1px dotted orange;}\n";
-
-    private static final String JS =
-            "<script language=\"JavaScript\" type=\"text/javascript\">\n" +
-                    "var highlighted = new Array();\n" +
-                    "function highlight()\n" +
-                    "{\n" +
-                    "    // clear existing highlights\n" +
-                    "    for (var i = 0; i < highlighted.length; i++) {\n" +
-                    "        var elm = document.getElementById(highlighted[i]);\n" +
-                    "        if (elm != null) {\n" +
-                    "            elm.style.backgroundColor = 'white';\n" +
-                    "        }\n" +
-                    "    }\n" +
-                    "    highlighted = new Array();\n" +
-                    "    for (var i = 0; i < arguments.length; i++) {\n" +
-                    "        var elm = document.getElementById(arguments[i]);\n" +
-                    "        if (elm != null) {\n" +
-                    "            elm.style.backgroundColor='gold';\n" +
-                    "        }\n" +
-                    "        highlighted.push(arguments[i]);\n" +
-                    "    }\n" +
-                    "} </script>\n";
-
+    private static final String CSS = _.readResource("org/yinwang/pysonar/css/demo.css");
+    private static final String JS = _.readResource("org/yinwang/pysonar/javascript/highlight.js");
+    private static final String JS_DEBUG = _.readResource("org/yinwang/pysonar/javascript/highlight-debug.js");
 
     private Analyzer analyzer;
     private String rootPath;
@@ -71,18 +37,18 @@ public class Demo {
     }
 
 
-    private void start(@NotNull File fileOrDir) throws Exception {
-        File rootDir = fileOrDir.isFile() ? fileOrDir.getParentFile() : fileOrDir;
+    private void start(@NotNull String fileOrDir, Map<String, Object> options) throws Exception {
+        File f = new File(fileOrDir);
+        File rootDir = f.isFile() ? f.getParentFile() : f;
         try {
             rootPath = _.unifyPath(rootDir);
-        }
-        catch (Exception e) {
-            _.die("File not found: " + fileOrDir);
+        } catch (Exception e) {
+            _.die("File not found: " + f);
         }
 
-        analyzer = new Analyzer();
+        analyzer = new Analyzer(options);
         _.msg("Loading and analyzing files");
-        analyzer.analyze(_.unifyPath(fileOrDir));
+        analyzer.analyze(f.getPath());
         analyzer.finish();
 
         generateHtml();
@@ -98,7 +64,6 @@ public class Demo {
         linker.findLinks(analyzer);
 
         int rootLength = rootPath.length();
-        _.msg("\nGenerating HTML");
 
         int total = 0;
         for (String path : analyzer.getLoadedFiles()) {
@@ -107,7 +72,7 @@ public class Demo {
             }
         }
 
-        FancyProgress progress = new FancyProgress(total, 50);
+        Progress progress = new Progress(total, 50);
 
         for (String path : analyzer.getLoadedFiles()) {
             if (path.startsWith(rootPath)) {
@@ -118,8 +83,7 @@ public class Demo {
                 String html = markup(path);
                 try {
                     _.writeFile(destPath, html);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     _.msg("Failed to write: " + destPath);
                 }
             }
@@ -135,27 +99,34 @@ public class Demo {
 
         try {
             source = _.readFile(path);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             _.die("Failed to read file: " + path);
             return "";
         }
 
-        List<StyleRun> styles = new Styler(analyzer, linker).addStyles(path, source);
+        List<Style> styles = new ArrayList<>();
         styles.addAll(linker.getStyles(path));
 
         String styledSource = new StyleApplier(path, source, styles).apply();
         String outline = new HtmlOutline(analyzer).generate(path);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("<html><head title=\"").append(path).append("\">")
-                .append("<style type='text/css'>\n").append(CSS).append("</style>\n")
-                .append(JS)
+        sb.append("<html><head title=\"")
+                .append(path)
+                .append("\">")
+                .append("<style type='text/css'>\n")
+                .append(CSS)
+                .append("</style>\n")
+                .append("<script language=\"JavaScript\" type=\"text/javascript\">\n")
+                .append(Analyzer.self.hasOption("debug") ? JS_DEBUG : JS)
+                .append("</script>\n")
                 .append("</head>\n<body>\n")
                 .append("<table width=100% border='1px solid gray'><tr><td valign='top'>")
                 .append(outline)
                 .append("</td><td>")
-                .append("<pre>").append(addLineNumbers(styledSource)).append("</pre>")
+                .append("<pre>")
+                .append(addLineNumbers(styledSource))
+                .append("</pre>")
                 .append("</td></tr></table></body></html>");
         return sb.toString();
     }
@@ -167,7 +138,7 @@ public class Demo {
         int count = 1;
         for (String line : source.split("\n")) {
             result.append("<span class='lineno'>");
-            result.append(count++);
+            result.append(String.format("%1$4d", count++));
             result.append("</span> ");
             result.append(line);
             result.append("\n");
@@ -195,16 +166,30 @@ public class Demo {
 
 
     public static void main(@NotNull String[] args) throws Exception {
-        if (args.length != 2) {
-            usage();
-        }
+        Options options = new Options();
+        options.addOption("d", "debug", false, "display debug information");
+        options.addOption("q", "quiet", false, "quiet");
+        options.addOption("E", "semantic-errors", false, "report semantic errors");
+        CommandLineParser parser = new BasicParser();
+        CommandLine cmd = parser.parse(options, args);
 
-        File fileOrDir = checkFile(args[0]);
+        args = cmd.getArgs();
+        String fileOrDir = args[0];
         OUTPUT_DIR = new File(args[1]);
 
-        new Demo().start(fileOrDir);
+        // set options for the analyzer
+        Map<String, Object> analyzerOptions = new HashMap<>();
+        if (cmd.hasOption("quiet")) {
+            analyzerOptions.put("quiet", true);
+        }
+        if (cmd.hasOption("debug")) {
+            analyzerOptions.put("debug", true);
+        }
+        if (cmd.hasOption("semantic-errors")) {
+            analyzerOptions.put("semantic-errors", true);
+        }
 
+        new Demo().start(fileOrDir, analyzerOptions);
         _.msg(_.getGCStats());
-
     }
 }

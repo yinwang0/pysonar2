@@ -1,43 +1,38 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 
 public class Str extends Node {
 
-    private String value;
+    public String value;
 
 
-    public Str(@NotNull Object value, int start, int end) {
-        super(start, end);
+    public Str(@NotNull Object value, String file, int start, int end) {
+        super(file, start, end);
         this.value = value.toString();
-    }
-
-
-    public String getStr() {
-        return value;
     }
 
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
-        return Analyzer.self.builtins.BaseStr;
+    public Type transform(State s) {
+        return Type.STR;
     }
 
 
     @NotNull
     @Override
     public String toString() {
-        return "<Str>";
+        String summary;
+        if (value.length() > 10) {
+            summary = value.substring(0, 10);
+        } else {
+            summary = value;
+        }
+        return "'" + summary + "'";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        v.visit(this);
-    }
 }

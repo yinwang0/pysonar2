@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.ListType;
 import org.yinwang.pysonar.types.Type;
 
@@ -14,8 +14,8 @@ public class GeneratorExp extends Node {
     public List<Comprehension> generators;
 
 
-    public GeneratorExp(Node elt, List<Comprehension> generators, int start, int end) {
-        super(start, end);
+    public GeneratorExp(Node elt, List<Comprehension> generators, String file, int start, int end) {
+        super(file, start, end);
         this.elt = elt;
         this.generators = generators;
         addChildren(elt);
@@ -29,9 +29,9 @@ public class GeneratorExp extends Node {
      */
     @NotNull
     @Override
-    public Type resolve(Scope s) {
+    public Type transform(State s) {
         resolveList(generators, s);
-        return new ListType(resolveExpr(elt, s));
+        return new ListType(transformExpr(elt, s));
     }
 
 
@@ -41,12 +41,4 @@ public class GeneratorExp extends Node {
         return "<GeneratorExp:" + start + ":" + elt + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(elt, v);
-            visitNodeList(generators, v);
-        }
-    }
 }

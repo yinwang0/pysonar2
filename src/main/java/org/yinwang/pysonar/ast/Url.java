@@ -1,8 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 
@@ -12,7 +11,7 @@ import org.yinwang.pysonar.types.Type;
  */
 public class Url extends Node {
 
-    private String url;
+    public String url;
 
 
     public Url(String url) {
@@ -20,15 +19,10 @@ public class Url extends Node {
     }
 
 
-    public String getURL() {
-        return url;
-    }
-
-
     @NotNull
     @Override
-    public Type resolve(Scope s) {
-        return Analyzer.self.builtins.BaseStr;
+    public Type transform(State s) {
+        return Type.STR;
     }
 
 
@@ -38,9 +32,4 @@ public class Url extends Node {
         return "<Url:\"" + url + "\">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        v.visit(this);
-    }
 }

@@ -2,7 +2,6 @@ package org.yinwang.pysonar;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 
 import java.util.ArrayList;
@@ -19,10 +18,10 @@ public class Outliner {
 
     public static abstract class Entry {
         @Nullable
-        protected String qname;  // entry qualified name
-        protected int offset;  // file offset of referenced declaration
+        public String qname;  // entry qualified name
+        public int offset;  // file offset of referenced declaration
         @Nullable
-        protected Binding.Kind kind;  // binding kind of outline entry
+        public Binding.Kind kind;  // binding kind of outline entry
 
 
         public Entry() {
@@ -56,7 +55,9 @@ public class Outliner {
 
         public abstract boolean hasChildren();
 
+
         public abstract List<Entry> getChildren();
+
 
         public abstract void setChildren(List<Entry> children);
 
@@ -89,12 +90,6 @@ public class Outliner {
         }
 
 
-        @Nullable
-        public Binding.Kind getKind() {
-            return kind;
-        }
-
-
         public void setKind(@Nullable Binding.Kind kind) {
             if (kind == null) {
                 throw new IllegalArgumentException("kind param cannot be null");
@@ -124,7 +119,7 @@ public class Outliner {
             for (int i = 0; i < depth; i++) {
                 sb.append("  ");
             }
-            sb.append(getKind());
+            sb.append(kind);
             sb.append(" ");
             sb.append(getName());
             sb.append("\n");
@@ -141,7 +136,7 @@ public class Outliner {
      * An outline entry with children.
      */
     public static class Branch extends Entry {
-        private List<Entry> children = new ArrayList<Entry>();
+        private List<Entry> children = new ArrayList<>();
 
 
         public Branch() {
@@ -209,7 +204,7 @@ public class Outliner {
 
         @NotNull
         public List<Entry> getChildren() {
-            return new ArrayList<Entry>();
+            return new ArrayList<>();
         }
 
 
@@ -225,31 +220,31 @@ public class Outliner {
      * @param scope the file scope
      * @param path  the file for which to build the outline
      * @return a list of entries constituting the file outline.
-     *         Returns an empty list if the analyzer hasn't analyzed that path.
+     * Returns an empty list if the analyzer hasn't analyzed that path.
      */
     @NotNull
     public List<Entry> generate(@NotNull Analyzer idx, @NotNull String abspath) {
-        ModuleType mt = idx.loadFile(abspath);
+        Type mt = idx.loadFile(abspath);
         if (mt == null) {
-            return new ArrayList<Entry>();
+            return new ArrayList<>();
         }
-        return generate(mt.getTable(), abspath);
+        return generate(mt.table, abspath);
     }
 
 
     /**
      * Create an outline for a symbol table.
      *
-     * @param scope the file scope
+     * @param state the file state
      * @param path  the file for which we're building the outline
      * @return a list of entries constituting the outline
      */
     @NotNull
-    public List<Entry> generate(@NotNull Scope scope, @NotNull String path) {
+    public List<Entry> generate(@NotNull State state, @NotNull String path) {
         List<Entry> result = new ArrayList<>();
 
         Set<Binding> entries = new TreeSet<>();
-        for (Binding b : scope.values()) {
+        for (Binding b : state.values()) {
             if (!b.isSynthetic()
                     && !b.isBuiltin()
                     && path.equals(b.getFile()))
@@ -261,23 +256,23 @@ public class Outliner {
         for (Binding nb : entries) {
             List<Entry> kids = null;
 
-            if (nb.getKind() == Binding.Kind.CLASS) {
-                Type realType = nb.getType();
+            if (nb.kind == Binding.Kind.CLASS) {
+                Type realType = nb.type;
                 if (realType.isUnionType()) {
-                    for (Type t : realType.asUnionType().getTypes()) {
+                    for (Type t : realType.asUnionType().types) {
                         if (t.isClassType()) {
                             realType = t;
                             break;
                         }
                     }
                 }
-                kids = generate(realType.getTable(), path);
+                kids = generate(realType.table, path);
             }
 
             Entry kid = kids != null ? new Branch() : new Leaf();
-            kid.setOffset(nb.getStart());
-            kid.setQname(nb.getQname());
-            kid.setKind(nb.getKind());
+            kid.setOffset(nb.start);
+            kid.setQname(nb.qname);
+            kid.setKind(nb.kind);
 
             if (kids != null) {
                 kid.setChildren(kids);

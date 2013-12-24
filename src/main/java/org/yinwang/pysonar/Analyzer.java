@@ -2,29 +2,31 @@ package org.yinwang.pysonar;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.ast.*;
+import org.yinwang.pysonar.ast.Call;
+import org.yinwang.pysonar.ast.Name;
+import org.yinwang.pysonar.ast.Node;
+import org.yinwang.pysonar.ast.Url;
 import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 
 import java.io.File;
+import java.net.URL;
 import java.util.*;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class Analyzer {
 
+    public static String MODEL_LOCATION = "org/yinwang/pysonar/models";
+
     // global static instance of the analyzer itself
     public static Analyzer self;
-
-    public Scope moduleTable = new Scope(null, Scope.ScopeType.GLOBAL);
+    public String sid = _.newSessionId();
+    public State moduleTable = new State(null, State.StateType.GLOBAL);
     public List<String> loadedFiles = new ArrayList<>();
-    public Scope globaltable = new Scope(null, Scope.ScopeType.GLOBAL);
+    public State globaltable = new State(null, State.StateType.GLOBAL);
     public List<Binding> allBindings = new ArrayList<>();
-    private Map<Ref, List<Binding>> references = new LinkedHashMap<>();
+    private Map<Node, List<Binding>> references = new LinkedHashMap<>();
     public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
     public Map<String, List<Diagnostic>> parseErrors = new HashMap<>();
     public String cwd = null;
@@ -40,28 +42,59 @@ public class Analyzer {
     public Set<String> failedToParse = new HashSet<>();
     public Stats stats = new Stats();
     public Builtins builtins;
-    private Logger logger;
-    private FancyProgress loadingProgress = null;
+    private Progress loadingProgress = null;
 
-    String projectDir;
+    public String projectDir;
+    public String modelDir;
+    public String suffix;
+
+    public Map<String, Object> options;
 
 
     public Analyzer() {
-        stats.putInt("startTime", System.currentTimeMillis());
-        logger = Logger.getLogger(Analyzer.class.getCanonicalName());
+        this(null);
+    }
+
+
+    public Analyzer(Map<String, Object> options) {
         self = this;
-        builtins = new Builtins();
-        builtins.init();
+        if (options != null) {
+            this.options = options;
+        } else {
+            this.options = new HashMap<>();
+        }
+        this.stats.putInt("startTime", System.currentTimeMillis());
+        this.suffix = ".py";
+        this.builtins = new Builtins();
+        this.builtins.init();
         addPythonPath();
+        copyModels();
         createCacheDir();
         getAstCache();
     }
 
 
+    public boolean hasOption(String option) {
+        Object op = options.get(option);
+        if (op != null && op.equals(true)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public void setOption(String option) {
+        options.put(option, true);
+    }
+
+
     // main entry to the analyzer
     public void analyze(String path) {
-        projectDir = _.unifyPath(path);
-        loadFileRecursive(projectDir);
+        String upath = _.unifyPath(path);
+        File f = new File(upath);
+        projectDir = f.isDirectory() ? f.getPath() : f.getParent();
+        loadFileRecursive(upath);
     }
 
 
@@ -98,6 +131,21 @@ public class Analyzer {
                 addPath(p);
             }
         }
+    }
+
+
+    private void copyModels() {
+        URL resource = Thread.currentThread().getContextClassLoader().getResource(MODEL_LOCATION);
+        String dest = _.locateTmp("models");
+        this.modelDir = dest;
+
+        try {
+            _.copyResourcesRecursively(resource, new File(dest));
+            _.msg("copied models to: " + modelDir);
+        } catch (Exception e) {
+            _.die("Failed to copy models. Please check permissions of writing to: " + dest);
+        }
+        addPath(dest);
     }
 
 
@@ -157,7 +205,7 @@ public class Analyzer {
         if (t == null) {
             return null;
         } else if (t.isUnionType()) {
-            for (Type tt : t.asUnionType().getTypes()) {
+            for (Type tt : t.asUnionType().types) {
                 if (tt.isModuleType()) {
                     return (ModuleType) tt;
                 }
@@ -182,17 +230,16 @@ public class Analyzer {
 
     public void putRef(@NotNull Node node, @NotNull List<Binding> bs) {
         if (!(node instanceof Url)) {
-            Ref ref = new Ref(node);
-            List<Binding> bindings = references.get(ref);
+            List<Binding> bindings = references.get(node);
             if (bindings == null) {
                 bindings = new ArrayList<>(1);
-                references.put(ref, bindings);
+                references.put(node, bindings);
             }
             for (Binding b : bs) {
                 if (!bindings.contains(b)) {
                     bindings.add(b);
                 }
-                b.addRef(ref);
+                b.addRef(node);
             }
         }
     }
@@ -206,13 +253,13 @@ public class Analyzer {
 
 
     @NotNull
-    public Map<Ref, List<Binding>> getReferences() {
+    public Map<Node, List<Binding>> getReferences() {
         return references;
     }
 
 
     public void putProblem(@NotNull Node loc, String msg) {
-        String file = loc.getFile();
+        String file = loc.file;
         if (file != null) {
             addFileErr(file, loc.start, loc.end, msg);
         }
@@ -233,11 +280,6 @@ public class Analyzer {
     }
 
 
-    List<Diagnostic> getParseErrs(String file) {
-        return getFileErrs(file, parseErrors);
-    }
-
-
     List<Diagnostic> getFileErrs(String file, @NotNull Map<String, List<Diagnostic>> map) {
         List<Diagnostic> msgs = map.get(file);
         if (msgs == null) {
@@ -249,20 +291,16 @@ public class Analyzer {
 
 
     @Nullable
-    public ModuleType loadFile(String path) {
-//        Util.msg("loading: " + path);
-
+    public Type loadFile(String path) {
         path = _.unifyPath(path);
         File f = new File(path);
 
         if (!f.canRead()) {
-            finer("\nfile not not found or cannot be read: " + path);
             return null;
         }
 
-        ModuleType module = getCachedModule(path);
+        Type module = getCachedModule(path);
         if (module != null) {
-            finer("\nusing cached module " + path + " [succeeded]");
             return module;
         }
 
@@ -276,45 +314,30 @@ public class Analyzer {
         setCWD(f.getParent());
 
         Analyzer.self.pushImportStack(path);
-        ModuleType mod = parseAndResolve(path);
+        Type type = parseAndResolve(path);
 
         // restore old CWD
         setCWD(oldcwd);
-        return mod;
-    }
-
-
-    private boolean isInLoadPath(File dir) {
-        for (String s : getLoadPath()) {
-            if (new File(s).equals(dir)) {
-                return true;
-            }
-        }
-        return false;
+        return type;
     }
 
 
     @Nullable
-    private ModuleType parseAndResolve(String file) {
-        finer("Analyzing: " + file);
+    private Type parseAndResolve(String file) {
         loadingProgress.tick();
 
         try {
-            Module ast;
-            ast = getAstForFile(file);
+            Node ast = getAstForFile(file);
 
             if (ast == null) {
                 failedToParse.add(file);
                 return null;
             } else {
-                finer("resolving: " + file);
-                ModuleType mod = (ModuleType) ast.resolve(moduleTable);
-                finer("[success]");
+                Type type = Node.transformExpr(ast, moduleTable);
                 loadedFiles.add(file);
-                return mod;
+                return type;
             }
-        }
-        catch (OutOfMemoryError e) {
+        } catch (OutOfMemoryError e) {
             if (astCache != null) {
                 astCache.clear();
             }
@@ -350,7 +373,7 @@ public class Analyzer {
      * Returns the syntax tree for {@code file}. <p>
      */
     @Nullable
-    public Module getAstForFile(String file) {
+    public Node getAstForFile(String file) {
         return getAstCache().getAST(file);
     }
 
@@ -394,7 +417,7 @@ public class Analyzer {
                 return p;
             }
 
-            File startFile = new File(startDir + ".py");
+            File startFile = new File(startDir + suffix);
             if (startFile.exists()) {
                 return p;
             }
@@ -405,24 +428,24 @@ public class Analyzer {
 
 
     @Nullable
-    public ModuleType loadModule(@NotNull List<Name> name, @NotNull Scope scope) {
+    public Type loadModule(@NotNull List<Name> name, @NotNull State state) {
         if (name.isEmpty()) {
             return null;
         }
 
         String qname = makeQname(name);
 
-        ModuleType mt = getBuiltinModule(qname);
+        Type mt = getBuiltinModule(qname);
         if (mt != null) {
-            scope.insert(name.get(0).id,
-                    new Url(Builtins.LIBRARY_URL + mt.getTable().getPath() + ".html"),
+            state.insert(name.get(0).id,
+                    new Url(Builtins.LIBRARY_URL + mt.table.path + ".html"),
                     mt, Binding.Kind.SCOPE);
             return mt;
         }
 
         // If there are more than one segment
         // load the packages first
-        ModuleType prev = null;
+        Type prev = null;
         String startPath = locateModule(name.get(0).id);
 
         if (startPath == null) {
@@ -436,30 +459,30 @@ public class Analyzer {
             File initFile = new File(_.joinPath(path, "__init__.py").getPath());
 
             if (initFile.exists()) {
-                ModuleType mod = loadFile(initFile.getPath());
+                Type mod = loadFile(initFile.getPath());
                 if (mod == null) {
                     return null;
                 }
 
                 if (prev != null) {
-                    prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+                    prev.table.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                 } else {
-                    scope.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+                    state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                 }
 
                 prev = mod;
 
             } else if (i == name.size() - 1) {
-                File startFile = new File(path + ".py");
+                File startFile = new File(path + suffix);
                 if (startFile.exists()) {
-                    ModuleType mod = loadFile(startFile.getPath());
+                    Type mod = loadFile(startFile.getPath());
                     if (mod == null) {
                         return null;
                     }
                     if (prev != null) {
-                        prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+                        prev.table.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                     } else {
-                        scope.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+                        state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                     }
                     prev = mod;
                 } else {
@@ -479,7 +502,7 @@ public class Analyzer {
     public void loadFileRecursive(String fullname) {
         int count = countFileRecursive(fullname);
         if (loadingProgress == null) {
-            loadingProgress = new FancyProgress(count, 50);
+            loadingProgress = new Progress(count, 50);
         }
 
         File file_or_dir = new File(fullname);
@@ -489,7 +512,7 @@ public class Analyzer {
                 loadFileRecursive(file.getPath());
             }
         } else {
-            if (file_or_dir.getPath().endsWith(".py")) {
+            if (file_or_dir.getPath().endsWith(suffix)) {
                 loadFile(file_or_dir.getPath());
             }
         }
@@ -506,7 +529,7 @@ public class Analyzer {
                 sum += countFileRecursive(file.getPath());
             }
         } else {
-            if (file_or_dir.getPath().endsWith(".py")) {
+            if (file_or_dir.getPath().endsWith(suffix)) {
                 sum += 1;
             }
         }
@@ -515,24 +538,19 @@ public class Analyzer {
 
 
     public void finish() {
-//        progress.end();
         _.msg("\nFinished loading files. " + nCalled + " functions were called.");
         _.msg("Analyzing uncalled functions");
         applyUncalled();
 
         // mark unused variables
         for (Binding b : allBindings) {
-            if (!b.getType().isClassType() &&
-                    !b.getType().isFuncType() &&
-                    !b.getType().isModuleType()
-                    && b.getRefs().isEmpty())
+            if (!b.type.isClassType() &&
+                    !b.type.isFuncType() &&
+                    !b.type.isModuleType()
+                    && b.refs.isEmpty())
             {
-                Analyzer.self.putProblem(b.getNode(), "Unused variable: " + b.getName());
+                Analyzer.self.putProblem(b.node, "Unused variable: " + b.name);
             }
-        }
-
-        for (Entry<Ref, List<Binding>> ent : references.entrySet()) {
-            convertCallToNew(ent.getKey(), ent.getValue());
         }
 
         _.msg(getAnalysisSummary());
@@ -541,31 +559,6 @@ public class Analyzer {
 
     public void close() {
         astCache.close();
-    }
-
-
-    private void convertCallToNew(@NotNull Ref ref, @NotNull List<Binding> bindings) {
-
-        if (ref.isRef()) {
-            return;
-        }
-
-        if (bindings.isEmpty()) {
-            return;
-        }
-
-        Binding nb = bindings.get(0);
-        Type t = nb.getType();
-        if (t.isUnionType()) {
-            t = t.asUnionType().firstUseful();
-            if (t == null) {
-                return;
-            }
-        }
-
-        if (!t.isUnknownType() && !t.isFuncType()) {
-            ref.markAsNew();
-        }
     }
 
 
@@ -582,7 +575,7 @@ public class Analyzer {
 
 
     public void applyUncalled() {
-        FancyProgress progress = new FancyProgress(uncalled.size(), 50);
+        Progress progress = new Progress(uncalled.size(), 50);
 
         while (!uncalled.isEmpty()) {
             List<FunType> uncalledDup = new ArrayList<>(uncalled);
@@ -610,7 +603,7 @@ public class Analyzer {
         int nDef = 0, nXRef = 0;
         for (Binding b : getAllBindings()) {
             nDef += 1;
-            nXRef += b.getRefs().size();
+            nXRef += b.refs.size();
         }
 
         sb.append("\n- number of definitions: " + nDef);
@@ -632,7 +625,7 @@ public class Analyzer {
     public List<String> getLoadedFiles() {
         List<String> files = new ArrayList<>();
         for (String file : loadedFiles) {
-            if (file.endsWith(".py")) {
+            if (file.endsWith(suffix)) {
                 files.add(file);
             }
         }
@@ -645,42 +638,13 @@ public class Analyzer {
     }
 
 
-    public void log(Level level, String msg) {
-        if (logger.isLoggable(level)) {
-            logger.log(level, msg);
-        }
-    }
-
-
-    public void severe(String msg) {
-        log(Level.SEVERE, msg);
-    }
-
-
-    public void warn(String msg) {
-        log(Level.WARNING, msg);
-    }
-
-
-    public void info(String msg) {
-        log(Level.INFO, msg);
-    }
-
-
-    public void fine(String msg) {
-        log(Level.FINE, msg);
-    }
-
-
-    public void finer(String msg) {
-        log(Level.FINER, msg);
-    }
-
-
     @NotNull
     @Override
     public String toString() {
-        return "<Analyzer:locs=" + references.size() + ":probs="
-                + semanticErrors.size() + ":files=" + loadedFiles.size() + ">";
+        return "(analyzer:" +
+                "[" + allBindings.size() + " bindings] " +
+                "[" + references.size() + " refs] " +
+                "[" + loadedFiles.size() + " files] " +
+                ")";
     }
 }

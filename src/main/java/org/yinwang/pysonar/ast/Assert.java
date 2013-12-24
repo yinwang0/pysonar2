@@ -1,8 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 
@@ -12,8 +11,8 @@ public class Assert extends Node {
     public Node msg;
 
 
-    public Assert(Node test, Node msg, int start, int end) {
-        super(start, end);
+    public Assert(Node test, Node msg, String file, int start, int end) {
+        super(file, start, end);
         this.test = test;
         this.msg = msg;
         addChildren(test, msg);
@@ -22,14 +21,14 @@ public class Assert extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
+    public Type transform(State s) {
         if (test != null) {
-            resolveExpr(test, s);
+            transformExpr(test, s);
         }
         if (msg != null) {
-            resolveExpr(msg, s);
+            transformExpr(msg, s);
         }
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 
@@ -39,12 +38,4 @@ public class Assert extends Node {
         return "<Assert:" + test + ":" + msg + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(test, v);
-            visitNode(msg, v);
-        }
-    }
 }

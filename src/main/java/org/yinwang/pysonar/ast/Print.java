@@ -1,8 +1,7 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.Scope;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 import java.util.List;
@@ -14,8 +13,8 @@ public class Print extends Node {
     public List<Node> values;
 
 
-    public Print(Node dest, List<Node> elts, int start, int end) {
-        super(start, end);
+    public Print(Node dest, List<Node> elts, String file, int start, int end) {
+        super(file, start, end);
         this.dest = dest;
         this.values = elts;
         addChildren(dest);
@@ -25,14 +24,14 @@ public class Print extends Node {
 
     @NotNull
     @Override
-    public Type resolve(Scope s) {
+    public Type transform(State s) {
         if (dest != null) {
-            resolveExpr(dest, s);
+            transformExpr(dest, s);
         }
         if (values != null) {
             resolveList(values, s);
         }
-        return Analyzer.self.builtins.Cont;
+        return Type.CONT;
     }
 
 
@@ -42,12 +41,4 @@ public class Print extends Node {
         return "<Print:" + values + ">";
     }
 
-
-    @Override
-    public void visit(@NotNull NodeVisitor v) {
-        if (v.visit(this)) {
-            visitNode(dest, v);
-            visitNodeList(values, v);
-        }
-    }
 }
