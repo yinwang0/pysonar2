@@ -66,13 +66,14 @@ public class Name extends Node {
         List<Binding> b = s.lookup(id);
         if (b != null) {
             Analyzer.self.putRef(this, b);
-            Analyzer.self.stats.inc("resolved");
+            Analyzer.self.resolved.add(this);
+            Analyzer.self.unresolved.remove(this);
             return State.makeUnion(b);
         } else if (id.equals("True") || id.equals("False")) {
             return Type.BOOL;
         } else {
             Analyzer.self.putProblem(this, "unbound variable " + id);
-            Analyzer.self.stats.inc("unresolved");
+            Analyzer.self.unresolved.add(this);
             Type t = Type.UNKNOWN;
             t.table.setPath(s.extendPath(id));
             return t;

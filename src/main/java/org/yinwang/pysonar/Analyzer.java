@@ -27,6 +27,8 @@ public class Analyzer {
     public State globaltable = new State(null, State.StateType.GLOBAL);
     public List<Binding> allBindings = new ArrayList<>();
     private Map<Node, List<Binding>> references = new LinkedHashMap<>();
+    public Set<Name> resolved = new HashSet<>();
+    public Set<Name> unresolved = new HashSet<>();
     public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
     public Map<String, List<Diagnostic>> parseErrors = new HashMap<>();
     public String cwd = null;
@@ -610,8 +612,8 @@ public class Analyzer {
         sb.append("\n- number of cross references: " + nXRef);
         sb.append("\n- number of references: " + getReferences().size());
 
-        long resolved = stats.getInt("resolved");
-        long unresolved = stats.getInt("unresolved");
+        long resolved = Analyzer.self.resolved.size();
+        long unresolved = Analyzer.self.unresolved.size();
         sb.append("\n- resolved names: " + resolved);
         sb.append("\n- unresolved names: " + unresolved);
         sb.append("\n- name resolve rate: " + _.percent(resolved, resolved + unresolved));
