@@ -61,9 +61,16 @@ public class Parser {
             python3Process.destroy();
         }
 
+        // copy dump_python.py to temp dir
+        try {
+            URL url = Thread.currentThread().getContextClassLoader().getResource(dumpPythonResource);
+            FileUtils.copyURLToFile(url, new File(jsonizer));
+        } catch (Exception e) {
+            _.die("Failed to copy resource file:" + dumpPythonResource);
+        }
+
         python2Process = startInterpreter(PYTHON2_EXE);
         python3Process = startInterpreter(PYTHON3_EXE);
-
         if (python2Process == null && python3Process == null) {
             _.die("You don't seem to have either of Python or Python3 on PATH");
         }
@@ -812,15 +819,6 @@ public class Parser {
     @Nullable
     public Process startInterpreter(String pythonExe) {
         Process p;
-
-        try {
-            URL url = Thread.currentThread().getContextClassLoader().getResource(dumpPythonResource);
-            FileUtils.copyURLToFile(url, new File(jsonizer));
-        } catch (Exception e) {
-            _.die("Failed to copy resource file:" + dumpPythonResource);
-            return null;
-        }
-
         try {
             ProcessBuilder builder = new ProcessBuilder(pythonExe, "-i", jsonizer);
             builder.redirectErrorStream(true);
@@ -829,7 +827,7 @@ public class Parser {
             builder.environment().remove("PYTHONPATH");
             p = builder.start();
         } catch (Exception e) {
-            _.die("Failed to start Python");
+            _.msg("Failed to start: " + pythonExe);
             return null;
         }
         return p;
@@ -921,7 +919,7 @@ public class Parser {
             writer.flush();
             return true;
         } catch (Exception e) {
-            _.msg("\nFailed to send command to Ruby interpreter: " + cmd);
+            _.msg("\nFailed to send command to interpreter: " + cmd);
             return false;
         }
     }
