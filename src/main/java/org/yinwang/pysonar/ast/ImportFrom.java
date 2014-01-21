@@ -102,16 +102,20 @@ public class ImportFrom extends Node {
         }
 
         if (!names.isEmpty()) {
+            int start = this.start;
+
             for (String name : names) {
                 List<Binding> b = mt.table.lookupLocal(name);
                 if (b != null) {
                     s.update(name, b);
                 } else {
                     List<Name> m2 = new ArrayList<>(module);
-                    m2.add(new Name(name));
+                    Name fakeName = new Name(name, this.file, start, start + name.length());
+                    m2.add(fakeName);
                     Type type = Analyzer.self.loadModule(m2, s);
                     if (type != null) {
-                        s.insert(name, null, type, Binding.Kind.VARIABLE);
+                        start += name.length();
+                        s.insert(name, fakeName, type, Binding.Kind.VARIABLE);
                     }
                 }
             }
