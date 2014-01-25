@@ -14,15 +14,6 @@ infer types. To understand its properties, please refer to my blog posts:
 
 
 
-### If the build is broken
-
-I haven't yet set up releases, so I push working copies of the builds that I
-don't see problems so far to the `target` directory as a "stable" version. If
-the current build is broken or buggy, please grab that snapshot instead. And of
-course, filing an issue is appreciated.
-
-
-
 ### System Requirements
 
 * Python 2.7.x is recommended (Python <= 2.5 does not work, Python 2.6 works for
