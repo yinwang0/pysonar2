@@ -7,7 +7,7 @@ infer types. To understand its properties, please refer to my blog posts:
 - http://yinwang0.wordpress.com/2013/06/21/pysonar-slides
 
 
-<img src="http://www.yinwang.org/images/pysonar2.gif" width="90%">
+<img src="http://www.yinwang.org/images/pysonar2.gif" width="70%">
 
 
 ### How to build
