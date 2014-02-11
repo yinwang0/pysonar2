@@ -2,7 +2,6 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.State;
-import org.yinwang.pysonar.types.ComplexType;
 import org.yinwang.pysonar.types.Type;
 
 
@@ -22,7 +21,7 @@ public class PyComplex extends Node {
     @NotNull
     @Override
     public Type transform(State s) {
-        return new ComplexType(real, imag);
+        return Type.COMPLEX;
     }
 
 

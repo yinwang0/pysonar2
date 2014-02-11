@@ -56,7 +56,7 @@ public class Subscript extends Node {
                 addWarning("Possible KeyError (wrong type for subscript)");
             }
             return vt.asDictType().valueType;
-        } else if (vt.isStrType()) {
+        } else if (vt == Type.STR) {
             if (st != null && (st.isListType() || st.isNumType())) {
                 return vt;
             } else {

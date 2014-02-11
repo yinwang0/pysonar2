@@ -2,7 +2,6 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.State;
-import org.yinwang.pysonar.types.FloatType;
 import org.yinwang.pysonar.types.Type;
 
 
@@ -27,7 +26,7 @@ public class PyFloat extends Node {
     @NotNull
     @Override
     public Type transform(State s) {
-        return new FloatType(value);
+        return Type.FLOAT;
     }
 
 

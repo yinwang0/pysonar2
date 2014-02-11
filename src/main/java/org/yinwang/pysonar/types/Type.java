@@ -5,7 +5,6 @@ import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.TypeStack;
 import org.yinwang.pysonar._;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -94,21 +93,6 @@ public abstract class Type {
     }
 
 
-    public boolean isIntType() {
-        return this instanceof IntType;
-    }
-
-
-    public boolean isFloatType() {
-        return this instanceof FloatType;
-    }
-
-
-    public boolean isStrType() {
-        return this == Type.STR;
-    }
-
-
     public boolean isTupleType() {
         return this instanceof TupleType;
     }
@@ -137,26 +121,8 @@ public abstract class Type {
 
 
     @NotNull
-    public IntType asIntType() {
-        return (IntType) this;
-    }
-
-
-    @NotNull
-    public FloatType asFloatType() {
-        return (FloatType) this;
-    }
-
-
-    @NotNull
     public FunType asFuncType() {
         return (FunType) this;
-    }
-
-
-    @NotNull
-    public InstanceType asInstanceType() {
-        return (InstanceType) this;
     }
 
 
@@ -196,49 +162,6 @@ public abstract class Type {
     @NotNull
     public UnionType asUnionType() {
         return (UnionType) this;
-    }
-
-
-    public boolean isTrue() {
-        if (this == Type.TRUE) {
-            return true;
-        }
-        if (this == Type.FALSE || this.isUndecidedBool()) {
-            return false;
-        }
-        if (this.isIntType() && (this.asIntType().lt(BigInteger.ZERO) || this.asIntType().gt(BigInteger.ZERO))) {
-            return true;
-        }
-        if (this.isIntType() && this.asIntType().isZero()) {
-            return false;
-        }
-        if (this.isFloatType() && (this.asFloatType().lt(0) || this.asFloatType().gt(0))) {
-            return true;
-        }
-        if (this.isFloatType() && this.asFloatType().isZero()) {
-            return false;
-        }
-        return false;
-    }
-
-
-    public boolean isFalse() {
-        if (this == Type.FALSE) {
-            return true;
-        }
-        if (this == Type.TRUE || this.isUndecidedBool()) {
-            return false;
-        }
-        if (this.isIntType() && this.asIntType().isZero()) {
-            return true;
-        }
-        if (this.isFloatType() && this.asFloatType().isZero()) {
-            return true;
-        }
-        if (this == Type.NONE) {
-            return true;
-        }
-        return false;
     }
 
 
