@@ -5,8 +5,9 @@ PySonar2 is a type inferencer and indexer for Python, which does interprocedural
 - http://yinwang0.wordpress.com/2010/09/12/pysonar
 - http://yinwang0.wordpress.com/2013/06/21/pysonar-slides
 
-
+<a href="http://www.yinwang.org/resources/demos/pysonar2/email/header.py.html">
 <img src="http://www.yinwang.org/images/pysonar2.gif" width="70%">
+</a>
 
 
 
