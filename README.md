@@ -7,6 +7,8 @@ infer types. To understand its properties, please refer to my blog posts:
 - http://yinwang0.wordpress.com/2013/06/21/pysonar-slides
 
 
+<img src="http://www.yinwang.org/images/pysonar2.gif" width="90%">
+
 
 ### How to build
 
@@ -40,7 +42,7 @@ If this is not set up correctly, you may find suboptimal results.
 PySonar2 is mainly designed as a library for Python IDEs and other developer
 tools, so its interface may not be as appealing as an end-user tool, but for
 your understanding of the library's capabilities, a reasonably nice demo program
-has been built (all features added by Steve Yegge, all bugs added by Yin Wang).
+has been built.
 
 Now you can build a simple "code-browser" of the Python 2.7 standard library
 with the following command line:

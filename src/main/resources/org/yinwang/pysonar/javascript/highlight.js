@@ -5,21 +5,17 @@ function highlight(xid)
     var elms = document.querySelectorAll('[xid="' + xid + '"]');
     for (k in elms) {
         v = elms[k]
-        if (v.style) {
-            v.style.backgroundColor = '#dddddd';
-        }
+        v.className = "active";
     }
     highlighted = xid;
-} 
+}
 
 function clearHighlight() {
     var elms = document.querySelectorAll('[xid="' + highlighted + '"]');
     for (k in elms) {
         v = elms[k]
-        if (v.style) {
-            v.style.backgroundColor='white';
-        }
-    }            
+        v.className = "";
+    }
 }
 
 window.onload =
