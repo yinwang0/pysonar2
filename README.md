@@ -1,7 +1,6 @@
-## PySonar2 - a deep static analyzer for Python
+## PySonar2 - a type inferencer and indexer for Python
 
-PySonar2 is a static analyzer for Python, which does interprocedural analysis to
-infer types. To understand its properties, please refer to my blog posts:
+PySonar2 is a type inferencer and indexer for Python, which does interprocedural analysis to infer types. To understand its properties, please refer to my blog posts:
 
 - http://yinwang0.wordpress.com/2010/09/12/pysonar
 - http://yinwang0.wordpress.com/2013/06/21/pysonar-slides
