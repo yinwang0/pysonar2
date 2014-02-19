@@ -1,6 +1,11 @@
 ## PySonar2 - a type inferencer and indexer for Python
 
-PySonar2 is a type inferencer and indexer for Python, which does interprocedural analysis to infer types. To understand its properties, please refer to my blog posts:
+PySonar2 is a type inferencer and indexer for Python, which does sophisticated
+interprocedural analysis to infer types. It is one of the underlying
+technologies that powers the code search site <a
+href="https://sourcegraph.com/github.com/rails/rails">Sourcegraph</a>.
+
+To understand its properties, please refer to my blog posts:
 
 - http://yinwang0.wordpress.com/2010/09/12/pysonar
 - http://yinwang0.wordpress.com/2013/06/21/pysonar-slides
