@@ -1,4 +1,4 @@
-## PySonar2 - a type inferencer and indexer for Python
+### PySonar2 - a type inferencer and indexer for Python
 
 PySonar2 is a type inferencer and indexer for Python, which does sophisticated
 interprocedural analysis to infer types. It is one of the underlying
@@ -16,13 +16,13 @@ To understand its properties, please refer to my blog posts:
 
 
 
-### How to build
+#### How to build
 
     mvn package
 
 
 
-### System Requirements
+#### System Requirements
 
 * Python 2.7.x is recommended (Python <= 2.5 does not work, Python 2.6 works for
   some people but not all)
@@ -43,7 +43,7 @@ If this is not set up correctly, you may find suboptimal results.
 
 
 
-### How to use
+#### How to use
 
 PySonar2 is mainly designed as a library for Python IDEs and other developer
 tools, so its interface may not be as appealing as an end-user tool, but for
@@ -60,7 +60,7 @@ the _html_ directory after this process.
 
 
 
-### Memory Usage
+#### Memory Usage
 
 PySonar2 doesn't need much memory to do analysis. 1.5Gb is probably enough for
 analyzing a medium sized project such as Python's standard library or Django.
@@ -70,7 +70,7 @@ code and their HTML tags into the memory.
 
 
 
-### License
+#### License
 
 Copyright (c) 2013 Yin Wang
 
