@@ -317,6 +317,7 @@ public class Analyzer {
 
         Analyzer.self.pushImportStack(path);
         Type type = parseAndResolve(path);
+        Analyzer.self.popImportStack(path);
 
         // restore old CWD
         setCWD(oldcwd);
