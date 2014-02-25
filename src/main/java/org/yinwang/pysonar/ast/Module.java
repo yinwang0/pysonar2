@@ -27,7 +27,9 @@ public class Module extends Node {
     public Type transform(@NotNull State s) {
         ModuleType mt = new ModuleType(name, file, Analyzer.self.globaltable);
         s.insert(_.moduleQname(file), this, mt, Binding.Kind.MODULE);
-        transformExpr(body, mt.table);
+        if (body != null) {
+            transformExpr(body, mt.table);
+        }
         return mt;
     }
 

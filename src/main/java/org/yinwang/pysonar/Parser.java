@@ -640,7 +640,12 @@ public class Parser {
         if (o == null) {
             return null;
         } else {
-            return new Block(convertListNode(o), file, 0, 0);
+            List<Node> body = convertListNode(o);
+            if (body == null || body.isEmpty()) {
+                return null;
+            } else {
+                return new Block(body, file, 0, 0);
+            }
         }
     }
 
