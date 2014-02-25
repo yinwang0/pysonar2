@@ -162,6 +162,7 @@ public class Call extends Node {
                 }
             }
 
+            toType = UnionType.remove(toType, Type.CONT);
             func.addMapping(fromType, toType);
             func.setSelfType(null);
             return toType;

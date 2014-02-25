@@ -26,6 +26,10 @@ public class Control extends Node {
     @NotNull
     @Override
     public Type transform(State s) {
-        return Type.NONE;
+        if (command.equals("continue")) {
+            return Type.CONT;
+        } else {
+            return Type.NONE;
+        }
     }
 }
