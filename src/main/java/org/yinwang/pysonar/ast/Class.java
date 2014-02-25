@@ -41,10 +41,7 @@ public class Class extends Node {
             if (baseType.isClassType()) {
                 classType.addSuper(baseType);
             } else if (baseType.isUnionType()) {
-                for (Type b : baseType.asUnionType().types) {
-                    classType.addSuper(b);
-                    break;
-                }
+                classType.addSuper(baseType.asUnionType().types.iterator().next());
             } else {
                 Analyzer.self.putProblem(base, base + " is not a class");
             }
