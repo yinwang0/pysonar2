@@ -33,6 +33,11 @@ public class _ {
     }
 
 
+    public static String hashFileName(String filename) {
+        return Integer.toString(filename.hashCode());
+    }
+
+
     public static boolean same(@Nullable Object o1, @Nullable Object o2) {
         if (o1 == null) {
             return o2 == null;
@@ -230,15 +235,18 @@ public class _ {
     }
 
 
+    /**
+     * get unique hash according to file content and filename
+     */
     @NotNull
-    public static String getSHA(@NotNull String path) {
+    public static String getFileHash(@NotNull String path) {
         byte[] bytes = getBytesFromFile(path);
-        return getSHA(bytes);
+        return _.getContentHash(path.getBytes()) + "." + getContentHash(bytes);
     }
 
 
     @NotNull
-    public static String getSHA(byte[] fileContents) {
+    public static String getContentHash(byte[] fileContents) {
         MessageDigest algorithm;
 
         try {

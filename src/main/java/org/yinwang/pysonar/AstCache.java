@@ -116,19 +116,13 @@ public class AstCache {
      */
     @NotNull
     public String getCachePath(@NotNull String sourcePath) {
-        return getCachePath(_.getSHA(sourcePath), sourcePath);
-    }
-
-
-    @NotNull
-    public String getCachePath(String md5, String name) {
-        return _.makePathString(Analyzer.self.cacheDir, _.baseFileName(name) + md5 + ".ast");
+        return _.makePathString(Analyzer.self.cacheDir, _.getFileHash(sourcePath));
     }
 
 
     // package-private for testing
     void serialize(@NotNull Node ast) {
-        String path = getCachePath(_.getSHA(ast.file), new File(ast.file).getName());
+        String path = getCachePath(ast.file);
         ObjectOutputStream oos = null;
         FileOutputStream fos = null;
         try {
