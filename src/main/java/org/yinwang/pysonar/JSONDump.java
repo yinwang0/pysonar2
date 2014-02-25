@@ -3,7 +3,6 @@ package org.yinwang.pysonar;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.google.common.collect.Lists;
-import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.ast.Function;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Str;
@@ -152,15 +151,18 @@ public class JSONDump {
     private static void writeRefJson(Node ref, Binding binding, JsonGenerator json) throws IOException {
         if (binding.getFile() != null) {
             String path = binding.qname.replace(".", "/").replace("%20", ".");
-
-            if (binding.start >= 0 && ref.start >= 0 && !binding.isBuiltin()) {
-                json.writeStartObject();
-                json.writeStringField("sym", path);
-                json.writeStringField("file", ref.file);
-                json.writeNumberField("start", ref.start);
-                json.writeNumberField("end", ref.end);
-                json.writeBooleanField("builtin", binding.isBuiltin());
-                json.writeEndObject();
+            String key = ref.file + ":" + ref.start;
+            if (!seenRef.contains(key)) {
+                seenRef.add(key);
+                if (binding.start >= 0 && ref.start >= 0 && !binding.isBuiltin()) {
+                    json.writeStartObject();
+                    json.writeStringField("sym", path);
+                    json.writeStringField("file", ref.file);
+                    json.writeNumberField("start", ref.start);
+                    json.writeNumberField("end", ref.end);
+                    json.writeBooleanField("builtin", binding.isBuiltin());
+                    json.writeEndObject();
+                }
             }
         }
     }
@@ -184,11 +186,6 @@ public class JSONDump {
                 json.writeEndObject();
             }
         }
-    }
-
-
-    private static boolean shouldEmit(@NotNull String pathToMaybeEmit, String srcpath) {
-        return _.unifyPath(pathToMaybeEmit).startsWith(_.unifyPath(srcpath));
     }
 
 
@@ -227,8 +224,10 @@ public class JSONDump {
         }
 
         for (Binding b : idx.getAllBindings()) {
+            String path = b.qname.replace('.', '/').replace("%20", ".");
+
             if (b.getFile() != null) {
-                if (shouldEmit(b.getFile(), srcpath)) {
+                if (b.getFile().startsWith(srcpath) && path.startsWith(srcpath)) {
                     writeSymJson(b, symJson);
                     writeDocJson(b, idx, docJson);
                 }
@@ -236,10 +235,8 @@ public class JSONDump {
 
             for (Node ref : b.refs) {
                 if (ref.file != null) {
-                    String key = ref.file + ":" + ref.start;
-                    if (!seenRef.contains(key) && shouldEmit(ref.file, srcpath)) {
+                    if (ref.file.startsWith(srcpath)) {
                         writeRefJson(ref, b, refJson);
-                        seenRef.add(key);
                     }
                 }
             }
