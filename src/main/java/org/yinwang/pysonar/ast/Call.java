@@ -46,14 +46,6 @@ public class Call extends Node {
     @Override
     public Type transform(State s) {
 
-        // Ruby's Class.new
-        if (func instanceof Attribute) {
-            Attribute afun = (Attribute) func;
-            if (afun.attr.id.equals("new")) {
-                func = afun.target;
-            }
-        }
-
         Type fun = transformExpr(func, s);
         List<Type> pos = resolveList(args, s);
         Map<String, Type> hash = new HashMap<>();
