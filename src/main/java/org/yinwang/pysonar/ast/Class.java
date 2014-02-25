@@ -2,9 +2,13 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.*;
-import org.yinwang.pysonar.types.*;
+import org.yinwang.pysonar.types.ClassType;
+import org.yinwang.pysonar.types.DictType;
+import org.yinwang.pysonar.types.TupleType;
+import org.yinwang.pysonar.types.Type;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Class extends Node {
@@ -41,7 +45,9 @@ public class Class extends Node {
             if (baseType.isClassType()) {
                 classType.addSuper(baseType);
             } else if (baseType.isUnionType()) {
-                classType.addSuper(baseType.asUnionType().types.iterator().next());
+                for (Type parent: baseType.asUnionType().types) {
+                    classType.addSuper(parent);
+                }
             } else {
                 Analyzer.self.putProblem(base, base + " is not a class");
             }
