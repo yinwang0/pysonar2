@@ -374,9 +374,9 @@ public class Parser {
 
         if (type.equals("ImportFrom")) {
             String module = (String) map.get("module");
-            List<Name> moduleSeg = module == null ? null : segmentQname(module, start + "from ".length(), true);
-            List<Alias> names = convertList(map.get("names"));
             int level = ((Double) map.get("level")).intValue();
+            List<Name> moduleSeg = module == null ? null : segmentQname(module, start + "from ".length() + level, true);
+            List<Alias> names = convertList(map.get("names"));
             return new ImportFrom(moduleSeg, names, level, file, start, end);
         }
 
