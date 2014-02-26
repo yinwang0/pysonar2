@@ -210,10 +210,6 @@ public class Parser {
             return ret;
         }
 
-        if (type.equals("Break")) {
-            return new Control("break", file, start, end);
-        }
-
         if (type.equals("Bytes")) {
             Object s = map.get("s");
             return new Bytes(s, file, start, end);
@@ -255,8 +251,12 @@ public class Parser {
             return new Comprehension(target, iter, ifs, file, start, end);
         }
 
+        if (type.equals("Break")) {
+            return new Break(file, start, end);
+        }
+
         if (type.equals("Continue")) {
-            return new Control("continue", file, start, end);
+            return new Continue(file, start, end);
         }
 
         if (type.equals("Delete")) {
@@ -390,7 +390,6 @@ public class Parser {
             Node value = convert(map.get("value"));
             return new Keyword(arg, value, file, start, end);
         }
-
 
         if (type.equals("List")) {
             List<Node> elts = convertList(map.get("elts"));
