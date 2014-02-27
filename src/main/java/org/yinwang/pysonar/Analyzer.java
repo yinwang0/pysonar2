@@ -6,9 +6,7 @@ import org.yinwang.pysonar.ast.Call;
 import org.yinwang.pysonar.ast.Name;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Url;
-import org.yinwang.pysonar.types.FunType;
-import org.yinwang.pysonar.types.ModuleType;
-import org.yinwang.pysonar.types.Type;
+import org.yinwang.pysonar.types.*;
 
 import java.io.File;
 import java.net.URL;
@@ -206,14 +204,14 @@ public class Analyzer {
         Type t = moduleTable.lookupType(_.moduleQname(file));
         if (t == null) {
             return null;
-        } else if (t.isUnionType()) {
-            for (Type tt : t.asUnionType().types) {
-                if (tt.isModuleType()) {
+        } else if (t instanceof UnionType) {
+            for (Type tt : ((UnionType) t).types) {
+                if (tt instanceof ModuleType) {
                     return (ModuleType) tt;
                 }
             }
             return null;
-        } else if (t.isModuleType()) {
+        } else if (t instanceof ModuleType) {
             return (ModuleType) t;
         } else {
             return null;
@@ -547,9 +545,9 @@ public class Analyzer {
 
         // mark unused variables
         for (Binding b : allBindings) {
-            if (!b.type.isClassType() &&
-                    !b.type.isFuncType() &&
-                    !b.type.isModuleType()
+            if (!(b.type instanceof ClassType) &&
+                    !(b.type instanceof FunType) &&
+                    !(b.type instanceof ModuleType)
                     && b.refs.isEmpty())
             {
                 Analyzer.self.putProblem(b.node, "Unused variable: " + b.name);

@@ -78,7 +78,7 @@ public class Function extends Node {
 
             Type outType = s.type;
             if (outType instanceof ClassType) {
-                fun.setCls(outType.asClassType());
+                fun.setCls((ClassType) outType);
             }
 
             Binder.bind(s, name, fun, funkind);

@@ -5,6 +5,8 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.State;
+import org.yinwang.pysonar.types.FunType;
+import org.yinwang.pysonar.types.InstanceType;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
@@ -32,8 +34,8 @@ public class Attribute extends Node {
 
     public void setAttr(State s, @NotNull Type v) {
         Type targetType = transformExpr(target, s);
-        if (targetType.isUnionType()) {
-            Set<Type> types = targetType.asUnionType().types;
+        if (targetType instanceof UnionType) {
+            Set<Type> types = ((UnionType) targetType).types;
             for (Type tp : types) {
                 setAttrType(tp, v);
             }
@@ -67,8 +69,8 @@ public class Attribute extends Node {
         }
 
         Type targetType = transformExpr(target, s);
-        if (targetType.isUnionType()) {
-            Set<Type> types = targetType.asUnionType().types;
+        if (targetType instanceof UnionType) {
+            Set<Type> types = ((UnionType) targetType).types;
             Type retType = Type.UNKNOWN;
             for (Type tt : types) {
                 retType = UnionType.union(retType, getAttrType(tt));
@@ -90,10 +92,10 @@ public class Attribute extends Node {
         } else {
             for (Binding b : bs) {
                 Analyzer.self.putRef(attr, b);
-                if (parent != null && parent.isCall() &&
-                        b.type.isFuncType() && targetType.isInstanceType())
+                if (parent != null && parent instanceof Call &&
+                        b.type instanceof FunType && targetType instanceof InstanceType)
                 {  // method call
-                    b.type.asFuncType().setSelfType(targetType);
+                    ((FunType) b.type).setSelfType(targetType);
                 }
             }
 

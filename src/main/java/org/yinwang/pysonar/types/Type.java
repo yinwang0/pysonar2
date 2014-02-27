@@ -42,64 +42,8 @@ public abstract class Type {
     }
 
 
-    public boolean isBool() {
-        return this instanceof BoolType;
-    }
-
-
-    public boolean isUndecidedBool() {
-        return isBool() && asBool().value == BoolType.Value.Undecided &&
-                asBool().s1 != null && asBool().s2 != null;
-    }
-
-
-    public BoolType asBool() {
-        return (BoolType) this;
-    }
-
-
-    public boolean isClassType() {
-        return this instanceof ClassType;
-    }
-
-
-    public boolean isDictType() {
-        return this instanceof DictType;
-    }
-
-
-    public boolean isFuncType() {
-        return this instanceof FunType;
-    }
-
-
-    public boolean isInstanceType() {
-        return this instanceof InstanceType;
-    }
-
-
-    public boolean isListType() {
-        return this instanceof ListType;
-    }
-
-
-    public boolean isModuleType() {
-        return this instanceof ModuleType;
-    }
-
-
     public boolean isNumType() {
         return this instanceof IntType || this instanceof FloatType;
-    }
-
-
-    public boolean isTupleType() {
-        return this instanceof TupleType;
-    }
-
-
-    public boolean isUnionType() {
-        return this instanceof UnionType;
     }
 
 
@@ -109,59 +53,23 @@ public abstract class Type {
 
 
     @NotNull
-    public ClassType asClassType() {
-        return (ClassType) this;
-    }
-
-
-    @NotNull
-    public DictType asDictType() {
-        return (DictType) this;
-    }
-
-
-    @NotNull
-    public FunType asFuncType() {
-        return (FunType) this;
-    }
-
-
-    @NotNull
-    public ListType asListType() {
-        return (ListType) this;
-    }
-
-
-    @NotNull
     public ModuleType asModuleType() {
-        if (this.isUnionType()) {
-            for (Type t : this.asUnionType().types) {
-                if (t.isModuleType()) {
+        if (this instanceof UnionType) {
+            for (Type t : ((UnionType) this).types) {
+                if (t instanceof ModuleType) {
                     return t.asModuleType();
                 }
             }
             _.die("Not containing a ModuleType");
             // can't get here, just to make the @NotNull annotation happy
             return new ModuleType(null, null, null);
-        } else if (this.isModuleType()) {
+        } else if (this instanceof ModuleType) {
             return (ModuleType) this;
         } else {
             _.die("Not a ModuleType");
             // can't get here, just to make the @NotNull annotation happy
             return new ModuleType(null, null, null);
         }
-    }
-
-
-    @NotNull
-    public TupleType asTupleType() {
-        return (TupleType) this;
-    }
-
-
-    @NotNull
-    public UnionType asUnionType() {
-        return (UnionType) this;
     }
 
 

@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.*;
 import org.yinwang.pysonar.ast.Node;
+import org.yinwang.pysonar.types.ModuleType;
 
 import java.io.File;
 import java.util.*;
@@ -277,7 +278,7 @@ class Linker {
         }
 
         String destPath;
-        if (binding.type.isModuleType()) {
+        if (binding.type instanceof ModuleType) {
             destPath = binding.type.asModuleType().file;
         } else {
             destPath = binding.getFile();

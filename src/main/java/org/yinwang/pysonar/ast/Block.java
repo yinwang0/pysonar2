@@ -28,8 +28,8 @@ public class Block extends Node {
     public Type transform(@NotNull State state) {
         // find global names and mark them
         for (Node n : seq) {
-            if (n.isGlobal()) {
-                for (Name name : n.asGlobal().names) {
+            if (n instanceof Global) {
+                for (Name name : ((Global) n).names) {
                     state.addGlobalName(name.id);
                     List<Binding> nb = state.lookup(name.id);
                     if (nb != null) {

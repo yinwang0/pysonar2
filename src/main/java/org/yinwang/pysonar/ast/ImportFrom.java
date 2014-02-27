@@ -91,8 +91,8 @@ public class ImportFrom extends Node {
         List<String> names = new ArrayList<>();
         Type allType = mt.table.lookupType("__all__");
 
-        if (allType != null && allType.isListType()) {
-            ListType lt = allType.asListType();
+        if (allType != null && allType instanceof ListType) {
+            ListType lt = (ListType) allType;
 
             for (Object o : lt.values) {
                 if (o instanceof String) {

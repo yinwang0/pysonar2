@@ -25,7 +25,7 @@ public class Delete extends Node {
         for (Node n : targets) {
             transformExpr(n, s);
             if (n instanceof Name) {
-                s.remove(n.asName().id);
+                s.remove(((Name) n).id);
             }
         }
         return Type.CONT;

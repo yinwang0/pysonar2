@@ -95,8 +95,8 @@ public class FunType extends Type {
 
 
     static Type removeNoneReturn(@NotNull Type toType) {
-        if (toType.isUnionType()) {
-            Set<Type> types = new HashSet<>(toType.asUnionType().types);
+        if (toType instanceof UnionType) {
+            Set<Type> types = new HashSet<>(((UnionType) toType).types);
             types.remove(Type.CONT);
             return UnionType.newUnion(types);
         } else {
@@ -212,8 +212,8 @@ public class FunType extends Type {
 
             for (Map.Entry<Type, Type> e : arrows.entrySet()) {
                 Type from = e.getKey();
-                if (from.isTupleType()) {
-                    from = simplifySelf(from.asTupleType());
+                if (from instanceof TupleType) {
+                    from = simplifySelf((TupleType) from);
                 }
 
                 String as = from.printType(ctr) + " -> " + e.getValue().printType(ctr);

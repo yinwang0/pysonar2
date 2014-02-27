@@ -6,7 +6,9 @@ import com.google.common.collect.Lists;
 import org.yinwang.pysonar.ast.Function;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Str;
+import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.Type;
+import org.yinwang.pysonar.types.UnionType;
 
 import java.io.*;
 import java.util.*;
@@ -92,12 +94,12 @@ public class JSONDump {
                 String argExpr = null;
                 Type t = binding.type;
 
-                if (t.isUnionType()) {
-                    t = t.asUnionType().firstUseful();
+                if (t instanceof UnionType) {
+                    t = ((UnionType) t).firstUseful();
                 }
 
-                if (t != null && t.isFuncType()) {
-                    Function func = t.asFuncType().func;
+                if (t != null && t instanceof FunType) {
+                    Function func = ((FunType) t).func;
 
                     if (func != null) {
                         StringBuilder args = new StringBuilder();

@@ -72,8 +72,8 @@ public class UnionType extends Type {
 
 
     public void addType(@NotNull Type t) {
-        if (t.isUnionType()) {
-            types.addAll(t.asUnionType().types);
+        if (t instanceof UnionType) {
+            types.addAll(((UnionType) t).types);
         } else {
             types.add(t);
         }

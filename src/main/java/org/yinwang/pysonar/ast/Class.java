@@ -2,10 +2,7 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.*;
-import org.yinwang.pysonar.types.ClassType;
-import org.yinwang.pysonar.types.DictType;
-import org.yinwang.pysonar.types.TupleType;
-import org.yinwang.pysonar.types.Type;
+import org.yinwang.pysonar.types.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +26,6 @@ public class Class extends Node {
     }
 
 
-    @Override
-    public boolean isClassDef() {
-        return true;
-    }
-
-
     @NotNull
     @Override
     public Type transform(@NotNull State s) {
@@ -42,10 +33,10 @@ public class Class extends Node {
         List<Type> baseTypes = new ArrayList<>();
         for (Node base : bases) {
             Type baseType = transformExpr(base, s);
-            if (baseType.isClassType()) {
+            if (baseType instanceof ClassType) {
                 classType.addSuper(baseType);
-            } else if (baseType.isUnionType()) {
-                for (Type parent: baseType.asUnionType().types) {
+            } else if (baseType instanceof UnionType) {
+                for (Type parent : ((UnionType) baseType).types) {
                     classType.addSuper(parent);
                 }
             } else {

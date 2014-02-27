@@ -2,7 +2,9 @@ package org.yinwang.pysonar;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.yinwang.pysonar.types.ClassType;
 import org.yinwang.pysonar.types.Type;
+import org.yinwang.pysonar.types.UnionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -258,9 +260,9 @@ public class Outliner {
 
             if (nb.kind == Binding.Kind.CLASS) {
                 Type realType = nb.type;
-                if (realType.isUnionType()) {
-                    for (Type t : realType.asUnionType().types) {
-                        if (t.isClassType()) {
+                if (realType instanceof UnionType) {
+                    for (Type t : ((UnionType) realType).types) {
+                        if (t instanceof ClassType) {
                             realType = t;
                             break;
                         }

@@ -24,10 +24,10 @@ public class InstanceType extends Type {
         this(c);
         Type initFunc = table.lookupAttrType("__init__");
 
-        if (initFunc != null && initFunc.isFuncType() && initFunc.asFuncType().func != null) {
-            initFunc.asFuncType().setSelfType(this);
-            Call.apply(initFunc.asFuncType(), args, null, null, null, call);
-            initFunc.asFuncType().setSelfType(null);
+        if (initFunc != null && initFunc instanceof FunType && ((FunType) initFunc).func != null) {
+            ((FunType) initFunc).setSelfType(this);
+            Call.apply((FunType) initFunc, args, null, null, null, call);
+            ((FunType) initFunc).setSelfType(null);
         }
     }
 
@@ -55,6 +55,6 @@ public class InstanceType extends Type {
 
     @Override
     protected String printType(CyclicTypeRecorder ctr) {
-        return classType.asClassType().name;
+        return ((ClassType) classType).name;
     }
 }

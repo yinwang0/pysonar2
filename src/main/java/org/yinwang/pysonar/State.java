@@ -3,6 +3,7 @@ package org.yinwang.pysonar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Node;
+import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
@@ -169,7 +170,7 @@ public class State {
     // create new binding and insert
     public void insert(String id, @NotNull Node node, @NotNull Type type, Binding.Kind kind) {
         Binding b = new Binding(id, node, type, kind);
-        if (type.isModuleType()) {
+        if (type instanceof ModuleType) {
             b.setQname(type.asModuleType().qname);
         } else {
             b.setQname(extendPath(id));
