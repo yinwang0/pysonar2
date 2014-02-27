@@ -94,17 +94,6 @@ public class FunType extends Type {
     }
 
 
-    static Type removeNoneReturn(@NotNull Type toType) {
-        if (toType instanceof UnionType) {
-            Set<Type> types = new HashSet<>(((UnionType) toType).types);
-            types.remove(Type.CONT);
-            return UnionType.newUnion(types);
-        } else {
-            return toType;
-        }
-    }
-
-
     @Override
     public int hashCode() {
         return "FunType".hashCode();

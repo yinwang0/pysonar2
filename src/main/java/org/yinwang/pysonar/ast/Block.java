@@ -57,15 +57,10 @@ public class Block extends Node {
     }
 
 
-    public boolean isEmpty() {
-        return seq.isEmpty();
-    }
-
-
     @NotNull
     @Override
     public String toString() {
-        return "<Block:" + seq + ">";
+        return "(block:" + seq + ")";
     }
 
 }
