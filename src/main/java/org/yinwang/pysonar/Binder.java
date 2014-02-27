@@ -81,9 +81,13 @@ public class Binder {
 
     public static void bind(@NotNull State s, @NotNull Name name, @NotNull Type rvalue, Binding.Kind kind) {
         if (s.isGlobalName(name.id)) {
-            Binding b = new Binding(name.id, name, rvalue, kind);
-            s.getGlobalTable().update(name.id, b);
-            Analyzer.self.putRef(name, b);
+            List<Binding> bs = s.lookup(name.id);
+            if (bs != null) {
+                for (Binding b : bs) {
+                    b.addType(rvalue);
+                    Analyzer.self.putRef(name, b);
+                }
+            }
         } else {
             s.insert(name.id, name, rvalue, kind);
         }

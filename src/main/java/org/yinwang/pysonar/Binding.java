@@ -6,6 +6,7 @@ import org.yinwang.pysonar.ast.Class;
 import org.yinwang.pysonar.ast.*;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
+import org.yinwang.pysonar.types.UnionType;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -119,6 +120,13 @@ public class Binding implements Comparable<Object> {
 
     public void addRef(Node node) {
         refs.add(node);
+    }
+
+
+    // merge one more type into the type
+    // used by stateful assignments which we can't track down the control flow
+    public void addType(Type t) {
+        type = UnionType.union(type, t);
     }
 
 
