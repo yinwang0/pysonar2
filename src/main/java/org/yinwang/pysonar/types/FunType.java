@@ -41,6 +41,10 @@ public class FunType extends Type {
 
 
     public void addMapping(Type from, Type to) {
+        if (from instanceof TupleType) {
+            from = simplifySelf((TupleType) from);
+        }
+
         if (arrows.size() < 5) {
             arrows.put(from, to);
             Map<Type, Type> oldArrows = arrows;
@@ -201,10 +205,6 @@ public class FunType extends Type {
 
             for (Map.Entry<Type, Type> e : arrows.entrySet()) {
                 Type from = e.getKey();
-                if (from instanceof TupleType) {
-                    from = simplifySelf((TupleType) from);
-                }
-
                 String as = from.printType(ctr) + " -> " + e.getValue().printType(ctr);
 
                 if (!seen.contains(as)) {
