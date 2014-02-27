@@ -26,7 +26,7 @@ public class Block extends Node {
     @NotNull
     @Override
     public Type transform(@NotNull State state) {
-        // find global names and mark them
+        // first pass: mark global names
         for (Node n : seq) {
             if (n instanceof Global) {
                 for (Name name : ((Global) n).names) {
@@ -50,10 +50,6 @@ public class Block extends Node {
                     returned = true;
                     retType = UnionType.remove(retType, Type.CONT);
                 }
-            } else if (state.stateType != State.StateType.GLOBAL &&
-                    state.stateType != State.StateType.MODULE)
-            {
-                Analyzer.self.putProblem(n, "unreachable code");
             }
         }
 
