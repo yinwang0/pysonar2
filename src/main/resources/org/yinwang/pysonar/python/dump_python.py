@@ -15,6 +15,11 @@ class AstEncoder(JSONEncoder):
     def default(self, o):
         if hasattr(o, '__dict__'):
             d = o.__dict__
+            # workaround: decode strings if it's not Python3 code
+            if not is_python3:
+                for k in d:
+                    if isinstance(d[k], str):
+                        d[k] = d[k].decode(enc)
             d['type'] = o.__class__.__name__
             return d
         else:
