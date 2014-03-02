@@ -21,7 +21,6 @@ public class Function extends Node {
     public Name kwarg;   // **kwarg
     public List<Node> afterRest = null;   // after rest arg of Ruby
     public Node body;
-    private List<Node> decoratorList;
     public boolean called = false;
     public boolean isLamba = false;
 
@@ -54,7 +53,6 @@ public class Function extends Node {
     @NotNull
     @Override
     public Type transform(@NotNull State s) {
-        resolveList(decoratorList, s);
         State env = s.getForwarding();
         FunType fun = new FunType(this, env);
         fun.table.setParent(s);
