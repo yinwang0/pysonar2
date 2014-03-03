@@ -1,17 +1,13 @@
 package org.yinwang.pysonar.demos;
 
-import org.apache.commons.cli.BasicParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.Options;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
+import org.yinwang.pysonar.Options;
 import org.yinwang.pysonar.Progress;
 import org.yinwang.pysonar._;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -166,30 +162,14 @@ public class Demo {
 
 
     public static void main(@NotNull String[] args) throws Exception {
-        Options options = new Options();
-        options.addOption("d", "debug", false, "display debug information");
-        options.addOption("q", "quiet", false, "quiet");
-        options.addOption("E", "semantic-errors", false, "report semantic errors");
-        CommandLineParser parser = new BasicParser();
-        CommandLine cmd = parser.parse(options, args);
+        Options options = new Options(args);
 
-        args = cmd.getArgs();
-        String fileOrDir = args[0];
-        OUTPUT_DIR = new File(args[1]);
+        List<String> argsList = options.getArgs();
+        String fileOrDir = argsList.get(0);
+        OUTPUT_DIR = new File(argsList.get(1));
 
-        // set options for the analyzer
-        Map<String, Object> analyzerOptions = new HashMap<>();
-        if (cmd.hasOption("quiet")) {
-            analyzerOptions.put("quiet", true);
-        }
-        if (cmd.hasOption("debug")) {
-            analyzerOptions.put("debug", true);
-        }
-        if (cmd.hasOption("semantic-errors")) {
-            analyzerOptions.put("semantic-errors", true);
-        }
-
-        new Demo().start(fileOrDir, analyzerOptions);
+//        System.out.println("options: " + options.getOptionsMap());
+        new Demo().start(fileOrDir, options.getOptionsMap());
         _.msg(_.getGCStats());
     }
 }

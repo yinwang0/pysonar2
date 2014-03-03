@@ -72,19 +72,13 @@ class Linker {
             progress.tick();
         }
 
-        if (Analyzer.self.hasOption("semantic-errors")) {
+        if (Analyzer.self.hasOption("report")) {
             for (List<Diagnostic> ld : analyzer.semanticErrors.values()) {
                 for (Diagnostic d : ld) {
                     processDiagnostic(d);
                 }
             }
         }
-
-//        for (List<Diagnostic> ld: analyzer.parseErrors.values()) {
-//            for (Diagnostic d: ld) {
-//                processDiagnostic(d);
-//            }
-//        }
     }
 
 
