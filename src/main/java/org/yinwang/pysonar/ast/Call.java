@@ -6,7 +6,6 @@ import org.yinwang.pysonar.*;
 import org.yinwang.pysonar.types.*;
 
 import java.util.*;
-import java.util.Set;
 
 import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
 import static org.yinwang.pysonar.Binding.Kind.CLASS;
@@ -172,7 +171,7 @@ public class Call extends Node {
 
     @NotNull
     static private Type bindParams(@Nullable Node call,
-                                   @NotNull Function func,
+                                   @NotNull FunctionDef func,
                                    @NotNull State funcTable,
                                    @Nullable List<Node> args,
                                    @Nullable Name rest,

@@ -6,7 +6,6 @@ import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.*;
-import org.yinwang.pysonar.ast.Class;
 
 import java.io.File;
 import java.io.OutputStreamWriter;
@@ -228,7 +227,7 @@ public class Parser {
             Name name = (Name) convert(map.get("name_node"));      // hack
             List<Node> bases = convertList(map.get("bases"));
             Block body = convertBlock(map.get("body"));
-            return new Class(name, bases, body, file, start, end);
+            return new ClassDef(name, bases, body, file, start, end);
         }
 
         // left-fold Compare into
@@ -325,7 +324,7 @@ public class Parser {
             Node body = type.equals("Lambda") ? convert(map.get("body")) : convertBlock(map.get("body"));
             Name vararg = argsMap.get("vararg") == null ? null : new Name((String) argsMap.get("vararg"));
             Name kwarg = argsMap.get("kwarg") == null ? null : new Name((String) argsMap.get("kwarg"));
-            return new Function(name, args, body, defaults, vararg, kwarg, file, start, end);
+            return new FunctionDef(name, args, body, defaults, vararg, kwarg, file, start, end);
         }
 
         if (type.equals("GeneratorExp")) {
@@ -393,7 +392,7 @@ public class Parser {
 
         if (type.equals("List")) {
             List<Node> elts = convertList(map.get("elts"));
-            return new NList(elts, file, start, end);
+            return new PyList(elts, file, start, end);
         }
 
         if (type.equals("Starred")) { // f(*[1, 2, 3, 4])
@@ -482,7 +481,7 @@ public class Parser {
 
         if (type.equals("Set")) {
             List<Node> elts = convertList(map.get("elts"));
-            return new Set(elts, file, start, end);
+            return new PySet(elts, file, start, end);
         }
 
         if (type.equals("SetComp")) {

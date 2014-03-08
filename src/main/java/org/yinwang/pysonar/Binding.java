@@ -2,7 +2,6 @@ package org.yinwang.pysonar;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.ast.Class;
 import org.yinwang.pysonar.ast.*;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
@@ -83,8 +82,8 @@ public class Binding implements Comparable<Object> {
         end = node.end;
 
         Node parent = node.parent;
-        if ((parent instanceof Function && ((Function) parent).name == node) ||
-                (parent instanceof Class && ((Class) parent).name == node))
+        if ((parent instanceof FunctionDef && ((FunctionDef) parent).name == node) ||
+                (parent instanceof ClassDef && ((ClassDef) parent).name == node))
         {
             bodyStart = parent.start;
             bodyEnd = parent.end;
@@ -103,8 +102,8 @@ public class Binding implements Comparable<Object> {
 
     public Str getDocstring() {
         Node parent = node.parent;
-        if ((parent instanceof Function && ((Function) parent).name == node) ||
-                (parent instanceof Class && ((Class) parent).name == node))
+        if ((parent instanceof FunctionDef && ((FunctionDef) parent).name == node) ||
+                (parent instanceof ClassDef && ((ClassDef) parent).name == node))
         {
             return parent.getDocString();
         } else {

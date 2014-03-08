@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Class extends Node {
+public class ClassDef extends Node {
 
     @NotNull
     public Name name;
@@ -16,7 +16,7 @@ public class Class extends Node {
     public Node body;
 
 
-    public Class(@NotNull Name name, List<Node> bases, Node body, String file, int start, int end) {
+    public ClassDef(@NotNull Name name, List<Node> bases, Node body, String file, int start, int end) {
         super(file, start, end);
         this.name = name;
         this.bases = bases;

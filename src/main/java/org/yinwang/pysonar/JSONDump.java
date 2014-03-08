@@ -3,7 +3,7 @@ package org.yinwang.pysonar;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.google.common.collect.Lists;
-import org.yinwang.pysonar.ast.Function;
+import org.yinwang.pysonar.ast.FunctionDef;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Str;
 import org.yinwang.pysonar.types.FunType;
@@ -99,7 +99,7 @@ public class JSONDump {
                 }
 
                 if (t != null && t instanceof FunType) {
-                    Function func = ((FunType) t).func;
+                    FunctionDef func = ((FunType) t).func;
                     if (func != null) {
                         argExpr = func.getArgumentExpr();
                     }

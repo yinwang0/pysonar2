@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.TypeStack;
-import org.yinwang.pysonar.ast.Function;
+import org.yinwang.pysonar.ast.FunctionDef;
 
 import java.util.*;
 
@@ -14,7 +14,7 @@ public class FunType extends Type {
 
     @NotNull
     public Map<Type, Type> arrows = new HashMap<>();
-    public Function func;
+    public FunctionDef func;
     @Nullable
     public ClassType cls = null;
     public State env;
@@ -27,7 +27,7 @@ public class FunType extends Type {
     }
 
 
-    public FunType(Function func, State env) {
+    public FunType(FunctionDef func, State env) {
         this.func = func;
         this.env = env;
     }

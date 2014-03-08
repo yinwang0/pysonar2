@@ -17,8 +17,8 @@ public class Binder {
             bind(s, (Name) target, rvalue, kind);
         } else if (target instanceof Tuple) {
             bind(s, ((Tuple) target).elts, rvalue, kind);
-        } else if (target instanceof NList) {
-            bind(s, ((NList) target).elts, rvalue, kind);
+        } else if (target instanceof PyList) {
+            bind(s, ((PyList) target).elts, rvalue, kind);
         } else if (target instanceof Attribute) {
             ((Attribute) target).setAttr(s, rvalue);
         } else if (target instanceof Subscript) {

@@ -8,9 +8,9 @@ import org.yinwang.pysonar.types.Type;
 import java.util.List;
 
 
-public class Set extends Sequence {
+public class PyList extends Sequence {
 
-    public Set(List<Node> elts, String file, int start, int end) {
+    public PyList(@NotNull List<Node> elts, String file, int start, int end) {
         super(elts, file, start, end);
     }
 
@@ -19,15 +19,14 @@ public class Set extends Sequence {
     @Override
     public Type transform(State s) {
         if (elts.size() == 0) {
-            return new ListType();
+            return new ListType();  // list<unknown>
         }
 
-        ListType listType = null;
+        ListType listType = new ListType();
         for (Node elt : elts) {
-            if (listType == null) {
-                listType = new ListType(transformExpr(elt, s));
-            } else {
-                listType.add(transformExpr(elt, s));
+            listType.add(transformExpr(elt, s));
+            if (elt instanceof Str) {
+                listType.addValue(((Str) elt).value);
             }
         }
 

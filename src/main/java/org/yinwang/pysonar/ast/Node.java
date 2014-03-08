@@ -92,10 +92,10 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
     @Nullable
     public Str getDocString() {
         Node body = null;
-        if (this instanceof Function) {
-            body = ((Function) this).body;
-        } else if (this instanceof Class) {
-            body = ((Class) this).body;
+        if (this instanceof FunctionDef) {
+            body = ((FunctionDef) this).body;
+        } else if (this instanceof ClassDef) {
+            body = ((ClassDef) this).body;
         } else if (this instanceof Module) {
             body = ((Module) this).body;
         }

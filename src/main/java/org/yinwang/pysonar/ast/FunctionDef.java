@@ -12,7 +12,7 @@ import org.yinwang.pysonar.types.Type;
 import java.util.List;
 
 
-public class Function extends Node {
+public class FunctionDef extends Node {
 
     public Name name;
     public List<Node> args;
@@ -25,8 +25,8 @@ public class Function extends Node {
     public boolean isLamba = false;
 
 
-    public Function(Name name, List<Node> args, Node body, List<Node> defaults,
-                    Name vararg, Name kwarg, String file, int start, int end)
+    public FunctionDef(Name name, List<Node> args, Node body, List<Node> defaults,
+                       Name vararg, Name kwarg, String file, int start, int end)
     {
         super(file, start, end);
         if (name != null) {
@@ -83,6 +83,7 @@ public class Function extends Node {
             return Type.CONT;
         }
     }
+
 
     public String getArgumentExpr() {
         StringBuilder argExpr = new StringBuilder();
