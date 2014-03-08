@@ -1263,7 +1263,7 @@ public class Builtins {
                     newFunc(newTuple(Type.INT, Type.INT, Type.INT)), METHOD);
 
             ClassType time = Datetime_time = newClass("time", table, objectType);
-            addClass("time", dtUrl("time"), date);
+            addClass("time", dtUrl("time"), time);
             State ttable = Datetime_time.table;
 
             ttable.insert("min", dtUrl("time"), time, ATTRIBUTE);

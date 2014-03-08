@@ -40,7 +40,11 @@ public class BinOp extends Node {
             return Type.INT;
         }
 
-        return UnionType.union(ltype, rtype);
+        if (Op.isBoolean(op)) {
+            return Type.BOOL;
+        } else {
+            return UnionType.union(ltype, rtype);
+        }
     }
 
 

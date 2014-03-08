@@ -73,4 +73,17 @@ public enum Op {
     }
 
 
+    public static boolean isBoolean(Op op) {
+        return op == Eq ||
+                op == Eqv ||
+                op == Equal ||
+                op == Lt ||
+                op == Gt ||
+                op == NotEqual ||
+                op == NotEq ||
+                op == LtE ||
+                op == GtE ||
+                op == In ||
+                op == NotIn;
+    }
 }
