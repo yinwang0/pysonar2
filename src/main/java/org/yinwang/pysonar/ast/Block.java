@@ -8,6 +8,7 @@ import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
 import java.util.List;
+import java.util.Set;
 
 
 public class Block extends Node {
@@ -31,7 +32,7 @@ public class Block extends Node {
             if (n instanceof Global) {
                 for (Name name : ((Global) n).names) {
                     state.addGlobalName(name.id);
-                    List<Binding> nb = state.lookup(name.id);
+                    Set<Binding> nb = state.lookup(name.id);
                     if (nb != null) {
                         Analyzer.self.putRef(name, nb);
                     }

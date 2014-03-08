@@ -7,6 +7,7 @@ import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.types.Type;
 
 import java.util.List;
+import java.util.Set;
 
 
 public class Name extends Node {
@@ -40,7 +41,7 @@ public class Name extends Node {
     @NotNull
     @Override
     public Type transform(@NotNull State s) {
-        List<Binding> b = s.lookup(id);
+        Set<Binding> b = s.lookup(id);
         if (b != null) {
             Analyzer.self.putRef(this, b);
             Analyzer.self.resolved.add(this);

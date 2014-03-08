@@ -11,6 +11,7 @@ import org.yinwang.pysonar.types.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 
 public class ImportFrom extends Node {
@@ -45,7 +46,7 @@ public class ImportFrom extends Node {
         } else {
             for (Alias a : names) {
                 Name first = a.name.get(0);
-                List<Binding> bs = mod.table.lookup(first.id);
+                Set<Binding> bs = mod.table.lookup(first.id);
                 if (bs != null) {
                     if (a.asname != null) {
                         s.update(a.asname.id, bs);
@@ -105,7 +106,7 @@ public class ImportFrom extends Node {
             int start = this.start;
 
             for (String name : names) {
-                List<Binding> b = mt.table.lookupLocal(name);
+                Set<Binding> b = mt.table.lookupLocal(name);
                 if (b != null) {
                     s.update(name, b);
                 } else {
@@ -121,7 +122,7 @@ public class ImportFrom extends Node {
             }
         } else {
             // Fall back to importing all names not starting with "_".
-            for (Entry<String, List<Binding>> e : mt.table.entrySet()) {
+            for (Entry<String, Set<Binding>> e : mt.table.entrySet()) {
                 if (!e.getKey().startsWith("_")) {
                     s.update(e.getKey(), e.getValue());
                 }

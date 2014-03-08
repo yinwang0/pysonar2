@@ -83,7 +83,7 @@ public class Attribute extends Node {
 
 
     private Type getAttrType(@NotNull Type targetType) {
-        List<Binding> bs = targetType.table.lookupAttr(attr.id);
+        Set<Binding> bs = targetType.table.lookupAttr(attr.id);
         if (bs == null) {
             Analyzer.self.putProblem(attr, "attribute not found in type: " + targetType);
             Type t = Type.UNKNOWN;

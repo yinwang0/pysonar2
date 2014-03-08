@@ -23,7 +23,7 @@ public class State {
 
 
     @Nullable
-    public Map<String, List<Binding>> table = new HashMap<>();
+    public Map<String, Set<Binding>> table = new HashMap<>();
     @Nullable
     public State parent;      // all are non-null except global table
     @Nullable
@@ -85,9 +85,9 @@ public class State {
 
 
     public void merge(State other) {
-        for (Map.Entry<String, List<Binding>> e1 : table.entrySet()) {
-            List<Binding> b1 = e1.getValue();
-            List<Binding> b2 = other.table.get(e1.getKey());
+        for (Map.Entry<String, Set<Binding>> e1 : table.entrySet()) {
+            Set<Binding> b1 = e1.getValue();
+            Set<Binding> b2 = other.table.get(e1.getKey());
 
             // both branch have the same name, need merge
             if (b2 != null && b1 != b2) {
@@ -95,9 +95,9 @@ public class State {
             }
         }
 
-        for (Map.Entry<String, List<Binding>> e2 : other.table.entrySet()) {
-            List<Binding> b1 = table.get(e2.getKey());
-            List<Binding> b2 = e2.getValue();
+        for (Map.Entry<String, Set<Binding>> e2 : other.table.entrySet()) {
+            Set<Binding> b1 = table.get(e2.getKey());
+            Set<Binding> b2 = e2.getValue();
 
             // both branch have the same name, need merge
             if (b1 == null && b1 != b2) {
@@ -143,7 +143,7 @@ public class State {
 
     public void addGlobalName(@NotNull String name) {
         if (globalNames == null) {
-            globalNames = new HashSet<>();
+            globalNames = new HashSet<>(1);
         }
         globalNames.add(name);
     }
@@ -181,15 +181,15 @@ public class State {
 
     // directly insert a given binding
     @NotNull
-    public List<Binding> update(String id, @NotNull List<Binding> bs) {
+    public Set<Binding> update(String id, @NotNull Set<Binding> bs) {
         table.put(id, bs);
         return bs;
     }
 
 
     @NotNull
-    public List<Binding> update(String id, @NotNull Binding b) {
-        List<Binding> bs = new ArrayList<>();
+    public Set<Binding> update(String id, @NotNull Binding b) {
+        Set<Binding> bs = new HashSet<>(1);
         bs.add(b);
         table.put(id, bs);
         return bs;
@@ -211,7 +211,7 @@ public class State {
      * parent table.
      */
     @Nullable
-    public List<Binding> lookupLocal(String name) {
+    public Set<Binding> lookupLocal(String name) {
         if (table == null) {
             return null;
         } else {
@@ -225,12 +225,12 @@ public class State {
      * recurse on the parent table.
      */
     @Nullable
-    public List<Binding> lookup(@NotNull String name) {
-        List<Binding> b = getModuleBindingIfGlobal(name);
+    public Set<Binding> lookup(@NotNull String name) {
+        Set<Binding> b = getModuleBindingIfGlobal(name);
         if (b != null) {
             return b;
         } else {
-            List<Binding> ent = lookupLocal(name);
+            Set<Binding> ent = lookupLocal(name);
             if (ent != null) {
                 return ent;
             } else {
@@ -249,8 +249,8 @@ public class State {
      * it up locally.
      */
     @Nullable
-    public List<Binding> lookupScope(String name) {
-        List<Binding> b = getModuleBindingIfGlobal(name);
+    public Set<Binding> lookupScope(String name) {
+        Set<Binding> b = getModuleBindingIfGlobal(name);
         if (b != null) {
             return b;
         } else {
@@ -271,11 +271,11 @@ public class State {
 
 
     @Nullable
-    public List<Binding> lookupAttr(String attr) {
+    public Set<Binding> lookupAttr(String attr) {
         if (looked.contains(this)) {
             return null;
         } else {
-            List<Binding> b = lookupLocal(attr);
+            Set<Binding> b = lookupLocal(attr);
             if (b != null) {
                 return b;
             } else {
@@ -303,7 +303,7 @@ public class State {
      */
     @Nullable
     public Type lookupType(String name) {
-        List<Binding> bs = lookup(name);
+        Set<Binding> bs = lookup(name);
         if (bs == null) {
             return null;
         } else {
@@ -317,7 +317,7 @@ public class State {
      */
     @Nullable
     public Type lookupAttrType(String attr) {
-        List<Binding> bs = lookupAttr(attr);
+        Set<Binding> bs = lookupAttr(attr);
         if (bs == null) {
             return null;
         } else {
@@ -326,7 +326,7 @@ public class State {
     }
 
 
-    public static Type makeUnion(List<Binding> bs) {
+    public static Type makeUnion(Set<Binding> bs) {
         Type t = Type.UNKNOWN;
         for (Binding b : bs) {
             t = UnionType.union(t, b.type);
@@ -369,7 +369,7 @@ public class State {
      * If {@code name} is declared as a global, return the module binding.
      */
     @Nullable
-    private List<Binding> getModuleBindingIfGlobal(@NotNull String name) {
+    private Set<Binding> getModuleBindingIfGlobal(@NotNull String name) {
         if (isGlobalName(name)) {
             State module = getGlobalTable();
             if (module != this) {
@@ -398,8 +398,8 @@ public class State {
     @NotNull
     public Collection<Binding> values() {
         if (table != null) {
-            List<Binding> ret = new ArrayList<>();
-            for (List<Binding> bs : table.values()) {
+            Set<Binding> ret = new HashSet<>();
+            for (Set<Binding> bs : table.values()) {
                 ret.addAll(bs);
             }
             return ret;
@@ -409,7 +409,7 @@ public class State {
 
 
     @NotNull
-    public Set<Entry<String, List<Binding>>> entrySet() {
+    public Set<Entry<String, Set<Binding>>> entrySet() {
         if (table != null) {
             return table.entrySet();
         }

@@ -847,14 +847,14 @@ public class Parser {
         } else if (python3Process != null) {
             Node node3 = parseFileInner(filename, python3Process);
             if (node3 == null) {
-//                _.msg("failed to parse: " + filename);
+                _.msg("failed to parse: " + filename);
                 Analyzer.self.failedToParse.add(filename);
                 return null;
             } else {
                 return node3;
             }
         } else {
-//            _.msg("failed to parse: " + filename);
+            _.msg("failed to parse: " + filename);
             Analyzer.self.failedToParse.add(filename);
             return null;
         }

@@ -5,6 +5,7 @@ import org.yinwang.pysonar.ast.*;
 import org.yinwang.pysonar.types.*;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -81,7 +82,7 @@ public class Binder {
 
     public static void bind(@NotNull State s, @NotNull Name name, @NotNull Type rvalue, Binding.Kind kind) {
         if (s.isGlobalName(name.id)) {
-            List<Binding> bs = s.lookup(name.id);
+            Set<Binding> bs = s.lookup(name.id);
             if (bs != null) {
                 for (Binding b : bs) {
                     b.addType(rvalue);
@@ -103,7 +104,7 @@ public class Binder {
         } else if (iterType instanceof TupleType) {
             bind(s, target, ((TupleType) iterType).toListType().eltType, kind);
         } else {
-            List<Binding> ents = iterType.table.lookupAttr("__iter__");
+            Set<Binding> ents = iterType.table.lookupAttr("__iter__");
             if (ents != null) {
                 for (Binding ent : ents) {
                     if (ent == null || !(ent.type instanceof FunType)) {

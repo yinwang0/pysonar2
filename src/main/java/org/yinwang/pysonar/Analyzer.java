@@ -228,7 +228,7 @@ public class Analyzer {
     }
 
 
-    public void putRef(@NotNull Node node, @NotNull List<Binding> bs) {
+    public void putRef(@NotNull Node node, @NotNull Collection<Binding> bs) {
         if (!(node instanceof Url)) {
             List<Binding> bindings = references.get(node);
             if (bindings == null) {
