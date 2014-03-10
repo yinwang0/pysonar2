@@ -23,7 +23,7 @@ public class State {
 
 
     @NotNull
-    public Map<String, Set<Binding>> table = new HashMap<>();
+    public Map<String, Set<Binding>> table = new HashMap<>(0);
     @Nullable
     public State parent;      // all are non-null except global table
     @Nullable
