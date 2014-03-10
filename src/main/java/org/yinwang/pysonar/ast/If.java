@@ -50,7 +50,8 @@ public class If extends Node {
 
         // decide which branch affects the downstream state
         if (cont1 && cont2) {
-            s.overwrite(State.merge(s1, s2));
+            s1.merge(s2);
+            s.overwrite(s1);
         } else if (cont1) {
             s.overwrite(s1);
         } else if (cont2) {

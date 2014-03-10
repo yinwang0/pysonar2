@@ -101,7 +101,7 @@ public class State {
 
             // both branch have the same name, need merge
             if (b1 == null && b1 != b2) {
-                this.update(e2.getKey(), b2);
+                table.put(e2.getKey(), b2);
             }
         }
     }
