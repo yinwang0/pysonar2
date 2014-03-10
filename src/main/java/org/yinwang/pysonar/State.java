@@ -83,22 +83,13 @@ public class State {
 
 
     public void merge(State other) {
-        for (Map.Entry<String, Set<Binding>> e1 : table.entrySet()) {
-            Set<Binding> b1 = e1.getValue();
-            Set<Binding> b2 = other.table.get(e1.getKey());
-
-            // both branch have the same name, need merge
-            if (b2 != null && b1 != b2) {
-                b1.addAll(b2);
-            }
-        }
-
         for (Map.Entry<String, Set<Binding>> e2 : other.table.entrySet()) {
             Set<Binding> b1 = table.get(e2.getKey());
             Set<Binding> b2 = e2.getValue();
 
-            // both branch have the same name, need merge
-            if (b1 == null && b1 != b2) {
+            if (b1 != null && b2 != null) {
+                b1.addAll(b2);
+            } else if (b1 == null && b2 != null) {
                 table.put(e2.getKey(), b2);
             }
         }
