@@ -22,7 +22,7 @@ public class State {
     }
 
 
-    @Nullable
+    @NotNull
     public Map<String, Set<Binding>> table = new HashMap<>();
     @Nullable
     public State parent;      // all are non-null except global table
@@ -51,10 +51,8 @@ public class State {
 
 
     public State(@NotNull State s) {
-        if (s.table != null) {
-            this.table = new HashMap<>();
-            this.table.putAll(s.table);
-        }
+        this.table = new HashMap<>();
+        this.table.putAll(s.table);
         this.parent = s.parent;
         this.stateType = s.stateType;
         this.forwarding = s.forwarding;
