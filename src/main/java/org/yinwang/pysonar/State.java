@@ -150,9 +150,7 @@ public class State {
 
 
     public void remove(String id) {
-        if (table != null) {
-            table.remove(id);
-        }
+        table.remove(id);
     }
 
 
@@ -201,11 +199,7 @@ public class State {
      */
     @Nullable
     public Set<Binding> lookupLocal(String name) {
-        if (table == null) {
-            return null;
-        } else {
-            return table.get(name);
-        }
+        return table.get(name);
     }
 
 
@@ -376,38 +370,28 @@ public class State {
 
     @NotNull
     public Set<String> keySet() {
-        if (table != null) {
-            return table.keySet();
-        } else {
-            return Collections.emptySet();
-        }
+        return table.keySet();
     }
 
 
     @NotNull
     public Collection<Binding> values() {
-        if (table != null) {
-            Set<Binding> ret = new HashSet<>();
-            for (Set<Binding> bs : table.values()) {
-                ret.addAll(bs);
-            }
-            return ret;
+        Set<Binding> ret = new HashSet<>();
+        for (Set<Binding> bs : table.values()) {
+            ret.addAll(bs);
         }
-        return Collections.emptySet();
+        return ret;
     }
 
 
     @NotNull
     public Set<Entry<String, Set<Binding>>> entrySet() {
-        if (table != null) {
-            return table.entrySet();
-        }
-        return Collections.emptySet();
+        return table.entrySet();
     }
 
 
     public boolean isEmpty() {
-        return table == null || table.isEmpty();
+        return table.isEmpty();
     }
 
 
@@ -424,8 +408,7 @@ public class State {
     @NotNull
     @Override
     public String toString() {
-        return "<State:" + stateType + ":" +
-                (table == null ? "{}" : table.keySet()) + ">";
+        return "<State:" + stateType + ":" + table.keySet() + ">";
     }
 
 }
