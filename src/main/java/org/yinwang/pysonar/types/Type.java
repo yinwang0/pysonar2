@@ -16,9 +16,6 @@ public abstract class Type {
     @NotNull
     public State table = new State(null, State.StateType.SCOPE);
     public String file = null;
-    public boolean mutated = false;
-
-
     @NotNull
     protected static TypeStack typeStack = new TypeStack();
 
@@ -34,11 +31,6 @@ public abstract class Type {
 
     public void setFile(String file) {
         this.file = file;
-    }
-
-
-    public void setMutated(boolean mutated) {
-        this.mutated = mutated;
     }
 
 

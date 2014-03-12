@@ -10,7 +10,6 @@ import org.yinwang.pysonar.types.InstanceType;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
-import java.util.List;
 import java.util.Set;
 
 import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
@@ -49,12 +48,6 @@ public class Attribute extends Node {
         if (targetType.isUnknownType()) {
             Analyzer.self.putProblem(this, "Can't set attribute for UnknownType");
             return;
-        }
-        // new attr, mark the type as "mutated"
-        if (targetType.table.lookupAttr(attr.id) == null ||
-                !targetType.table.lookupAttrType(attr.id).equals(v))
-        {
-            targetType.setMutated(true);
         }
         targetType.table.insert(attr.id, attr, v, ATTRIBUTE);
     }

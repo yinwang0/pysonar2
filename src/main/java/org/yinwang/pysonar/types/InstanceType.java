@@ -35,13 +35,7 @@ public class InstanceType extends Type {
     @Override
     public boolean equals(Object other) {
         if (other instanceof InstanceType) {
-            InstanceType iother = (InstanceType) other;
-            // for now ignore the case where an instance of the same class is modified
-            if (classType.equals(iother.classType) &&
-                    table.keySet().equals(iother.table.keySet()))
-            {
-                return true;
-            }
+            return classType.equals(((InstanceType) other).classType);
         }
         return false;
     }
