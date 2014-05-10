@@ -90,7 +90,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-### Support
+### Donations
 
 
 After significant development effort, PySonar2 is now stable and has been used
