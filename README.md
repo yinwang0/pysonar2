@@ -101,7 +101,8 @@ would take years.
 
 Because of its extremely high code quality, very little maintenance time and
 cost is needed, and because of the extremely short development time, I don't get
-paid much for developing it, and thus must do some other work to buy my bread.
-This is sad. So your donations are graciously appreciated.
+paid much for developing it, and thus must do some other (often less
+interesting) work to buy my bread. This is sad. So your donations are graciously
+appreciated.
 
 Click here to donate via <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=F7KQH572KG8US&lc=US&item_number=blog&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted">Paypal</a>.
