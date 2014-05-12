@@ -101,17 +101,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ### Donations
 
+If you want to support the development of PySonar, click here to donate:
 
-After significant development effort, PySonar2 is now stable and has been used
-to process hundreds of thousands of Python repositories, millions of lines of
-code. The total research & development time by me single-handedly was just a few
-months. A similar project developed by a team of programmers of some big company
-would take years.
-
-Because of its high code quality, very little maintenance time and cost is
-needed, and because of the short development time, I didn't get paid much by my
-employers for developing it, and thus must do some other (often less interesting
-and challenging) work to buy my bread. This is sad. So your donations are
-graciously appreciated.
-
-Click here to donate via <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=F7KQH572KG8US&lc=US&item_number=blog&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted">Paypal</a>.
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=F7KQH572KG8US&lc=US&item_number=blog&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif"></a>
