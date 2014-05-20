@@ -44,8 +44,10 @@ public class Binder {
         Binding.Kind kind;
         if (s.stateType == State.StateType.FUNCTION) {
             kind = Binding.Kind.VARIABLE;
-        } else {
+        } else if (s.stateType == State.StateType.MODULE) {
             kind = Binding.Kind.SCOPE;
+        } else {
+            kind = Binding.Kind.ATTRIBUTE;
         }
         bind(s, target, rvalue, kind);
     }
