@@ -44,11 +44,28 @@ public class Attribute extends Node {
     }
 
 
+    private void addRef(@NotNull Type targetType, @NotNull Set<Binding> bs) {
+        for (Binding b : bs) {
+            Analyzer.self.putRef(attr, b);
+            if (parent != null && parent instanceof Call &&
+                    b.type instanceof FunType && targetType instanceof InstanceType)
+            {  // method call
+                ((FunType) b.type).setSelfType(targetType);
+            }
+        }
+    }
+
+
     private void setAttrType(@NotNull Type targetType, @NotNull Type v) {
         if (targetType.isUnknownType()) {
             Analyzer.self.putProblem(this, "Can't set attribute for UnknownType");
             return;
         }
+        Set<Binding> bs = targetType.table.lookupAttr(attr.id);
+        if (bs != null) {
+            addRef(targetType, bs);
+        }
+
         targetType.table.insert(attr.id, attr, v, ATTRIBUTE);
     }
 
@@ -83,15 +100,7 @@ public class Attribute extends Node {
             t.table.setPath(targetType.table.extendPath(attr.id));
             return t;
         } else {
-            for (Binding b : bs) {
-                Analyzer.self.putRef(attr, b);
-                if (parent != null && parent instanceof Call &&
-                        b.type instanceof FunType && targetType instanceof InstanceType)
-                {  // method call
-                    ((FunType) b.type).setSelfType(targetType);
-                }
-            }
-
+            addRef(targetType, bs);
             return State.makeUnion(bs);
         }
     }
