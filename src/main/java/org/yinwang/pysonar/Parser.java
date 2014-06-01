@@ -30,6 +30,7 @@ public class Parser {
     private String jsonizer;
     private String parserLog;
     private String file;
+    private String content;
 
 
     public Parser() {
@@ -368,6 +369,7 @@ public class Parser {
 
         if (type.equals("Import")) {
             List<Alias> aliases = convertList(map.get("names"));
+            locateNames(aliases, start);
             return new Import(aliases, file, start, end);
         }
 
@@ -376,6 +378,7 @@ public class Parser {
             int level = ((Double) map.get("level")).intValue();
             List<Name> moduleSeg = module == null ? null : segmentQname(module, start + "from ".length() + level, true);
             List<Alias> names = convertList(map.get("names"));
+            locateNames(names, start);
             return new ImportFrom(moduleSeg, names, level, file, start, end);
         }
 
@@ -613,6 +616,25 @@ public class Parser {
     }
 
 
+    // cpython ast doesn't have location information for names in the Alias node, thus we need to locate it here.
+    private void locateNames(List<Alias> names, int start) {
+        for (Alias a : names) {
+            Name first = a.name.get(0);
+            start = content.indexOf(first.id, start);
+            first.start = start;
+            first.end = start + first.id.length();
+            start = first.end;
+            if (a.asname != null) {
+                start = content.indexOf(a.asname.id, start);
+                a.asname.start = start;
+                a.asname.end = start + a.asname.id.length();
+                a.asname.file = file;  // file is missing for asname node
+                start = a.asname.end;
+            }
+        }
+    }
+
+
     @Nullable
     private List<Node> convertListNode(@Nullable Object o) {
         if (o == null) {
@@ -840,6 +862,7 @@ public class Parser {
     @Nullable
     public Node parseFile(String filename) {
         file = filename;
+        content = _.readFile(filename);
 
         Node node2 = parseFileInner(filename, python2Process);
         if (node2 != null) {
