@@ -55,7 +55,10 @@ def parse_file(filename):
     enc, enc_len = detect_encoding(filename)
     f = codecs.open(filename, 'r', enc)
     lines = f.read()
-
+    if enc == None:
+        # This is a terrible hack
+        lines = lines.decode("latin1").encode("latin1").decode("utf-8")
+        enc = "latin1"
     # remove BOM
     lines = re.sub(u'\ufeff', ' ', lines)
 
@@ -96,10 +99,10 @@ def detect_encoding(path):
             # print('lookedup: ', info)
         except LookupError:
             # print('encoding not exist: ' + enc1)
-            return 'latin1', enc_len
+            return None, enc_len
         return enc1, enc_len
     else:
-        return 'latin1', -1
+        return None, -1
 
 
 #-------------------------------------------------------------
