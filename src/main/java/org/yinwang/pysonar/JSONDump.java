@@ -198,7 +198,7 @@ public class JSONDump {
             String path = b.qname.replace('.', '/').replace("%20", ".");
 
             if (b.getFile() != null) {
-                if (b.getFile().startsWith(srcpath) && path.startsWith(srcpath)) {
+                if (b.getFile().startsWith(srcpath)) {
                     writeSymJson(b, symJson);
                     writeDocJson(b, idx, docJson);
                 }
