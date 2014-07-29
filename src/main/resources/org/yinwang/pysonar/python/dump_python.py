@@ -19,7 +19,10 @@ class AstEncoder(JSONEncoder):
             if not is_python3:
                 for k in d:
                     if isinstance(d[k], str):
-                        d[k] = d[k].decode(enc)
+                        if k == 's':
+                          d[k] = lines[d['start']:d['end']]
+                        else:
+                          d[k] = d[k].decode(enc)
             d['type'] = o.__class__.__name__
             return d
         else:
@@ -27,7 +30,7 @@ class AstEncoder(JSONEncoder):
 
 
 enc = 'latin1'
-
+lines = ''
 
 def parse_dump(filename, output, end_mark):
     try:
@@ -48,7 +51,7 @@ def parse_dump(filename, output, end_mark):
 
 
 def parse_file(filename):
-    global enc
+    global enc, lines
     enc, enc_len = detect_encoding(filename)
     f = codecs.open(filename, 'r', enc)
     lines = f.read()
