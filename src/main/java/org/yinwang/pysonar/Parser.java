@@ -323,8 +323,27 @@ public class Parser {
             List<Node> args = convertList(argsMap.get("args"));
             List<Node> defaults = convertList(argsMap.get("defaults"));
             Node body = type.equals("Lambda") ? convert(map.get("body")) : convertBlock(map.get("body"));
-            Name vararg = argsMap.get("vararg") == null ? null : new Name((String) argsMap.get("vararg"));
-            Name kwarg = argsMap.get("kwarg") == null ? null : new Name((String) argsMap.get("kwarg"));
+
+            // handle vararg depending on different python versions
+            Name vararg = null;
+            Object varargObj = argsMap.get("vararg");
+            if (varargObj instanceof String) {
+                vararg = new Name((String) argsMap.get("vararg"));
+            } else if (varargObj instanceof Map) {
+                String argName = (String) ((Map) varargObj).get("arg");
+                vararg = new Name(argName);
+            }
+
+            // handle kwarg depending on different python versions
+            Name kwarg = null;
+            Object kwargObj = argsMap.get("kwarg");
+            if (kwargObj instanceof String) {
+                kwarg = new Name((String) argsMap.get("kwarg"));
+            } else if (kwargObj instanceof Map) {
+                String argName = (String) ((Map) kwargObj).get("arg");
+                kwarg = new Name(argName);
+            }
+
             return new FunctionDef(name, args, body, defaults, vararg, kwarg, file, start, end);
         }
 
@@ -412,6 +431,20 @@ public class Parser {
         if (type.equals("Name")) {
             String id = (String) map.get("id");
             return new Name(id, file, start, end);
+        }
+
+        if (type.equals("NameConstant")) {
+            String strVal;
+            Object value = map.get("value");
+            if (value instanceof Boolean) {
+                strVal = ((Boolean) value) ? "true" : "false";
+            } else if (value instanceof String) {
+                strVal = (String) value;
+            } else {
+                _.msg("[WARNING] NameConstant contains unrecognized value: " + value + ", please report issue");
+                strVal = "";
+            }
+            return new Name(strVal, file, start, end);
         }
 
         // another name for Name in Python3 func parameters?
