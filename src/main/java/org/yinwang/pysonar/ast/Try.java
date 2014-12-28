@@ -58,6 +58,11 @@ public class Try extends Node {
         return new UnionType(tp1, tp2, tph, tpFinal);
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

@@ -28,6 +28,11 @@ public class Yield extends Node {
         }
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

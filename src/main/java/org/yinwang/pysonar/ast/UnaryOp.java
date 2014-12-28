@@ -25,6 +25,11 @@ public class UnaryOp extends Node {
         return transformExpr(operand, s);
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

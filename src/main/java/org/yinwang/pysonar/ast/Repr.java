@@ -26,6 +26,11 @@ public class Repr extends Node {
         return Type.STR;
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

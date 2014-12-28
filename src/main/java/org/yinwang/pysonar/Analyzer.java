@@ -322,7 +322,6 @@ public class Analyzer {
         return type;
     }
 
-
     @Nullable
     private Type parseAndResolve(String file) {
         loadingProgress.tick();
@@ -583,7 +582,7 @@ public class Analyzer {
 
             for (FunType cl : uncalledDup) {
                 progress.tick();
-                Call.apply(cl, null, null, null, null, null);
+                Call.apply(cl, null, null, null, null, null, null);
             }
         }
     }

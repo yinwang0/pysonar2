@@ -34,6 +34,11 @@ public class PySet extends Sequence {
         return listType;
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

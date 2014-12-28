@@ -24,6 +24,11 @@ public class PyComplex extends Node {
         return Type.COMPLEX;
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

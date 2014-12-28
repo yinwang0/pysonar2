@@ -34,6 +34,11 @@ public class Comprehension extends Node {
         return transformExpr(target, s);
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

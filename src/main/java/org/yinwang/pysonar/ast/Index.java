@@ -23,6 +23,11 @@ public class Index extends Node {
         return transformExpr(value, s);
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

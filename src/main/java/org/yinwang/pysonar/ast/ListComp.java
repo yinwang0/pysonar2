@@ -35,6 +35,11 @@ public class ListComp extends Node {
         return new ListType(transformExpr(elt, s));
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

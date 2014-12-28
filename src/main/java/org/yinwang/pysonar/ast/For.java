@@ -45,6 +45,11 @@ public class For extends Node {
         return ret;
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

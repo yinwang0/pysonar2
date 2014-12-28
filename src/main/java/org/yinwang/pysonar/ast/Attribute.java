@@ -91,6 +91,11 @@ public class Attribute extends Node {
         }
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     private Type getAttrType(@NotNull Type targetType) {
         Set<Binding> bs = targetType.table.lookupAttr(attr.id);

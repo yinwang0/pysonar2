@@ -58,6 +58,11 @@ public class PyInt extends Node {
         return Type.INT;
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

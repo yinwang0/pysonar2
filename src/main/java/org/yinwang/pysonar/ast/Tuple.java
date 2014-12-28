@@ -25,6 +25,11 @@ public class Tuple extends Sequence {
         return t;
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

@@ -33,6 +33,11 @@ public class PyList extends Sequence {
         return listType;
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

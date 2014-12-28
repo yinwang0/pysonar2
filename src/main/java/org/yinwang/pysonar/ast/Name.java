@@ -58,6 +58,14 @@ public class Name extends Node {
         }
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+        Set<Binding> b = env.lookup(this.id);
+        for (Binding b1 : b) {
+            b1.addType(other);
+        }
+    }
+
 
     /**
      * Returns {@code true} if this name node is the {@code attr} child

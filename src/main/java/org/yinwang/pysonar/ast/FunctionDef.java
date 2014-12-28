@@ -84,6 +84,11 @@ public class FunctionDef extends Node {
         }
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     public String getArgumentExpr() {
         StringBuilder argExpr = new StringBuilder();

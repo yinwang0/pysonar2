@@ -61,6 +61,11 @@ public class If extends Node {
         return UnionType.union(type1, type2);
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

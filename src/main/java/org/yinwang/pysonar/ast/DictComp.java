@@ -39,6 +39,11 @@ public class DictComp extends Node {
         return new DictType(keyType, valueType);
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

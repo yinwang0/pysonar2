@@ -122,6 +122,7 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
     @NotNull
     protected abstract Type transform(State s);
 
+    protected abstract void unify(@NotNull Type other, @NotNull State env);
 
     protected void addWarning(String msg) {
         Analyzer.self.putProblem(this, msg);
