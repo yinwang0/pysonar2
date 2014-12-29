@@ -25,4 +25,9 @@ public class Ellipsis extends Node {
         return Type.NONE;
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 }

@@ -31,6 +31,11 @@ public class Assign extends Node {
         return Type.CONT;
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

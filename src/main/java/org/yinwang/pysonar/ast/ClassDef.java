@@ -63,6 +63,11 @@ public class ClassDef extends Node {
         return Type.CONT;
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     private void addSpecialAttribute(@NotNull State s, String name, Type proptype) {
         Binding b = new Binding(name, Builtins.newTutUrl("classes.html"), proptype, Binding.Kind.ATTRIBUTE);

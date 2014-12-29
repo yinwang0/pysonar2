@@ -39,6 +39,11 @@ public class Subscript extends Node {
         }
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     private Type getSubscript(@NotNull Type vt, @Nullable Type st, State s) {
@@ -82,7 +87,7 @@ public class Subscript extends Node {
                     addError("The type can't be sliced: " + vt);
                     return Type.UNKNOWN;
                 } else if (sliceFunc instanceof FunType) {
-                    return Call.apply((FunType) sliceFunc, null, null, null, null, this);
+                    return Call.apply((FunType) sliceFunc, null, null, null, null, this, null);
                 } else {
                     addError("The type's __getslice__ method is not a function: " + sliceFunc);
                     return Type.UNKNOWN;

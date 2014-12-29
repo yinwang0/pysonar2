@@ -37,6 +37,11 @@ public class Slice extends Node {
         return new ListType();
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

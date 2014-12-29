@@ -24,4 +24,9 @@ public class Break extends Node {
     public Type transform(State s) {
         return Type.NONE;
     }
+
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
 }

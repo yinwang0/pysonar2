@@ -36,6 +36,11 @@ public class With extends Node {
         return transformExpr(body, s);
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

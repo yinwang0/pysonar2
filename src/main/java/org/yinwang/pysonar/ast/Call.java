@@ -62,26 +62,26 @@ public class Call extends Node {
             Set<Type> types = ((UnionType) fun).types;
             Type retType = Type.UNKNOWN;
             for (Type ft : types) {
-                Type t = resolveCall(ft, pos, hash, kw, star);
+                Type t = resolveCall(ft, pos, hash, kw, star, s);
                 retType = UnionType.union(retType, t);
             }
             return retType;
         } else {
-            return resolveCall(fun, pos, hash, kw, star);
+            return resolveCall(fun, pos, hash, kw, star, s);
         }
     }
-
 
     @NotNull
     private Type resolveCall(@NotNull Type fun,
                              List<Type> pos,
                              Map<String, Type> hash,
                              Type kw,
-                             Type star)
+                             Type star,
+                             State env)
     {
         if (fun instanceof FunType) {
             FunType ft = (FunType) fun;
-            return apply(ft, pos, hash, kw, star, this);
+            return apply(ft, pos, hash, kw, star, this, env);
         } else if (fun instanceof ClassType) {
             return new InstanceType(fun, this, pos);
         } else {
@@ -90,14 +90,14 @@ public class Call extends Node {
         }
     }
 
-
     @NotNull
     public static Type apply(@NotNull FunType func,
                              @Nullable List<Type> pos,
                              Map<String, Type> hash,
                              Type kw,
                              Type star,
-                             @Nullable Node call)
+                             @Nullable Node call,
+                             State env)
     {
         Analyzer.self.removeUncalled(func);
 
@@ -143,16 +143,35 @@ public class Call extends Node {
             funcTable.setPath(func.func.name.id);
         }
 
+        if (call != null && call instanceof Call) {
+            ((Call)call).unify(func, env);
+        }
+
         Type fromType = bindParams(call, func.func, funcTable, func.func.args,
                 func.func.vararg, func.func.kwarg,
-                pTypes, func.defaultTypes, hash, kw, star);
+                pTypes, func.defaultTypes, hash, kw, star, true);
+
+        State mergeEnv = funcTable.copy();
+        if (env != null) {
+            mergeEnv.merge(env);
+        }
 
         Type cachedTo = func.getMapping(fromType);
         if (cachedTo != null) {
             func.setSelfType(null);
             return cachedTo;
         } else {
-            Type toType = transformExpr(func.func.body, funcTable);
+            Type toType = transformExpr(func.func.body, mergeEnv);
+
+            if (pTypes == null || pTypes.isEmpty()) {
+                pTypes = resolveList(func.func.args, mergeEnv);
+            }
+
+            // resolve parameter type again, hope called function will provide type information
+            fromType = bindParams(call, func.func, mergeEnv, func.func.args,
+                    func.func.vararg, func.func.kwarg,
+                    pTypes, func.defaultTypes, hash, kw, star, false);
+
             if (missingReturn(toType)) {
                 Analyzer.self.putProblem(func.func.name, "Function not always return a value");
 
@@ -168,6 +187,37 @@ public class Call extends Node {
         }
     }
 
+    @Override
+    protected void unify(@NotNull Type other,
+                         @NotNull State funcTable)
+    {
+        if (!(other instanceof FunType)) {
+            return;
+        }
+        FunType func = (FunType)other;
+
+        if (func.arrows.size() > 0) {
+            List<Type> pTypes = null;
+
+            for (Map.Entry<Type, Type> e : func.arrows.entrySet()) {
+                Type from = e.getKey();
+                if (from instanceof ListType) {
+                    pTypes = ((ListType) from).positional;
+                } else if (from instanceof TupleType) {
+                    pTypes = ((TupleType) from).eltTypes;
+                }
+            }
+
+            if (pTypes != null) {
+                List<Node> args = this.args;
+                for (int i = 0; i < args.size() && i < pTypes.size(); ++i) {
+                    Type t = pTypes.get(i);
+                    Node n = args.get(i);
+                    n.unify(t, funcTable);
+                }
+            }
+        }
+    }
 
     @NotNull
     static private Type bindParams(@Nullable Node call,
@@ -180,7 +230,8 @@ public class Call extends Node {
                                    @Nullable List<Type> dTypes,
                                    @Nullable Map<String, Type> hash,
                                    @Nullable Type kw,
-                                   @Nullable Type star)
+                                   @Nullable Type star,
+                                   boolean update)
     {
         TupleType fromType = new TupleType();
         int pSize = args == null ? 0 : args.size();
@@ -219,7 +270,9 @@ public class Call extends Node {
                     }
                 }
             }
-            Binder.bind(funcTable, arg, aType, Binding.Kind.PARAMETER);
+            if (update) {
+                Binder.bind(funcTable, arg, aType, Binding.Kind.PARAMETER);
+            }
             fromType.add(aType);
         }
 

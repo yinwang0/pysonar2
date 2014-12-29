@@ -29,6 +29,11 @@ public class PyFloat extends Node {
         return Type.FLOAT;
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

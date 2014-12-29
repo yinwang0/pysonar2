@@ -24,4 +24,9 @@ public class Continue extends Node {
     public Type transform(State s) {
         return Type.CONT;
     }
+
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
 }

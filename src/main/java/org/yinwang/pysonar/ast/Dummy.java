@@ -22,4 +22,9 @@ public class Dummy extends Node {
         return Type.UNKNOWN;
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 }

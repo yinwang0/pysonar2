@@ -57,6 +57,11 @@ public class Block extends Node {
         return retType;
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

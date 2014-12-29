@@ -39,6 +39,11 @@ public class While extends Node {
         return t;
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override

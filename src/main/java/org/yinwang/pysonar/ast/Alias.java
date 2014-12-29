@@ -28,6 +28,11 @@ public class Alias extends Node {
         return Type.UNKNOWN;
     }
 
+    @Override
+    protected void unify(@NotNull Type other, @NotNull State env) {
+
+    }
+
 
     @NotNull
     @Override
