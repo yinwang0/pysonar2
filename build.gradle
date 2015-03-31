@@ -1,0 +1,21 @@
+apply {
+  plugin "java"
+}
+
+group = "org.yinwang"
+version = "2.0-SNAPSHOT"
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile "com.google.code.gson:gson:2.2.4"
+  compile "com.intellij:annotations:5.1"
+  compile "com.google.guava:guava:15.0"
+  compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+  compile "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
+  compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+  compile "commons-io:commons-io:2.4"
+  compile "org.apache.commons:commons-lang3:3.0"
+}
