@@ -406,25 +406,27 @@ public class Analyzer {
      * Find the path that contains modname. Used to find the starting point of locating a qname.
      *
      * @param headName first module name segment
+     * @return return a list of possible path
      */
-    public String locateModule(String headName) {
+    public List<String> locateModule(String headName) {
         List<String> loadPath = getLoadPath();
+        List<String> validPath = new ArrayList<>();
 
         for (String p : loadPath) {
             File startDir = new File(p, headName);
             File initFile = new File(_.joinPath(startDir, "__init__.py").getPath());
 
             if (initFile.exists()) {
-                return p;
+                validPath.add(p);
             }
 
             File startFile = new File(startDir + suffix);
             if (startFile.exists()) {
-                return p;
+                validPath.add(p);
             }
         }
 
-        return null;
+        return validPath;
     }
 
 
@@ -447,50 +449,54 @@ public class Analyzer {
         // If there are more than one segment
         // load the packages first
         Type prev = null;
-        String startPath = locateModule(name.get(0).id);
-
-        if (startPath == null) {
+        List<String> validPath = locateModule(name.get(0).id);
+        if (validPath.isEmpty()) {
             return null;
         }
 
-        File path = new File(startPath);
+        for (String startPath : validPath) {
+            File path = new File(startPath);
 
-        for (int i = 0; i < name.size(); i++) {
-            path = new File(path, name.get(i).id);
-            File initFile = new File(_.joinPath(path, "__init__.py").getPath());
+            for (int i = 0; i < name.size(); i++) {
+                path = new File(path, name.get(i).id);
+                File initFile = new File(_.joinPath(path, "__init__.py").getPath());
 
-            if (initFile.exists()) {
-                Type mod = loadFile(initFile.getPath());
-                if (mod == null) {
-                    return null;
-                }
-
-                if (prev != null) {
-                    prev.table.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
-                } else {
-                    state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
-                }
-
-                prev = mod;
-
-            } else if (i == name.size() - 1) {
-                File startFile = new File(path + suffix);
-                if (startFile.exists()) {
-                    Type mod = loadFile(startFile.getPath());
+                if (initFile.exists()) {
+                    Type mod = loadFile(initFile.getPath());
                     if (mod == null) {
                         return null;
                     }
+
                     if (prev != null) {
                         prev.table.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                     } else {
                         state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
                     }
+
                     prev = mod;
-                } else {
-                    return null;
+
+                } else if (i == name.size() - 1) {
+                    File startFile = new File(path + suffix);
+                    if (startFile.exists()) {
+                        Type mod = loadFile(startFile.getPath());
+                        if (mod == null) {
+                            return null;
+                        }
+                        if (prev != null) {
+                            prev.table.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+                        } else {
+                            state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+                        }
+                        prev = mod;
+                    }
                 }
             }
+
+            if (prev != null) {
+                return prev;
+            }
         }
+        
         return prev;
     }
 
