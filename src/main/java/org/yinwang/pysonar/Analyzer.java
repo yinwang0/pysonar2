@@ -430,6 +430,73 @@ public class Analyzer {
     }
 
 
+    // @Nullable
+    // public Type loadModule(@NotNull List<Name> name, @NotNull State state) {
+    //     if (name.isEmpty()) {
+    //         return null;
+    //     }
+
+    //     String qname = makeQname(name);
+
+    //     Type mt = getBuiltinModule(qname);
+    //     if (mt != null) {
+    //         state.insert(name.get(0).id,
+    //                 new Url(Builtins.LIBRARY_URL + mt.table.path + ".html"),
+    //                 mt, Binding.Kind.SCOPE);
+    //         return mt;
+    //     }
+
+    //     // If there are more than one segment
+    //     // load the packages first
+    //     Type prev = null;
+    //     String startPath = locateModule(name.get(0).id);
+
+    //     if (startPath == null) {
+    //         return null;
+    //     }
+
+    //     File path = new File(startPath);
+
+    //     for (int i = 0; i < name.size(); i++) {
+    //         path = new File(path, name.get(i).id);
+    //         File initFile = new File(_.joinPath(path, "__init__.py").getPath());
+
+    //         if (initFile.exists()) {
+    //             Type mod = loadFile(initFile.getPath());
+    //             if (mod == null) {
+    //                 return null;
+    //             }
+
+    //             if (prev != null) {
+    //                 prev.table.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+    //             } else {
+    //                 state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+    //             }
+
+    //             prev = mod;
+
+    //         } else if (i == name.size() - 1) {
+    //             File startFile = new File(path + suffix);
+    //             if (startFile.exists()) {
+    //                 Type mod = loadFile(startFile.getPath());
+    //                 if (mod == null) {
+    //                     return null;
+    //                 }
+    //                 if (prev != null) {
+    //                     prev.table.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+    //                 } else {
+    //                     state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+    //                 }
+    //                 prev = mod;
+    //             } else {
+    //                 return null;
+    //             }
+    //         }
+    //     }
+    //     return prev;
+    // }
+
+
     @Nullable
     public Type loadModule(@NotNull List<Name> name, @NotNull State state) {
         if (name.isEmpty()) {
