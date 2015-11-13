@@ -2,7 +2,7 @@ package org.yinwang.pysonar.demos;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar._;
+import org.yinwang.pysonar.$;
 
 import java.util.List;
 import java.util.SortedSet;
@@ -70,7 +70,7 @@ class StyleApplier {
                         buffer.append("<a name='" + style.url + "'");
                         buffer.append(", id ='" + style.id + "'");
                         if (style.highlight != null && !style.highlight.isEmpty()) {
-                            String ids = _.joinWithSep(style.highlight, "\",\"", "\"", "\"");
+                            String ids = $.joinWithSep(style.highlight, "\",\"", "\"", "\"");
                             buffer.append(", onmouseover='highlight(").append(ids).append(")'");
                         }
                         break;
@@ -78,7 +78,7 @@ class StyleApplier {
                         buffer.append("<a href='" + style.url + "'");
                         buffer.append(", id ='" + style.id + "'");
                         if (style.highlight != null && !style.highlight.isEmpty()) {
-                            String ids = _.joinWithSep(style.highlight, "\",\"", "\"", "\"");
+                            String ids = $.joinWithSep(style.highlight, "\",\"", "\"", "\"");
                             buffer.append(", onmouseover='highlight(").append(ids).append(")'");
                         }
                         break;

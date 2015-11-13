@@ -1,6 +1,6 @@
 package org.yinwang.pysonar.ast;
 
-import org.yinwang.pysonar._;
+import org.yinwang.pysonar.$;
 
 
 public enum Op {
@@ -8,6 +8,7 @@ public enum Op {
     Add,
     Sub,
     Mul,
+    MatMult,
     Div,
     Mod,
     Pow,
@@ -41,10 +42,8 @@ public enum Op {
     GtE,
     NotIn,
 
-    // ruby
-    Defined,
-    Match,
-    NotMatch;
+    // unsupported new operator
+    Unsupported;
 
 
     public static Op invert(Op op) {
@@ -68,7 +67,7 @@ public enum Op {
             return Op.And;
         }
 
-        _.die("invalid operator name for invert: " + op);
+        $.die("invalid operator name for invert: " + op);
         return null;  // unreacheable
     }
 

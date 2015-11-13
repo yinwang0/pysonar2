@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.State;
-import org.yinwang.pysonar._;
+import org.yinwang.pysonar.$;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
 
@@ -41,7 +41,7 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
 
     public String getFullPath() {
         if (!file.startsWith("/")) {
-            return _.makePathString(Analyzer.self.projectDir, file);
+            return $.makePathString(Analyzer.self.projectDir, file);
         } else {
             return file;
         }
@@ -176,7 +176,7 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
             String file = this.file;
             return (start == node.start &&
                     end == node.end &&
-                    _.same(file, node.file));
+                    $.same(file, node.file));
         }
     }
 

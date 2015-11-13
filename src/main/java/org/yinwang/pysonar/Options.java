@@ -18,7 +18,7 @@ public class Options {
             String key = args[i];
             if (key.startsWith("--")) {
                 if (i + 1 >= args.length) {
-                    _.die("option needs a value: " + key);
+                    $.die("option needs a value: " + key);
                 } else {
                     key = key.substring(2);
                     String value = args[i + 1];

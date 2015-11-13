@@ -238,7 +238,7 @@ public class Binding implements Comparable<Object> {
             Binding b = (Binding) obj;
             return (start == b.start &&
                     end == b.end &&
-                    _.same(fileOrUrl, b.fileOrUrl));
+                    $.same(fileOrUrl, b.fileOrUrl));
         }
     }
 

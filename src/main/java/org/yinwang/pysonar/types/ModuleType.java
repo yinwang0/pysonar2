@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.State;
-import org.yinwang.pysonar._;
+import org.yinwang.pysonar.$;
 
 
 public class ModuleType extends Type {
@@ -22,7 +22,7 @@ public class ModuleType extends Type {
             // This will return null iff specified file is not prefixed by
             // any path in the module search path -- i.e., the caller asked
             // the analyzer to load a file not in the search path.
-            qname = _.moduleQname(file);
+            qname = $.moduleQname(file);
         }
         if (qname == null) {
             qname = name;

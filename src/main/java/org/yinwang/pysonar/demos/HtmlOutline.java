@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Outliner;
-import org.yinwang.pysonar._;
+import org.yinwang.pysonar.$;
 
 import java.util.List;
 
@@ -71,7 +71,7 @@ class HtmlOutline {
 
         add("<a href='#");
         add(e.getQname());
-        add("', onmouseover='highlight(\"" + _.escapeQname(e.getQname()) + "\")'>");
+        add("', onmouseover='highlight(\"" + $.escapeQname(e.getQname()) + "\")'>");
 
         if (style != null) {
             add("<span class='");

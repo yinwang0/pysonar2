@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Options;
 import org.yinwang.pysonar.Progress;
-import org.yinwang.pysonar._;
+import org.yinwang.pysonar.$;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,9 +16,9 @@ public class Demo {
 
     private static File OUTPUT_DIR;
 
-    private static final String CSS = _.readResource("org/yinwang/pysonar/css/demo.css");
-    private static final String JS = _.readResource("org/yinwang/pysonar/javascript/highlight.js");
-    private static final String JS_DEBUG = _.readResource("org/yinwang/pysonar/javascript/highlight-debug.js");
+    private static final String CSS = $.readResource("org/yinwang/pysonar/css/demo.css");
+    private static final String JS = $.readResource("org/yinwang/pysonar/javascript/highlight.js");
+    private static final String JS_DEBUG = $.readResource("org/yinwang/pysonar/javascript/highlight-debug.js");
 
     private Analyzer analyzer;
     private String rootPath;
@@ -28,7 +28,7 @@ public class Demo {
     private void makeOutputDir() {
         if (!OUTPUT_DIR.exists()) {
             OUTPUT_DIR.mkdirs();
-            _.msg("Created directory: " + OUTPUT_DIR.getAbsolutePath());
+            $.msg("Created directory: " + OUTPUT_DIR.getAbsolutePath());
         }
     }
 
@@ -37,13 +37,13 @@ public class Demo {
         File f = new File(fileOrDir);
         File rootDir = f.isFile() ? f.getParentFile() : f;
         try {
-            rootPath = _.unifyPath(rootDir);
+            rootPath = $.unifyPath(rootDir);
         } catch (Exception e) {
-            _.die("File not found: " + f);
+            $.die("File not found: " + f);
         }
 
         analyzer = new Analyzer(options);
-        _.msg("Loading and analyzing files");
+        $.msg("Loading and analyzing files");
         analyzer.analyze(f.getPath());
         analyzer.finish();
 
@@ -53,7 +53,7 @@ public class Demo {
 
 
     private void generateHtml() {
-        _.msg("\nGenerating HTML");
+        $.msg("\nGenerating HTML");
         makeOutputDir();
 
         linker = new Linker(rootPath, OUTPUT_DIR);
@@ -73,19 +73,19 @@ public class Demo {
         for (String path : analyzer.getLoadedFiles()) {
             if (path.startsWith(rootPath)) {
                 progress.tick();
-                File destFile = _.joinPath(OUTPUT_DIR, path.substring(rootLength));
+                File destFile = $.joinPath(OUTPUT_DIR, path.substring(rootLength));
                 destFile.getParentFile().mkdirs();
                 String destPath = destFile.getAbsolutePath() + ".html";
                 String html = markup(path);
                 try {
-                    _.writeFile(destPath, html);
+                    $.writeFile(destPath, html);
                 } catch (Exception e) {
-                    _.msg("Failed to write: " + destPath);
+                    $.msg("Failed to write: " + destPath);
                 }
             }
         }
 
-        _.msg("\nWrote " + analyzer.getLoadedFiles().size() + " files to " + OUTPUT_DIR);
+        $.msg("\nWrote " + analyzer.getLoadedFiles().size() + " files to " + OUTPUT_DIR);
     }
 
 
@@ -94,9 +94,9 @@ public class Demo {
         String source;
 
         try {
-            source = _.readFile(path);
+            source = $.readFile(path);
         } catch (Exception e) {
-            _.die("Failed to read file: " + path);
+            $.die("Failed to read file: " + path);
             return "";
         }
 
@@ -144,9 +144,9 @@ public class Demo {
 
 
     private static void usage() {
-        _.msg("Usage:  java -jar pysonar-2.0-SNAPSHOT.jar <file-or-dir> <output-dir>");
-        _.msg("Example that generates an index for Python 2.7 standard library:");
-        _.msg(" java -jar pysonar-2.0-SNAPSHOT.jar /usr/lib/python2.7 ./html");
+        $.msg("Usage:  java -jar pysonar-2.0-SNAPSHOT.jar <file-or-dir> <output-dir>");
+        $.msg("Example that generates an index for Python 2.7 standard library:");
+        $.msg(" java -jar pysonar-2.0-SNAPSHOT.jar /usr/lib/python2.7 ./html");
         System.exit(0);
     }
 
@@ -155,7 +155,7 @@ public class Demo {
     private static File checkFile(String path) {
         File f = new File(path);
         if (!f.canRead()) {
-            _.die("Path not found or not readable: " + path);
+            $.die("Path not found or not readable: " + path);
         }
         return f;
     }
@@ -170,6 +170,6 @@ public class Demo {
 
 //        System.out.println("options: " + options.getOptionsMap());
         new Demo().start(fileOrDir, options.getOptionsMap());
-        _.msg(_.getGCStats());
+        $.msg($.getGCStats());
     }
 }

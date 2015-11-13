@@ -259,7 +259,7 @@ public class JSONDump {
             docOut = new BufferedOutputStream(new FileOutputStream(docFilename));
             symOut = new BufferedOutputStream(new FileOutputStream(symFilename));
             refOut = new BufferedOutputStream(new FileOutputStream(refFilename));
-            _.msg("graphing: " + srcpath);
+            $.msg("graphing: " + srcpath);
             graph(srcpath, inclpaths, symOut, refOut, docOut);
             docOut.flush();
             symOut.flush();
