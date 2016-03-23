@@ -240,7 +240,7 @@ def find_end(node, s):
     elif isinstance(node, Attribute):
         the_end = end_seq(s, node.attr, find_end(node.value, s))
 
-    elif isinstance(node, FunctionDef):
+    elif isinstance(node, FunctionDef) or (is_python3 and isinstance(node, AsyncFunctionDef)):
         the_end = find_end(node.body, s)
 
     elif isinstance(node, Lambda):
@@ -363,7 +363,7 @@ def add_missing_names(node, s):
             node.name_node = str_to_name(s, start)
             node._fields += ('name_node',)
 
-    elif isinstance(node, FunctionDef) or isinstance(node, AsyncFunctionDef):
+    elif isinstance(node, FunctionDef) or (is_python3 and isinstance(node, AsyncFunctionDef)):
         # skip to "def" because it may contain decorators like @property
         head = find_start(node, s)
         start = s.find("def", head) + len("def")
