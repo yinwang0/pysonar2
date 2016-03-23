@@ -35,19 +35,19 @@ public class Parser {
 
     public Parser() {
 
-        exchangeFile = _.locateTmp("json");
-        endMark = _.locateTmp("end");
-        jsonizer = _.locateTmp("dump_python");
-        parserLog = _.locateTmp("parser_log");
+        exchangeFile = $.locateTmp("json");
+        endMark = $.locateTmp("end");
+        jsonizer = $.locateTmp("dump_python");
+        parserLog = $.locateTmp("parser_log");
 
         startPythonProcesses();
 
         if (python2Process != null) {
-            _.msg("started: " + PYTHON2_EXE);
+            $.msg("started: " + PYTHON2_EXE);
         }
 
         if (python3Process != null) {
-            _.msg("started: " + PYTHON3_EXE);
+            $.msg("started: " + PYTHON3_EXE);
         }
     }
 
@@ -66,13 +66,13 @@ public class Parser {
             URL url = Thread.currentThread().getContextClassLoader().getResource(dumpPythonResource);
             FileUtils.copyURLToFile(url, new File(jsonizer));
         } catch (Exception e) {
-            _.die("Failed to copy resource file:" + dumpPythonResource);
+            $.die("Failed to copy resource file:" + dumpPythonResource);
         }
 
         python2Process = startInterpreter(PYTHON2_EXE);
         python3Process = startInterpreter(PYTHON3_EXE);
         if (python2Process == null && python3Process == null) {
-            _.die("You don't seem to have either of Python or Python3 on PATH");
+            $.die("You don't seem to have either of Python or Python3 on PATH");
         }
     }
 
@@ -200,7 +200,7 @@ public class Parser {
         if (type.equals("BoolOp")) {
             List<Node> values = convertList(map.get("values"));
             if (values == null || values.size() < 2) {
-                _.die("impossible number of arguments, please fix the Python parser");
+                $.die("impossible number of arguments, please fix the Python parser");
             }
             Op op = convertOp(map.get("op"));
             BinOp ret = new BinOp(op, values.get(0), values.get(1), file, start, end);
@@ -442,7 +442,7 @@ public class Parser {
             } else if (value instanceof String) {
                 strVal = (String) value;
             } else {
-                _.msg("[WARNING] NameConstant contains unrecognized value: " + value + ", please report issue");
+                $.msg("[WARNING] NameConstant contains unrecognized value: " + value + ", please report issue");
                 strVal = "";
             }
             return new Name(strVal, file, start, end);
@@ -630,7 +630,7 @@ public class Parser {
             return new Yield(value, file, start, end);
         }
 
-        _.msg("\n[Please Report]: unexpected ast node: " + map.get("type"));
+        $.msg("\n[Please Report]: unexpected ast node: " + map.get("type"));
         return new Unsupported(file, start, end);
     }
 
@@ -839,7 +839,7 @@ public class Parser {
             return Op.NotIn;
         }
 
-        _.die("illegal operator: " + type);
+        $.die("illegal operator: " + type);
         return null;
     }
 
@@ -891,7 +891,7 @@ public class Parser {
             builder.environment().remove("PYTHONPATH");
             p = builder.start();
         } catch (Exception e) {
-            _.msg("Failed to start: " + pythonExe);
+            $.msg("Failed to start: " + pythonExe);
             return null;
         }
         return p;
@@ -901,7 +901,7 @@ public class Parser {
     @Nullable
     public Node parseFile(String filename) {
         file = filename;
-        content = _.readFile(filename);
+        content = $.readFile(filename);
 
         Node node2 = parseFileInner(filename, python2Process);
         if (node2 != null) {
@@ -909,14 +909,14 @@ public class Parser {
         } else if (python3Process != null) {
             Node node3 = parseFileInner(filename, python3Process);
             if (node3 == null) {
-                _.msg("failed to parse: " + filename);
+                $.msg("failed to parse: " + filename);
                 Analyzer.self.failedToParse.add(filename);
                 return null;
             } else {
                 return node3;
             }
         } else {
-            _.msg("failed to parse: " + filename);
+            $.msg("failed to parse: " + filename);
             Analyzer.self.failedToParse.add(filename);
             return null;
         }
@@ -931,9 +931,9 @@ public class Parser {
         File marker = new File(endMark);
         cleanTemp();
 
-        String s1 = _.escapeWindowsPath(filename);
-        String s2 = _.escapeWindowsPath(exchangeFile);
-        String s3 = _.escapeWindowsPath(endMark);
+        String s1 = $.escapeWindowsPath(filename);
+        String s2 = $.escapeWindowsPath(exchangeFile);
+        String s3 = $.escapeWindowsPath(endMark);
         String dumpCommand = "parse_dump('" + s1 + "', '" + s2 + "', '" + s3 + "')";
 
         if (!sendCommand(dumpCommand, pythonProcess)) {
@@ -944,7 +944,7 @@ public class Parser {
         long waitStart = System.currentTimeMillis();
         while (!marker.exists()) {
             if (System.currentTimeMillis() - waitStart > TIMEOUT) {
-                _.msg("\nTimed out while parsing: " + filename);
+                $.msg("\nTimed out while parsing: " + filename);
                 cleanTemp();
                 startPythonProcesses();
                 return null;
@@ -958,7 +958,7 @@ public class Parser {
             }
         }
 
-        String json = _.readFile(exchangeFile);
+        String json = $.readFile(exchangeFile);
         if (json != null) {
             cleanTemp();
             Map<String, Object> map = gson.fromJson(json, Map.class);
@@ -984,7 +984,7 @@ public class Parser {
             writer.flush();
             return true;
         } catch (Exception e) {
-            _.msg("\nFailed to send command to interpreter: " + cmd);
+            $.msg("\nFailed to send command to interpreter: " + cmd);
             return false;
         }
     }

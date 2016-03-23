@@ -1,6 +1,6 @@
 package org.yinwang.pysonar.ast;
 
-import org.yinwang.pysonar._;
+import org.yinwang.pysonar.$;
 
 
 public enum Op {
@@ -68,7 +68,7 @@ public enum Op {
             return Op.And;
         }
 
-        _.die("invalid operator name for invert: " + op);
+        $.die("invalid operator name for invert: " + op);
         return null;  // unreacheable
     }
 

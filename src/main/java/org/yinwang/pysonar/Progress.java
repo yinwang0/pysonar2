@@ -39,11 +39,11 @@ public class Progress {
         long elapsed = System.currentTimeMillis() - lastTickTime;
 
         if (elapsed > 500 || count == total) {
-            _.msg_("\r");
+            $.msg_("\r");
             int dlen = (int) Math.ceil(Math.log10((double) total));
-            _.msg_(_.percent(count, total) + " (" +
-                    _.formatNumber(count, dlen) +
-                    " of " + _.formatNumber(total, dlen) + ")");
+            $.msg_($.percent(count, total) + " (" +
+                    $.formatNumber(count, dlen) +
+                    " of " + $.formatNumber(total, dlen) + ")");
 
             int rate;
             if (elapsed > 1) {
@@ -53,7 +53,7 @@ public class Progress {
             }
 
             lastRate = rate;
-            _.msg_("   SPEED: " + _.formatNumber(rate, MAX_SPEED_DIGITS) + "/s");
+            $.msg_("   SPEED: " + $.formatNumber(rate, MAX_SPEED_DIGITS) + "/s");
 
             long totalElapsed = System.currentTimeMillis() - startTime;
             int avgRate;
@@ -65,14 +65,14 @@ public class Progress {
             }
             avgRate = avgRate == 0 ? 1 : avgRate;
 
-            _.msg_("   AVG SPEED: " + _.formatNumber(avgRate, MAX_SPEED_DIGITS) + "/s");
+            $.msg_("   AVG SPEED: " + $.formatNumber(avgRate, MAX_SPEED_DIGITS) + "/s");
 
             long remain = total - count;
             long remainTime = remain / avgRate * 1000;
-            _.msg_("   ETA: " + _.formatTime(remainTime));
+            $.msg_("   ETA: " + $.formatTime(remainTime));
 
 
-            _.msg_("       ");      // overflow area
+            $.msg_("       ");      // overflow area
 
             lastTickTime = System.currentTimeMillis();
             lastAvgRate = avgRate;

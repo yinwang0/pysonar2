@@ -3,7 +3,7 @@ package org.yinwang.pysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.TypeStack;
-import org.yinwang.pysonar._;
+import org.yinwang.pysonar.$;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,13 +52,13 @@ public abstract class Type {
                     return t.asModuleType();
                 }
             }
-            _.die("Not containing a ModuleType");
+            $.die("Not containing a ModuleType");
             // can't get here, just to make the @NotNull annotation happy
             return new ModuleType(null, null, null);
         } else if (this instanceof ModuleType) {
             return (ModuleType) this;
         } else {
-            _.die("Not a ModuleType");
+            $.die("Not a ModuleType");
             // can't get here, just to make the @NotNull annotation happy
             return new ModuleType(null, null, null);
         }

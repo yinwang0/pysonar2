@@ -2,7 +2,7 @@ package org.yinwang.pysonar.demos;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar._;
+import org.yinwang.pysonar.$;
 
 import java.util.List;
 
@@ -66,8 +66,8 @@ public class Style implements Comparable<Style> {
         return other.type == this.type
                 && other.start == this.start
                 && other.end == this.end
-                && _.same(other.message, this.message)
-                && _.same(other.url, this.url);
+                && $.same(other.message, this.message)
+                && $.same(other.url, this.url);
     }
 
 

@@ -27,11 +27,11 @@ public class Test {
         this.inputDir = inputDir;
         this.exp = exp;
         if (new File(inputDir).isDirectory()) {
-            expecteRefsFile = _.makePathString(inputDir, "refs.json");
-            failedRefsFile = _.makePathString(inputDir, "failed_refs.json");
+            expecteRefsFile = $.makePathString(inputDir, "refs.json");
+            failedRefsFile = $.makePathString(inputDir, "failed_refs.json");
         } else {
-            expecteRefsFile = _.makePathString(inputDir + ".refs.json");
-            failedRefsFile = _.makePathString(inputDir, ".failed_refs.json");
+            expecteRefsFile = $.makePathString(inputDir + ".refs.json");
+            failedRefsFile = $.makePathString(inputDir, ".failed_refs.json");
         }
     }
 
@@ -51,7 +51,7 @@ public class Test {
 
             // only record those in the inputDir
             if (file != null && file.startsWith(Analyzer.self.projectDir)) {
-                file = _.projRelPath(file);
+                file = $.projRelPath(file);
                 Map<String, Object> writeout = new LinkedHashMap<>();
 
                 Map<String, Object> ref = new LinkedHashMap<>();
@@ -64,7 +64,7 @@ public class Test {
                 for (Binding b : e.getValue()) {
                     String destFile = b.getFile();
                     if (destFile != null && destFile.startsWith(Analyzer.self.projectDir)) {
-                        destFile = _.projRelPath(destFile);
+                        destFile = $.projRelPath(destFile);
                         Map<String, Object> dest = new LinkedHashMap<>();
                         dest.put("name", b.name);
                         dest.put("file", destFile);
@@ -82,15 +82,15 @@ public class Test {
         }
 
         String json = gson.toJson(refs);
-        _.writeFile(expecteRefsFile, json);
+        $.writeFile(expecteRefsFile, json);
     }
 
 
     public boolean checkRefs() {
         List<Map<String, Object>> failedRefs = new ArrayList<>();
-        String json = _.readFile(expecteRefsFile);
+        String json = $.readFile(expecteRefsFile);
         if (json == null) {
-            _.msg("Expected refs not found in: " + expecteRefsFile +
+            $.msg("Expected refs not found in: " + expecteRefsFile +
                     "Please run Test with -exp to generate");
             return false;
         }
@@ -105,7 +105,7 @@ public class Test {
 
             for (Map<String, Object> d : dests) {
                 // names are ignored, they are only for human readers
-                String file = _.projAbsPath((String) d.get("file"));
+                String file = $.projAbsPath((String) d.get("file"));
                 int start = (int) Math.floor((double) d.get("start"));
                 int end = (int) Math.floor((double) d.get("end"));
 
@@ -127,8 +127,8 @@ public class Test {
             return true;
         } else {
             String failedJson = gson.toJson(failedRefs);
-            _.testmsg("Failed to find refs: " + failedJson);
-            _.writeFile(failedRefsFile, failedJson);
+            $.testmsg("Failed to find refs: " + failedJson);
+            $.writeFile(failedRefsFile, failedJson);
             return false;
         }
     }
@@ -153,7 +153,7 @@ public class Test {
 
 
     public static Dummy makeDummy(Map<String, Object> m) {
-        String file = _.projAbsPath((String) m.get("file"));
+        String file = $.projAbsPath((String) m.get("file"));
         int start = (int) Math.floor((double) m.get("start"));
         int end = (int) Math.floor((double) m.get("end"));
         return new Dummy(file, start, end);
@@ -163,13 +163,13 @@ public class Test {
     public void generateTest() {
         runAnalysis(inputDir);
         generateRefs();
-        _.testmsg("  * " + inputDir);
+        $.testmsg("  * " + inputDir);
     }
 
 
     public boolean runTest() {
         runAnalysis(inputDir);
-        _.testmsg("  * " + inputDir);
+        $.testmsg("  * " + inputDir);
         return checkRefs();
     }
 
@@ -180,21 +180,21 @@ public class Test {
     public static void testAll(String path, boolean exp) {
         List<String> failed = new ArrayList<>();
         if (exp) {
-            _.testmsg("generating tests");
+            $.testmsg("generating tests");
         } else {
-            _.testmsg("verifying tests");
+            $.testmsg("verifying tests");
         }
 
         testRecursive(path, exp, failed);
 
         if (exp) {
-            _.testmsg("all tests generated");
+            $.testmsg("all tests generated");
         } else if (failed.isEmpty()) {
-            _.testmsg("all tests passed!");
+            $.testmsg("all tests passed!");
         } else {
-            _.testmsg("failed some tests: ");
+            $.testmsg("failed some tests: ");
             for (String f : failed) {
-                _.testmsg("  * " + f);
+                $.testmsg("  * " + f);
             }
         }
     }
@@ -225,7 +225,7 @@ public class Test {
     public static void main(String[] args) throws Exception {
         Options options = new Options(args);
         List<String> argsList = options.getArgs();
-        String inputDir = _.unifyPath(argsList.get(0));
+        String inputDir = $.unifyPath(argsList.get(0));
 
         // generate expected file?
         boolean exp = options.hasOption("exp");
