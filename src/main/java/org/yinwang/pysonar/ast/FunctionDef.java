@@ -23,10 +23,11 @@ public class FunctionDef extends Node {
     public Node body;
     public boolean called = false;
     public boolean isLamba = false;
+    public boolean isAsync = false;
 
 
     public FunctionDef(Name name, List<Node> args, Node body, List<Node> defaults,
-                       Name vararg, Name kwarg, String file, int start, int end)
+                       Name vararg, Name kwarg, String file, boolean isAsync, int start, int end)
     {
         super(file, start, end);
         if (name != null) {
@@ -43,6 +44,7 @@ public class FunctionDef extends Node {
         this.defaults = defaults;
         this.vararg = vararg;
         this.kwarg = kwarg;
+        this.isAsync = isAsync;
         addChildren(name);
         addChildren(args);
         addChildren(defaults);

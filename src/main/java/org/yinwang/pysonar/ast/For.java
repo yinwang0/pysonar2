@@ -14,9 +14,10 @@ public class For extends Node {
     public Node iter;
     public Block body;
     public Block orelse;
+    public boolean isAsync = false;
 
 
-    public For(Node target, Node iter, Block body, Block orelse,
+    public For(Node target, Node iter, Block body, Block orelse, boolean isAsync,
                String file, int start, int end)
     {
         super(file, start, end);
@@ -24,6 +25,7 @@ public class For extends Node {
         this.iter = iter;
         this.body = body;
         this.orelse = orelse;
+        this.isAsync = isAsync;
         addChildren(target, iter, body, orelse);
     }
 

@@ -13,12 +13,14 @@ public class With extends Node {
     @NotNull
     public List<Withitem> items;
     public Block body;
+    public boolean isAsync = false;
 
 
-    public With(@NotNull List<Withitem> items, Block body, String file, int start, int end) {
+    public With(@NotNull List<Withitem> items, Block body, String file, boolean isAsync, int start, int end) {
         super(file, start, end);
         this.items = items;
         this.body = body;
+        this.isAsync = isAsync;
         addChildren(items);
         addChildren(body);
     }

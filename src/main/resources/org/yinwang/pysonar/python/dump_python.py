@@ -363,7 +363,7 @@ def add_missing_names(node, s):
             node.name_node = str_to_name(s, start)
             node._fields += ('name_node',)
 
-    elif isinstance(node, FunctionDef):
+    elif isinstance(node, FunctionDef) or isinstance(node, AsyncFunctionDef):
         # skip to "def" because it may contain decorators like @property
         head = find_start(node, s)
         start = s.find("def", head) + len("def")

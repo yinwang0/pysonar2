@@ -309,15 +309,15 @@ public class Parser {
             return new Expr(value, file, start, end);
         }
 
-        if (type.equals("For")) {
+        if (type.equals("For") || type.equals("AsyncFor")) {
             Node target = convert(map.get("target"));
             Node iter = convert(map.get("iter"));
             Block body = convertBlock(map.get("body"));
             Block orelse = convertBlock(map.get("orelse"));
-            return new For(target, iter, body, orelse, file, start, end);
+            return new For(target, iter, body, orelse, type.equals("AsyncFor"), file, start, end);
         }
 
-        if (type.equals("FunctionDef") || type.equals("Lambda")) {
+        if (type.equals("FunctionDef") || type.equals("Lambda") || type.equals("AsyncFunctionDef")) {
             Name name = type.equals("Lambda") ? null : (Name) convert(map.get("name_node"));
             Map<String, Object> argsMap = (Map<String, Object>) map.get("args");
             List<Node> args = convertList(argsMap.get("args"));
@@ -344,7 +344,8 @@ public class Parser {
                 kwarg = new Name(argName);
             }
 
-            return new FunctionDef(name, args, body, defaults, vararg, kwarg, file, start, end);
+            boolean isAsync = type.equals("AsyncFunctionDef");
+            return new FunctionDef(name, args, body, defaults, vararg, kwarg, file, isAsync, start, end);
         }
 
         if (type.equals("GeneratorExp")) {
@@ -515,6 +516,11 @@ public class Parser {
             return new Return(value, file, start, end);
         }
 
+        if (type.equals("Await")) {
+            Node value = convert(map.get("value"));
+            return new Return(value, file, start, end);
+        }
+
         if (type.equals("Set")) {
             List<Node> elts = convertList(map.get("elts"));
             return new PySet(elts, file, start, end);
@@ -588,7 +594,7 @@ public class Parser {
             return new While(test, body, orelse, file, start, end);
         }
 
-        if (type.equals("With")) {
+        if (type.equals("With") || type.equals("AsyncWith")) {
             List<Withitem> items = new ArrayList<>();
 
             Node context_expr = convert(map.get("context_expr"));
@@ -610,7 +616,8 @@ public class Parser {
                 }
             }
 
-            return new With(items, body, file, start, end);
+            boolean isAsync = type.equals("AsyncWith");
+            return new With(items, body, file, isAsync, start, end);
         }
 
         if (type.equals("Yield")) {
