@@ -744,6 +744,10 @@ public class Parser {
             return Op.Mul;
         }
 
+        if (type.equals("MatMult")) {
+            return Op.MatMult;
+        }
+
         if (type.equals("Div")) {
             return Op.Div;
         }
@@ -839,8 +843,8 @@ public class Parser {
             return Op.NotIn;
         }
 
-        $.die("illegal operator: " + type);
-        return null;
+        $.msg("[please report] unsupported operator: " + type);
+        return Op.Unsupported;
     }
 
 

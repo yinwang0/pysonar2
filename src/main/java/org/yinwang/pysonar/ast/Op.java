@@ -8,6 +8,7 @@ public enum Op {
     Add,
     Sub,
     Mul,
+    MatMult,
     Div,
     Mod,
     Pow,
@@ -41,10 +42,8 @@ public enum Op {
     GtE,
     NotIn,
 
-    // ruby
-    Defined,
-    Match,
-    NotMatch;
+    // unsupported new operator
+    Unsupported;
 
 
     public static Op invert(Op op) {
