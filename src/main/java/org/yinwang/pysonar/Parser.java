@@ -630,9 +630,8 @@ public class Parser {
             return new Yield(value, file, start, end);
         }
 
-        _.die("[Please report bug]: unexpected ast node: " + map.get("type"));
-
-        return null;
+        _.msg("\n[Please Report]: unexpected ast node: " + map.get("type"));
+        return new Unsupported(file, start, end);
     }
 
 
