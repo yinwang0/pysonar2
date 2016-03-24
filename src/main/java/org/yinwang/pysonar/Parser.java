@@ -437,7 +437,9 @@ public class Parser {
         if (type.equals("NameConstant")) {
             String strVal;
             Object value = map.get("value");
-            if (value instanceof Boolean) {
+            if (value == null) {
+                strVal = "None";
+            } else if (value instanceof Boolean) {
                 strVal = ((Boolean) value) ? "true" : "false";
             } else if (value instanceof String) {
                 strVal = (String) value;
