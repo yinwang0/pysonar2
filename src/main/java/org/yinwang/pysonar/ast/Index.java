@@ -11,7 +11,7 @@ public class Index extends Node {
 
 
     public Index(Node n, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.INDEX, file, start, end);
         this.value = n;
         addChildren(n);
     }

@@ -13,7 +13,7 @@ public class Raise extends Node {
 
 
     public Raise(Node exceptionType, Node inst, Node traceback, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.RAISE, file, start, end);
         this.exceptionType = exceptionType;
         this.inst = inst;
         this.traceback = traceback;

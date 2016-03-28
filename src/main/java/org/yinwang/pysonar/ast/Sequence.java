@@ -11,8 +11,8 @@ public abstract class Sequence extends Node {
     public List<Node> elts;
 
 
-    public Sequence(@NotNull List<Node> elts, String file, int start, int end) {
-        super(file, start, end);
+    public Sequence(NodeType nodeType, @NotNull List<Node> elts, String file, int start, int end) {
+        super(nodeType, file, start, end);
         this.elts = elts;
         addChildren(elts);
     }

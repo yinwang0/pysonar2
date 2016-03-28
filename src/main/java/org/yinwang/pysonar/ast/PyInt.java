@@ -13,7 +13,7 @@ public class PyInt extends Node {
 
 
     public PyInt(String s, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.PYINT, file, start, end);
 
         s = s.replaceAll("_", "");
         int sign = 1;

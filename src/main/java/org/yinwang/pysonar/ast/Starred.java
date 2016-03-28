@@ -11,7 +11,7 @@ public class Starred extends Node {
 
 
     public Starred(Node n, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.STARRED, file, start, end);
         this.value = n;
         addChildren(n);
     }

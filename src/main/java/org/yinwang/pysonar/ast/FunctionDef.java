@@ -29,7 +29,7 @@ public class FunctionDef extends Node {
     public FunctionDef(Name name, List<Node> args, Node body, List<Node> defaults,
                        Name vararg, Name kwarg, String file, boolean isAsync, int start, int end)
     {
-        super(file, start, end);
+        super(NodeType.FUNCTIONDEF, file, start, end);
         if (name != null) {
             this.name = name;
         } else {

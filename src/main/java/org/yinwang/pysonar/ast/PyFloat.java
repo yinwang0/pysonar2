@@ -11,7 +11,7 @@ public class PyFloat extends Node {
 
 
     public PyFloat(String s, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.PYFLOAT, file, start, end);
         s = s.replaceAll("_", "");
         if (s.equals("inf")) {
             this.value = Double.POSITIVE_INFINITY;

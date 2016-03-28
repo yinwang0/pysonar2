@@ -24,7 +24,7 @@ public class Call extends Node {
     public Call(Node func, List<Node> args, @Nullable List<Keyword> keywords,
                 Node kwargs, Node starargs, String file, int start, int end)
     {
-        super(file, start, end);
+        super(NodeType.CALL, file, start, end);
         this.func = func;
         this.args = args;
         this.keywords = keywords;
@@ -73,7 +73,7 @@ public class Call extends Node {
 
 
     @NotNull
-    private Type resolveCall(@NotNull Type fun,
+    public Type resolveCall(@NotNull Type fun,
                              List<Type> pos,
                              Map<String, Type> hash,
                              Type kw,

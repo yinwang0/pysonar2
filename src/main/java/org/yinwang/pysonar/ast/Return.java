@@ -11,7 +11,7 @@ public class Return extends Node {
 
 
     public Return(Node n, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.RETURN, file, start, end);
         this.value = n;
         addChildren(n);
     }

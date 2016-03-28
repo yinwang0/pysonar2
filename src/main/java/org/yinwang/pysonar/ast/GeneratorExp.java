@@ -15,7 +15,7 @@ public class GeneratorExp extends Node {
 
 
     public GeneratorExp(Node elt, List<Comprehension> generators, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.GENERATOREXP, file, start, end);
         this.elt = elt;
         this.generators = generators;
         addChildren(elt);

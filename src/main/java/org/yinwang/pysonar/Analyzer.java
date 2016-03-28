@@ -7,6 +7,7 @@ import org.yinwang.pysonar.ast.Name;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Url;
 import org.yinwang.pysonar.types.*;
+import org.yinwang.pysonar.visitor.TypeInferencer;
 
 import java.io.File;
 import java.net.URL;
@@ -334,7 +335,8 @@ public class Analyzer {
                 failedToParse.add(file);
                 return null;
             } else {
-                Type type = Node.transformExpr(ast, moduleTable);
+                TypeInferencer inferencer = new TypeInferencer();
+                Type type = inferencer.visit(ast, moduleTable);
                 loadedFiles.add(file);
                 return type;
             }

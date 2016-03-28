@@ -24,7 +24,7 @@ public class Name extends Node {
 
 
     public Name(@NotNull String id, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.NAME, file, start, end);
         this.id = id;
         this.name = id;
         this.type = NameType.LOCAL;
@@ -32,7 +32,7 @@ public class Name extends Node {
 
 
     public Name(@NotNull String id, NameType type, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.NAME, file, start, end);
         this.id = id;
         this.type = type;
     }

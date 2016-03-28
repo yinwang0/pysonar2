@@ -14,7 +14,7 @@ public class IfExp extends Node {
 
 
     public IfExp(Node test, Node body, Node orelse, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.IFEXP, file, start, end);
         this.test = test;
         this.body = body;
         this.orelse = orelse;

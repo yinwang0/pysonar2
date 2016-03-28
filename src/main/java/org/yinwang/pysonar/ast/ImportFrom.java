@@ -22,7 +22,7 @@ public class ImportFrom extends Node {
 
 
     public ImportFrom(List<Name> module, List<Alias> names, int level, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.IMPORTFROM, file, start, end);
         this.module = module;
         this.level = level;
         this.names = names;
@@ -79,7 +79,7 @@ public class ImportFrom extends Node {
     }
 
 
-    private void importStar(@NotNull State s, @Nullable Type mt) {
+    public void importStar(@NotNull State s, @Nullable Type mt) {
         if (mt == null || mt.file == null) {
             return;
         }

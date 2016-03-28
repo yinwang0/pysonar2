@@ -12,7 +12,7 @@ public class Assert extends Node {
 
 
     public Assert(Node test, Node msg, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.ASSERT, file, start, end);
         this.test = test;
         this.msg = msg;
         addChildren(test, msg);

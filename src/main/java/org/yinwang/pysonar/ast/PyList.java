@@ -11,7 +11,7 @@ import java.util.List;
 public class PyList extends Sequence {
 
     public PyList(@NotNull List<Node> elts, String file, int start, int end) {
-        super(elts, file, start, end);
+        super(NodeType.PYLIST, elts, file, start, end);
     }
 
 

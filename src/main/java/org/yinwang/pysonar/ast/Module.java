@@ -15,7 +15,7 @@ public class Module extends Node {
 
 
     public Module(Block body, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.MODULE, file, start, end);
         this.name = $.moduleName(file);
         this.body = body;
         addChildren(this.body);

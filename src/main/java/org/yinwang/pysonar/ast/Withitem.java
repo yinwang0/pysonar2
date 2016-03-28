@@ -18,7 +18,7 @@ public class Withitem extends Node {
 
 
     public Withitem(@NotNull Node context_expr, @Nullable Node optional_vars, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.WITHITEM, file, start, end);
         this.context_expr = context_expr;
         this.optional_vars = optional_vars;
         addChildren(context_expr, optional_vars);

@@ -18,7 +18,7 @@ public class Block extends Node {
 
 
     public Block(@NotNull List<Node> seq, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.BLOCK, file, start, end);
         this.seq = seq;
         addChildren(seq);
     }

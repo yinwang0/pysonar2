@@ -14,7 +14,7 @@ public class Print extends Node {
 
 
     public Print(Node dest, List<Node> elts, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.PRINT, file, start, end);
         this.dest = dest;
         this.values = elts;
         addChildren(dest);

@@ -13,7 +13,7 @@ public class Global extends Node {
 
 
     public Global(List<Name> names, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.GLOBAL, file, start, end);
         this.names = names;
         addChildren(names);
     }

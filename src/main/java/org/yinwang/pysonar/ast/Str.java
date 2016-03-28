@@ -11,7 +11,7 @@ public class Str extends Node {
 
 
     public Str(@NotNull Object value, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.STR, file, start, end);
         this.value = value.toString();
     }
 

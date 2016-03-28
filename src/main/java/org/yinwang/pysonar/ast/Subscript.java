@@ -15,7 +15,7 @@ public class Subscript extends Node {
 
 
     public Subscript(@NotNull Node value, @Nullable Node slice, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.SUBSCRIPT, file, start, end);
         this.value = value;
         this.slice = slice;
         addChildren(value, slice);
@@ -41,7 +41,7 @@ public class Subscript extends Node {
 
 
     @NotNull
-    private Type getSubscript(@NotNull Type vt, @Nullable Type st, State s) {
+    public Type getSubscript(@NotNull Type vt, @Nullable Type st, State s) {
         if (vt.isUnknownType()) {
             return Type.UNKNOWN;
         } else {

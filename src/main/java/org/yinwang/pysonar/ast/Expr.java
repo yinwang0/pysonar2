@@ -14,7 +14,7 @@ public class Expr extends Node {
 
 
     public Expr(Node n, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.EXPR, file, start, end);
         this.value = n;
         addChildren(n);
     }

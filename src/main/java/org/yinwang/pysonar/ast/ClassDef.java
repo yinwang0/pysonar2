@@ -17,7 +17,7 @@ public class ClassDef extends Node {
 
 
     public ClassDef(@NotNull Name name, List<Node> bases, Node body, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.CLASSDEF, file, start, end);
         this.name = name;
         this.bases = bases;
         this.body = body;
@@ -64,7 +64,7 @@ public class ClassDef extends Node {
     }
 
 
-    private void addSpecialAttribute(@NotNull State s, String name, Type proptype) {
+    public void addSpecialAttribute(@NotNull State s, String name, Type proptype) {
         Binding b = new Binding(name, Builtins.newTutUrl("classes.html"), proptype, Binding.Kind.ATTRIBUTE);
         s.update(name, b);
         b.markSynthetic();

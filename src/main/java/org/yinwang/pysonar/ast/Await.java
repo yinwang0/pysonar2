@@ -11,7 +11,7 @@ public class Await extends Node {
 
 
     public Await(Node n, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.AWAIT, file, start, end);
         this.value = n;
         addChildren(n);
     }

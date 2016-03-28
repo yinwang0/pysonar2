@@ -20,7 +20,7 @@ public class For extends Node {
     public For(Node target, Node iter, Block body, Block orelse, boolean isAsync,
                String file, int start, int end)
     {
-        super(file, start, end);
+        super(NodeType.FOR, file, start, end);
         this.target = target;
         this.iter = iter;
         this.body = body;

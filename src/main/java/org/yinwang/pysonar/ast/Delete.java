@@ -13,7 +13,7 @@ public class Delete extends Node {
 
 
     public Delete(List<Node> elts, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.DELETE, file, start, end);
         this.targets = elts;
         addChildren(elts);
     }

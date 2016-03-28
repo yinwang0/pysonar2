@@ -19,7 +19,7 @@ public class Try extends Node {
     public Try(List<Handler> handlers, Block body, Block orelse, Block finalbody,
                String file, int start, int end)
     {
-        super(file, start, end);
+        super(NodeType.TRY, file, start, end);
         this.handlers = handlers;
         this.body = body;
         this.orelse = orelse;

@@ -12,7 +12,7 @@ public class UnaryOp extends Node {
 
 
     public UnaryOp(Op op, Node operand, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.UNARYOP, file, start, end);
         this.op = op;
         this.operand = operand;
         addChildren(operand);

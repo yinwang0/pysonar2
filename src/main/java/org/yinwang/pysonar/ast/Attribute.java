@@ -24,7 +24,7 @@ public class Attribute extends Node {
 
 
     public Attribute(@Nullable Node target, @NotNull Name attr, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.ATTRIBUTE, file, start, end);
         this.target = target;
         this.attr = attr;
         addChildren(target, attr);
@@ -92,7 +92,7 @@ public class Attribute extends Node {
     }
 
 
-    private Type getAttrType(@NotNull Type targetType) {
+    public Type getAttrType(@NotNull Type targetType) {
         Set<Binding> bs = targetType.table.lookupAttr(attr.id);
         if (bs == null) {
             Analyzer.self.putProblem(attr, "attribute not found in type: " + targetType);

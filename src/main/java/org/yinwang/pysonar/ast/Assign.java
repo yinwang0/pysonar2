@@ -15,7 +15,7 @@ public class Assign extends Node {
 
 
     public Assign(@NotNull Node target, @NotNull Node value, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.ASSIGN, file, start, end);
         this.target = target;
         this.value = value;
         addChildren(target);

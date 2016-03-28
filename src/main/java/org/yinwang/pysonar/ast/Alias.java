@@ -14,7 +14,7 @@ public class Alias extends Node {
 
 
     public Alias(List<Name> name, Name asname, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.ALIAS, file, start, end);
         this.name = name;
         this.asname = asname;
         addChildren(name);

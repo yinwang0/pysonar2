@@ -8,7 +8,7 @@ import org.yinwang.pysonar.types.Type;
 public class Break extends Node {
 
     public Break(String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.BREAK, file, start, end);
     }
 
 

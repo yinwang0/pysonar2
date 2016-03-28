@@ -12,7 +12,7 @@ public class YieldFrom extends Node {
 
 
     public YieldFrom(Node n, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.YIELDFROM, file, start, end);
         this.value = n;
         addChildren(n);
     }

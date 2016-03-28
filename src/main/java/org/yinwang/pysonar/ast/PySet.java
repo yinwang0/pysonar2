@@ -11,7 +11,7 @@ import java.util.List;
 public class PySet extends Sequence {
 
     public PySet(List<Node> elts, String file, int start, int end) {
-        super(elts, file, start, end);
+        super(NodeType.PYSET, elts, file, start, end);
     }
 
 

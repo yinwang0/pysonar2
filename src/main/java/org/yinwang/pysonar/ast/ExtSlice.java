@@ -14,7 +14,7 @@ public class ExtSlice extends Node {
 
 
     public ExtSlice(List<Node> dims, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.EXTSLICE, file, start, end);
         this.dims = dims;
         addChildren(dims);
     }

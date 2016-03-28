@@ -11,7 +11,7 @@ public class Repr extends Node {
 
 
     public Repr(Node n, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.REPR, file, start, end);
         this.value = n;
         addChildren(n);
     }

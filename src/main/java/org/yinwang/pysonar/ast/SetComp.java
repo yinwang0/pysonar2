@@ -15,7 +15,7 @@ public class SetComp extends Node {
 
 
     public SetComp(Node elt, List<Comprehension> generators, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.SETCOMP, file, start, end);
         this.elt = elt;
         this.generators = generators;
         addChildren(elt);

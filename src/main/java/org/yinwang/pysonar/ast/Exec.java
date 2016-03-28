@@ -13,7 +13,7 @@ public class Exec extends Node {
 
 
     public Exec(Node body, Node globals, Node locals, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.EXEC, file, start, end);
         this.body = body;
         this.globals = globals;
         this.locals = locals;

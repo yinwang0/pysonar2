@@ -16,7 +16,7 @@ public class Handler extends Node {
 
 
     public Handler(List<Node> exceptions, Node binder, Block body, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.HANDLER, file, start, end);
         this.binder = binder;
         this.exceptions = exceptions;
         this.body = body;

@@ -20,6 +20,7 @@ import java.util.List;
  */
 public abstract class Node implements java.io.Serializable, Comparable<Object> {
 
+    public NodeType nodeType;
     public String file;
     public int start;
     public int end;
@@ -32,7 +33,8 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
     }
 
 
-    public Node(String file, int start, int end) {
+    public Node(NodeType nodeType, String file, int start, int end) {
+        this.nodeType = nodeType;
         this.file = file;
         this.start = start;
         this.end = end;
@@ -133,11 +135,6 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
     }
 
 
-    /**
-     * Utility method to resolve every node in {@code nodes} and
-     * return the union of their types.  If {@code nodes} is empty or
-     * {@code null}, returns a new {@link org.yinwang.pysonar.types.UnknownType}.
-     */
     @NotNull
     protected Type resolveUnion(@NotNull Collection<? extends Node> nodes, State s) {
         Type result = Type.UNKNOWN;

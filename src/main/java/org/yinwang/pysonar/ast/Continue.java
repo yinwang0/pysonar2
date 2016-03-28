@@ -8,7 +8,7 @@ import org.yinwang.pysonar.types.Type;
 public class Continue extends Node {
 
     public Continue(String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.CONTINUE, file, start, end);
     }
 
 

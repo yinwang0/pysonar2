@@ -12,7 +12,7 @@ import org.yinwang.pysonar.types.Type;
 public class Dummy extends Node {
 
     public Dummy(String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.DUMMY, file, start, end);
     }
 
 

@@ -16,7 +16,7 @@ public class Keyword extends Node {
 
 
     public Keyword(String arg, @NotNull Node value, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.KEYWORD, file, start, end);
         this.arg = arg;
         this.value = value;
         addChildren(value);

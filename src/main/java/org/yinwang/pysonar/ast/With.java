@@ -17,7 +17,7 @@ public class With extends Node {
 
 
     public With(@NotNull List<Withitem> items, Block body, String file, boolean isAsync, int start, int end) {
-        super(file, start, end);
+        super(NodeType.WITH, file, start, end);
         this.items = items;
         this.body = body;
         this.isAsync = isAsync;

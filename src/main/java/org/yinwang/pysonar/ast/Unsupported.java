@@ -8,7 +8,7 @@ import org.yinwang.pysonar.types.Type;
 public class Unsupported extends Node {
 
     public Unsupported(String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.UNSUPPORTED, file, start, end);
     }
 
 

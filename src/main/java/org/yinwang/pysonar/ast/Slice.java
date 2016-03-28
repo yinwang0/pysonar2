@@ -14,7 +14,7 @@ public class Slice extends Node {
 
 
     public Slice(Node lower, Node step, Node upper, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.SLICE, file, start, end);
         this.lower = lower;
         this.step = step;
         this.upper = upper;
