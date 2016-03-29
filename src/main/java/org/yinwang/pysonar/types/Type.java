@@ -117,8 +117,6 @@ public abstract class Type {
     public static InstanceType UNKNOWN = new InstanceType(new ClassType("?", null, null));
     public static InstanceType CONT = new InstanceType(new ClassType("None", null, null));
     public static InstanceType NONE = new InstanceType(new ClassType("None", null, null));
-    public static BoolType TRUE = new BoolType(BoolType.Value.True);
-    public static BoolType FALSE = new BoolType(BoolType.Value.False);
     public static StrType STR = new StrType(null);
     public static IntType INT = new IntType();
     public static FloatType FLOAT = new FloatType();

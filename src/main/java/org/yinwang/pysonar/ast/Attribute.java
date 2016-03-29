@@ -17,13 +17,13 @@ import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
 
 public class Attribute extends Node {
 
-    @Nullable
+    @NotNull
     public Node target;
     @NotNull
     public Name attr;
 
 
-    public Attribute(@Nullable Node target, @NotNull Name attr, String file, int start, int end) {
+    public Attribute(@NotNull Node target, @NotNull Name attr, String file, int start, int end) {
         super(NodeType.ATTRIBUTE, file, start, end);
         this.target = target;
         this.attr = attr;
@@ -73,11 +73,6 @@ public class Attribute extends Node {
     @NotNull
     @Override
     public Type transform(State s) {
-        // the form of ::A in ruby
-        if (target == null) {
-            return transformExpr(attr, s);
-        }
-
         Type targetType = transformExpr(target, s);
         if (targetType instanceof UnionType) {
             Set<Type> types = ((UnionType) targetType).types;
