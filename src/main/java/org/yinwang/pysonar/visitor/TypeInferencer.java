@@ -38,11 +38,6 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @NotNull
     @Override
     public Type visit(Attribute node, State s) {
-        // the form of ::A in ruby
-        if (node.target == null) {
-            return visit(node.attr, s);
-        }
-
         Type targetType = visit(node.target, s);
         if (targetType instanceof UnionType) {
             Set<Type> types = ((UnionType) targetType).types;
