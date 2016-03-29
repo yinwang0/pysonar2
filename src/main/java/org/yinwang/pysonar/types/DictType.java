@@ -2,13 +2,12 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
-
+import org.yinwang.pysonar.TypeStack;
 
 public class DictType extends Type {
 
     public Type keyType;
     public Type valueType;
-
 
     public DictType(Type key0, Type val0) {
         keyType = key0;
@@ -17,12 +16,10 @@ public class DictType extends Type {
         table.setPath(Analyzer.self.builtins.BaseDict.table.path);
     }
 
-
     public void add(@NotNull Type key, @NotNull Type val) {
         keyType = UnionType.union(keyType, key);
         valueType = UnionType.union(valueType, val);
     }
-
 
     @NotNull
     public TupleType toTupleType(int n) {
@@ -33,29 +30,24 @@ public class DictType extends Type {
         return ret;
     }
 
-
     @Override
-    public boolean equals(Object other) {
+    public boolean typeEquals(Object other, TypeStack typeStack) {
         if (typeStack.contains(this, other)) {
             return true;
         } else if (other instanceof DictType) {
-            typeStack.push(this, other);
+            TypeStack extended = typeStack.push(this, other);
             DictType co = (DictType) other;
-            boolean ret = (co.keyType.equals(keyType) &&
-                    co.valueType.equals(valueType));
-            typeStack.pop(this, other);
-            return ret;
+            return co.keyType.typeEquals(keyType, extended) &&
+                   co.valueType.typeEquals(valueType, extended);
         } else {
             return false;
         }
     }
 
-
     @Override
     public int hashCode() {
         return "DictType".hashCode();
     }
-
 
     @Override
     protected String printType(@NotNull CyclicTypeRecorder ctr) {

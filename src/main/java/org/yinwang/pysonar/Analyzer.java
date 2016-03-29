@@ -16,10 +16,12 @@ import java.util.*;
 
 public class Analyzer {
 
-    public static String MODEL_LOCATION = "org/yinwang/pysonar/models";
+    public static final String MODEL_LOCATION = "org/yinwang/pysonar/models";
+    public static final int CALL_STACK_LIMIT = 3;
 
     // global static instance of the analyzer itself
     public static Analyzer self;
+    public TypeInferencer inferencer = new TypeInferencer();
     public String sid = $.newSessionId();
     public State moduleTable = new State(null, State.StateType.GLOBAL);
     public List<String> loadedFiles = new ArrayList<>();
@@ -35,7 +37,7 @@ public class Analyzer {
     public boolean multilineFunType = false;
     public List<String> path = new ArrayList<>();
     private Set<FunType> uncalled = new HashSet<>();
-    private Set<Object> callStack = new HashSet<>();
+    private Map<Object, Integer> callStack = new HashMap<>();
     private Set<Object> importStack = new HashSet<>();
 
     private AstCache astCache;
@@ -71,7 +73,7 @@ public class Analyzer {
         addPythonPath();
         copyModels();
         createCacheDir();
-        getAstCache();
+        astCache = new AstCache();
     }
 
 
@@ -164,18 +166,19 @@ public class Analyzer {
     }
 
 
-    public boolean inStack(Object f) {
-        return callStack.contains(f);
+    public boolean overStack(Object f) {
+        Integer count = callStack.get(f);
+        return count != null && count > CALL_STACK_LIMIT;
     }
 
 
     public void pushStack(Object f) {
-        callStack.add(f);
-    }
-
-
-    public void popStack(Object f) {
-        callStack.remove(f);
+        Integer count = callStack.get(f);
+        if (count != null) {
+            callStack.put(f, count + 1);
+        } else {
+            callStack.put(f, 1);
+        }
     }
 
 
@@ -327,25 +330,15 @@ public class Analyzer {
     @Nullable
     private Type parseAndResolve(String file) {
         loadingProgress.tick();
+        Node ast = getAstForFile(file);
 
-        try {
-            Node ast = getAstForFile(file);
-
-            if (ast == null) {
-                failedToParse.add(file);
-                return null;
-            } else {
-                TypeInferencer inferencer = new TypeInferencer();
-                Type type = inferencer.visit(ast, moduleTable);
-                loadedFiles.add(file);
-                return type;
-            }
-        } catch (OutOfMemoryError e) {
-            if (astCache != null) {
-                astCache.clear();
-            }
-            System.gc();
+        if (ast == null) {
+            failedToParse.add(file);
             return null;
+        } else {
+            Type type = inferencer.visit(ast, moduleTable);
+            loadedFiles.add(file);
+            return type;
         }
     }
 
@@ -364,20 +357,12 @@ public class Analyzer {
     }
 
 
-    private AstCache getAstCache() {
-        if (astCache == null) {
-            astCache = AstCache.get();
-        }
-        return astCache;
-    }
-
-
     /**
      * Returns the syntax tree for {@code file}. <p>
      */
     @Nullable
     public Node getAstForFile(String file) {
-        return getAstCache().getAST(file);
+        return astCache.getAST(file);
     }
 
 
@@ -585,7 +570,7 @@ public class Analyzer {
 
             for (FunType cl : uncalledDup) {
                 progress.tick();
-                Call.apply(cl, null, null, null, null, null);
+                inferencer.apply(cl, null, null, null, null, null);
             }
         }
     }

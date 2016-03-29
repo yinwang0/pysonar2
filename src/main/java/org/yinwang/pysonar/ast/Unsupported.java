@@ -1,9 +1,6 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.State;
-import org.yinwang.pysonar.types.Type;
-
 
 public class Unsupported extends Node {
 
@@ -11,17 +8,9 @@ public class Unsupported extends Node {
         super(NodeType.UNSUPPORTED, file, start, end);
     }
 
-
     @NotNull
     @Override
     public String toString() {
         return "(unsupported)";
-    }
-
-
-    @NotNull
-    @Override
-    public Type transform(State s) {
-        return Type.NONE;
     }
 }

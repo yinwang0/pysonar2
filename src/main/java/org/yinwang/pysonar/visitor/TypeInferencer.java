@@ -1,11 +1,32 @@
 package org.yinwang.pysonar.visitor;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.*;
+import org.jetbrains.annotations.Nullable;
+import org.yinwang.pysonar.$;
+import org.yinwang.pysonar.Analyzer;
+import org.yinwang.pysonar.Binding;
+import org.yinwang.pysonar.Builtins;
+import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.ast.*;
-import org.yinwang.pysonar.types.*;
+import org.yinwang.pysonar.types.ClassType;
+import org.yinwang.pysonar.types.DictType;
+import org.yinwang.pysonar.types.FunType;
+import org.yinwang.pysonar.types.InstanceType;
+import org.yinwang.pysonar.types.ListType;
+import org.yinwang.pysonar.types.ModuleType;
+import org.yinwang.pysonar.types.TupleType;
+import org.yinwang.pysonar.types.Type;
+import org.yinwang.pysonar.types.UnionType;
 
-import java.util.*;
+import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
+import static org.yinwang.pysonar.Binding.Kind.CLASS;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class TypeInferencer implements Visitor1<Type, State> {
 
@@ -31,7 +52,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @Override
     public Type visit(Assign node, State s) {
         Type valueType = visit(node.value, s);
-        Binder.bind(s, node.target, valueType);
+        bind(s, node.target, valueType);
         return Type.CONT;
     }
 
@@ -43,11 +64,11 @@ public class TypeInferencer implements Visitor1<Type, State> {
             Set<Type> types = ((UnionType) targetType).types;
             Type retType = Type.UNKNOWN;
             for (Type tt : types) {
-                retType = UnionType.union(retType, node.getAttrType(tt));
+                retType = UnionType.union(retType, getAttrType(node, tt));
             }
             return retType;
         } else {
-            return node.getAttrType(targetType);
+            return getAttrType(node, targetType);
         }
     }
 
@@ -139,12 +160,12 @@ public class TypeInferencer implements Visitor1<Type, State> {
             Set<Type> types = ((UnionType) fun).types;
             Type retType = Type.UNKNOWN;
             for (Type ft : types) {
-                Type t = node.resolveCall(ft, pos, hash, kw, star);
+                Type t = resolveCall(node, ft, pos, hash, kw, star);
                 retType = UnionType.union(retType, t);
             }
             return retType;
         } else {
-            return node.resolveCall(fun, pos, hash, kw, star);
+            return resolveCall(node, fun, pos, hash, kw, star);
         }
     }
 
@@ -172,13 +193,13 @@ public class TypeInferencer implements Visitor1<Type, State> {
         node.addSpecialAttribute(classType.table, "__bases__", new TupleType(baseTypes));
         node.addSpecialAttribute(classType.table, "__name__", Type.STR);
         node.addSpecialAttribute(classType.table, "__dict__",
-                new DictType(Type.STR, Type.UNKNOWN));
+                                 new DictType(Type.STR, Type.UNKNOWN));
         node.addSpecialAttribute(classType.table, "__module__", Type.STR);
         node.addSpecialAttribute(classType.table, "__doc__", Type.STR);
 
         // Bind ClassType to name here before resolving the body because the
         // methods need node type as self.
-        Binder.bind(s, node.name, classType, Binding.Kind.CLASS);
+        bind(s, node.name, classType, Binding.Kind.CLASS);
         if (node.body != null) {
             visit(node.body, classType.table);
         }
@@ -188,7 +209,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @NotNull
     @Override
     public Type visit(Comprehension node, State s) {
-        Binder.bindIter(s, node.target, node.iter, Binding.Kind.SCOPE);
+        bindIter(s, node.target, node.iter, Binding.Kind.SCOPE);
         visit(node.ifs, s);
         return visit(node.target, s);
     }
@@ -277,7 +298,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @NotNull
     @Override
     public Type visit(For node, State s) {
-        Binder.bindIter(s, node.target, node.iter, Binding.Kind.SCOPE);
+        bindIter(s, node.target, node.iter, Binding.Kind.SCOPE);
 
         Type ret;
         if (node.body == null) {
@@ -320,7 +341,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
                 fun.setCls((ClassType) outType);
             }
 
-            Binder.bind(s, node.name, fun, funkind);
+            bind(s, node.name, fun, funkind);
             return Type.CONT;
         }
     }
@@ -346,7 +367,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
             typeval = resolveUnion(node.exceptions, s);
         }
         if (node.binder != null) {
-            Binder.bind(s, node.binder, typeval);
+            bind(s, node.binder, typeval);
         }
         if (node.body != null) {
             return visit(node.body, s);
@@ -669,11 +690,11 @@ public class TypeInferencer implements Visitor1<Type, State> {
         if (vt instanceof UnionType) {
             Type retType = Type.UNKNOWN;
             for (Type t : ((UnionType) vt).types) {
-                retType = UnionType.union(retType, node.getSubscript(t, st, s));
+                retType = UnionType.union(retType, getSubscript(node, t, st, s));
             }
             return retType;
         } else {
-            return node.getSubscript(vt, st, s);
+            return getSubscript(node, vt, st, s);
         }
     }
 
@@ -757,7 +778,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
         for (Withitem item : node.items) {
             Type val = visit(item.context_expr, s);
             if (item.optional_vars != null) {
-                Binder.bind(s, item.optional_vars, val);
+                bind(s, item.optional_vars, val);
             }
         }
         return visit(node.body, s);
@@ -789,7 +810,6 @@ public class TypeInferencer implements Visitor1<Type, State> {
         }
     }
 
-
     @NotNull
     private Type resolveUnion(@NotNull Collection<? extends Node> nodes, State s) {
         Type result = Type.UNKNOWN;
@@ -798,5 +818,461 @@ public class TypeInferencer implements Visitor1<Type, State> {
             result = UnionType.union(result, nodeType);
         }
         return result;
+    }
+
+    public void setAttr(Attribute node, State s, @NotNull Type v) {
+        Type targetType = visit(node.target, s);
+        if (targetType instanceof UnionType) {
+            Set<Type> types = ((UnionType) targetType).types;
+            for (Type tp : types) {
+                setAttrType(node, tp, v);
+            }
+        } else {
+            setAttrType(node, targetType, v);
+        }
+    }
+
+    private void addRef(Attribute node, @NotNull Type targetType, @NotNull Set<Binding> bs) {
+        for (Binding b : bs) {
+            Analyzer.self.putRef(node.attr, b);
+            if (node.parent != null && node.parent instanceof Call &&
+                b.type instanceof FunType && targetType instanceof InstanceType) {  // method call
+                ((FunType) b.type).setSelfType(targetType);
+            }
+        }
+    }
+
+    private void setAttrType(Attribute node, @NotNull Type targetType, @NotNull Type v) {
+        if (targetType.isUnknownType()) {
+            Analyzer.self.putProblem(node, "Can't set attribute for UnknownType");
+            return;
+        }
+        Set<Binding> bs = targetType.table.lookupAttr(node.attr.id);
+        if (bs != null) {
+            addRef(node, targetType, bs);
+        }
+
+        targetType.table.insert(node.attr.id, node.attr, v, ATTRIBUTE);
+    }
+
+    public Type getAttrType(Attribute node, @NotNull Type targetType) {
+        Set<Binding> bs = targetType.table.lookupAttr(node.attr.id);
+        if (bs == null) {
+            Analyzer.self.putProblem(node.attr, "attribute not found in type: " + targetType);
+            Type t = Type.UNKNOWN;
+            t.table.setPath(targetType.table.extendPath(node.attr.id));
+            return t;
+        } else {
+            addRef(node, targetType, bs);
+            return State.makeUnion(bs);
+        }
+    }
+
+    @NotNull
+    public Type resolveCall(Call node, @NotNull Type fun,
+                            List<Type> pos,
+                            Map<String, Type> hash,
+                            Type kw,
+                            Type star) {
+        if (fun instanceof FunType) {
+            FunType ft = (FunType) fun;
+            return apply(ft, pos, hash, kw, star, node);
+        } else if (fun instanceof ClassType) {
+            return new InstanceType(fun, node, pos, this);
+        } else {
+            addWarning(node, "calling non-function and non-class: " + fun);
+            return Type.UNKNOWN;
+        }
+    }
+
+    @NotNull
+    public Type apply(@NotNull FunType func,
+                      @Nullable List<Type> pos,
+                      Map<String, Type> hash,
+                      Type kw,
+                      Type star,
+                      @Nullable Node call) {
+        Analyzer.self.removeUncalled(func);
+
+        if (func.func != null && !func.func.called) {
+            Analyzer.self.nCalled++;
+            func.func.called = true;
+        }
+
+        if (func.func == null) {
+            // func without definition (possibly builtins)
+            return func.getReturnType();
+        } else if (call != null && Analyzer.self.overStack(call)) {
+            func.setSelfType(null);
+            return Type.UNKNOWN;
+        }
+
+        List<Type> pTypes = new ArrayList<>();
+
+        if (func.selfType != null) {
+            pTypes.add(func.selfType);
+        } else {
+            if (func.cls != null) {
+                pTypes.add(func.cls.getCanon());
+            }
+        }
+
+        if (pos != null) {
+            pTypes.addAll(pos);
+        }
+
+        bindMethodAttrs(func);
+
+        State funcTable = new State(func.env, State.StateType.FUNCTION);
+
+        if (func.table.parent != null) {
+            funcTable.setPath(func.table.parent.extendPath(func.func.name.id));
+        } else {
+            funcTable.setPath(func.func.name.id);
+        }
+
+        Type fromType = bindParams(call, func.func, funcTable, func.func.args,
+                                   func.func.vararg, func.func.kwarg,
+                                   pTypes, func.defaultTypes, hash, kw, star);
+
+        Type cachedTo = func.getMapping(fromType);
+        if (cachedTo != null) {
+            func.setSelfType(null);
+            return cachedTo;
+        } else {
+            if (call != null) {
+                Analyzer.self.pushStack(call);
+            }
+            Type toType = visit(func.func.body, funcTable);
+            if (missingReturn(toType)) {
+                Analyzer.self.putProblem(func.func.name, "Function not always return a value");
+
+                if (call != null) {
+                    Analyzer.self.putProblem(call, "Call not always return a value");
+                }
+            }
+
+            toType = UnionType.remove(toType, Type.CONT);
+            func.addMapping(fromType, toType);
+            func.setSelfType(null);
+            return toType;
+        }
+    }
+
+    @NotNull
+    private Type bindParams(@Nullable Node call,
+                            @NotNull FunctionDef func,
+                            @NotNull State funcTable,
+                            @Nullable List<Node> args,
+                            @Nullable Name rest,
+                            @Nullable Name restKw,
+                            @Nullable List<Type> pTypes,
+                            @Nullable List<Type> dTypes,
+                            @Nullable Map<String, Type> hash,
+                            @Nullable Type kw,
+                            @Nullable Type star) {
+        TupleType fromType = new TupleType();
+        int pSize = args == null ? 0 : args.size();
+        int aSize = pTypes == null ? 0 : pTypes.size();
+        int dSize = dTypes == null ? 0 : dTypes.size();
+        int nPos = pSize - dSize;
+
+        if (star != null && star instanceof ListType) {
+            star = ((ListType) star).toTupleType();
+        }
+
+        for (int i = 0, j = 0; i < pSize; i++) {
+            Node arg = args.get(i);
+            Type aType;
+            if (i < aSize) {
+                aType = pTypes.get(i);
+            } else if (i - nPos >= 0 && i - nPos < dSize) {
+                aType = dTypes.get(i - nPos);
+            } else {
+                if (hash != null && args.get(i) instanceof Name &&
+                    hash.containsKey(((Name) args.get(i)).id)) {
+                    aType = hash.get(((Name) args.get(i)).id);
+                    hash.remove(((Name) args.get(i)).id);
+                } else {
+                    if (star != null && star instanceof TupleType &&
+                        j < ((TupleType) star).eltTypes.size()) {
+                        aType = ((TupleType) star).get(j++);
+                    } else {
+                        aType = Type.UNKNOWN;
+                        if (call != null) {
+                            Analyzer.self.putProblem(args.get(i),
+                                                     "unable to bind argument:" + args.get(i));
+                        }
+                    }
+                }
+            }
+            bind(funcTable, arg, aType, Binding.Kind.PARAMETER);
+            fromType.add(aType);
+        }
+
+        if (restKw != null) {
+            if (hash != null && !hash.isEmpty()) {
+                Type hashType = UnionType.newUnion(hash.values());
+                bind(
+                    funcTable,
+                    restKw,
+                    new DictType(Type.STR, hashType),
+                    Binding.Kind.PARAMETER);
+            } else {
+                bind(funcTable,
+                     restKw,
+                     Type.UNKNOWN,
+                     Binding.Kind.PARAMETER);
+            }
+        }
+
+        if (rest != null) {
+            if (pTypes.size() > pSize) {
+                if (func.afterRest != null) {
+                    int nAfter = func.afterRest.size();
+                    for (int i = 0; i < nAfter; i++) {
+                        bind(funcTable, func.afterRest.get(i),
+                             pTypes.get(pTypes.size() - nAfter + i),
+                             Binding.Kind.PARAMETER);
+                    }
+                    if (pTypes.size() - nAfter > 0) {
+                        Type restType = new TupleType(pTypes.subList(pSize, pTypes.size() - nAfter));
+                        bind(funcTable, rest, restType, Binding.Kind.PARAMETER);
+                    }
+                } else {
+                    Type restType = new TupleType(pTypes.subList(pSize, pTypes.size()));
+                    bind(funcTable, rest, restType, Binding.Kind.PARAMETER);
+                }
+            } else {
+                bind(funcTable,
+                     rest,
+                     Type.UNKNOWN,
+                     Binding.Kind.PARAMETER);
+            }
+        }
+
+        return fromType;
+    }
+
+    static void bindMethodAttrs(@NotNull FunType cl) {
+        if (cl.table.parent != null) {
+            Type cls = cl.table.parent.type;
+            if (cls != null && cls instanceof ClassType) {
+                addReadOnlyAttr(cl, "im_class", cls, CLASS);
+                addReadOnlyAttr(cl, "__class__", cls, CLASS);
+                addReadOnlyAttr(cl, "im_self", cls, ATTRIBUTE);
+                addReadOnlyAttr(cl, "__self__", cls, ATTRIBUTE);
+            }
+        }
+    }
+
+    static void addReadOnlyAttr(@NotNull FunType fun,
+                                String name,
+                                @NotNull Type type,
+                                Binding.Kind kind) {
+        Node loc = Builtins.newDataModelUrl("the-standard-type-hierarchy");
+        Binding b = new Binding(name, loc, type, kind);
+        fun.table.update(name, b);
+        b.markSynthetic();
+        b.markStatic();
+    }
+
+    static boolean missingReturn(@NotNull Type toType) {
+        boolean hasNone = false;
+        boolean hasOther = false;
+
+        if (toType instanceof UnionType) {
+            for (Type t : ((UnionType) toType).types) {
+                if (t == Type.NONE || t == Type.CONT) {
+                    hasNone = true;
+                } else {
+                    hasOther = true;
+                }
+            }
+        }
+
+        return hasNone && hasOther;
+    }
+
+    @NotNull
+    public Type getSubscript(Node node, @NotNull Type vt, @Nullable Type st, State s) {
+        if (vt.isUnknownType()) {
+            return Type.UNKNOWN;
+        } else {
+            if (vt instanceof ListType) {
+                return getListSubscript(node, vt, st, s);
+            } else if (vt instanceof TupleType) {
+                return getListSubscript(node, ((TupleType) vt).toListType(), st, s);
+            } else if (vt instanceof DictType) {
+                DictType dt = (DictType) vt;
+                if (!dt.keyType.equals(st)) {
+                    addWarning(node, "Possible KeyError (wrong type for subscript)");
+                }
+                return ((DictType) vt).valueType;
+            } else if (vt == Type.STR) {
+                if (st != null && (st instanceof ListType || st.isNumType())) {
+                    return vt;
+                } else {
+                    addWarning(node, "Possible KeyError (wrong type for subscript)");
+                    return Type.UNKNOWN;
+                }
+            } else {
+                return Type.UNKNOWN;
+            }
+        }
+    }
+
+    @NotNull
+    private Type getListSubscript(Node node, @NotNull Type vt, @Nullable Type st, State s) {
+        if (vt instanceof ListType) {
+            if (st != null && st instanceof ListType) {
+                return vt;
+            } else if (st == null || st.isNumType()) {
+                return ((ListType) vt).eltType;
+            } else {
+                Type sliceFunc = vt.table.lookupAttrType("__getslice__");
+                if (sliceFunc == null) {
+                    addError(node, "The type can't be sliced: " + vt);
+                    return Type.UNKNOWN;
+                } else if (sliceFunc instanceof FunType) {
+                    return apply((FunType) sliceFunc, null, null, null, null, node);
+                } else {
+                    addError(node, "The type's __getslice__ method is not a function: " + sliceFunc);
+                    return Type.UNKNOWN;
+                }
+            }
+        } else {
+            return Type.UNKNOWN;
+        }
+    }
+
+    public void bind(@NotNull State s, Node target, @NotNull Type rvalue, Binding.Kind kind) {
+        if (target instanceof Name) {
+            bind(s, (Name) target, rvalue, kind);
+        } else if (target instanceof Tuple) {
+            bind(s, ((Tuple) target).elts, rvalue, kind);
+        } else if (target instanceof PyList) {
+            bind(s, ((PyList) target).elts, rvalue, kind);
+        } else if (target instanceof Attribute) {
+            setAttr(((Attribute) target), s, rvalue);
+        } else if (target instanceof Subscript) {
+            Subscript sub = (Subscript) target;
+            Type valueType = visit(sub.value, s);
+            visit(sub.slice, s);
+            if (valueType instanceof ListType) {
+                ListType t = (ListType) valueType;
+                t.setElementType(UnionType.union(t.eltType, rvalue));
+            }
+        } else if (target != null) {
+            Analyzer.self.putProblem(target, "invalid location for assignment");
+        }
+    }
+
+    /**
+     * Without specifying a kind, bind determines the kind according to the type
+     * of the scope.
+     */
+    public void bind(@NotNull State s, Node target, @NotNull Type rvalue) {
+        Binding.Kind kind;
+        if (s.stateType == State.StateType.FUNCTION) {
+            kind = Binding.Kind.VARIABLE;
+        } else if (s.stateType == State.StateType.CLASS ||
+                   s.stateType == State.StateType.INSTANCE) {
+            kind = Binding.Kind.ATTRIBUTE;
+        } else {
+            kind = Binding.Kind.SCOPE;
+        }
+        bind(s, target, rvalue, kind);
+    }
+
+    public void bind(@NotNull State s, @NotNull List<Node> xs, @NotNull Type rvalue, Binding.Kind kind) {
+        if (rvalue instanceof TupleType) {
+            List<Type> vs = ((TupleType) rvalue).eltTypes;
+            if (xs.size() != vs.size()) {
+                reportUnpackMismatch(xs, vs.size());
+            } else {
+                for (int i = 0; i < xs.size(); i++) {
+                    bind(s, xs.get(i), vs.get(i), kind);
+                }
+            }
+        } else {
+            if (rvalue instanceof ListType) {
+                bind(s, xs, ((ListType) rvalue).toTupleType(xs.size()), kind);
+            } else if (rvalue instanceof DictType) {
+                bind(s, xs, ((DictType) rvalue).toTupleType(xs.size()), kind);
+            } else if (rvalue.isUnknownType()) {
+                for (Node x : xs) {
+                    bind(s, x, Type.UNKNOWN, kind);
+                }
+            } else if (xs.size() > 0) {
+                Analyzer.self.putProblem(xs.get(0).file,
+                                         xs.get(0).start,
+                                         xs.get(xs.size() - 1).end,
+                                         "unpacking non-iterable: " + rvalue);
+            }
+        }
+    }
+
+    public static void bind(@NotNull State s, @NotNull Name name, @NotNull Type rvalue, Binding.Kind kind) {
+        if (s.isGlobalName(name.id)) {
+            Set<Binding> bs = s.lookup(name.id);
+            if (bs != null) {
+                for (Binding b : bs) {
+                    b.addType(rvalue);
+                    Analyzer.self.putRef(name, b);
+                }
+            }
+        } else {
+            s.insert(name.id, name, rvalue, kind);
+        }
+    }
+
+    // iterator
+    public void bindIter(@NotNull State s, Node target, @NotNull Node iter, Binding.Kind kind) {
+        Type iterType = visit(iter, s);
+
+        if (iterType instanceof ListType) {
+            bind(s, target, ((ListType) iterType).eltType, kind);
+        } else if (iterType instanceof TupleType) {
+            bind(s, target, ((TupleType) iterType).toListType().eltType, kind);
+        } else {
+            Set<Binding> ents = iterType.table.lookupAttr("__iter__");
+            if (ents != null) {
+                for (Binding ent : ents) {
+                    if (ent == null || !(ent.type instanceof FunType)) {
+                        if (!iterType.isUnknownType()) {
+                            Analyzer.self.putProblem(iter, "not an iterable type: " + iterType);
+                        }
+                        bind(s, target, Type.UNKNOWN, kind);
+                    } else {
+                        bind(s, target, ((FunType) ent.type).getReturnType(), kind);
+                    }
+                }
+            } else {
+                bind(s, target, Type.UNKNOWN, kind);
+            }
+        }
+    }
+
+    private static void reportUnpackMismatch(@NotNull List<Node> xs, int vsize) {
+        int xsize = xs.size();
+        int beg = xs.get(0).start;
+        int end = xs.get(xs.size() - 1).end;
+        int diff = xsize - vsize;
+        String msg;
+        if (diff > 0) {
+            msg = "ValueError: need more than " + vsize + " values to unpack";
+        } else {
+            msg = "ValueError: too many values to unpack";
+        }
+        Analyzer.self.putProblem(xs.get(0).file, beg, end, msg);
+    }
+
+    public void addWarning(Node node, String msg) {
+        Analyzer.self.putProblem(node, msg);
+    }
+
+    public void addError(Node node, String msg) {
+        Analyzer.self.putProblem(node, msg);
     }
 }

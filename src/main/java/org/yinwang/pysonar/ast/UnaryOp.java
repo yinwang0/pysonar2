@@ -1,15 +1,11 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.State;
-import org.yinwang.pysonar.types.Type;
-
 
 public class UnaryOp extends Node {
 
     public Op op;
     public Node operand;
-
 
     public UnaryOp(Op op, Node operand, String file, int start, int end) {
         super(NodeType.UNARYOP, file, start, end);
@@ -17,14 +13,6 @@ public class UnaryOp extends Node {
         this.operand = operand;
         addChildren(operand);
     }
-
-
-    @NotNull
-    @Override
-    public Type transform(State s) {
-        return transformExpr(operand, s);
-    }
-
 
     @NotNull
     @Override

@@ -88,7 +88,7 @@ public class FunType extends Type {
 
 
     @Override
-    public boolean equals(Object other) {
+    public boolean typeEquals(Object other, TypeStack typeStack) {
         if (other instanceof FunType) {
             FunType fo = (FunType) other;
             return fo.table.path.equals(table.path) || this == other;
@@ -105,7 +105,7 @@ public class FunType extends Type {
 
 
     private boolean subsumed(Type type1, Type type2) {
-        return subsumedInner(type1, type2, new TypeStack());
+        return subsumedInner(type1, type2, TypeStack.EMPTY);
     }
 
 
@@ -123,10 +123,9 @@ public class FunType extends Type {
             List<Type> elems2 = ((TupleType) type2).eltTypes;
 
             if (elems1.size() == elems2.size()) {
-                typeStack.push(type1, type2);
+                TypeStack extended = typeStack.push(type1, type2);
                 for (int i = 0; i < elems1.size(); i++) {
-                    if (!subsumedInner(elems1.get(i), elems2.get(i), typeStack)) {
-                        typeStack.pop(type1, type2);
+                    if (!subsumedInner(elems1.get(i), elems2.get(i), extended)) {
                         return false;
                     }
                 }

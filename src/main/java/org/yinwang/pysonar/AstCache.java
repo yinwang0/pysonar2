@@ -25,19 +25,9 @@ public class AstCache {
     @NotNull
     private Map<String, Node> cache = new HashMap<>();
     @NotNull
-    private static Parser parser;
+    private static Parser parser = new Parser();;
 
-
-    private AstCache() {
-    }
-
-
-    public static AstCache get() {
-        if (INSTANCE == null) {
-            INSTANCE = new AstCache();
-        }
-        parser = new Parser();
-        return INSTANCE;
+    public AstCache() {
     }
 
 

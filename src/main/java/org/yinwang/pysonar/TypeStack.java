@@ -1,48 +1,27 @@
 package org.yinwang.pysonar;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
 public class TypeStack {
 
-    class Pair {
-        public Object first;
-        public Object second;
+    private Pair head;
+    private TypeStack tail;
+    public static final TypeStack EMPTY = new TypeStack(null, null);
 
-
-        public Pair(Object first, Object second) {
-            this.first = first;
-            this.second = second;
-        }
+    public TypeStack(Pair head, TypeStack tail) {
+        this.head = head;
+        this.tail = tail;
     }
 
-
-    @NotNull
-    private List<Pair> stack = new ArrayList<>();
-
-
-    public void push(Object first, Object second) {
-        stack.add(new Pair(first, second));
+    public TypeStack push(Object first, Object second) {
+        return new TypeStack(new Pair(first, second), this);
     }
-
-
-    public void pop(Object first, Object second) {
-        stack.remove(stack.size() - 1);
-    }
-
 
     public boolean contains(Object first, Object second) {
-        for (Pair p : stack) {
-            if (p.first == first && p.second == second ||
-                    p.first == second && p.second == first)
-            {
-                return true;
-            }
+        if (this == EMPTY) {
+            return false;
+        } else if (head.equals(first, second)) {
+            return true;
+        } else {
+            return tail.contains(first, second);
         }
-        return false;
     }
-
 }

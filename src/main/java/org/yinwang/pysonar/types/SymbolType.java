@@ -1,7 +1,7 @@
 package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
-
+import org.yinwang.pysonar.TypeStack;
 
 public class SymbolType extends Type {
 
@@ -14,7 +14,7 @@ public class SymbolType extends Type {
 
 
     @Override
-    public boolean equals(Object other) {
+    public boolean typeEquals(Object other, TypeStack typeStack) {
         if (other instanceof SymbolType) {
             return this.name.equals(((SymbolType) other).name);
         } else {

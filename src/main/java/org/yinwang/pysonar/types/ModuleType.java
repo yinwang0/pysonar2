@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.$;
-
+import org.yinwang.pysonar.TypeStack;
 
 public class ModuleType extends Type {
 
@@ -50,7 +50,7 @@ public class ModuleType extends Type {
 
 
     @Override
-    public boolean equals(Object other) {
+    public boolean typeEquals(Object other, TypeStack typeStack) {
         if (other instanceof ModuleType) {
             ModuleType co = (ModuleType) other;
             if (file != null) {

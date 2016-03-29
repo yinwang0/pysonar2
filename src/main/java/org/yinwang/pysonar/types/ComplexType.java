@@ -1,10 +1,11 @@
 package org.yinwang.pysonar.types;
 
+import org.yinwang.pysonar.TypeStack;
 
 public class ComplexType extends Type {
 
     @Override
-    public boolean equals(Object other) {
+    public boolean typeEquals(Object other, TypeStack typeStack) {
         return other instanceof ComplexType;
     }
 

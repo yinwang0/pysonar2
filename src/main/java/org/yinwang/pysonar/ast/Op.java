@@ -2,7 +2,6 @@ package org.yinwang.pysonar.ast;
 
 import org.yinwang.pysonar.$;
 
-
 public enum Op {
     // numeral
     Add,
@@ -45,7 +44,6 @@ public enum Op {
     // unsupported new operator
     Unsupported;
 
-
     public static Op invert(Op op) {
         if (op == Op.Lt) {
             return Op.Gt;
@@ -71,18 +69,17 @@ public enum Op {
         return null;  // unreacheable
     }
 
-
     public static boolean isBoolean(Op op) {
         return op == Eq ||
-                op == Eqv ||
-                op == Equal ||
-                op == Lt ||
-                op == Gt ||
-                op == NotEqual ||
-                op == NotEq ||
-                op == LtE ||
-                op == GtE ||
-                op == In ||
-                op == NotIn;
+               op == Eqv ||
+               op == Equal ||
+               op == Lt ||
+               op == Gt ||
+               op == NotEqual ||
+               op == NotEq ||
+               op == LtE ||
+               op == GtE ||
+               op == In ||
+               op == NotIn;
     }
 }

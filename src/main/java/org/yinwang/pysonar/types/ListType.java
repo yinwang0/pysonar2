@@ -2,6 +2,7 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
+import org.yinwang.pysonar.TypeStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,15 +67,13 @@ public class ListType extends Type {
 
 
     @Override
-    public boolean equals(Object other) {
+    public boolean typeEquals(Object other, TypeStack typeStack) {
         if (typeStack.contains(this, other)) {
             return true;
         } else if (other instanceof ListType) {
             ListType co = (ListType) other;
-            typeStack.push(this, other);
-            boolean ret = co.eltType.equals(eltType);
-            typeStack.pop(this, other);
-            return ret;
+            TypeStack extended = typeStack.push(this, other);
+            return co.eltType.typeEquals(eltType, extended);
         } else {
             return false;
         }
