@@ -902,9 +902,6 @@ public class TypeInferencer implements Visitor1<Type, State> {
         if (func.func == null) {
             // func without definition (possibly builtins)
             return func.getReturnType();
-        } else if (call != null && Analyzer.self.overStack(call)) {
-            func.setSelfType(null);
-            return Type.UNKNOWN;
         }
 
         List<Type> pTypes = new ArrayList<>();
@@ -936,13 +933,15 @@ public class TypeInferencer implements Visitor1<Type, State> {
                                    pTypes, func.defaultTypes, hash, kw, star);
 
         Type cachedTo = func.getMapping(fromType);
+
         if (cachedTo != null) {
             func.setSelfType(null);
             return cachedTo;
+        } else if (func.oversized()) {
+            func.setSelfType(null);
+            return Type.UNKNOWN;
         } else {
-            if (call != null) {
-                Analyzer.self.pushStack(call);
-            }
+            func.addMapping(fromType, Type.UNKNOWN);
             Type toType = visit(func.func.body, funcTable);
             if (missingReturn(toType)) {
                 Analyzer.self.putProblem(func.func.name, "Function not always return a value");

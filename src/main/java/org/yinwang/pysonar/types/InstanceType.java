@@ -2,7 +2,6 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.State;
-import org.yinwang.pysonar.TypeStack;
 import org.yinwang.pysonar.ast.Call;
 import org.yinwang.pysonar.visitor.TypeInferencer;
 
@@ -35,9 +34,9 @@ public class InstanceType extends Type {
 
 
     @Override
-    public boolean typeEquals(Object other, TypeStack typeStack) {
+    public boolean typeEquals(Object other) {
         if (other instanceof InstanceType) {
-            return classType.equals(((InstanceType) other).classType);
+            return classType.typeEquals(((InstanceType) other).classType);
         }
         return false;
     }

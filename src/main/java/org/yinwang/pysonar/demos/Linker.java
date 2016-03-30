@@ -5,12 +5,14 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.*;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.types.ModuleType;
+import org.yinwang.pysonar.types.Type;
+import org.yinwang.pysonar.types.UnionType;
 
 import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
-
+import java.util.stream.Collectors;
 
 /**
  * Collects per-file hyperlinks, as well as styles that require the
@@ -133,11 +135,8 @@ class Linker {
             Style link = new Style(Style.Type.LINK, ref.start, ref.end);
             link.id = qname;
 
-            List<String> typings = new ArrayList<>();
-            for (Binding b : bindings) {
-                typings.add(b.type.toString());
-            }
-            link.message = $.joinWithSep(typings, " | ", "{", "}");
+            List<Type> types = bindings.stream().map(b -> b.type).collect(Collectors.toList());
+            link.message = UnionType.union(types).toString();
 
             // Currently jump to the first binding only. Should change to have a
             // hover menu or something later.

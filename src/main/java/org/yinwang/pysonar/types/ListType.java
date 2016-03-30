@@ -67,13 +67,15 @@ public class ListType extends Type {
 
 
     @Override
-    public boolean typeEquals(Object other, TypeStack typeStack) {
+    public boolean typeEquals(Object other) {
         if (typeStack.contains(this, other)) {
             return true;
         } else if (other instanceof ListType) {
             ListType co = (ListType) other;
-            TypeStack extended = typeStack.push(this, other);
-            return co.eltType.typeEquals(eltType, extended);
+            typeStack.push(this, other);
+            boolean result = co.eltType.typeEquals(eltType);
+            typeStack.pop(this, other);
+            return result;
         } else {
             return false;
         }

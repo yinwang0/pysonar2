@@ -2,7 +2,6 @@ package org.yinwang.pysonar.types;
 
 
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.TypeStack;
 
 public class StrType extends Type {
 
@@ -15,7 +14,7 @@ public class StrType extends Type {
 
 
     @Override
-    public boolean typeEquals(Object other, TypeStack typeStack) {
+    public boolean typeEquals(Object other) {
         return (other instanceof StrType);
     }
 

@@ -2,7 +2,6 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.TypeStack;
 
 public class DictType extends Type {
 
@@ -31,14 +30,16 @@ public class DictType extends Type {
     }
 
     @Override
-    public boolean typeEquals(Object other, TypeStack typeStack) {
+    public boolean typeEquals(Object other) {
         if (typeStack.contains(this, other)) {
             return true;
         } else if (other instanceof DictType) {
-            TypeStack extended = typeStack.push(this, other);
+            typeStack.push(this, other);
             DictType co = (DictType) other;
-            return co.keyType.typeEquals(keyType, extended) &&
-                   co.valueType.typeEquals(valueType, extended);
+            boolean result = co.keyType.typeEquals(keyType) &&
+                             co.valueType.typeEquals(valueType);
+            typeStack.pop(this, other);
+            return result;
         } else {
             return false;
         }

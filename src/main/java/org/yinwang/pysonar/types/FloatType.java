@@ -1,7 +1,5 @@
 package org.yinwang.pysonar.types;
 
-import org.yinwang.pysonar.TypeStack;
-
 public class FloatType extends Type {
 
     @Override
@@ -10,7 +8,7 @@ public class FloatType extends Type {
     }
 
     @Override
-    public boolean typeEquals(Object other, TypeStack typeStack) {
+    public boolean typeEquals(Object other) {
         return other instanceof FloatType;
     }
 

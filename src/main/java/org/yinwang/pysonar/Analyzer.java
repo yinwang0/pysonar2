@@ -2,7 +2,6 @@ package org.yinwang.pysonar;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.ast.Call;
 import org.yinwang.pysonar.ast.Name;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Url;
@@ -17,7 +16,6 @@ import java.util.*;
 public class Analyzer {
 
     public static final String MODEL_LOCATION = "org/yinwang/pysonar/models";
-    public static final int CALL_STACK_LIMIT = 3;
 
     // global static instance of the analyzer itself
     public static Analyzer self;
@@ -31,13 +29,11 @@ public class Analyzer {
     public Set<Name> resolved = new HashSet<>();
     public Set<Name> unresolved = new HashSet<>();
     public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
-    public Map<String, List<Diagnostic>> parseErrors = new HashMap<>();
     public String cwd = null;
     public int nCalled = 0;
     public boolean multilineFunType = false;
     public List<String> path = new ArrayList<>();
     private Set<FunType> uncalled = new HashSet<>();
-    private Map<Object, Integer> callStack = new HashMap<>();
     private Set<Object> importStack = new HashSet<>();
 
     private AstCache astCache;
@@ -163,22 +159,6 @@ public class Analyzer {
         }
         loadPath.addAll(path);
         return loadPath;
-    }
-
-
-    public boolean overStack(Object f) {
-        Integer count = callStack.get(f);
-        return count != null && count > CALL_STACK_LIMIT;
-    }
-
-
-    public void pushStack(Object f) {
-        Integer count = callStack.get(f);
-        if (count != null) {
-            callStack.put(f, count + 1);
-        } else {
-            callStack.put(f, 1);
-        }
     }
 
 

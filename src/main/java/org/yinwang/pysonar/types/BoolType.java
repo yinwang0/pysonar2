@@ -2,7 +2,6 @@ package org.yinwang.pysonar.types;
 
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.State;
-import org.yinwang.pysonar.TypeStack;
 
 public class BoolType extends Type {
 
@@ -51,7 +50,7 @@ public class BoolType extends Type {
 
 
     @Override
-    public boolean typeEquals(Object other, TypeStack typeStack) {
+    public boolean typeEquals(Object other) {
         return (other instanceof BoolType);
     }
 

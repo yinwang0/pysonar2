@@ -3,7 +3,6 @@ package org.yinwang.pysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.State;
-import org.yinwang.pysonar.TypeStack;
 
 public class ClassType extends Type {
 
@@ -52,8 +51,12 @@ public class ClassType extends Type {
 
 
     @Override
-    public boolean typeEquals(Object other, TypeStack typeStack) {
-        return this == other;
+    public boolean typeEquals(Object other) {
+        if (other instanceof ClassType) {
+            return getCanon() == ((ClassType) other).getCanon();
+        } else {
+            return false;
+        }
     }
 
 

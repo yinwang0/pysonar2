@@ -6,6 +6,7 @@ import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.TypeStack;
 import org.yinwang.pysonar.ast.FunctionDef;
+import org.yinwang.pysonar.hash.MyHashMap;
 
 import java.util.*;
 
@@ -13,7 +14,7 @@ import java.util.*;
 public class FunType extends Type {
 
     @NotNull
-    public Map<Type, Type> arrows = new HashMap<>();
+    public Map<Type, Type> arrows = new MyHashMap<>();
     public FunctionDef func;
     @Nullable
     public ClassType cls = null;
@@ -41,18 +42,18 @@ public class FunType extends Type {
 
 
     public void addMapping(Type from, Type to) {
-        if (from instanceof TupleType) {
-            from = simplifySelf((TupleType) from);
-        }
+//        if (from instanceof TupleType) {
+//            from = simplifySelf((TupleType) from);
+//        }
 
         if (arrows.size() < 5) {
             arrows.put(from, to);
-            Map<Type, Type> oldArrows = arrows;
-            arrows = compressArrows(arrows);
-
-            if (toString().length() > 900) {
-                arrows = oldArrows;
-            }
+//            Map<Type, Type> oldArrows = arrows;
+//            arrows = compressArrows(arrows);
+//
+//            if (toString().length() > 900) {
+//                arrows = oldArrows;
+//            }
         }
     }
 
@@ -62,6 +63,9 @@ public class FunType extends Type {
         return arrows.get(from);
     }
 
+    public boolean oversized() {
+        return arrows.size() >= 5;
+    }
 
     public Type getReturnType() {
         if (!arrows.isEmpty()) {
@@ -88,7 +92,7 @@ public class FunType extends Type {
 
 
     @Override
-    public boolean typeEquals(Object other, TypeStack typeStack) {
+    public boolean typeEquals(Object other) {
         if (other instanceof FunType) {
             FunType fo = (FunType) other;
             return fo.table.path.equals(table.path) || this == other;
@@ -105,11 +109,11 @@ public class FunType extends Type {
 
 
     private boolean subsumed(Type type1, Type type2) {
-        return subsumedInner(type1, type2, TypeStack.EMPTY);
+        return subsumedInner(type1, type2);
     }
 
 
-    private boolean subsumedInner(Type type1, Type type2, TypeStack typeStack) {
+    private boolean subsumedInner(Type type1, Type type2) {
         if (typeStack.contains(type1, type2)) {
             return true;
         }
@@ -123,9 +127,8 @@ public class FunType extends Type {
             List<Type> elems2 = ((TupleType) type2).eltTypes;
 
             if (elems1.size() == elems2.size()) {
-                TypeStack extended = typeStack.push(type1, type2);
                 for (int i = 0; i < elems1.size(); i++) {
-                    if (!subsumedInner(elems1.get(i), elems2.get(i), extended)) {
+                    if (!subsumedInner(elems1.get(i), elems2.get(i))) {
                         return false;
                     }
                 }
@@ -135,7 +138,7 @@ public class FunType extends Type {
         }
 
         if (type1 instanceof ListType && type2 instanceof ListType) {
-            return subsumedInner(((ListType) type1).toTupleType(), ((ListType) type2).toTupleType(), typeStack);
+            return subsumedInner(((ListType) type1).toTupleType(), ((ListType) type2).toTupleType());
         }
 
         return false;

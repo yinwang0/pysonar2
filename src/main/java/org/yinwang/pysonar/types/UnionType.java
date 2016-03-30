@@ -2,7 +2,7 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.TypeStack;
+import org.yinwang.pysonar.Binding;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -105,6 +105,17 @@ public class UnionType extends Type {
         }
     }
 
+    public static Type union(Collection<Type> types) {
+        Type result = Type.UNKNOWN;
+        for (Type type: types) {
+            result = UnionType.union(result, type);
+        }
+        return result;
+    }
+
+    public static Type union(Type... types) {
+        return union(types);
+    }
 
     @Nullable
     public Type firstUseful() {
@@ -118,7 +129,7 @@ public class UnionType extends Type {
 
 
     @Override
-    public boolean typeEquals(Object other, TypeStack typeStack) {
+    public boolean typeEquals(Object other) {
         if (typeStack.contains(this, other)) {
             return true;
         } else if (other instanceof UnionType) {

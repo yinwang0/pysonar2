@@ -16,16 +16,19 @@ public abstract class Type {
     @NotNull
     public State table = new State(null, State.StateType.SCOPE);
     public String file = null;
+    @NotNull
+    protected static TypeStack typeStack = new TypeStack();
+
 
     public Type() {
     }
 
     @Override
     public boolean equals(Object other) {
-        return typeEquals(other, TypeStack.EMPTY);
+        return typeEquals(other);
     }
 
-    public abstract boolean typeEquals(Object other, TypeStack typeStack);
+    public abstract boolean typeEquals(Object other);
 
     public void setTable(@NotNull State table) {
         this.table = table;

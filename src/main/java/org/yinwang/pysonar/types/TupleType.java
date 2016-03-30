@@ -72,7 +72,7 @@ public class TupleType extends Type {
 
 
     @Override
-    public boolean typeEquals(Object other, TypeStack typeStack) {
+    public boolean typeEquals(Object other) {
         if (typeStack.contains(this, other)) {
             return true;
         } else if (other instanceof TupleType) {
@@ -80,12 +80,14 @@ public class TupleType extends Type {
             List<Type> types2 = ((TupleType) other).eltTypes;
 
             if (types1.size() == types2.size()) {
-                TypeStack extended = typeStack.push(this, other);
+                typeStack.push(this, other);
                 for (int i = 0; i < types1.size(); i++) {
-                    if (!types1.get(i).typeEquals(types2.get(i), extended)) {
+                    if (!types1.get(i).typeEquals(types2.get(i))) {
+                        typeStack.pop(this, other);
                         return false;
                     }
                 }
+                typeStack.pop(this, other);
                 return true;
             } else {
                 return false;
