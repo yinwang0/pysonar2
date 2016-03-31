@@ -13,6 +13,8 @@ import java.util.*;
 
 public class FunType extends Type {
 
+    private static final int MAX_ARROWS = 10;
+
     @NotNull
     public Map<Type, Type> arrows = new MyHashMap<>();
     public FunctionDef func;
@@ -46,7 +48,7 @@ public class FunType extends Type {
 //            from = simplifySelf((TupleType) from);
 //        }
 
-        if (arrows.size() < 5) {
+        if (arrows.size() < MAX_ARROWS) {
             arrows.put(from, to);
 //            Map<Type, Type> oldArrows = arrows;
 //            arrows = compressArrows(arrows);
@@ -64,7 +66,7 @@ public class FunType extends Type {
     }
 
     public boolean oversized() {
-        return arrows.size() >= 5;
+        return arrows.size() >= MAX_ARROWS;
     }
 
     public Type getReturnType() {
