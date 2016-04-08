@@ -216,7 +216,7 @@ public class FunType extends Type {
                         if (Analyzer.self.multilineFunType) {
                             sb.append("\n| ");
                         } else {
-                            sb.append(" | ");
+                            sb.append(" ∩ ");
                         }
                     }
 
