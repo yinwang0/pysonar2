@@ -231,19 +231,6 @@ public class Binding implements Comparable<Object> {
 
 
     @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Binding)) {
-            return false;
-        } else {
-            Binding b = (Binding) obj;
-            return (start == b.start &&
-                    end == b.end &&
-                    $.same(fileOrUrl, b.fileOrUrl));
-        }
-    }
-
-
-    @Override
     public int hashCode() {
         return node.hashCode();
     }

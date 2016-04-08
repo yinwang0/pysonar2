@@ -50,15 +50,21 @@ class Linker {
         $.msg("Adding xref links");
         Progress progress = new Progress(analyzer.getAllBindings().size(), 50);
 
+        Map<Integer, List<Binding>> defHash = new HashMap<>();
         for (Binding b : analyzer.getAllBindings()) {
             if (b.kind != Binding.Kind.MODULE) {
-                if (Analyzer.self.hasOption("debug")) {
-                    processDefDebug(b);
-                } else {
-                    processDef(b);
+                int hash = b.hashCode();
+                if (!defHash.containsKey(hash)) {
+                    defHash.put(hash, new ArrayList<>());
                 }
-                progress.tick();
+                List<Binding> bs = defHash.get(hash);
+                bs.add(b);
             }
+        }
+
+        for (List<Binding> bs : defHash.values()) {
+            processDef(bs);
+            progress.tick();
         }
 
         // highlight definitions
@@ -84,20 +90,20 @@ class Linker {
     }
 
 
-    private void processDef(@NotNull Binding binding) {
-        String qname = binding.qname;
-        int hash = binding.hashCode();
+    private void processDef(@NotNull List<Binding> bindings) {
+        Binding first = bindings.get(0);
+        String qname = first.qname;
 
-        if (binding.isURL() || binding.start < 0 || seenDef.contains(hash)) {
+        if (first.isURL() || first.start < 0) {
             return;
         }
 
-        seenDef.add(hash);
-        Style style = new Style(Style.Type.ANCHOR, binding.start, binding.end);
-        style.message = binding.type.toString();
-        style.url = binding.qname;
+        List<Type> types = bindings.stream().map(b -> b.type).collect(Collectors.toList());
+        Style style = new Style(Style.Type.ANCHOR, first.start, first.end);
+        style.message = UnionType.union(types).toString();
+        style.url = first.qname;
         style.id = qname;
-        addFileStyle(binding.getFile(), style);
+        addFileStyle(first.getFile(), style);
     }
 
 
