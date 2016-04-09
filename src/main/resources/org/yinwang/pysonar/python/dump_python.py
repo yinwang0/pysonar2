@@ -8,33 +8,34 @@ from ast import *
 
 
 # Is it Python 3?
-is_python3 = hasattr(sys.version_info, 'major') and (sys.version_info.major == 3)
+python3 = hasattr(sys.version_info, 'major') and (sys.version_info.major == 3)
 
 
 class AstEncoder(JSONEncoder):
-    def default(self, o):
-        if hasattr(o, '__dict__'):
-            d = o.__dict__
+    def default(self, obj):
+        if hasattr(obj, '__dict__'):
+            dic = obj.__dict__
             # workaround: decode strings if it's not Python3 code
-            if not is_python3:
-                for k in d:
-                    if isinstance(d[k], str):
-                        if k == 's':
-                          d[k] = lines[d['start']:d['end']]
+            if not python3:
+                for key in dic:
+                    if isinstance(dic[key], str):
+                        if key == 's':
+                            dic[key] = lines[dic['start']:dic['end']]
                         else:
-                          d[k] = d[k].decode(enc)
-            d['type'] = o.__class__.__name__
-            return d
+                            dic[key] = dic[key].decode(enc)
+            dic['type'] = obj.__class__.__name__
+            return dic
         else:
-            return str(o)
+            return str(obj)
 
 
 enc = 'latin1'
 lines = ''
 
+
 def parse_dump(filename, output, end_mark):
     try:
-        if is_python3:
+        if python3:
             encoder = AstEncoder()
         else:
             encoder = AstEncoder(encoding=enc)
@@ -63,7 +64,7 @@ def parse_file(filename):
     # otherwise you get 'encoding decl in unicode string' syntax error
     # print('enc:', enc, 'enc_len', enc_len)
     if enc_len > 0:
-        lines = re.sub('#.*coding\s*[:=]\s*[\w\d\-]+',  '#' + ' ' * (enc_len-1), lines)
+        lines = re.sub('#.*coding\s*[:=]\s*[\w\d\-]+', '#' + ' ' * (enc_len - 1), lines)
 
     f.close()
     return parse_string(lines, filename)
@@ -92,10 +93,8 @@ def detect_encoding(path):
         enc1 = encs[0]
         enc_len = len(decl[0])
         try:
-            info = codecs.lookup(enc1)
-            # print('lookedup: ', info)
+            codecs.lookup(enc1)
         except LookupError:
-            # print('encoding not exist: ' + enc1)
             return 'latin1', enc_len
         return enc1, enc_len
     else:
@@ -108,6 +107,9 @@ def detect_encoding(path):
 def improve_ast(node, s):
     build_index_map(s)
     improve_node(node, s)
+
+
+line_starts = []
 
 
 # build global table 'idxmap' for lineno <-> index oonversion
@@ -134,7 +136,7 @@ def map_line_col(idx):
             break
         line += 1
     col = idx - line_starts[line - 1]
-    return (line, col)
+    return line, col
 
 
 def improve_node(node, s):
@@ -168,7 +170,7 @@ def find_start(node, s):
 
     elif isinstance(node, BinOp):
         leftstart = find_start(node.left, s)
-        if leftstart != None:
+        if leftstart is not None:
             ret = leftstart
         else:
             ret = map_idx(node.lineno, node.col_offset)
@@ -184,10 +186,10 @@ def find_start(node, s):
     else:
         return None
 
-    if ret == None and hasattr(node, 'lineno'):
+    if ret is None and hasattr(node, 'lineno'):
         raise TypeError("got None for node that has lineno", node)
 
-    if isinstance(node, AST) and ret != None:
+    if isinstance(node, AST) and ret is not None:
         node.start = ret
 
     return ret
@@ -240,7 +242,7 @@ def find_end(node, s):
     elif isinstance(node, Attribute):
         the_end = end_seq(s, node.attr, find_end(node.value, s))
 
-    elif isinstance(node, FunctionDef):
+    elif isinstance(node, FunctionDef) or (python3 and isinstance(node, AsyncFunctionDef)):
         the_end = find_end(node.body, s)
 
     elif isinstance(node, Lambda):
@@ -250,27 +252,27 @@ def find_end(node, s):
         the_end = find_end(node.body, s)
 
     # print will be a Call in Python 3
-    elif not is_python3 and isinstance(node, Print):
+    elif not python3 and isinstance(node, Print):
         the_end = start_seq(s, '\n', find_start(node, s))
 
     elif isinstance(node, Call):
         start = find_end(node.func, s)
-        if start != None:
+        if start is not None:
             the_end = match_paren(s, '(', ')', start)
 
     elif isinstance(node, Yield):
         the_end = find_end(node.value, s)
 
     elif isinstance(node, Return):
-        if node.value != None:
+        if node.value is not None:
             the_end = find_end(node.value, s)
         else:
             the_end = find_start(node, s) + len('return')
 
     elif (isinstance(node, For) or
-              isinstance(node, While) or
-              isinstance(node, If) or
-              isinstance(node, IfExp)):
+          isinstance(node, While) or
+          isinstance(node, If) or
+          isinstance(node, IfExp)):
         if node.orelse != []:
             the_end = find_end(node.orelse, s)
         else:
@@ -295,20 +297,20 @@ def find_end(node, s):
         the_end = find_start(node, s) + len(str(node.n))
 
     elif isinstance(node, List):
-        the_end = match_paren(s, '[', ']', find_start(node, s));
+        the_end = match_paren(s, '[', ']', find_start(node, s))
 
     elif isinstance(node, Subscript):
-        the_end = match_paren(s, '[', ']', find_start(node, s));
+        the_end = match_paren(s, '[', ']', find_start(node, s))
 
     elif isinstance(node, Tuple):
         if node.elts != []:
             the_end = find_end(node.elts[-1], s)
 
     elif isinstance(node, Dict):
-        the_end = match_paren(s, '{', '}', find_start(node, s));
+        the_end = match_paren(s, '{', '}', find_start(node, s))
 
-    elif ((not is_python3 and isinstance(node, TryExcept)) or
-              (is_python3 and isinstance(node, Try))):
+    elif ((not python3 and isinstance(node, TryExcept)) or
+          (python3 and isinstance(node, Try))):
         if node.orelse != []:
             the_end = find_end(node.orelse, s)
         elif node.handlers != []:
@@ -339,10 +341,10 @@ def find_end(node, s):
 
     else:   # can't determine node end, set to 3 chars after start
         start = find_start(node, s)
-        if start != None:
+        if start is not None:
             the_end = start + 3
 
-    if isinstance(node, AST) and the_end != None:
+    if isinstance(node, AST) and the_end is not None:
         node.end = the_end
 
     return the_end
@@ -359,15 +361,15 @@ def add_missing_names(node, s):
     elif isinstance(node, ClassDef):
         head = find_start(node, s)
         start = s.find("class", head) + len("class")
-        if start != None:
+        if start is not None:
             node.name_node = str_to_name(s, start)
             node._fields += ('name_node',)
 
-    elif isinstance(node, FunctionDef):
+    elif isinstance(node, FunctionDef) or (python3 and isinstance(node, AsyncFunctionDef)):
         # skip to "def" because it may contain decorators like @property
         head = find_start(node, s)
         start = s.find("def", head) + len("def")
-        if start != None:
+        if start is not None:
             node.name_node = str_to_name(s, start)
             node._fields += ('name_node',)
 
@@ -375,19 +377,19 @@ def add_missing_names(node, s):
         # node.keyword_node = str_to_name(s, keyword_start)
         # node._fields += ('keyword_node',)
 
-        if node.args.vararg != None:
+        if node.args.vararg is not None:
             if len(node.args.args) > 0:
                 vstart = find_end(node.args.args[-1], s)
             else:
                 vstart = find_end(node.name_node, s)
-            if vstart != None:
+            if vstart is not None:
                 vname = str_to_name(s, vstart)
                 node.vararg_name = vname
         else:
             node.vararg_name = None
         node._fields += ('vararg_name',)
 
-        if node.args.kwarg != None:
+        if node.args.kwarg is not None:
             if len(node.args.args) > 0:
                 kstart = find_end(node.args.args[-1], s)
             else:
@@ -413,9 +415,9 @@ def add_missing_names(node, s):
             node._fields += ('opsName',)
 
     elif (isinstance(node, BoolOp) or
-              isinstance(node, BinOp) or
-              isinstance(node, UnaryOp) or
-              isinstance(node, AugAssign)):
+          isinstance(node, BinOp) or
+          isinstance(node, UnaryOp) or
+          isinstance(node, AugAssign)):
         if hasattr(node, 'left'):
             start = find_end(node.left, s)
         else:
@@ -429,19 +431,21 @@ def add_missing_names(node, s):
             node._fields += ('op_node',)
 
     elif isinstance(node, Num):
-        if isinstance(node.n, int) or (not is_python3 and isinstance(node.n, long)):
-            type = 'int'
+        if isinstance(node.n, int) or (not python3 and isinstance(node.n, long)):
+            num_type = 'int'
             node.n = str(node.n)
         elif isinstance(node.n, float):
-            type = 'float'
+            num_type = 'float'
             node.n = str(node.n)
         elif isinstance(node.n, complex):
-            type = 'complex'
+            num_type = 'complex'
             node.real = node.n.real
             node.imag = node.n.imag
             node._fields += ('real', 'imag')
+        else:
+            num_type = 'unsupported'
 
-        node.num_type = type
+        node.num_type = num_type
         node._fields += ('num_type',)
 
     node.extra_attr = True
@@ -487,7 +491,7 @@ def match_paren(s, open, close, start):
 
 # convert string to Name
 def str_to_name(s, start):
-    i = start;
+    i = start
     while i < len(s) and not is_alpha(s[i]):
         i += 1
     name_start = i
@@ -616,18 +620,10 @@ def end(node):
 
 
 def is_alpha(c):
-    return (c == '_'
-            or ('0' <= c <= '9')
-            or ('a' <= c <= 'z')
-            or ('A' <= c <= 'Z'))
+    return (c == '_' or
+            ('0' <= c <= '9') or
+            ('a' <= c <= 'z') or
+            ('A' <= c <= 'Z'))
 
 
-# p('/Users/yinwang/Code/django/tests/invalid_models/invalid_models/models.py')
-# p('/Users/yinwang/Dropbox/prog/pysonar2/tests/test-unicode/test1.py')
-# p('/Users/yinwang/Code/cpython/Lib/lib2to3/tests/data/bom.py')
-# p('/Users/yinwang/Code/cpython/Lib/test/test_decimal.py')
-# p('/Users/yinwang/Code/cpython/Lib/test/test_pep3131.py')
-# p('/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/tarfile.py')
-# p('/Users/yinwang/Code/cpython/Lib/lib2to3/tests/data/false_encoding.py')
-# p('/System/Library/Frameworks/Python.framework/Versions/2.5/lib/python2.5/test/test_marshal.py')
 # p('/System/Library/Frameworks/Python.framework/Versions/2.5/lib/python2.5/lib-tk/Tix.py')

@@ -342,7 +342,7 @@ public class State {
         if (result != null) {
             return result;
         } else {
-            _.die("Couldn't find global table. Shouldn't happen");
+            $.die("Couldn't find global table. Shouldn't happen");
             return this;
         }
     }
@@ -397,7 +397,7 @@ public class State {
 
     @NotNull
     public String extendPath(@NotNull String name) {
-        name = _.moduleName(name);
+        name = $.moduleName(name);
         if (path.equals("")) {
             return name;
         }

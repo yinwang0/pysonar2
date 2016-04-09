@@ -2,16 +2,10 @@ package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.yinwang.pysonar.$;
 import org.yinwang.pysonar.Analyzer;
-import org.yinwang.pysonar.State;
-import org.yinwang.pysonar._;
-import org.yinwang.pysonar.types.Type;
-import org.yinwang.pysonar.types.UnionType;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-
 
 /**
  * A Node is a junction in the program.
@@ -20,6 +14,7 @@ import java.util.List;
  */
 public abstract class Node implements java.io.Serializable, Comparable<Object> {
 
+    public NodeType nodeType;
     public String file;
     public int start;
     public int end;
@@ -27,31 +22,27 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
     public String name;
     public Node parent = null;
 
-
     public Node() {
     }
 
-
-    public Node(String file, int start, int end) {
+    public Node(NodeType nodeType, String file, int start, int end) {
+        this.nodeType = nodeType;
         this.file = file;
         this.start = start;
         this.end = end;
     }
 
-
     public String getFullPath() {
         if (!file.startsWith("/")) {
-            return _.makePathString(Analyzer.self.projectDir, file);
+            return $.makePathString(Analyzer.self.projectDir, file);
         } else {
             return file;
         }
     }
 
-
     public void setParent(Node parent) {
         this.parent = parent;
     }
-
 
     @NotNull
     public Node getAstRoot() {
@@ -61,11 +52,9 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
         return parent.getAstRoot();
     }
 
-
     public int length() {
         return end - start;
     }
-
 
     public void addChildren(@Nullable Node... nodes) {
         if (nodes != null) {
@@ -77,7 +66,6 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
         }
     }
 
-
     public void addChildren(@Nullable Collection<? extends Node> nodes) {
         if (nodes != null) {
             for (Node n : nodes) {
@@ -87,7 +75,6 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
             }
         }
     }
-
 
     @Nullable
     public Str getDocString() {
@@ -112,60 +99,6 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
         return null;
     }
 
-
-    @NotNull
-    public static Type transformExpr(@NotNull Node n, State s) {
-        return n.transform(s);
-    }
-
-
-    @NotNull
-    protected abstract Type transform(State s);
-
-
-    protected void addWarning(String msg) {
-        Analyzer.self.putProblem(this, msg);
-    }
-
-
-    protected void addError(String msg) {
-        Analyzer.self.putProblem(this, msg);
-    }
-
-
-    /**
-     * Utility method to resolve every node in {@code nodes} and
-     * return the union of their types.  If {@code nodes} is empty or
-     * {@code null}, returns a new {@link org.yinwang.pysonar.types.UnknownType}.
-     */
-    @NotNull
-    protected Type resolveUnion(@NotNull Collection<? extends Node> nodes, State s) {
-        Type result = Type.UNKNOWN;
-        for (Node node : nodes) {
-            Type nodeType = transformExpr(node, s);
-            result = UnionType.union(result, nodeType);
-        }
-        return result;
-    }
-
-
-    /**
-     * Resolves each element, also construct a result list.
-     */
-    @Nullable
-    static protected List<Type> resolveList(@Nullable Collection<? extends Node> nodes, State s) {
-        if (nodes == null) {
-            return null;
-        } else {
-            List<Type> ret = new ArrayList<>();
-            for (Node n : nodes) {
-                ret.add(transformExpr(n, s));
-            }
-            return ret;
-        }
-    }
-
-
     // nodes are equal if they are from the same file and same starting point
     @Override
     public boolean equals(Object obj) {
@@ -176,16 +109,14 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
             String file = this.file;
             return (start == node.start &&
                     end == node.end &&
-                    _.same(file, node.file));
+                    $.same(file, node.file));
         }
     }
-
 
     @Override
     public int hashCode() {
         return (file + ":" + start + ":" + end).hashCode();
     }
-
 
     @Override
     public int compareTo(@NotNull Object o) {
@@ -196,11 +127,9 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
         }
     }
 
-
     public String toDisplay() {
         return "";
     }
-
 
     @NotNull
     @Override

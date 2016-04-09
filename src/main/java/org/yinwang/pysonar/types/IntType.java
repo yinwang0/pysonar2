@@ -1,10 +1,9 @@
 package org.yinwang.pysonar.types;
 
-
 public class IntType extends Type {
 
     @Override
-    public boolean equals(Object other) {
+    public boolean typeEquals(Object other) {
         return other instanceof IntType;
     }
 

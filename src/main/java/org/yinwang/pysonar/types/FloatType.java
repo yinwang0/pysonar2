@@ -1,6 +1,5 @@
 package org.yinwang.pysonar.types;
 
-
 public class FloatType extends Type {
 
     @Override
@@ -8,6 +7,10 @@ public class FloatType extends Type {
         return other instanceof FloatType;
     }
 
+    @Override
+    public boolean typeEquals(Object other) {
+        return other instanceof FloatType;
+    }
 
     @Override
     protected String printType(CyclicTypeRecorder ctr) {

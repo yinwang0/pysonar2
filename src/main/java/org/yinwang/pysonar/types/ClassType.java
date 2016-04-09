@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.State;
 
-
 public class ClassType extends Type {
 
     public String name;
@@ -52,8 +51,12 @@ public class ClassType extends Type {
 
 
     @Override
-    public boolean equals(Object other) {
-        return this == other;
+    public boolean typeEquals(Object other) {
+        if (other instanceof ClassType) {
+            return getCanon() == ((ClassType) other).getCanon();
+        } else {
+            return false;
+        }
     }
 
 

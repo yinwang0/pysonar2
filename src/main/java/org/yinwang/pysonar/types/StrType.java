@@ -14,7 +14,7 @@ public class StrType extends Type {
 
 
     @Override
-    public boolean equals(Object other) {
+    public boolean typeEquals(Object other) {
         return (other instanceof StrType);
     }
 

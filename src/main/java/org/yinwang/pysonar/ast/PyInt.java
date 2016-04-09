@@ -1,19 +1,15 @@
 package org.yinwang.pysonar.ast;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.State;
-import org.yinwang.pysonar.types.Type;
 
 import java.math.BigInteger;
-
 
 public class PyInt extends Node {
 
     public BigInteger value;
 
-
     public PyInt(String s, String file, int start, int end) {
-        super(file, start, end);
+        super(NodeType.PYINT, file, start, end);
 
         s = s.replaceAll("_", "");
         int sign = 1;
@@ -50,14 +46,6 @@ public class PyInt extends Node {
             value = value.negate();
         }
     }
-
-
-    @NotNull
-    @Override
-    public Type transform(State s) {
-        return Type.INT;
-    }
-
 
     @NotNull
     @Override

@@ -3,7 +3,6 @@ package org.yinwang.pysonar.types;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.State;
 
-
 public class BoolType extends Type {
 
     public enum Value {
@@ -51,7 +50,7 @@ public class BoolType extends Type {
 
 
     @Override
-    public boolean equals(Object other) {
+    public boolean typeEquals(Object other) {
         return (other instanceof BoolType);
     }
 

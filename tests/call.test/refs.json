@@ -1,0 +1,114 @@
+[
+  {
+    "ref": {
+      "name": "baz1",
+      "file": "test1.py",
+      "start": 126,
+      "end": 130
+    },
+    "dests": [
+      {
+        "name": "baz1",
+        "file": "test1.py",
+        "start": 63,
+        "end": 67
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "bar",
+      "file": "test1.py",
+      "start": 82,
+      "end": 85
+    },
+    "dests": [
+      {
+        "name": "bar",
+        "file": "test1.py",
+        "start": 31,
+        "end": 34
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "foo",
+      "file": "test1.py",
+      "start": 50,
+      "end": 53
+    },
+    "dests": [
+      {
+        "name": "foo",
+        "file": "test1.py",
+        "start": 4,
+        "end": 7
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "y",
+      "file": "test1.py",
+      "start": 54,
+      "end": 55
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 35,
+        "end": 36
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 23,
+      "end": 24
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 8,
+        "end": 9
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "baz2",
+      "file": "test1.py",
+      "start": 133,
+      "end": 137
+    },
+    "dests": [
+      {
+        "name": "baz2",
+        "file": "test1.py",
+        "start": 95,
+        "end": 99
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "bar",
+      "file": "test1.py",
+      "start": 114,
+      "end": 117
+    },
+    "dests": [
+      {
+        "name": "bar",
+        "file": "test1.py",
+        "start": 31,
+        "end": 34
+      }
+    ]
+  }
+]

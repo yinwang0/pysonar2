@@ -25,19 +25,9 @@ public class AstCache {
     @NotNull
     private Map<String, Node> cache = new HashMap<>();
     @NotNull
-    private static Parser parser;
+    private static Parser parser = new Parser();;
 
-
-    private AstCache() {
-    }
-
-
-    public static AstCache get() {
-        if (INSTANCE == null) {
-            INSTANCE = new AstCache();
-        }
-        parser = new Parser();
-        return INSTANCE;
+    public AstCache() {
     }
 
 
@@ -56,7 +46,7 @@ public class AstCache {
      */
     public boolean clearDiskCache() {
         try {
-            _.deleteDirectory(new File(Analyzer.self.cacheDir));
+            $.deleteDirectory(new File(Analyzer.self.cacheDir));
             return true;
         } catch (Exception x) {
             LOG.log(Level.SEVERE, "Failed to clear disk cache: " + x);
@@ -116,7 +106,7 @@ public class AstCache {
      */
     @NotNull
     public String getCachePath(@NotNull String sourcePath) {
-        return _.makePathString(Analyzer.self.cacheDir, _.getFileHash(sourcePath));
+        return $.makePathString(Analyzer.self.cacheDir, $.getFileHash(sourcePath));
     }
 
 
@@ -130,7 +120,7 @@ public class AstCache {
             oos = new ObjectOutputStream(fos);
             oos.writeObject(ast);
         } catch (Exception e) {
-            _.msg("Failed to serialize: " + path);
+            $.msg("Failed to serialize: " + path);
         } finally {
             try {
                 if (oos != null) {

@@ -5,12 +5,14 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.*;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.types.ModuleType;
+import org.yinwang.pysonar.types.Type;
+import org.yinwang.pysonar.types.UnionType;
 
 import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
-
+import java.util.stream.Collectors;
 
 /**
  * Collects per-file hyperlinks, as well as styles that require the
@@ -45,22 +47,28 @@ class Linker {
 
 
     public void findLinks(@NotNull Analyzer analyzer) {
-        _.msg("Adding xref links");
+        $.msg("Adding xref links");
         Progress progress = new Progress(analyzer.getAllBindings().size(), 50);
 
+        Map<Integer, List<Binding>> defHash = new HashMap<>();
         for (Binding b : analyzer.getAllBindings()) {
             if (b.kind != Binding.Kind.MODULE) {
-                if (Analyzer.self.hasOption("debug")) {
-                    processDefDebug(b);
-                } else {
-                    processDef(b);
+                int hash = b.hashCode();
+                if (!defHash.containsKey(hash)) {
+                    defHash.put(hash, new ArrayList<>());
                 }
-                progress.tick();
+                List<Binding> bs = defHash.get(hash);
+                bs.add(b);
             }
         }
 
+        for (List<Binding> bs : defHash.values()) {
+            processDef(bs);
+            progress.tick();
+        }
+
         // highlight definitions
-        _.msg("\nAdding ref links");
+        $.msg("\nAdding ref links");
         progress = new Progress(analyzer.getReferences().size(), 50);
 
         for (Entry<Node, List<Binding>> e : analyzer.getReferences().entrySet()) {
@@ -82,20 +90,20 @@ class Linker {
     }
 
 
-    private void processDef(@NotNull Binding binding) {
-        String qname = binding.qname;
-        int hash = binding.hashCode();
+    private void processDef(@NotNull List<Binding> bindings) {
+        Binding first = bindings.get(0);
+        String qname = first.qname;
 
-        if (binding.isURL() || binding.start < 0 || seenDef.contains(hash)) {
+        if (first.isURL() || first.start < 0) {
             return;
         }
 
-        seenDef.add(hash);
-        Style style = new Style(Style.Type.ANCHOR, binding.start, binding.end);
-        style.message = binding.type.toString();
-        style.url = binding.qname;
+        List<Type> types = bindings.stream().map(b -> b.type).collect(Collectors.toList());
+        Style style = new Style(Style.Type.ANCHOR, first.start, first.end);
+        style.message = UnionType.union(types).toString();
+        style.url = first.qname;
         style.id = qname;
-        addFileStyle(binding.getFile(), style);
+        addFileStyle(first.getFile(), style);
     }
 
 
@@ -133,11 +141,8 @@ class Linker {
             Style link = new Style(Style.Type.LINK, ref.start, ref.end);
             link.id = qname;
 
-            List<String> typings = new ArrayList<>();
-            for (Binding b : bindings) {
-                typings.add(b.type.toString());
-            }
-            link.message = _.joinWithSep(typings, " | ", "{", "}");
+            List<Type> types = bindings.stream().map(b -> b.type).collect(Collectors.toList());
+            link.message = UnionType.union(types).toString();
 
             // Currently jump to the first binding only. Should change to have a
             // hover menu or something later.
@@ -171,7 +176,7 @@ class Linker {
             for (Binding b : bindings) {
                 typings.add(b.type.toString());
             }
-            link.message = _.joinWithSep(typings, " | ", "{", "}");
+            link.message = $.joinWithSep(typings, " | ", "{", "}");
 
             link.highlight = new ArrayList<>();
             for (Binding b : bindings) {
@@ -290,7 +295,7 @@ class Linker {
         if (destPath.startsWith(rootPath)) {
             String relpath;
             if (filename != null) {
-                relpath = _.relPath(filename, destPath);
+                relpath = $.relPath(filename, destPath);
             } else {
                 relpath = destPath;
             }

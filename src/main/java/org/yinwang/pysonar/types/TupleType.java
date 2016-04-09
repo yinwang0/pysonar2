@@ -2,6 +2,7 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.Analyzer;
+import org.yinwang.pysonar.TypeStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,7 +72,7 @@ public class TupleType extends Type {
 
 
     @Override
-    public boolean equals(Object other) {
+    public boolean typeEquals(Object other) {
         if (typeStack.contains(this, other)) {
             return true;
         } else if (other instanceof TupleType) {
@@ -81,7 +82,7 @@ public class TupleType extends Type {
             if (types1.size() == types2.size()) {
                 typeStack.push(this, other);
                 for (int i = 0; i < types1.size(); i++) {
-                    if (!types1.get(i).equals(types2.get(i))) {
+                    if (!types1.get(i).typeEquals(types2.get(i))) {
                         typeStack.pop(this, other);
                         return false;
                     }
@@ -91,7 +92,6 @@ public class TupleType extends Type {
             } else {
                 return false;
             }
-
         } else {
             return false;
         }

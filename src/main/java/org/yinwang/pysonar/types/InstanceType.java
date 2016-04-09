@@ -3,6 +3,7 @@ package org.yinwang.pysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.ast.Call;
+import org.yinwang.pysonar.visitor.TypeInferencer;
 
 import java.util.List;
 
@@ -20,22 +21,22 @@ public class InstanceType extends Type {
     }
 
 
-    public InstanceType(@NotNull Type c, Call call, List<Type> args) {
+    public InstanceType(@NotNull Type c, Call call, List<Type> args, TypeInferencer inferencer) {
         this(c);
         Type initFunc = table.lookupAttrType("__init__");
 
         if (initFunc != null && initFunc instanceof FunType && ((FunType) initFunc).func != null) {
             ((FunType) initFunc).setSelfType(this);
-            Call.apply((FunType) initFunc, args, null, null, null, call);
+            inferencer.apply((FunType) initFunc, args, null, null, null, call);
             ((FunType) initFunc).setSelfType(null);
         }
     }
 
 
     @Override
-    public boolean equals(Object other) {
+    public boolean typeEquals(Object other) {
         if (other instanceof InstanceType) {
-            return classType.equals(((InstanceType) other).classType);
+            return classType.typeEquals(((InstanceType) other).classType);
         }
         return false;
     }

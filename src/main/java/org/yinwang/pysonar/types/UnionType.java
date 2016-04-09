@@ -2,6 +2,7 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.yinwang.pysonar.Binding;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -104,13 +105,18 @@ public class UnionType extends Type {
         }
     }
 
+    public static Type union(Collection<Type> types) {
+        Type result = Type.UNKNOWN;
+        for (Type type: types) {
+            result = UnionType.union(result, type);
+        }
+        return result;
+    }
 
-    /**
-     * Returns the first alternate whose type is not unknown and
-     * is not {@link org.yinwang.pysonar.Analyzer.idx.builtins.None}.
-     *
-     * @return the first non-unknown, non-{@code None} alternate, or {@code null} if none found
-     */
+    public static Type union(Type... types) {
+        return union(types);
+    }
+
     @Nullable
     public Type firstUseful() {
         for (Type type : types) {
@@ -123,7 +129,7 @@ public class UnionType extends Type {
 
 
     @Override
-    public boolean equals(Object other) {
+    public boolean typeEquals(Object other) {
         if (typeStack.contains(this, other)) {
             return true;
         } else if (other instanceof UnionType) {
@@ -132,20 +138,16 @@ public class UnionType extends Type {
             if (types1.size() != types2.size()) {
                 return false;
             } else {
-                typeStack.push(this, other);
                 for (Type t : types2) {
                     if (!types1.contains(t)) {
-                        typeStack.pop(this, other);
                         return false;
                     }
                 }
                 for (Type t : types1) {
                     if (!types2.contains(t)) {
-                        typeStack.pop(this, other);
                         return false;
                     }
                 }
-                typeStack.pop(this, other);
                 return true;
             }
         } else {

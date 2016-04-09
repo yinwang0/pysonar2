@@ -2,11 +2,11 @@ package org.yinwang.pysonar;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.ast.Call;
 import org.yinwang.pysonar.ast.Name;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Url;
 import org.yinwang.pysonar.types.*;
+import org.yinwang.pysonar.visitor.TypeInferencer;
 
 import java.io.File;
 import java.net.URL;
@@ -15,11 +15,12 @@ import java.util.*;
 
 public class Analyzer {
 
-    public static String MODEL_LOCATION = "org/yinwang/pysonar/models";
+    public static final String MODEL_LOCATION = "org/yinwang/pysonar/models";
 
     // global static instance of the analyzer itself
     public static Analyzer self;
-    public String sid = _.newSessionId();
+    public TypeInferencer inferencer = new TypeInferencer();
+    public String sid = $.newSessionId();
     public State moduleTable = new State(null, State.StateType.GLOBAL);
     public List<String> loadedFiles = new ArrayList<>();
     public State globaltable = new State(null, State.StateType.GLOBAL);
@@ -28,13 +29,11 @@ public class Analyzer {
     public Set<Name> resolved = new HashSet<>();
     public Set<Name> unresolved = new HashSet<>();
     public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
-    public Map<String, List<Diagnostic>> parseErrors = new HashMap<>();
     public String cwd = null;
     public int nCalled = 0;
     public boolean multilineFunType = false;
     public List<String> path = new ArrayList<>();
     private Set<FunType> uncalled = new HashSet<>();
-    private Set<Object> callStack = new HashSet<>();
     private Set<Object> importStack = new HashSet<>();
 
     private AstCache astCache;
@@ -70,7 +69,7 @@ public class Analyzer {
         addPythonPath();
         copyModels();
         createCacheDir();
-        getAstCache();
+        astCache = new AstCache();
     }
 
 
@@ -91,7 +90,7 @@ public class Analyzer {
 
     // main entry to the analyzer
     public void analyze(String path) {
-        String upath = _.unifyPath(path);
+        String upath = $.unifyPath(path);
         File f = new File(upath);
         projectDir = f.isDirectory() ? f.getPath() : f.getParent();
         loadFileRecursive(upath);
@@ -100,7 +99,7 @@ public class Analyzer {
 
     public void setCWD(String cd) {
         if (cd != null) {
-            cwd = _.unifyPath(cd);
+            cwd = $.unifyPath(cd);
         }
     }
 
@@ -113,7 +112,7 @@ public class Analyzer {
 
 
     public void addPath(String p) {
-        path.add(_.unifyPath(p));
+        path.add($.unifyPath(p));
     }
 
 
@@ -136,14 +135,14 @@ public class Analyzer {
 
     private void copyModels() {
         URL resource = Thread.currentThread().getContextClassLoader().getResource(MODEL_LOCATION);
-        String dest = _.locateTmp("models");
+        String dest = $.locateTmp("models");
         this.modelDir = dest;
 
         try {
-            _.copyResourcesRecursively(resource, new File(dest));
-            _.msg("copied models to: " + modelDir);
+            $.copyResourcesRecursively(resource, new File(dest));
+            $.msg("copied models to: " + modelDir);
         } catch (Exception e) {
-            _.die("Failed to copy models. Please check permissions of writing to: " + dest);
+            $.die("Failed to copy models. Please check permissions of writing to: " + dest);
         }
         addPath(dest);
     }
@@ -160,21 +159,6 @@ public class Analyzer {
         }
         loadPath.addAll(path);
         return loadPath;
-    }
-
-
-    public boolean inStack(Object f) {
-        return callStack.contains(f);
-    }
-
-
-    public void pushStack(Object f) {
-        callStack.add(f);
-    }
-
-
-    public void popStack(Object f) {
-        callStack.remove(f);
     }
 
 
@@ -201,7 +185,7 @@ public class Analyzer {
 
     @Nullable
     ModuleType getCachedModule(String file) {
-        Type t = moduleTable.lookupType(_.moduleQname(file));
+        Type t = moduleTable.lookupType($.moduleQname(file));
         if (t == null) {
             return null;
         } else if (t instanceof UnionType) {
@@ -292,7 +276,7 @@ public class Analyzer {
 
     @Nullable
     public Type loadFile(String path) {
-        path = _.unifyPath(path);
+        path = $.unifyPath(path);
         File f = new File(path);
 
         if (!f.canRead()) {
@@ -326,47 +310,30 @@ public class Analyzer {
     @Nullable
     private Type parseAndResolve(String file) {
         loadingProgress.tick();
+        Node ast = getAstForFile(file);
 
-        try {
-            Node ast = getAstForFile(file);
-
-            if (ast == null) {
-                failedToParse.add(file);
-                return null;
-            } else {
-                Type type = Node.transformExpr(ast, moduleTable);
-                loadedFiles.add(file);
-                return type;
-            }
-        } catch (OutOfMemoryError e) {
-            if (astCache != null) {
-                astCache.clear();
-            }
-            System.gc();
+        if (ast == null) {
+            failedToParse.add(file);
             return null;
+        } else {
+            Type type = inferencer.visit(ast, moduleTable);
+            loadedFiles.add(file);
+            return type;
         }
     }
 
 
     private void createCacheDir() {
-        cacheDir = _.makePathString(_.getSystemTempDir(), "pysonar2", "ast_cache");
+        cacheDir = $.makePathString($.getSystemTempDir(), "pysonar2", "ast_cache");
         File f = new File(cacheDir);
-        _.msg("AST cache is at: " + cacheDir);
+        $.msg("AST cache is at: " + cacheDir);
 
         if (!f.exists()) {
             if (!f.mkdirs()) {
-                _.die("Failed to create tmp directory: " + cacheDir +
+                $.die("Failed to create tmp directory: " + cacheDir +
                         ".Please check permissions");
             }
         }
-    }
-
-
-    private AstCache getAstCache() {
-        if (astCache == null) {
-            astCache = AstCache.get();
-        }
-        return astCache;
     }
 
 
@@ -375,7 +342,7 @@ public class Analyzer {
      */
     @Nullable
     public Node getAstForFile(String file) {
-        return getAstCache().getAST(file);
+        return astCache.getAST(file);
     }
 
 
@@ -412,7 +379,7 @@ public class Analyzer {
 
         for (String p : loadPath) {
             File startDir = new File(p, headName);
-            File initFile = new File(_.joinPath(startDir, "__init__.py").getPath());
+            File initFile = new File($.joinPath(startDir, "__init__.py").getPath());
 
             if (initFile.exists()) {
                 return p;
@@ -457,7 +424,7 @@ public class Analyzer {
 
         for (int i = 0; i < name.size(); i++) {
             path = new File(path, name.get(i).id);
-            File initFile = new File(_.joinPath(path, "__init__.py").getPath());
+            File initFile = new File($.joinPath(path, "__init__.py").getPath());
 
             if (initFile.exists()) {
                 Type mod = loadFile(initFile.getPath());
@@ -539,8 +506,8 @@ public class Analyzer {
 
 
     public void finish() {
-        _.msg("\nFinished loading files. " + nCalled + " functions were called.");
-        _.msg("Analyzing uncalled functions");
+        $.msg("\nFinished loading files. " + nCalled + " functions were called.");
+        $.msg("Analyzing uncalled functions");
         applyUncalled();
 
         // mark unused variables
@@ -554,7 +521,7 @@ public class Analyzer {
             }
         }
 
-        _.msg(getAnalysisSummary());
+        $.msg(getAnalysisSummary());
     }
 
 
@@ -583,7 +550,7 @@ public class Analyzer {
 
             for (FunType cl : uncalledDup) {
                 progress.tick();
-                Call.apply(cl, null, null, null, null, null);
+                inferencer.apply(cl, null, null, null, null, null);
             }
         }
     }
@@ -592,9 +559,9 @@ public class Analyzer {
     @NotNull
     public String getAnalysisSummary() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\n" + _.banner("analysis summary"));
+        sb.append("\n" + $.banner("analysis summary"));
 
-        String duration = _.formatTime(System.currentTimeMillis() - stats.getInt("startTime"));
+        String duration = $.formatTime(System.currentTimeMillis() - stats.getInt("startTime"));
         sb.append("\n- total time: " + duration);
         sb.append("\n- modules loaded: " + loadedFiles.size());
         sb.append("\n- semantic problems: " + semanticErrors.size());
@@ -615,8 +582,8 @@ public class Analyzer {
         long unresolved = Analyzer.self.unresolved.size();
         sb.append("\n- resolved names: " + resolved);
         sb.append("\n- unresolved names: " + unresolved);
-        sb.append("\n- name resolve rate: " + _.percent(resolved, resolved + unresolved));
-        sb.append("\n" + _.getGCStats());
+        sb.append("\n- name resolve rate: " + $.percent(resolved, resolved + unresolved));
+        sb.append("\n" + $.getGCStats());
 
         return sb.toString();
     }

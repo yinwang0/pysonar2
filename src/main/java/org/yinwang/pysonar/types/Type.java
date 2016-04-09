@@ -3,7 +3,7 @@ package org.yinwang.pysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.TypeStack;
-import org.yinwang.pysonar._;
+import org.yinwang.pysonar.$;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +23,12 @@ public abstract class Type {
     public Type() {
     }
 
+    @Override
+    public boolean equals(Object other) {
+        return typeEquals(other);
+    }
+
+    public abstract boolean typeEquals(Object other);
 
     public void setTable(@NotNull State table) {
         this.table = table;
@@ -52,13 +58,13 @@ public abstract class Type {
                     return t.asModuleType();
                 }
             }
-            _.die("Not containing a ModuleType");
+            $.die("Not containing a ModuleType");
             // can't get here, just to make the @NotNull annotation happy
             return new ModuleType(null, null, null);
         } else if (this instanceof ModuleType) {
             return (ModuleType) this;
         } else {
-            _.die("Not a ModuleType");
+            $.die("Not a ModuleType");
             // can't get here, just to make the @NotNull annotation happy
             return new ModuleType(null, null, null);
         }
@@ -117,8 +123,6 @@ public abstract class Type {
     public static InstanceType UNKNOWN = new InstanceType(new ClassType("?", null, null));
     public static InstanceType CONT = new InstanceType(new ClassType("None", null, null));
     public static InstanceType NONE = new InstanceType(new ClassType("None", null, null));
-    public static BoolType TRUE = new BoolType(BoolType.Value.True);
-    public static BoolType FALSE = new BoolType(BoolType.Value.False);
     public static StrType STR = new StrType(null);
     public static IntType INT = new IntType();
     public static FloatType FLOAT = new FloatType();
