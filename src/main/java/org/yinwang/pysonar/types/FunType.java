@@ -214,7 +214,7 @@ public class FunType extends Type {
                 if (!seen.contains(as)) {
                     if (i != 0) {
                         if (Analyzer.self.multilineFunType) {
-                            sb.append("\n| ");
+                            sb.append("\n∧ ");
                         } else {
                             sb.append(" ∧ ");
                         }
