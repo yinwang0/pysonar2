@@ -580,4 +580,16 @@ public class $ {
         return sb.toString();
     }
 
+    public static List<List<Binding>> correlateBindings(List<Binding> bindings) {
+        Map<Integer, List<Binding>> bdHash = new HashMap<>();
+        for (Binding b : bindings) {
+            int hash = b.hashCode();
+            if (!bdHash.containsKey(hash)) {
+                bdHash.put(hash, new ArrayList<>());
+            }
+            List<Binding> bs = bdHash.get(hash);
+            bs.add(b);
+        }
+        return new ArrayList<>(bdHash.values());
+    }
 }

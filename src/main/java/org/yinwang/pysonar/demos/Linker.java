@@ -46,19 +46,6 @@ class Linker {
         outDir = outdir;
     }
 
-    private List<List<Binding>> correlateBindings(List<Binding> bindings) {
-        Map<Integer, List<Binding>> bdHash = new HashMap<>();
-        for (Binding b : bindings) {
-            int hash = b.hashCode();
-            if (!bdHash.containsKey(hash)) {
-                bdHash.put(hash, new ArrayList<>());
-            }
-            List<Binding> bs = bdHash.get(hash);
-            bs.add(b);
-        }
-        return new ArrayList<>(bdHash.values());
-    }
-
     public void findLinks(@NotNull Analyzer analyzer) {
         $.msg("Adding xref links");
         Progress progress = new Progress(analyzer.getAllBindings().size(), 50);
@@ -70,7 +57,7 @@ class Linker {
             }
         }
 
-        for (List<Binding> bs : correlateBindings(linkBindings)) {
+        for (List<Binding> bs : $.correlateBindings(linkBindings)) {
             processDef(bs);
             progress.tick();
         }

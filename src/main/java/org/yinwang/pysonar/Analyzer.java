@@ -511,19 +511,31 @@ public class Analyzer {
         applyUncalled();
 
         // mark unused variables
-        for (Binding b : allBindings) {
-            if (!(b.type instanceof ClassType) &&
-                    !(b.type instanceof FunType) &&
-                    !(b.type instanceof ModuleType)
-                    && b.refs.isEmpty())
-            {
-                Analyzer.self.putProblem(b.node, "Unused variable: " + b.name);
+        for (List<Binding> bset : $.correlateBindings(allBindings)) {
+            if (unusedBindingSet(bset)) {
+                Binding first = bset.get(0);
+                Analyzer.self.putProblem(first.node, "Unused variable: " + first.name);
             }
         }
 
         $.msg(getAnalysisSummary());
     }
 
+    private boolean unusedBindingSet(List<Binding> bindings) {
+        for (Binding binding : bindings) {
+            if (!unused(binding)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean unused(Binding binding) {
+        return (!(binding.type instanceof ClassType) &&
+                !(binding.type instanceof FunType) &&
+                !(binding.type instanceof ModuleType)
+                && binding.refs.isEmpty());
+    }
 
     public void close() {
         astCache.close();
