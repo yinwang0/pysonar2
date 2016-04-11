@@ -90,7 +90,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
         if (Op.isBoolean(node.op)) {
             return Type.BOOL;
-        } else if (ltype.equals(rtype)) {
+        } else if (ltype == Type.UNKNOWN || rtype == Type.UNKNOWN || ltype.equals(rtype)) {
             return UnionType.union(ltype, rtype);
         } else {
             Analyzer.self.putProblem(node, "Cannot apply binary operator " + node.op + " to type " + ltype + " and " + rtype);

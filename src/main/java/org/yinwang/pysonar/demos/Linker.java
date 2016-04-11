@@ -46,24 +46,31 @@ class Linker {
         outDir = outdir;
     }
 
+    private List<List<Binding>> correlateBindings(List<Binding> bindings) {
+        Map<Integer, List<Binding>> bdHash = new HashMap<>();
+        for (Binding b : bindings) {
+            int hash = b.hashCode();
+            if (!bdHash.containsKey(hash)) {
+                bdHash.put(hash, new ArrayList<>());
+            }
+            List<Binding> bs = bdHash.get(hash);
+            bs.add(b);
+        }
+        return new ArrayList<>(bdHash.values());
+    }
 
     public void findLinks(@NotNull Analyzer analyzer) {
         $.msg("Adding xref links");
         Progress progress = new Progress(analyzer.getAllBindings().size(), 50);
+        List<Binding> linkBindings = new ArrayList<>();
 
-        Map<Integer, List<Binding>> defHash = new HashMap<>();
-        for (Binding b : analyzer.getAllBindings()) {
-            if (b.kind != Binding.Kind.MODULE) {
-                int hash = b.hashCode();
-                if (!defHash.containsKey(hash)) {
-                    defHash.put(hash, new ArrayList<>());
-                }
-                List<Binding> bs = defHash.get(hash);
-                bs.add(b);
+        for (Binding binding : analyzer.getAllBindings()) {
+            if (binding.kind != Binding.Kind.MODULE) {
+                linkBindings.add(binding);
             }
         }
 
-        for (List<Binding> bs : defHash.values()) {
+        for (List<Binding> bs : correlateBindings(linkBindings)) {
             processDef(bs);
             progress.tick();
         }
