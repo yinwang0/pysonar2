@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.*;
 import org.yinwang.pysonar.ast.Node;
+import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.UnionType;
@@ -90,6 +91,16 @@ class Linker {
     }
 
 
+    private boolean containsFunType(List<Type> types) {
+        for (Type type: types) {
+            if (type instanceof FunType) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     private void processDef(@NotNull List<Binding> bindings) {
         Binding first = bindings.get(0);
         String qname = first.qname;
@@ -100,7 +111,12 @@ class Linker {
 
         List<Type> types = bindings.stream().map(b -> b.type).collect(Collectors.toList());
         Style style = new Style(Style.Type.ANCHOR, first.start, first.end);
-        style.message = UnionType.union(types).toString();
+        if (containsFunType(types)) {
+            style.message = "<function>";
+        } else {
+            style.message = UnionType.union(types).toString();
+        }
+
         style.url = first.qname;
         style.id = qname;
         addFileStyle(first.getFile(), style);
@@ -142,7 +158,11 @@ class Linker {
             link.id = qname;
 
             List<Type> types = bindings.stream().map(b -> b.type).collect(Collectors.toList());
-            link.message = UnionType.union(types).toString();
+            if (containsFunType(types)) {
+                link.message = "<function>";
+            } else {
+                link.message = UnionType.union(types).toString();
+            }
 
             // Currently jump to the first binding only. Should change to have a
             // hover menu or something later.
