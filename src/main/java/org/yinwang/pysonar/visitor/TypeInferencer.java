@@ -22,7 +22,9 @@ import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
 import static org.yinwang.pysonar.Binding.Kind.CLASS;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,11 +94,17 @@ public class TypeInferencer implements Visitor1<Type, State> {
             return Type.BOOL;
         } else if (ltype == Type.UNKNOWN || rtype == Type.UNKNOWN || ltype.equals(rtype)) {
             return UnionType.union(ltype, rtype);
-        } else {
-            Analyzer.self.putProblem(node, "Cannot apply binary operator " + node.op.getRep() +
-                                           " to type " + ltype + " and " + rtype);
-            return Type.UNKNOWN;
+        } else if (node.op == Op.Sub) {
+            if (ltype instanceof InstanceType) {
+                Type opType = ltype.table.lookupAttrType("__sub__");
+                    if (opType instanceof FunType) {
+                        return apply((FunType) opType, Collections.singletonList(rtype), null, null, null, node);
+                    }
+                }
         }
+        Analyzer.self.putProblem(node, "Cannot apply binary operator " + node.op.getRep() +
+                                       " to type " + ltype + " and " + rtype);
+        return Type.UNKNOWN;
     }
 
     @NotNull
