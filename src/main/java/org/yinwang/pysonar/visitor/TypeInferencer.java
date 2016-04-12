@@ -98,6 +98,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
             if (ltype instanceof InstanceType) {
                 Type opType = ltype.table.lookupAttrType("__sub__");
                     if (opType instanceof FunType) {
+                        ((FunType) opType).setSelfType(ltype);
                         return apply((FunType) opType, Collections.singletonList(rtype), null, null, null, node);
                     }
                 }
