@@ -89,18 +89,13 @@ public class TypeInferencer implements Visitor1<Type, State> {
     public Type visit(BinOp node, State s) {
         Type ltype = visit(node.left, s);
         Type rtype = visit(node.right, s);
-
-        if (ltype == Type.UNKNOWN || rtype == Type.UNKNOWN || ltype.equals(rtype)) {
-            return UnionType.union(ltype, rtype);
+        Type result = applyOp(node.op, ltype, rtype, node.op.getMethod(), node, node.left);
+        if (result != null) {
+            return result;
         } else {
-            Type result = applyOp(node.op, ltype, rtype, node.op.getMethod(), node, node.left);
-            if (result != null) {
-                return result;
-            } else {
-                Analyzer.self.putProblem(node, "Cannot apply binary operator " + node.op.getRep() +
-                                               " to type " + ltype + " and " + rtype);
-                return Type.UNKNOWN;
-            }
+            Analyzer.self.putProblem(node, "Cannot apply binary operator " + node.op.getRep() +
+                                           " to type " + ltype + " and " + rtype);
+            return Type.UNKNOWN;
         }
     }
 
