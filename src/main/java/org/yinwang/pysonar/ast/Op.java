@@ -4,45 +4,54 @@ import org.yinwang.pysonar.$;
 
 public enum Op {
     // numeral
-    Add,
-    Sub,
-    Mul,
-    MatMult,
-    Div,
-    Mod,
-    Pow,
-    FloorDiv,
+    Add("+"),
+    Sub("-"),
+    Mul("*"),
+    MatMult("@"),
+    Div("/"),
+    Mod("%"),
+    Pow("**"),
+    FloorDiv("//"),
 
     // comparison
-    Eq,
-    Eqv,
-    Equal,
-    Lt,
-    Gt,
+    Eq("is"),
+    Equal("=="),
+    Lt("<"),
+    Gt(">"),
 
     // bit
-    BitAnd,
-    BitOr,
-    BitXor,
-    In,
-    LShift,
-    RShift,
-    Invert,
+    BitAnd("&"),
+    BitOr("|"),
+    BitXor("^"),
+    In("in"),
+    LShift("<<"),
+    RShift(">>"),
+    Invert("~"),
 
     // boolean
-    And,
-    Or,
-    Not,
+    And("and"),
+    Or("or"),
+    Not("not"),
 
     // synthetic
-    NotEqual,
-    NotEq,
-    LtE,
-    GtE,
-    NotIn,
+    NotEqual("!="),
+    NotEq("is not"),
+    LtE("<="),
+    GtE(">="),
+    NotIn("not in"),
 
     // unsupported new operator
-    Unsupported;
+    Unsupported("??");
+
+    private String rep;
+
+    private Op(String rep) {
+        this.rep = rep;
+    }
+
+    public String getRep() {
+        return rep;
+    }
 
     public static Op invert(Op op) {
         if (op == Op.Lt) {
@@ -71,7 +80,6 @@ public enum Op {
 
     public static boolean isBoolean(Op op) {
         return op == Eq ||
-               op == Eqv ||
                op == Equal ||
                op == Lt ||
                op == Gt ||

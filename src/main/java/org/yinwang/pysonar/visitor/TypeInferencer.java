@@ -93,7 +93,8 @@ public class TypeInferencer implements Visitor1<Type, State> {
         } else if (ltype == Type.UNKNOWN || rtype == Type.UNKNOWN || ltype.equals(rtype)) {
             return UnionType.union(ltype, rtype);
         } else {
-            Analyzer.self.putProblem(node, "Cannot apply binary operator " + node.op + " to type " + ltype + " and " + rtype);
+            Analyzer.self.putProblem(node, "Cannot apply binary operator " + node.op.getRep() +
+                                           " to type " + ltype + " and " + rtype);
             return Type.UNKNOWN;
         }
     }
