@@ -90,22 +90,34 @@ public class TypeInferencer implements Visitor1<Type, State> {
         Type ltype = visit(node.left, s);
         Type rtype = visit(node.right, s);
 
-        if (Op.isBoolean(node.op)) {
-            return Type.BOOL;
-        } else if (ltype == Type.UNKNOWN || rtype == Type.UNKNOWN || ltype.equals(rtype)) {
+        if (ltype == Type.UNKNOWN || rtype == Type.UNKNOWN || ltype.equals(rtype)) {
             return UnionType.union(ltype, rtype);
-        } else if (node.op == Op.Sub) {
-            if (ltype instanceof InstanceType) {
-                Type opType = ltype.table.lookupAttrType("__sub__");
-                    if (opType instanceof FunType) {
-                        ((FunType) opType).setSelfType(ltype);
-                        return apply((FunType) opType, Collections.singletonList(rtype), null, null, null, node);
-                    }
-                }
+        } else {
+            Type result = applyOp(node.op, ltype, rtype, node.op.getMethod(), node, node.left);
+            if (result != null) {
+                return result;
+            } else {
+                Analyzer.self.putProblem(node, "Cannot apply binary operator " + node.op.getRep() +
+                                               " to type " + ltype + " and " + rtype);
+                return Type.UNKNOWN;
+            }
         }
-        Analyzer.self.putProblem(node, "Cannot apply binary operator " + node.op.getRep() +
-                                       " to type " + ltype + " and " + rtype);
-        return Type.UNKNOWN;
+    }
+
+    @Nullable
+    private Type applyOp(Op op, Type ltype, Type rtype, String method, Node node, Node left) {
+        if (ltype instanceof InstanceType) {
+            Type opType = ltype.table.lookupAttrType(method);
+            if (opType instanceof FunType) {
+                ((FunType) opType).setSelfType(ltype);
+                return apply((FunType) opType, Collections.singletonList(rtype), null, null, null, node);
+            } else {
+                Analyzer.self.putProblem(left, "Operator method " + method + " is not a function");
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     @NotNull

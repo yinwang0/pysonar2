@@ -1,32 +1,33 @@
 package org.yinwang.pysonar.ast;
 
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.$;
 
 public enum Op {
     // numeral
-    Add("+"),
-    Sub("-"),
-    Mul("*"),
-    MatMult("@"),
-    Div("/"),
-    Mod("%"),
-    Pow("**"),
-    FloorDiv("//"),
+    Add("+", "__add__"),
+    Sub("-", "__sub__"),
+    Mul("*", "__mul__"),
+    MatMult("@", "__matmult__"),
+    Div("/", "__div__"),
+    Mod("%", "__mod__"),
+    Pow("**", "__pow__"),
+    FloorDiv("//", "__floordiv__"),
 
     // comparison
     Eq("is"),
-    Equal("=="),
-    Lt("<"),
-    Gt(">"),
+    Equal("==", "__eq__"),
+    Lt("<", "__lt__"),
+    Gt(">", "__gt__"),
 
     // bit
-    BitAnd("&"),
-    BitOr("|"),
-    BitXor("^"),
+    BitAnd("&", "__and__"),
+    BitOr("|", "__or__"),
+    BitXor("^", "__xor__"),
     In("in"),
-    LShift("<<"),
-    RShift(">>"),
-    Invert("~"),
+    LShift("<<", "__lshift__"),
+    RShift(">>", "__rshift__"),
+    Invert("~", "__invert__"),
 
     // boolean
     And("and"),
@@ -34,10 +35,10 @@ public enum Op {
     Not("not"),
 
     // synthetic
-    NotEqual("!="),
+    NotEqual("!=", "__neq__"),
     NotEq("is not"),
-    LtE("<="),
-    GtE(">="),
+    LtE("<=", "__lte__"),
+    GtE(">=", "__gte__"),
     NotIn("not in"),
 
     // unsupported new operator
@@ -45,12 +46,26 @@ public enum Op {
 
     private String rep;
 
-    private Op(String rep) {
+    @Nullable
+    private String method;
+
+    Op(String rep, @Nullable String method) {
         this.rep = rep;
+        this.method = method;
+    }
+
+    Op(String rep) {
+        this.rep = rep;
+        this.method = null;
     }
 
     public String getRep() {
         return rep;
+    }
+
+    @Nullable
+    public String getMethod() {
+        return method;
     }
 
     public static Op invert(Op op) {
