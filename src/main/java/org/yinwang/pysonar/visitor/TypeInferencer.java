@@ -22,7 +22,6 @@ import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
 import static org.yinwang.pysonar.Binding.Kind.CLASS;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -89,28 +88,44 @@ public class TypeInferencer implements Visitor1<Type, State> {
     public Type visit(BinOp node, State s) {
         Type ltype = visit(node.left, s);
         Type rtype = visit(node.right, s);
-        Type result = applyOp(node.op, ltype, rtype, node.op.getMethod(), node, node.left);
-        if (result != null) {
-            return result;
-        } else {
-            Analyzer.self.putProblem(node, "Cannot apply binary operator " + node.op.getRep() +
-                                           " to type " + ltype + " and " + rtype);
-            return Type.UNKNOWN;
+        if (operatorOverridden(ltype, node.op.getMethod())) {
+            Type result = applyOp(node.op, ltype, rtype, node.op.getMethod(), node, node.left);
+            if (result != null) {
+                return result;
+            }
+        } else if (Op.isBoolean(node.op)) {
+            return Type.BOOL;
+        } else if (ltype == Type.UNKNOWN) {
+            return rtype;
+        } else if (rtype == Type.UNKNOWN) {
+            return ltype;
+        } else if (ltype.typeEquals(rtype)) {
+            return ltype;
         }
+
+        Analyzer.self.putProblem(node, "Cannot apply binary operator " + node.op.getRep() +
+                                       " to type " + ltype + " and " + rtype);
+        return Type.UNKNOWN;
+    }
+
+    private boolean operatorOverridden(Type type, String method) {
+        if (type instanceof InstanceType) {
+            Type opType = type.table.lookupAttrType(method);
+            if (opType != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Nullable
     private Type applyOp(Op op, Type ltype, Type rtype, String method, Node node, Node left) {
-        if (ltype instanceof InstanceType) {
-            Type opType = ltype.table.lookupAttrType(method);
-            if (opType instanceof FunType) {
-                ((FunType) opType).setSelfType(ltype);
-                return apply((FunType) opType, Collections.singletonList(rtype), null, null, null, node);
-            } else {
-                Analyzer.self.putProblem(left, "Operator method " + method + " is not a function");
-                return null;
-            }
+        Type opType = ltype.table.lookupAttrType(method);
+        if (opType instanceof FunType) {
+            ((FunType) opType).setSelfType(ltype);
+            return apply((FunType) opType, Collections.singletonList(rtype), null, null, null, node);
         } else {
+            Analyzer.self.putProblem(left, "Operator method " + method + " is not a function");
             return null;
         }
     }
