@@ -133,11 +133,12 @@ public class Demo {
         StringBuilder result = new StringBuilder((int) (source.length() * 1.2));
         int count = 1;
         for (String line : source.split("\n")) {
-            result.append("<span class='lineno'>");
-            result.append(String.format("%1$4d", count++));
-            result.append("</span> ");
+            result.append(String.format("<a id='L%1$d' href='#L%1$d' class='lineno'>", count));
+            result.append(String.format("%1$4d", count));
+            result.append("</a> ");
             result.append(line);
             result.append("\n");
+            count++;
         }
         return result.toString();
     }
