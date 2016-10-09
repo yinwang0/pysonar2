@@ -892,7 +892,6 @@ public class Parser {
         try {
             ProcessBuilder builder = new ProcessBuilder(pythonExe, "-i", jsonizer);
             builder.redirectErrorStream(true);
-            builder.redirectError(new File(parserLog));
             builder.redirectOutput(new File(parserLog));
             builder.environment().remove("PYTHONPATH");
             p = builder.start();
