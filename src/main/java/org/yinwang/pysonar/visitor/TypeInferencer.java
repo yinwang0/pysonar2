@@ -1229,21 +1229,18 @@ public class TypeInferencer implements Visitor1<Type, State> {
                     bind(s, xs.get(i), vs.get(i), kind);
                 }
             }
-        } else {
-            if (rvalue instanceof ListType) {
-                bind(s, xs, ((ListType) rvalue).toTupleType(xs.size()), kind);
-            } else if (rvalue instanceof DictType) {
-                bind(s, xs, ((DictType) rvalue).toTupleType(xs.size()), kind);
-            } else if (rvalue.isUnknownType()) {
-                for (Node x : xs) {
-                    bind(s, x, Type.UNKNOWN, kind);
-                }
-            } else if (xs.size() > 0) {
-                Analyzer.self.putProblem(xs.get(0).file,
-                                         xs.get(0).start,
-                                         xs.get(xs.size() - 1).end,
-                                         "unpacking non-iterable: " + rvalue);
+        } else if (rvalue instanceof ListType) {
+            bind(s, xs, ((ListType) rvalue).toTupleType(xs.size()), kind);
+        } else if (rvalue instanceof DictType) {
+            bind(s, xs, ((DictType) rvalue).toTupleType(xs.size()), kind);
+        } else if (xs.size() > 0) {
+            for (Node x : xs) {
+                bind(s, x, Type.UNKNOWN, kind);
             }
+            Analyzer.self.putProblem(xs.get(0).file,
+                                     xs.get(0).start,
+                                     xs.get(xs.size() - 1).end,
+                                     "unpacking non-iterable: " + rvalue);
         }
     }
 

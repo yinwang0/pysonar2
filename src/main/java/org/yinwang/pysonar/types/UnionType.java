@@ -3,9 +3,12 @@ package org.yinwang.pysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Binding;
+import org.yinwang.pysonar.ast.Tuple;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -100,9 +103,21 @@ public class UnionType extends Type {
             return u;
         } else if (v != Type.NONE && v == Type.NONE) {
             return v;
+        } else if (v instanceof TupleType && u instanceof TupleType &&
+                   ((TupleType) v).size() == ((TupleType) u).size()) {
+            return union((TupleType) u, (TupleType) v);
         } else {
             return new UnionType(u, v);
         }
+    }
+
+    @NotNull
+    public static Type union(@NotNull TupleType u, @NotNull TupleType v) {
+        List<Type> types = new ArrayList<Type>();
+        for (int i = 0; i < u.size(); i++) {
+            types.add(union(u.get(i), v.get(i)));
+        }
+        return new TupleType(types);
     }
 
     public static Type union(Collection<Type> types) {
