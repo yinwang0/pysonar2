@@ -101,7 +101,7 @@ public class UnionType extends Type {
             return v;
         } else if (u != Type.NONE && v == Type.NONE) {
             return u;
-        } else if (v != Type.NONE && v == Type.NONE) {
+        } else if (v != Type.NONE && u == Type.NONE) {
             return v;
         } else if (v instanceof TupleType && u instanceof TupleType &&
                    ((TupleType) v).size() == ((TupleType) u).size()) {
