@@ -623,7 +623,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @NotNull
     @Override
     public Type visit(PyInt node, State s) {
-        return Types.INT;
+        return Types.IntInstance;
     }
 
     @NotNull
