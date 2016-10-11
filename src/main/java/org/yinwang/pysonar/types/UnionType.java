@@ -97,9 +97,9 @@ public class UnionType extends Type {
             return u;
         } else if (v != Types.UNKNOWN && u == Types.UNKNOWN) {
             return v;
-        } else if (u != Types.NONE && v == Types.NONE) {
+        } else if (u != Types.NoneInstance && v == Types.NoneInstance) {
             return u;
-        } else if (v != Types.NONE && u == Types.NONE) {
+        } else if (v != Types.NoneInstance && u == Types.NoneInstance) {
             return v;
         } else if (u instanceof TupleType && v instanceof TupleType &&
                    ((TupleType) u).size() == ((TupleType) v).size()) {
@@ -133,7 +133,7 @@ public class UnionType extends Type {
     @Nullable
     public Type firstUseful() {
         for (Type type : types) {
-            if (!type.isUnknownType() && type != Types.NONE) {
+            if (!type.isUnknownType() && type != Types.NoneInstance) {
                 return type;
             }
         }

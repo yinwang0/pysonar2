@@ -79,7 +79,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @Override
     public Type visit(Await node, State s) {
         if (node.value == null) {
-            return Types.NONE;
+            return Types.NoneInstance;
         } else {
             return visit(node.value, s);
         }
@@ -96,7 +96,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
                 return result;
             }
         } else if (Op.isBoolean(node.op)) {
-            return Types.BOOL;
+            return Types.BoolInstance;
         } else if (ltype == Types.UNKNOWN) {
             return rtype;
         } else if (rtype == Types.UNKNOWN) {
@@ -168,13 +168,13 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @NotNull
     @Override
     public Type visit(Break node, State s) {
-        return Types.NONE;
+        return Types.NoneInstance;
     }
 
     @NotNull
     @Override
     public Type visit(Bytes node, State s) {
-        return Types.STR;
+        return Types.StrInstance;
     }
 
     @NotNull
@@ -228,11 +228,11 @@ public class TypeInferencer implements Visitor1<Type, State> {
         // XXX: Not sure if we should add "bases", "name" and "dict" here. They
         // must be added _somewhere_ but I'm just not sure if it should be HERE.
         node.addSpecialAttribute(classType.table, "__bases__", new TupleType(baseTypes));
-        node.addSpecialAttribute(classType.table, "__name__", Types.STR);
+        node.addSpecialAttribute(classType.table, "__name__", Types.StrInstance);
         node.addSpecialAttribute(classType.table, "__dict__",
-                                 new DictType(Types.STR, Types.UNKNOWN));
-        node.addSpecialAttribute(classType.table, "__module__", Types.STR);
-        node.addSpecialAttribute(classType.table, "__doc__", Types.STR);
+                                 new DictType(Types.StrInstance, Types.UNKNOWN));
+        node.addSpecialAttribute(classType.table, "__module__", Types.StrInstance);
+        node.addSpecialAttribute(classType.table, "__doc__", Types.StrInstance);
 
         // Bind ClassType to name here before resolving the body because the
         // methods need node type as self.
@@ -295,7 +295,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @NotNull
     @Override
     public Type visit(Ellipsis node, State s) {
-        return Types.NONE;
+        return Types.NoneInstance;
     }
 
     @NotNull
@@ -611,13 +611,13 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @NotNull
     @Override
     public Type visit(PyComplex node, State s) {
-        return Types.COMPLEX;
+        return Types.ComplexInstance;
     }
 
     @NotNull
     @Override
     public Type visit(PyFloat node, State s) {
-        return Types.FLOAT;
+        return Types.FloatInstance;
     }
 
     @NotNull
@@ -684,14 +684,14 @@ public class TypeInferencer implements Visitor1<Type, State> {
         if (node.value != null) {
             visit(node.value, s);
         }
-        return Types.STR;
+        return Types.StrInstance;
     }
 
     @NotNull
     @Override
     public Type visit(Return node, State s) {
         if (node.value == null) {
-            return Types.NONE;
+            return Types.NoneInstance;
         } else {
             return visit(node.value, s);
         }
@@ -728,7 +728,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @NotNull
     @Override
     public Type visit(Str node, State s) {
-        return Types.STR;
+        return Types.StrInstance;
     }
 
     @NotNull
@@ -796,13 +796,13 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @NotNull
     @Override
     public Type visit(Unsupported node, State s) {
-        return Types.NONE;
+        return Types.NoneInstance;
     }
 
     @NotNull
     @Override
     public Type visit(Url node, State s) {
-        return Types.STR;
+        return Types.StrInstance;
     }
 
     @NotNull
@@ -846,7 +846,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
         if (node.value != null) {
             return new ListType(visit(node.value, s));
         } else {
-            return Types.NONE;
+            return Types.NoneInstance;
         }
     }
 
@@ -856,7 +856,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
         if (node.value != null) {
             return new ListType(visit(node.value, s));
         } else {
-            return Types.NONE;
+            return Types.NoneInstance;
         }
     }
 
@@ -1065,7 +1065,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
                 bind(
                     funcTable,
                     restKw,
-                    new DictType(Types.STR, hashType),
+                    new DictType(Types.StrInstance, hashType),
                     Binding.Kind.PARAMETER);
             } else {
                 bind(funcTable,
@@ -1132,7 +1132,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
         if (toType instanceof UnionType) {
             for (Type t : ((UnionType) toType).types) {
-                if (t == Types.NONE || t == Types.CONT) {
+                if (t == Types.NoneInstance || t == Types.CONT) {
                     hasNone = true;
                 } else {
                     hasOther = true;
@@ -1158,7 +1158,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
                     addWarning(node, "Possible KeyError (wrong type for subscript)");
                 }
                 return ((DictType) vt).valueType;
-            } else if (vt == Types.STR) {
+            } else if (vt == Types.StrInstance) {
                 if (st != null && (st instanceof ListType || st.isNumType())) {
                     return vt;
                 } else {
