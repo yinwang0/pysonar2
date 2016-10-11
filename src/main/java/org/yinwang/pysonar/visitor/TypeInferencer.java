@@ -19,9 +19,7 @@ import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.Types;
 import org.yinwang.pysonar.types.UnionType;
 
-import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
-import static org.yinwang.pysonar.Binding.Kind.CLASS;
-import static org.yinwang.pysonar.Binding.Kind.VARIABLE;
+import static org.yinwang.pysonar.Binding.Kind.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,7 +35,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @Override
     public Type visit(Module node, State s) {
         ModuleType mt = new ModuleType(node.name, node.file, Analyzer.self.globaltable);
-        s.insert($.moduleQname(node.file), node, mt, Binding.Kind.MODULE);
+        s.insert($.moduleQname(node.file), node, mt, MODULE);
         if (node.body != null) {
             visit(node.body, mt.table);
         }
@@ -246,7 +244,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
         // Bind ClassType to name here before resolving the body because the
         // methods need node type as self.
-        bind(s, node.name, classType, Binding.Kind.CLASS);
+        bind(s, node.name, classType, CLASS);
         if (node.body != null) {
             visit(node.body, classType.table);
         }
@@ -256,7 +254,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @NotNull
     @Override
     public Type visit(Comprehension node, State s) {
-        bindIter(s, node.target, node.iter, Binding.Kind.SCOPE);
+        bindIter(s, node.target, node.iter, SCOPE);
         visit(node.ifs, s);
         return visit(node.target, s);
     }
@@ -345,7 +343,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @NotNull
     @Override
     public Type visit(For node, State s) {
-        bindIter(s, node.target, node.iter, Binding.Kind.SCOPE);
+        bindIter(s, node.target, node.iter, SCOPE);
 
         Type ret;
         if (node.body == null) {
@@ -375,12 +373,12 @@ public class TypeInferencer implements Visitor1<Type, State> {
         } else {
             if (s.stateType == State.StateType.CLASS) {
                 if ("__init__".equals(node.name.id)) {
-                    funkind = Binding.Kind.CONSTRUCTOR;
+                    funkind = CONSTRUCTOR;
                 } else {
-                    funkind = Binding.Kind.METHOD;
+                    funkind = METHOD;
                 }
             } else {
-                funkind = Binding.Kind.FUNCTION;
+                funkind = FUNCTION;
             }
 
             Type outType = s.type;
@@ -516,7 +514,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
             if (mod == null) {
                 addWarningToNode(node, "Cannot load module");
             } else if (a.asname != null) {
-                s.insert(a.asname.id, a.asname, mod, Binding.Kind.VARIABLE);
+                s.insert(a.asname.id, a.asname, mod, VARIABLE);
             }
         }
         return Types.CONT;
@@ -553,9 +551,9 @@ public class TypeInferencer implements Visitor1<Type, State> {
                     Type mod2 = Analyzer.self.loadModule(ext, s);
                     if (mod2 != null) {
                         if (a.asname != null) {
-                            s.insert(a.asname.id, a.asname, mod2, Binding.Kind.VARIABLE);
+                            s.insert(a.asname.id, a.asname, mod2, VARIABLE);
                         } else {
-                            s.insert(first.id, first, mod2, Binding.Kind.VARIABLE);
+                            s.insert(first.id, first, mod2, VARIABLE);
                         }
                     }
                 }
@@ -1066,7 +1064,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
                     }
                 }
             }
-            bind(funcTable, arg, aType, Binding.Kind.PARAMETER);
+            bind(funcTable, arg, aType, PARAMETER);
             fromType.add(aType);
         }
 
@@ -1077,12 +1075,12 @@ public class TypeInferencer implements Visitor1<Type, State> {
                     funcTable,
                     restKw,
                     new DictType(Types.StrInstance, hashType),
-                    Binding.Kind.PARAMETER);
+                    PARAMETER);
             } else {
                 bind(funcTable,
                      restKw,
                      Types.UNKNOWN,
-                     Binding.Kind.PARAMETER);
+                     PARAMETER);
             }
         }
 
@@ -1093,21 +1091,21 @@ public class TypeInferencer implements Visitor1<Type, State> {
                     for (int i = 0; i < nAfter; i++) {
                         bind(funcTable, func.afterRest.get(i),
                              pTypes.get(pTypes.size() - nAfter + i),
-                             Binding.Kind.PARAMETER);
+                             PARAMETER);
                     }
                     if (pTypes.size() - nAfter > 0) {
                         Type restType = new TupleType(pTypes.subList(pSize, pTypes.size() - nAfter));
-                        bind(funcTable, rest, restType, Binding.Kind.PARAMETER);
+                        bind(funcTable, rest, restType, PARAMETER);
                     }
                 } else {
                     Type restType = new TupleType(pTypes.subList(pSize, pTypes.size()));
-                    bind(funcTable, rest, restType, Binding.Kind.PARAMETER);
+                    bind(funcTable, rest, restType, PARAMETER);
                 }
             } else {
                 bind(funcTable,
                      rest,
                      Types.UNKNOWN,
-                     Binding.Kind.PARAMETER);
+                     PARAMETER);
             }
         }
 
@@ -1235,12 +1233,12 @@ public class TypeInferencer implements Visitor1<Type, State> {
     public void bind(@NotNull State s, Node target, @NotNull Type rvalue) {
         Binding.Kind kind;
         if (s.stateType == State.StateType.FUNCTION) {
-            kind = Binding.Kind.VARIABLE;
+            kind = VARIABLE;
         } else if (s.stateType == State.StateType.CLASS ||
                    s.stateType == State.StateType.INSTANCE) {
-            kind = Binding.Kind.ATTRIBUTE;
+            kind = ATTRIBUTE;
         } else {
-            kind = Binding.Kind.SCOPE;
+            kind = SCOPE;
         }
         bind(s, target, rvalue, kind);
     }
