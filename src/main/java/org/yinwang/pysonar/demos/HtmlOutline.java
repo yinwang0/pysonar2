@@ -71,18 +71,8 @@ class HtmlOutline {
 
         add("<a href='#");
         add(e.getQname());
-        add("', onmouseover='highlight(\"" + $.escapeQname(e.getQname()) + "\")'>");
-
-        if (style != null) {
-            add("<span class='");
-            add(style);
-            add("'>");
-        }
+        add("', xid='" + e.getQname() + "'>");
         add(e.getName());
-        if (style != null) {
-            add("</span>");
-        }
-
         add("</a>");
 
         if (e.isBranch()) {

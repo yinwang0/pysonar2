@@ -592,4 +592,10 @@ public class $ {
         }
         return new ArrayList<>(bdHash.values());
     }
+
+    public static void main(String[] args) {
+        String qname = "C:.code2.pysonar2.tests.t1.z";
+        System.out.println(escapeQname(qname));
+    }
+
 }
