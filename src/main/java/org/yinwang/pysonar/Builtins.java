@@ -762,7 +762,7 @@ public class Builtins {
             addFunction("complex", newLibUrl("functions", "complex"), Types.COMPLEX);
             addClass("dict", newLibUrl("stdtypes", "typesmapping"), BaseDict);
             addFunction("file", newLibUrl("functions", "file"), BaseFileInst);
-            addFunction("int", newLibUrl("functions", "int"), Types.INT);
+            addAttr("int", newLibUrl("stdtypes", "int"), Types.INT);
             addFunction("long", newLibUrl("functions", "long"), Types.INT);
             addFunction("float", newLibUrl("functions", "float"), Types.FLOAT);
             addFunction("list", newLibUrl("functions", "list"), new InstanceType(BaseList));

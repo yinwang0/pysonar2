@@ -21,6 +21,7 @@ import org.yinwang.pysonar.types.UnionType;
 
 import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
 import static org.yinwang.pysonar.Binding.Kind.CLASS;
+import static org.yinwang.pysonar.Binding.Kind.VARIABLE;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -431,10 +432,10 @@ public class TypeInferencer implements Visitor1<Type, State> {
                         Node id = testCall.args.get(0);
                         Node typeExp = testCall.args.get(1);
                         Type t = visit(typeExp, s);
+                        s1.insert(id.name, id, t, VARIABLE);
                     }
                 }
             }
-
         }
 
         if (node.body != null) {
