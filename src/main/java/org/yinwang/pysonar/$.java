@@ -25,9 +25,6 @@ import java.util.jar.JarFile;
  */
 public class $ {
 
-    public static final Charset UTF_8 = Charset.forName("UTF-8");
-
-
     public static String baseFileName(String filename) {
         return new File(filename).getName();
     }
@@ -148,7 +145,7 @@ public class $ {
         if (content == null) {
             return null;
         } else {
-            return new String(content, UTF_8);
+            return new String(content, Charset.forName("UTF-8"));
         }
     }
 
