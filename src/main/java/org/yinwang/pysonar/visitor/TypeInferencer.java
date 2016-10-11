@@ -461,7 +461,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
             if (testCall.func instanceof Name) {
                 Name testFunc = (Name) testCall.func;
                 if (testFunc.id.equals("isinstance")) {
-                    if (testCall.args.size() == 2) {
+                    if (testCall.args.size() >= 2) {
                         Node id = testCall.args.get(0);
                         Node typeExp = testCall.args.get(1);
                         Type type = visit(typeExp, s);
@@ -469,6 +469,10 @@ public class TypeInferencer implements Visitor1<Type, State> {
                             type = ((ClassType) type).getCanon();
                         }
                         s1.insert(id.name, id, type, VARIABLE);
+                    }
+
+                    if (testCall.args.size() != 2) {
+                        Analyzer.self.putProblem(test, "Incorrect number of arguments for isinstance");
                     }
                 }
             }

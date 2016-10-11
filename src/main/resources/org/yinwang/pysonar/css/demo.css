@@ -24,4 +24,4 @@ table, th, td { border: 1px solid lightgrey; padding: 5px; corner: rounded; }
 .parameter {color: #777777;}
 .string {color: #999999;}
 .type-name {color: #4682b4;}
-.warning {border-bottom: 1px solid orange; padding-bottom: 2px}
+.warning {border-bottom: 1px solid orange; padding-bottom: 1px}
