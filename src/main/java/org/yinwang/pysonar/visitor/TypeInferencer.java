@@ -420,26 +420,9 @@ public class TypeInferencer implements Visitor1<Type, State> {
         State s1 = s.copy();
         State s2 = s.copy();
 
-        // ignore condition for now
+        // Ignore result because Python can treat anything as bool
         visit(node.test, s);
-
-        if (node.test instanceof Call) {
-            Call testCall = (Call) node.test;
-            if (testCall.func instanceof Name) {
-                Name testFunc = (Name) testCall.func;
-                if (testFunc.id.equals("isinstance")) {
-                    if (testCall.args.size() == 2) {
-                        Node id = testCall.args.get(0);
-                        Node typeExp = testCall.args.get(1);
-                        Type type = visit(typeExp, s);
-                        if (type instanceof ClassType) {
-                            type = ((ClassType) type).getCanon();
-                        }
-                        s1.insert(id.name, id, type, VARIABLE);
-                    }
-                }
-            }
-        }
+        inferInstance(node.test, s, s1);
 
         if (node.body != null) {
             type1 = visit(node.body, s1);
@@ -467,6 +450,29 @@ public class TypeInferencer implements Visitor1<Type, State> {
         }
 
         return UnionType.union(type1, type2);
+    }
+
+    /**
+     * Helper for branch inference for 'isinstance'
+     */
+    private void inferInstance(Node test, State s, State s1) {
+        if (test instanceof Call) {
+            Call testCall = (Call) test;
+            if (testCall.func instanceof Name) {
+                Name testFunc = (Name) testCall.func;
+                if (testFunc.id.equals("isinstance")) {
+                    if (testCall.args.size() == 2) {
+                        Node id = testCall.args.get(0);
+                        Node typeExp = testCall.args.get(1);
+                        Type type = visit(typeExp, s);
+                        if (type instanceof ClassType) {
+                            type = ((ClassType) type).getCanon();
+                        }
+                        s1.insert(id.name, id, type, VARIABLE);
+                    }
+                }
+            }
+        }
     }
 
     @NotNull
