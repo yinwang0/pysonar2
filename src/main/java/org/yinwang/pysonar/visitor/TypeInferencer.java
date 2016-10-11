@@ -564,8 +564,6 @@ public class TypeInferencer implements Visitor1<Type, State> {
             Analyzer.self.resolved.add(node);
             Analyzer.self.unresolved.remove(node);
             return State.makeUnion(b);
-        } else if (node.id.equals("True") || node.id.equals("False")) {
-            return Type.BOOL;
         } else {
             Analyzer.self.putProblem(node, "unbound variable " + node.id);
             Analyzer.self.unresolved.add(node);

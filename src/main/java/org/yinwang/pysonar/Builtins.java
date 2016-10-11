@@ -818,10 +818,8 @@ public class Builtins {
             }
             BaseException = (ClassType) table.lookupType("BaseException");
 
-            for (String f : list("True", "False")) {
-                addAttr(f, newDataModelUrl("org/yinwang/pysonar/types"), Type.BOOL);
-            }
-
+            addAttr("True", newDataModelUrl("org/yinwang/pysonar/types"), Type.BOOL);
+            addAttr("False", newDataModelUrl("org/yinwang/pysonar/types"), Type.BOOL);
             addAttr("None", newDataModelUrl("org/yinwang/pysonar/types"), Type.NONE);
             addFunction("open", newTutUrl("inputoutput.html#reading-and-writing-files"), BaseFileInst);
             addFunction("__import__", newLibUrl("functions"), newModule("<?>"));
