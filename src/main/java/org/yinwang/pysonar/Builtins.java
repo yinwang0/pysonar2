@@ -757,19 +757,22 @@ public class Builtins {
             Analyzer.self.moduleTable.insert(name, liburl(), module, MODULE);
             table.addSuper(BaseModule.table);
 
-            addClass("None", newLibUrl("constants"), Types.NoneInstance);
+            addClass("object", newLibUrl("stdtypes", "object"), Types.ObjectClass);
+            addFunction("type", newLibUrl("functions", "type"), Types.TypeClass);
+
             addFunction("bool", newLibUrl("functions", "bool"), Types.BoolInstance);
-            addFunction("complex", newLibUrl("functions", "complex"), Types.ComplexInstance);
+            addClass("int", newLibUrl("stdtypes", "int"), Types.IntClass);
+            addClass("str", newLibUrl("stdtypes", "str"), Types.StrClass);
+            addClass("long", newLibUrl("stdtypes", "long"), Types.LongClass);
+            addClass("float", newLibUrl("stdtypes", "float"), Types.FloatClass);
+            addClass("complex", newLibUrl("stdtypes", "complex"), Types.ComplexClass);
+
+            addClass("None", newLibUrl("stdtypes", "None"), Types.NoneInstance);
+
             addClass("dict", newLibUrl("stdtypes", "typesmapping"), BaseDict);
             addFunction("file", newLibUrl("functions", "file"), BaseFileInst);
-            addAttr("int", newLibUrl("stdtypes", "int"), Types.IntClass);
-            addFunction("long", newLibUrl("functions", "long"), Types.IntInstance);
-            addFunction("float", newLibUrl("functions", "float"), Types.FloatInstance);
             addFunction("list", newLibUrl("functions", "list"), new InstanceType(BaseList));
-            addFunction("object", newLibUrl("functions", "object"), new InstanceType(objectType));
-            addFunction("str", newLibUrl("functions", "str"), Types.StrInstance);
             addFunction("tuple", newLibUrl("functions", "tuple"), new InstanceType(BaseTuple));
-            addFunction("type", newLibUrl("functions", "type"), new InstanceType(BaseType));
 
             // XXX:  need to model the following as built-in class types:
             //   basestring, bool, buffer, frozenset, property, set, slice,
