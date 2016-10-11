@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.State;
-import org.yinwang.pysonar.TypeStack;
 import org.yinwang.pysonar.ast.FunctionDef;
 import org.yinwang.pysonar.hash.MyHashMap;
 
@@ -73,7 +72,7 @@ public class FunType extends Type {
         if (!arrows.isEmpty()) {
             return arrows.values().iterator().next();
         } else {
-            return Type.UNKNOWN;
+            return Types.UNKNOWN;
         }
     }
 
@@ -120,7 +119,7 @@ public class FunType extends Type {
             return true;
         }
 
-        if (type1.isUnknownType() || type1 == Type.NONE || type1.equals(type2)) {
+        if (type1.isUnknownType() || type1 == Types.NONE || type1.equals(type2)) {
             return true;
         }
 

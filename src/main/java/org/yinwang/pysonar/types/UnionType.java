@@ -2,8 +2,6 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.Binding;
-import org.yinwang.pysonar.ast.Tuple;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,8 +50,8 @@ public class UnionType extends Type {
             Set<Type> types = new HashSet<>(((UnionType) t1).types);
             types.remove(t2);
             return UnionType.newUnion(types);
-        } else if (t1 != Type.CONT && t1 == t2) {
-            return Type.UNKNOWN;
+        } else if (t1 != Types.CONT && t1 == t2) {
+            return Types.UNKNOWN;
         } else {
             return t1;
         }
@@ -62,7 +60,7 @@ public class UnionType extends Type {
 
     @NotNull
     static public Type newUnion(@NotNull Collection<Type> types) {
-        Type t = Type.UNKNOWN;
+        Type t = Types.UNKNOWN;
         for (Type nt : types) {
             t = union(t, nt);
         }
@@ -95,13 +93,13 @@ public class UnionType extends Type {
     public static Type union(@NotNull Type u, @NotNull Type v) {
         if (u.equals(v)) {
             return u;
-        } else if (u != Type.UNKNOWN && v == Type.UNKNOWN) {
+        } else if (u != Types.UNKNOWN && v == Types.UNKNOWN) {
             return u;
-        } else if (v != Type.UNKNOWN && u == Type.UNKNOWN) {
+        } else if (v != Types.UNKNOWN && u == Types.UNKNOWN) {
             return v;
-        } else if (u != Type.NONE && v == Type.NONE) {
+        } else if (u != Types.NONE && v == Types.NONE) {
             return u;
-        } else if (v != Type.NONE && u == Type.NONE) {
+        } else if (v != Types.NONE && u == Types.NONE) {
             return v;
         } else if (u instanceof TupleType && v instanceof TupleType &&
                    ((TupleType) u).size() == ((TupleType) v).size()) {
@@ -121,7 +119,7 @@ public class UnionType extends Type {
     }
 
     public static Type union(Collection<Type> types) {
-        Type result = Type.UNKNOWN;
+        Type result = Types.UNKNOWN;
         for (Type type: types) {
             result = UnionType.union(result, type);
         }
@@ -135,7 +133,7 @@ public class UnionType extends Type {
     @Nullable
     public Type firstUseful() {
         for (Type type : types) {
-            if (!type.isUnknownType() && type != Type.NONE) {
+            if (!type.isUnknownType() && type != Types.NONE) {
                 return type;
             }
         }

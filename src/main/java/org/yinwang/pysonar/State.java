@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.types.ModuleType;
 import org.yinwang.pysonar.types.Type;
+import org.yinwang.pysonar.types.Types;
 import org.yinwang.pysonar.types.UnionType;
 
 import java.util.*;
@@ -310,7 +311,7 @@ public class State {
 
 
     public static Type makeUnion(Set<Binding> bs) {
-        Type t = Type.UNKNOWN;
+        Type t = Types.UNKNOWN;
         for (Binding b : bs) {
             t = UnionType.union(t, b.type);
         }
