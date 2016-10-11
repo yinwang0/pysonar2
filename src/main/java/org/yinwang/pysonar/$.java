@@ -80,6 +80,10 @@ public class $ {
             file = file.substring(0, file.length() - Analyzer.self.suffix.length());
         }
 
+        // remove Windows like '\\' and 'C:'
+        file = file.replaceAll("^\\\\", "");
+        file = file.replaceAll("^[a-zA-Z]:", "");
+
         return file.replace(".", "%20").replace('/', '.').replace('\\', '.');
     }
 

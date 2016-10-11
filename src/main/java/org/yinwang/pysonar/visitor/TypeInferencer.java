@@ -35,6 +35,17 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
     @NotNull
     @Override
+    public Type visit(Module node, State s) {
+        ModuleType mt = new ModuleType(node.name, node.file, Analyzer.self.globaltable);
+        s.insert($.moduleQname(node.file), node, mt, Binding.Kind.MODULE);
+        if (node.body != null) {
+            visit(node.body, mt.table);
+        }
+        return mt;
+    }
+
+    @NotNull
+    @Override
     public Type visit(Alias node, State s) {
         return Types.UNKNOWN;
     }
@@ -571,17 +582,6 @@ public class TypeInferencer implements Visitor1<Type, State> {
     public Type visit(ListComp node, State s) {
         visit(node.generators, s);
         return new ListType(visit(node.elt, s));
-    }
-
-    @NotNull
-    @Override
-    public Type visit(Module node, State s) {
-        ModuleType mt = new ModuleType(node.name, node.file, Analyzer.self.globaltable);
-        s.insert($.moduleQname(node.file), node, mt, Binding.Kind.MODULE);
-        if (node.body != null) {
-            visit(node.body, mt.table);
-        }
-        return mt;
     }
 
     @NotNull
