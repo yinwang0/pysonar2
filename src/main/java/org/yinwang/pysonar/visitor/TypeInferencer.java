@@ -105,8 +105,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
             return ltype;
         }
 
-        Analyzer.self.putProblem(node, "Cannot apply binary operator " + node.op.getRep() +
-                                       " to type " + ltype + " and " + rtype);
+        addWarning(node, "Cannot apply binary operator " + node.op.getRep() + " to type " + ltype + " and " + rtype);
         return Types.UNKNOWN;
     }
 
@@ -127,7 +126,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
             ((FunType) opType).setSelfType(ltype);
             return apply((FunType) opType, Collections.singletonList(rtype), null, null, null, node);
         } else {
-            Analyzer.self.putProblem(left, "Operator method " + method + " is not a function");
+            addWarning(left, "Operator method " + method + " is not a function");
             return null;
         }
     }
@@ -220,7 +219,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
                     classType.addSuper(parent);
                 }
             } else {
-                Analyzer.self.putProblem(base, base + " is not a class");
+                addWarning(base, base + " is not a class");
             }
             baseTypes.add(baseType);
         }
@@ -472,7 +471,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
                     }
 
                     if (testCall.args.size() != 2) {
-                        Analyzer.self.putProblem(test, "Incorrect number of arguments for isinstance");
+                        addWarning(test, "Incorrect number of arguments for isinstance");
                     }
                 }
             }
@@ -504,7 +503,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
         for (Alias a : node.names) {
             Type mod = Analyzer.self.loadModule(a.name, s);
             if (mod == null) {
-                Analyzer.self.putProblem(node, "Cannot load module");
+                addWarning(node, "Cannot load module");
             } else if (a.asname != null) {
                 s.insert(a.asname.id, a.asname, mod, Binding.Kind.VARIABLE);
             }
@@ -522,7 +521,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
         Type mod = Analyzer.self.loadModule(node.module, s);
 
         if (mod == null) {
-            Analyzer.self.putProblem(node, "Cannot load module");
+            addWarning(node, "Cannot load module");
         } else if (node.isImportStar()) {
             node.importStar(s, mod);
         } else {
@@ -595,7 +594,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
             Analyzer.self.unresolved.remove(node);
             return State.makeUnion(b);
         } else {
-            Analyzer.self.putProblem(node, "unbound variable " + node.id);
+            addWarning(node, "unbound variable " + node.id);
             Analyzer.self.unresolved.add(node);
             Type t = Types.UNKNOWN;
             t.table.setPath(s.extendPath(node.id));
@@ -907,7 +906,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
     private void setAttrType(Attribute node, @NotNull Type targetType, @NotNull Type v) {
         if (targetType.isUnknownType()) {
-            Analyzer.self.putProblem(node, "Can't set attribute for UnknownType");
+            addWarning(node, "Can't set attribute for UnknownType");
             return;
         }
         Set<Binding> bs = targetType.table.lookupAttr(node.attr.id);
@@ -921,7 +920,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
     public Type getAttrType(Attribute node, @NotNull Type targetType) {
         Set<Binding> bs = targetType.table.lookupAttr(node.attr.id);
         if (bs == null) {
-            Analyzer.self.putProblem(node.attr, "attribute not found in type: " + targetType);
+            addWarning(node.attr, "attribute not found in type: " + targetType);
             Type t = Types.UNKNOWN;
             t.table.setPath(targetType.table.extendPath(node.attr.id));
             return t;
@@ -1007,10 +1006,10 @@ public class TypeInferencer implements Visitor1<Type, State> {
             func.addMapping(fromType, Types.UNKNOWN);
             Type toType = visit(func.func.body, funcTable);
             if (missingReturn(toType)) {
-                Analyzer.self.putProblem(func.func.name, "Function not always return a value");
+                addWarning(func.func.name, "Function not always return a value");
 
                 if (call != null) {
-                    Analyzer.self.putProblem(call, "Call not always return a value");
+                    addWarning(call, "Call not always return a value");
                 }
             }
 
@@ -1062,8 +1061,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
                     } else {
                         aType = Types.UNKNOWN;
                         if (call != null) {
-                            Analyzer.self.putProblem(args.get(i),
-                                                     "unable to bind argument:" + args.get(i));
+                            addWarning(args.get(i), "unable to bind argument:" + args.get(i));
                         }
                     }
                 }
@@ -1226,7 +1224,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
                 t.setElementType(UnionType.union(t.eltType, rvalue));
             }
         } else if (target != null) {
-            Analyzer.self.putProblem(target, "invalid location for assignment");
+            addWarning(target, "invalid location for assignment");
         }
     }
 
@@ -1265,10 +1263,10 @@ public class TypeInferencer implements Visitor1<Type, State> {
             for (Node x : xs) {
                 bind(s, x, Types.UNKNOWN, kind);
             }
-            Analyzer.self.putProblem(xs.get(0).file,
-                                     xs.get(0).start,
-                                     xs.get(xs.size() - 1).end,
-                                     "unpacking non-iterable: " + rvalue);
+            addWarning(xs.get(0).file,
+                       xs.get(0).start,
+                       xs.get(xs.size() - 1).end,
+                       "unpacking non-iterable: " + rvalue);
         }
     }
 
@@ -1300,7 +1298,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
                 for (Binding ent : ents) {
                     if (ent == null || !(ent.type instanceof FunType)) {
                         if (!iterType.isUnknownType()) {
-                            Analyzer.self.putProblem(iter, "not an iterable type: " + iterType);
+                            addWarning(iter, "not an iterable type: " + iterType);
                         }
                         bind(s, target, Types.UNKNOWN, kind);
                     } else {
@@ -1324,7 +1322,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
         } else {
             msg = "ValueError: too many values to unpack";
         }
-        Analyzer.self.putProblem(xs.get(0).file, beg, end, msg);
+        addWarning(xs.get(0).file, beg, end, msg);
     }
 
     public void addWarning(Node node, String msg) {
