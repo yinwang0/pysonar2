@@ -32,4 +32,6 @@ public class Types {
     // They don't exist in Python
     public static Type UNKNOWN = new InstanceType(new ClassType("?", null, ObjectClass));
     public static Type CONT = new InstanceType(new ClassType("None", null, null));
+
+    public static ClassType BaseDict = new ClassType("dict", null, ObjectClass);
 }

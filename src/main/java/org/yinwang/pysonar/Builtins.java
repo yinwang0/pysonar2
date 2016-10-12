@@ -61,7 +61,6 @@ public class Builtins {
     public ClassType BaseList;
     public InstanceType BaseListInst;
     public ClassType BaseArray;
-    public ClassType BaseDict;
     public ClassType BaseTuple;
     public ClassType BaseModule;
     public ClassType BaseFile;
@@ -347,7 +346,6 @@ public class Builtins {
         BaseList = newClass("list", bt, objectType);
         BaseListInst = new InstanceType(BaseList);
         BaseArray = newClass("array", bt);
-        BaseDict = newClass("dict", bt, objectType);
         ClassType numClass = newClass("int", bt, objectType);
         BaseModule = newClass("module", bt);
         BaseFile = newClass("file", bt, objectType);
@@ -645,7 +643,7 @@ public class Builtins {
 
     void buildDictType() {
         String url = "datastructures.html#dictionaries";
-        State bt = BaseDict.table;
+        State bt = Types.BaseDict.table;
 
         bt.insert("__getitem__", newTutUrl(url), newFunc(), METHOD);
         bt.insert("__iter__", newTutUrl(url), newFunc(), METHOD);
@@ -769,7 +767,7 @@ public class Builtins {
 
             addClass("None", newLibUrl("stdtypes", "None"), Types.NoneInstance);
 
-            addClass("dict", newLibUrl("stdtypes", "typesmapping"), BaseDict);
+            addClass("dict", newLibUrl("stdtypes", "typesmapping"), Types.BaseDict);
             addFunction("file", newLibUrl("functions", "file"), BaseFileInst);
             addFunction("list", newLibUrl("functions", "list"), new InstanceType(BaseList));
             addFunction("tuple", newLibUrl("functions", "tuple"), new InstanceType(BaseTuple));
@@ -1323,7 +1321,7 @@ public class Builtins {
 
         @Override
         public void initBindings() {
-            ClassType dbm = new ClassType("dbm", table, BaseDict);
+            ClassType dbm = new ClassType("dbm", table, Types.BaseDict);
             addClass("dbm", liburl(), dbm);
             addClass("error", liburl(), newException("error", table));
             addStrAttrs("library");
@@ -1466,7 +1464,7 @@ public class Builtins {
         public void initBindings() {
             addClass("error", liburl(), newException("error", table));
 
-            ClassType gdbm = new ClassType("gdbm", table, BaseDict);
+            ClassType gdbm = new ClassType("gdbm", table, Types.BaseDict);
             gdbm.table.insert("firstkey", liburl(), newFunc(Types.StrInstance), METHOD);
             gdbm.table.insert("nextkey", liburl(), newFunc(Types.StrInstance), METHOD);
             gdbm.table.insert("reorganize", liburl(), newFunc(Types.NoneInstance), METHOD);
