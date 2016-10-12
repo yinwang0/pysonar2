@@ -471,12 +471,14 @@ public class TypeInferencer implements Visitor1<Type, State> {
                 if (testFunc.id.equals("isinstance")) {
                     if (testCall.args.size() >= 2) {
                         Node id = testCall.args.get(0);
-                        Node typeExp = testCall.args.get(1);
-                        Type type = visit(typeExp, s);
-                        if (type instanceof ClassType) {
-                            type = ((ClassType) type).getCanon();
+                        if (id instanceof Name) {
+                            Node typeExp = testCall.args.get(1);
+                            Type type = visit(typeExp, s);
+                            if (type instanceof ClassType) {
+                                type = ((ClassType) type).getCanon();
+                            }
+                            s1.insert(((Name) id).id, id, type, VARIABLE);
                         }
-                        s1.insert(id.name, id, type, VARIABLE);
                     }
 
                     if (testCall.args.size() != 2) {
