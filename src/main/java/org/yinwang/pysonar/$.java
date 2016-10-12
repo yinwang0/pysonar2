@@ -76,8 +76,8 @@ public class $ {
 
         if (f.getName().endsWith("__init__.py")) {
             file = f.getParent();
-        } else if (file.endsWith(Analyzer.self.suffix)) {
-            file = file.substring(0, file.length() - Analyzer.self.suffix.length());
+        } else if (file.endsWith(Globals.FILE_SUFFIX)) {
+            file = file.substring(0, file.length() - Globals.FILE_SUFFIX.length());
         }
 
         // remove Windows like '\\' and 'C:'
@@ -99,8 +99,8 @@ public class $ {
         String name = f.getName();
         if (name.equals("__init__.py")) {
             return f.getParentFile().getName();
-        } else if (name.endsWith(Analyzer.self.suffix)) {
-            return name.substring(0, name.length() - Analyzer.self.suffix.length());
+        } else if (name.endsWith(Globals.FILE_SUFFIX)) {
+            return name.substring(0, name.length() - Globals.FILE_SUFFIX.length());
         } else {
             return name;
         }

@@ -15,8 +15,6 @@ import java.util.*;
 
 public class Analyzer {
 
-    public static final String MODEL_LOCATION = "org/yinwang/pysonar/models";
-
     // global static instance of the analyzer itself
     public static Analyzer self;
     public TypeInferencer inferencer = new TypeInferencer();
@@ -45,7 +43,6 @@ public class Analyzer {
 
     public String projectDir;
     public String modelDir;
-    public String suffix;
 
     public Map<String, Object> options;
 
@@ -63,13 +60,12 @@ public class Analyzer {
             this.options = new HashMap<>();
         }
         this.stats.putInt("startTime", System.currentTimeMillis());
-        this.suffix = ".py";
         this.builtins = new Builtins();
         this.builtins.init();
+        this.cacheDir = createCacheDir();
+        this.astCache = new AstCache();
         addPythonPath();
         copyModels();
-        createCacheDir();
-        astCache = new AstCache();
     }
 
 
@@ -134,7 +130,7 @@ public class Analyzer {
 
 
     private void copyModels() {
-        URL resource = Thread.currentThread().getContextClassLoader().getResource(MODEL_LOCATION);
+        URL resource = Thread.currentThread().getContextClassLoader().getResource(Globals.MODEL_LOCATION);
         String dest = $.locateTmp("models");
         this.modelDir = dest;
 
@@ -289,7 +285,7 @@ public class Analyzer {
         }
 
         // detect circular import
-        if (Analyzer.self.inImportStack(path)) {
+        if (inImportStack(path)) {
             return null;
         }
 
@@ -297,9 +293,9 @@ public class Analyzer {
         String oldcwd = cwd;
         setCWD(f.getParent());
 
-        Analyzer.self.pushImportStack(path);
+        pushImportStack(path);
         Type type = parseAndResolve(path);
-        Analyzer.self.popImportStack(path);
+        popImportStack(path);
 
         // restore old CWD
         setCWD(oldcwd);
@@ -323,17 +319,17 @@ public class Analyzer {
     }
 
 
-    private void createCacheDir() {
-        cacheDir = $.makePathString($.getSystemTempDir(), "pysonar2", "ast_cache");
-        File f = new File(cacheDir);
-        $.msg("AST cache is at: " + cacheDir);
+    private String createCacheDir() {
+        String dir = $.makePathString($.getSystemTempDir(), "pysonar2", "ast_cache");
+        File f = new File(dir);
+        $.msg("AST cache is at: " + dir);
 
         if (!f.exists()) {
             if (!f.mkdirs()) {
-                $.die("Failed to create tmp directory: " + cacheDir +
-                        ".Please check permissions");
+                $.die("Failed to create tmp directory: " + dir + ".Please check permissions");
             }
         }
+        return dir;
     }
 
 
@@ -385,7 +381,7 @@ public class Analyzer {
                 return p;
             }
 
-            File startFile = new File(startDir + suffix);
+            File startFile = new File(startDir + Globals.FILE_SUFFIX);
             if (startFile.exists()) {
                 return p;
             }
@@ -441,7 +437,7 @@ public class Analyzer {
                 prev = mod;
 
             } else if (i == name.size() - 1) {
-                File startFile = new File(path + suffix);
+                File startFile = new File(path + Globals.FILE_SUFFIX);
                 if (startFile.exists()) {
                     Type mod = loadFile(startFile.getPath());
                     if (mod == null) {
@@ -480,7 +476,7 @@ public class Analyzer {
                 loadFileRecursive(file.getPath());
             }
         } else {
-            if (file_or_dir.getPath().endsWith(suffix)) {
+            if (file_or_dir.getPath().endsWith(Globals.FILE_SUFFIX)) {
                 loadFile(file_or_dir.getPath());
             }
         }
@@ -497,7 +493,7 @@ public class Analyzer {
                 sum += countFileRecursive(file.getPath());
             }
         } else {
-            if (file_or_dir.getPath().endsWith(suffix)) {
+            if (file_or_dir.getPath().endsWith(Globals.FILE_SUFFIX)) {
                 sum += 1;
             }
         }
@@ -514,7 +510,7 @@ public class Analyzer {
         for (List<Binding> bset : $.correlateBindings(allBindings)) {
             if (unusedBindingSet(bset)) {
                 Binding first = bset.get(0);
-                Analyzer.self.putProblem(first.node, "Unused variable: " + first.name);
+                putProblem(first.node, "Unused variable: " + first.name);
             }
         }
 
@@ -590,11 +586,11 @@ public class Analyzer {
         sb.append("\n- number of cross references: " + nXRef);
         sb.append("\n- number of references: " + getReferences().size());
 
-        long resolved = Analyzer.self.resolved.size();
-        long unresolved = Analyzer.self.unresolved.size();
-        sb.append("\n- resolved names: " + resolved);
-        sb.append("\n- unresolved names: " + unresolved);
-        sb.append("\n- name resolve rate: " + $.percent(resolved, resolved + unresolved));
+        long nResolved = resolved.size();
+        long nUnresolved = unresolved.size();
+        sb.append("\n- resolved names: " + nResolved);
+        sb.append("\n- unresolved names: " + nUnresolved);
+        sb.append("\n- name resolve rate: " + $.percent(nResolved, nResolved + nUnresolved));
         sb.append("\n" + $.getGCStats());
 
         return sb.toString();
@@ -605,7 +601,7 @@ public class Analyzer {
     public List<String> getLoadedFiles() {
         List<String> files = new ArrayList<>();
         for (String file : loadedFiles) {
-            if (file.endsWith(suffix)) {
+            if (file.endsWith(Globals.FILE_SUFFIX)) {
                 files.add(file);
             }
         }
