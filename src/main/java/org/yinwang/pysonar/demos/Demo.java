@@ -107,23 +107,22 @@ public class Demo {
         String outline = new HtmlOutline(analyzer).generate(path);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("<html><head title=\"")
-                .append(path)
-                .append("\">")
-                .append("<style type='text/css'>\n")
-                .append(CSS)
-                .append("</style>\n")
-                .append("<script language=\"JavaScript\" type=\"text/javascript\">\n")
-                .append(Analyzer.self.hasOption("debug") ? JS_DEBUG : JS)
-                .append("</script>\n")
-                .append("</head>\n<body>\n")
-                .append("<table width=100% border='1px solid gray'><tr><td valign='top'>")
-                .append(outline)
-                .append("</td><td>")
-                .append("<pre>")
-                .append(addLineNumbers(styledSource))
-                .append("</pre>")
-                .append("</td></tr></table></body></html>");
+        sb.append("<html>\n")
+            .append("<head>\n")
+            .append("<meta charset=\"utf-8\">\n")
+            .append("<title>").append(path).append("</title>\n")
+            .append("<style type='text/css'>\n").append(CSS).append("\n</style>\n")
+            .append("<script language=\"JavaScript\" type=\"text/javascript\">\n")
+            .append(Analyzer.self.hasOption("debug") ? JS_DEBUG : JS)
+            .append("</script>\n")
+            .append("</head>\n<body>\n")
+            .append("<table width=100% border='1px solid gray'><tr><td valign='top'>")
+            .append(outline)
+            .append("</td><td>")
+            .append("<pre>")
+            .append(addLineNumbers(styledSource))
+            .append("</pre>")
+            .append("</td></tr></table></body></html>");
         return sb.toString();
     }
 

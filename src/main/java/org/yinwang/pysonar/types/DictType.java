@@ -1,7 +1,6 @@
 package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
-import org.yinwang.pysonar.Analyzer;
 
 public class DictType extends Type {
 
@@ -11,8 +10,8 @@ public class DictType extends Type {
     public DictType(Type key0, Type val0) {
         keyType = key0;
         valueType = val0;
-        table.addSuper(Analyzer.self.builtins.BaseDict.table);
-        table.setPath(Analyzer.self.builtins.BaseDict.table.path);
+        table.addSuper(Types.BaseDict.table);
+        table.setPath(Types.BaseDict.table.path);
     }
 
     public void add(@NotNull Type key, @NotNull Type val) {

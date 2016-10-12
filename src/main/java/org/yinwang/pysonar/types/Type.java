@@ -41,7 +41,7 @@ public abstract class Type {
 
 
     public boolean isNumType() {
-        return this instanceof IntType || this instanceof FloatType;
+	    return this == Types.IntInstance || this == Types.FloatInstance;
     }
 
 
