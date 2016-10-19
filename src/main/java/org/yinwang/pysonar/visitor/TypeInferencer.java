@@ -344,17 +344,26 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @Override
     public Type visit(For node, State s) {
         bindIter(s, node.target, node.iter, SCOPE);
+        Type t1 = Types.UNKNOWN;
+        Type t2 = Types.UNKNOWN;
+        Type t3 = Types.UNKNOWN;
 
-        Type ret;
-        if (node.body == null) {
-            ret = Types.UNKNOWN;
-        } else {
-            ret = visit(node.body, s);
+        State s1 = s.copy();
+        State s2 = s.copy();
+
+        if (node.body != null) {
+            t1 = visit(node.body, s1);
+            s.merge(s1);
+            t2 = visit(node.body, s1);
+            s.merge(s1);
         }
+
         if (node.orelse != null) {
-            ret = UnionType.union(ret, visit(node.orelse, s));
+            t3 = visit(node.orelse, s2);
+            s.merge(s2);
         }
-        return ret;
+
+        return UnionType.union(UnionType.union(t1, t2), t3);
     }
 
     @NotNull
@@ -821,17 +830,27 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @Override
     public Type visit(While node, State s) {
         visit(node.test, s);
-        Type t = Types.UNKNOWN;
+        Type t1 = Types.UNKNOWN;
+        Type t2 = Types.UNKNOWN;
+        Type t3 = Types.UNKNOWN;
+
+        State s1 = s.copy();
+        State s2 = s.copy();
 
         if (node.body != null) {
-            t = visit(node.body, s);
+            t1 = visit(node.body, s1);
+            s.merge(s1);
+
+            t2 = visit(node.body, s1);
+            s.merge(s1);
         }
 
         if (node.orelse != null) {
-            t = UnionType.union(t, visit(node.orelse, s));
+            t3 = visit(node.orelse, s2);
+            s.merge(s2);
         }
 
-        return t;
+        return UnionType.union(UnionType.union(t1, t2), t3);
     }
 
     @NotNull
