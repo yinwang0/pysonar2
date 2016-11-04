@@ -3,6 +3,132 @@
     "ref": {
       "name": "A",
       "file": "test1.py",
+      "start": 13,
+      "end": 14,
+      "line": 4,
+      "col": 7
+    },
+    "dests": [
+      {
+        "name": "A",
+        "file": "test1.py",
+        "start": 13,
+        "end": 14,
+        "line": 4,
+        "col": 7,
+        "type": "<A>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "value",
+      "file": "test1.py",
+      "start": 20,
+      "end": 25,
+      "line": 5,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "value",
+        "file": "test1.py",
+        "start": 20,
+        "end": 25,
+        "line": 5,
+        "col": 5,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "__init__",
+      "file": "test1.py",
+      "start": 39,
+      "end": 47,
+      "line": 7,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "__init__",
+        "file": "test1.py",
+        "start": 39,
+        "end": 47,
+        "line": 7,
+        "col": 9,
+        "type": "? -> ?"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "__sub__",
+      "file": "test1.py",
+      "start": 98,
+      "end": 105,
+      "line": 10,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "__sub__",
+        "file": "test1.py",
+        "start": 98,
+        "end": 105,
+        "line": 10,
+        "col": 9,
+        "type": "(A, int) -> int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "__lt__",
+      "file": "test1.py",
+      "start": 237,
+      "end": 243,
+      "line": 16,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "__lt__",
+        "file": "test1.py",
+        "start": 237,
+        "end": 243,
+        "line": 16,
+        "col": 9,
+        "type": "(A, int) -> {bool | int}"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "fib",
+      "file": "test1.py",
+      "start": 376,
+      "end": 379,
+      "line": 23,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "fib",
+        "file": "test1.py",
+        "start": 376,
+        "end": 379,
+        "line": 23,
+        "col": 5,
+        "type": "int -> int / A -> int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "A",
+      "file": "test1.py",
       "start": 470,
       "end": 471,
       "line": 30,
@@ -17,6 +143,48 @@
         "line": 4,
         "col": 7,
         "type": "<A>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 48,
+      "end": 52,
+      "line": 7,
+      "col": 18
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 48,
+        "end": 52,
+        "line": 7,
+        "col": 18,
+        "type": "A"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "value",
+      "file": "test1.py",
+      "start": 54,
+      "end": 59,
+      "line": 7,
+      "col": 24
+    },
+    "dests": [
+      {
+        "name": "value",
+        "file": "test1.py",
+        "start": 54,
+        "end": 59,
+        "line": 7,
+        "col": 24,
+        "type": "int"
       }
     ]
   },
@@ -87,6 +255,27 @@
     "ref": {
       "name": "x",
       "file": "test1.py",
+      "start": 466,
+      "end": 467,
+      "line": 30,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 466,
+        "end": 467,
+        "line": 30,
+        "col": 1,
+        "type": "A"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
       "start": 480,
       "end": 481,
       "line": 31,
@@ -121,6 +310,27 @@
         "end": 80,
         "line": 8,
         "col": 14,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "y",
+      "file": "test1.py",
+      "start": 476,
+      "end": 477,
+      "line": 31,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 476,
+        "end": 477,
+        "line": 31,
+        "col": 1,
         "type": "int"
       }
     ]
@@ -171,6 +381,63 @@
     "ref": {
       "name": "n",
       "file": "test1.py",
+      "start": 380,
+      "end": 381,
+      "line": 23,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "n",
+        "file": "test1.py",
+        "start": 380,
+        "end": 381,
+        "line": 23,
+        "col": 9,
+        "type": "A"
+      },
+      {
+        "name": "n",
+        "file": "test1.py",
+        "start": 380,
+        "end": 381,
+        "line": 23,
+        "col": 9,
+        "type": "int"
+      },
+      {
+        "name": "n",
+        "file": "test1.py",
+        "start": 380,
+        "end": 381,
+        "line": 23,
+        "col": 9,
+        "type": "int"
+      },
+      {
+        "name": "n",
+        "file": "test1.py",
+        "start": 380,
+        "end": 381,
+        "line": 23,
+        "col": 9,
+        "type": "int"
+      },
+      {
+        "name": "n",
+        "file": "test1.py",
+        "start": 380,
+        "end": 381,
+        "line": 23,
+        "col": 9,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "n",
+      "file": "test1.py",
       "start": 391,
       "end": 392,
       "line": 24,
@@ -193,6 +460,66 @@
         "end": 381,
         "line": 23,
         "col": 9,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 244,
+      "end": 248,
+      "line": 16,
+      "col": 16
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 244,
+        "end": 248,
+        "line": 16,
+        "col": 16,
+        "type": "A"
+      },
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 244,
+        "end": 248,
+        "line": 16,
+        "col": 16,
+        "type": "A"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "other",
+      "file": "test1.py",
+      "start": 250,
+      "end": 255,
+      "line": 16,
+      "col": 22
+    },
+    "dests": [
+      {
+        "name": "other",
+        "file": "test1.py",
+        "start": 250,
+        "end": 255,
+        "line": 16,
+        "col": 22,
+        "type": "int"
+      },
+      {
+        "name": "other",
+        "file": "test1.py",
+        "start": 250,
+        "end": 255,
+        "line": 16,
+        "col": 22,
         "type": "int"
       }
     ]
@@ -328,6 +655,66 @@
         "end": 381,
         "line": 23,
         "col": 9,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 106,
+      "end": 110,
+      "line": 10,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 106,
+        "end": 110,
+        "line": 10,
+        "col": 17,
+        "type": "A"
+      },
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 106,
+        "end": 110,
+        "line": 10,
+        "col": 17,
+        "type": "A"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "other",
+      "file": "test1.py",
+      "start": 112,
+      "end": 117,
+      "line": 10,
+      "col": 23
+    },
+    "dests": [
+      {
+        "name": "other",
+        "file": "test1.py",
+        "start": 112,
+        "end": 117,
+        "line": 10,
+        "col": 23,
+        "type": "int"
+      },
+      {
+        "name": "other",
+        "file": "test1.py",
+        "start": 112,
+        "end": 117,
+        "line": 10,
+        "col": 23,
         "type": "int"
       }
     ]
@@ -485,6 +872,27 @@
         "line": 30,
         "col": 1,
         "type": "A"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "u",
+      "file": "test1.py",
+      "start": 502,
+      "end": 503,
+      "line": 34,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "u",
+        "file": "test1.py",
+        "start": 502,
+        "end": 503,
+        "line": 34,
+        "col": 1,
+        "type": "{bool | int}"
       }
     ]
   },

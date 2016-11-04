@@ -1,0 +1,86 @@
+[
+  {
+    "ref": {
+      "name": "f",
+      "file": "test1.py",
+      "start": 4,
+      "end": 5,
+      "line": 1,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "f",
+        "file": "test1.py",
+        "start": 4,
+        "end": 5,
+        "line": 1,
+        "col": 5,
+        "type": "() -> int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 13,
+      "end": 14,
+      "line": 2,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 13,
+        "end": 14,
+        "line": 2,
+        "col": 5,
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 27,
+      "end": 28,
+      "line": 3,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 27,
+        "end": 28,
+        "line": 3,
+        "col": 5,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 44,
+      "end": 45,
+      "line": 4,
+      "col": 12
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 27,
+        "end": 28,
+        "line": 3,
+        "col": 5,
+        "type": "int"
+      }
+    ]
+  }
+]

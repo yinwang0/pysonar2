@@ -3,6 +3,27 @@
     "ref": {
       "name": "x",
       "file": "test1.py",
+      "start": 17,
+      "end": 18,
+      "line": 3,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 17,
+        "end": 18,
+        "line": 3,
+        "col": 1,
+        "type": "str"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
       "start": 30,
       "end": 31,
       "line": 4,
@@ -15,6 +36,27 @@
         "start": 17,
         "end": 18,
         "line": 3,
+        "col": 1,
+        "type": "str"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "y",
+      "file": "test1.py",
+      "start": 26,
+      "end": 27,
+      "line": 4,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 26,
+        "end": 27,
+        "line": 4,
         "col": 1,
         "type": "str"
       }

@@ -3,6 +3,48 @@
     "ref": {
       "name": "x",
       "file": "test1.py",
+      "start": 29,
+      "end": 30,
+      "line": 3,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 29,
+        "end": 30,
+        "line": 3,
+        "col": 1,
+        "type": "?"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "foo",
+      "file": "test1.py",
+      "start": 48,
+      "end": 51,
+      "line": 6,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "foo",
+        "file": "test1.py",
+        "start": 48,
+        "end": 51,
+        "line": 6,
+        "col": 5,
+        "type": "() -> <int>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
       "start": 86,
       "end": 87,
       "line": 10,
@@ -64,6 +106,27 @@
   },
   {
     "ref": {
+      "name": "y",
+      "file": "test1.py",
+      "start": 101,
+      "end": 102,
+      "line": 11,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 101,
+        "end": 102,
+        "line": 11,
+        "col": 5,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "x",
       "file": "test1.py",
       "start": 121,
@@ -79,6 +142,27 @@
         "end": 30,
         "line": 3,
         "col": 1,
+        "type": "?"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "z",
+      "file": "test1.py",
+      "start": 117,
+      "end": 118,
+      "line": 13,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "z",
+        "file": "test1.py",
+        "start": 117,
+        "end": 118,
+        "line": 13,
+        "col": 5,
         "type": "?"
       }
     ]

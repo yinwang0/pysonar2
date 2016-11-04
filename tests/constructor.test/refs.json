@@ -3,6 +3,90 @@
     "ref": {
       "name": "TestInit1",
       "file": "test1.py",
+      "start": 36,
+      "end": 45,
+      "line": 4,
+      "col": 7
+    },
+    "dests": [
+      {
+        "name": "TestInit1",
+        "file": "test1.py",
+        "start": 36,
+        "end": 45,
+        "line": 4,
+        "col": 7,
+        "type": "<TestInit1>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "test",
+      "file": "test1.py",
+      "start": 55,
+      "end": 59,
+      "line": 5,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "test",
+        "file": "test1.py",
+        "start": 55,
+        "end": 59,
+        "line": 5,
+        "col": 9,
+        "type": "TestInit1 -> None"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "test2",
+      "file": "test1.py",
+      "start": 102,
+      "end": 107,
+      "line": 8,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "test2",
+        "file": "test1.py",
+        "start": 102,
+        "end": 107,
+        "line": 8,
+        "col": 9,
+        "type": "TestInit1 -> None"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "__init__",
+      "file": "test1.py",
+      "start": 150,
+      "end": 158,
+      "line": 11,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "__init__",
+        "file": "test1.py",
+        "start": 150,
+        "end": 158,
+        "line": 11,
+        "col": 9,
+        "type": "? -> ?"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "TestInit1",
+      "file": "test1.py",
       "start": 218,
       "end": 227,
       "line": 15,
@@ -17,6 +101,66 @@
         "line": 4,
         "col": 7,
         "type": "<TestInit1>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 159,
+      "end": 163,
+      "line": 11,
+      "col": 18
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 159,
+        "end": 163,
+        "line": 11,
+        "col": 18,
+        "type": "TestInit1"
+      },
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 159,
+        "end": 163,
+        "line": 11,
+        "col": 18,
+        "type": "TestInit1"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 165,
+      "end": 166,
+      "line": 11,
+      "col": 24
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 165,
+        "end": 166,
+        "line": 11,
+        "col": 24,
+        "type": "int"
+      },
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 165,
+        "end": 166,
+        "line": 11,
+        "col": 24,
+        "type": "int"
       }
     ]
   },
@@ -82,6 +226,27 @@
   },
   {
     "ref": {
+      "name": "y",
+      "file": "test1.py",
+      "start": 214,
+      "end": 215,
+      "line": 15,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 214,
+        "end": 215,
+        "line": 15,
+        "col": 1,
+        "type": "TestInit1"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "TestInit1",
       "file": "test1.py",
       "start": 235,
@@ -98,6 +263,27 @@
         "line": 4,
         "col": 7,
         "type": "<TestInit1>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "z",
+      "file": "test1.py",
+      "start": 231,
+      "end": 232,
+      "line": 16,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "z",
+        "file": "test1.py",
+        "start": 231,
+        "end": 232,
+        "line": 16,
+        "col": 1,
+        "type": "TestInit1"
       }
     ]
   },
@@ -187,6 +373,111 @@
   },
   {
     "ref": {
+      "name": "TestInit2",
+      "file": "test1.py",
+      "start": 301,
+      "end": 310,
+      "line": 21,
+      "col": 7
+    },
+    "dests": [
+      {
+        "name": "TestInit2",
+        "file": "test1.py",
+        "start": 301,
+        "end": 310,
+        "line": 21,
+        "col": 7,
+        "type": "<TestInit2>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "test",
+      "file": "test1.py",
+      "start": 320,
+      "end": 324,
+      "line": 22,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "test",
+        "file": "test1.py",
+        "start": 320,
+        "end": 324,
+        "line": 22,
+        "col": 9,
+        "type": "TestInit2 -> None"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "__init__",
+      "file": "test1.py",
+      "start": 367,
+      "end": 375,
+      "line": 25,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "__init__",
+        "file": "test1.py",
+        "start": 367,
+        "end": 375,
+        "line": 25,
+        "col": 9,
+        "type": "? -> ?"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "test2",
+      "file": "test1.py",
+      "start": 421,
+      "end": 426,
+      "line": 28,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "test2",
+        "file": "test1.py",
+        "start": 421,
+        "end": 426,
+        "line": 28,
+        "col": 9,
+        "type": "TestInit2 -> None"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 60,
+      "end": 64,
+      "line": 5,
+      "col": 14
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 60,
+        "end": 64,
+        "line": 5,
+        "col": 14,
+        "type": "TestInit1"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "self",
       "file": "test1.py",
       "start": 79,
@@ -229,6 +520,48 @@
   },
   {
     "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 75,
+      "end": 76,
+      "line": 6,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 75,
+        "end": 76,
+        "line": 6,
+        "col": 9,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 108,
+      "end": 112,
+      "line": 8,
+      "col": 15
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 108,
+        "end": 112,
+        "line": 8,
+        "col": 15,
+        "type": "TestInit1"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "self",
       "file": "test1.py",
       "start": 127,
@@ -266,6 +599,87 @@
         "line": 12,
         "col": 14,
         "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "y",
+      "file": "test1.py",
+      "start": 123,
+      "end": 124,
+      "line": 9,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 123,
+        "end": 124,
+        "line": 9,
+        "col": 9,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 376,
+      "end": 380,
+      "line": 25,
+      "col": 18
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 376,
+        "end": 380,
+        "line": 25,
+        "col": 18,
+        "type": "TestInit2"
+      },
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 376,
+        "end": 380,
+        "line": 25,
+        "col": 18,
+        "type": "TestInit2"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 382,
+      "end": 383,
+      "line": 25,
+      "col": 24
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 382,
+        "end": 383,
+        "line": 25,
+        "col": 24,
+        "type": "?"
+      },
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 382,
+        "end": 383,
+        "line": 25,
+        "col": 24,
+        "type": "?"
       }
     ]
   },
@@ -333,6 +747,27 @@
     "ref": {
       "name": "self",
       "file": "test1.py",
+      "start": 325,
+      "end": 329,
+      "line": 22,
+      "col": 14
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 325,
+        "end": 329,
+        "line": 22,
+        "col": 14,
+        "type": "TestInit2"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
       "start": 344,
       "end": 348,
       "line": 23,
@@ -373,6 +808,27 @@
   },
   {
     "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 340,
+      "end": 341,
+      "line": 23,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 340,
+        "end": 341,
+        "line": 23,
+        "col": 9,
+        "type": "?"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "my_field",
       "file": "test1.py",
       "start": 399,
@@ -389,6 +845,27 @@
         "line": 26,
         "col": 14,
         "type": "?"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 427,
+      "end": 431,
+      "line": 28,
+      "col": 15
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 427,
+        "end": 431,
+        "line": 28,
+        "col": 15,
+        "type": "TestInit2"
       }
     ]
   },
@@ -430,6 +907,27 @@
         "end": 407,
         "line": 26,
         "col": 14,
+        "type": "?"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "y",
+      "file": "test1.py",
+      "start": 442,
+      "end": 443,
+      "line": 29,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 442,
+        "end": 443,
+        "line": 29,
+        "col": 9,
         "type": "?"
       }
     ]

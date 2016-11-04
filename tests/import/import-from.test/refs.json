@@ -1,6 +1,174 @@
 [
   {
     "ref": {
+      "name": "__all__",
+      "file": "kitchen/__init__.py",
+      "start": 24,
+      "end": 31,
+      "line": 2,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "__all__",
+        "file": "kitchen/__init__.py",
+        "start": 24,
+        "end": 31,
+        "line": 2,
+        "col": 1,
+        "type": "[str]"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "spoon",
+      "file": "kitchen/__init__.py",
+      "start": 58,
+      "end": 63,
+      "line": 5,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "spoon",
+        "file": "kitchen/__init__.py",
+        "start": 58,
+        "end": 63,
+        "line": 5,
+        "col": 5,
+        "type": "int -> int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "fork",
+      "file": "kitchen/__init__.py",
+      "start": 87,
+      "end": 91,
+      "line": 9,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "fork",
+        "file": "kitchen/__init__.py",
+        "start": 87,
+        "end": 91,
+        "line": 9,
+        "col": 5,
+        "type": "int -> [int]"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "knife",
+      "file": "kitchen/__init__.py",
+      "start": 143,
+      "end": 148,
+      "line": 14,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "knife",
+        "file": "kitchen/__init__.py",
+        "start": 143,
+        "end": 148,
+        "line": 14,
+        "col": 5,
+        "type": "? -> int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "Pizza",
+      "file": "kitchen/oven.py",
+      "start": 6,
+      "end": 11,
+      "line": 1,
+      "col": 7
+    },
+    "dests": [
+      {
+        "name": "Pizza",
+        "file": "kitchen/oven.py",
+        "start": 6,
+        "end": 11,
+        "line": 1,
+        "col": 7,
+        "type": "<Pizza>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "size",
+      "file": "kitchen/oven.py",
+      "start": 15,
+      "end": 19,
+      "line": 2,
+      "col": 3
+    },
+    "dests": [
+      {
+        "name": "size",
+        "file": "kitchen/oven.py",
+        "start": 15,
+        "end": 19,
+        "line": 2,
+        "col": 3,
+        "type": "str"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "Bread",
+      "file": "kitchen/oven.py",
+      "start": 35,
+      "end": 40,
+      "line": 4,
+      "col": 7
+    },
+    "dests": [
+      {
+        "name": "Bread",
+        "file": "kitchen/oven.py",
+        "start": 35,
+        "end": 40,
+        "line": 4,
+        "col": 7,
+        "type": "<Bread>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "size",
+      "file": "kitchen/oven.py",
+      "start": 44,
+      "end": 48,
+      "line": 5,
+      "col": 3
+    },
+    "dests": [
+      {
+        "name": "size",
+        "file": "kitchen/oven.py",
+        "start": 44,
+        "end": 48,
+        "line": 5,
+        "col": 3,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "oven",
       "file": "import-oven.py",
       "start": 71,
@@ -38,6 +206,27 @@
         "line": 1,
         "col": 7,
         "type": "<Pizza>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "pizza",
+      "file": "import-oven.py",
+      "start": 63,
+      "end": 68,
+      "line": 5,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "pizza",
+        "file": "import-oven.py",
+        "start": 63,
+        "end": 68,
+        "line": 5,
+        "col": 1,
+        "type": "Pizza"
       }
     ]
   },
@@ -129,6 +318,27 @@
     "ref": {
       "name": "bread",
       "file": "import-oven.py",
+      "start": 102,
+      "end": 107,
+      "line": 8,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "bread",
+        "file": "import-oven.py",
+        "start": 102,
+        "end": 107,
+        "line": 8,
+        "col": 1,
+        "type": "Bread"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "bread",
+      "file": "import-oven.py",
       "start": 129,
       "end": 134,
       "line": 9,
@@ -213,6 +423,27 @@
     "ref": {
       "name": "pizza",
       "file": "import-pizza-from-oven.py",
+      "start": 82,
+      "end": 87,
+      "line": 5,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "pizza",
+        "file": "import-pizza-from-oven.py",
+        "start": 82,
+        "end": 87,
+        "line": 5,
+        "col": 1,
+        "type": "Pizza"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "pizza",
+      "file": "import-pizza-from-oven.py",
       "start": 104,
       "end": 109,
       "line": 6,
@@ -255,6 +486,27 @@
     "ref": {
       "name": "bread",
       "file": "import-pizza-from-oven.py",
+      "start": 161,
+      "end": 166,
+      "line": 9,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "bread",
+        "file": "import-pizza-from-oven.py",
+        "start": 161,
+        "end": 166,
+        "line": 9,
+        "col": 1,
+        "type": "?"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "bread",
+      "file": "import-pizza-from-oven.py",
       "start": 184,
       "end": 189,
       "line": 10,
@@ -267,6 +519,27 @@
         "start": 161,
         "end": 166,
         "line": 9,
+        "col": 1,
+        "type": "?"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "size",
+      "file": "import-pizza-from-oven.py",
+      "start": 177,
+      "end": 181,
+      "line": 10,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "size",
+        "file": "import-pizza-from-oven.py",
+        "start": 177,
+        "end": 181,
+        "line": 10,
         "col": 1,
         "type": "?"
       }
@@ -318,6 +591,27 @@
     "ref": {
       "name": "x",
       "file": "kitchen/__init__.py",
+      "start": 64,
+      "end": 65,
+      "line": 5,
+      "col": 11
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "kitchen/__init__.py",
+        "start": 64,
+        "end": 65,
+        "line": 5,
+        "col": 11,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "kitchen/__init__.py",
       "start": 79,
       "end": 80,
       "line": 6,
@@ -353,6 +647,27 @@
         "line": 9,
         "col": 5,
         "type": "int -> [int]"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "kitchen/__init__.py",
+      "start": 92,
+      "end": 93,
+      "line": 9,
+      "col": 10
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "kitchen/__init__.py",
+        "start": 92,
+        "end": 93,
+        "line": 9,
+        "col": 10,
+        "type": "int"
       }
     ]
   },
@@ -423,6 +738,27 @@
     "ref": {
       "name": "pizza",
       "file": "import-star-from-oven.py",
+      "start": 60,
+      "end": 65,
+      "line": 5,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "pizza",
+        "file": "import-star-from-oven.py",
+        "start": 60,
+        "end": 65,
+        "line": 5,
+        "col": 1,
+        "type": "Pizza"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "pizza",
+      "file": "import-star-from-oven.py",
       "start": 82,
       "end": 87,
       "line": 6,
@@ -486,6 +822,27 @@
     "ref": {
       "name": "bread1",
       "file": "import-star-from-oven.py",
+      "start": 95,
+      "end": 101,
+      "line": 8,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "bread1",
+        "file": "import-star-from-oven.py",
+        "start": 95,
+        "end": 101,
+        "line": 8,
+        "col": 1,
+        "type": "Bread"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "bread1",
+      "file": "import-star-from-oven.py",
       "start": 120,
       "end": 126,
       "line": 9,
@@ -526,6 +883,27 @@
   },
   {
     "ref": {
+      "name": "size1",
+      "file": "import-star-from-oven.py",
+      "start": 112,
+      "end": 117,
+      "line": 9,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "size1",
+        "file": "import-star-from-oven.py",
+        "start": 112,
+        "end": 117,
+        "line": 9,
+        "col": 1,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "Bread",
       "file": "import-star-from-oven.py",
       "start": 141,
@@ -542,6 +920,27 @@
         "line": 4,
         "col": 7,
         "type": "<Bread>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "bread2",
+      "file": "import-star-from-oven.py",
+      "start": 132,
+      "end": 138,
+      "line": 10,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "bread2",
+        "file": "import-star-from-oven.py",
+        "start": 132,
+        "end": 138,
+        "line": 10,
+        "col": 1,
+        "type": "Bread"
       }
     ]
   },
@@ -589,6 +988,27 @@
   },
   {
     "ref": {
+      "name": "size2",
+      "file": "import-star-from-oven.py",
+      "start": 149,
+      "end": 154,
+      "line": 11,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "size2",
+        "file": "import-star-from-oven.py",
+        "start": 149,
+        "end": 154,
+        "line": 11,
+        "col": 1,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "size1",
       "file": "import-star-from-oven.py",
       "start": 176,
@@ -626,6 +1046,27 @@
         "line": 11,
         "col": 1,
         "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "kitchen/__init__.py",
+      "start": 149,
+      "end": 150,
+      "line": 14,
+      "col": 11
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "kitchen/__init__.py",
+        "start": 149,
+        "end": 150,
+        "line": 14,
+        "col": 11,
+        "type": "?"
       }
     ]
   },

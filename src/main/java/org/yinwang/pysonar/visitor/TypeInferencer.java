@@ -1327,16 +1327,18 @@ public class TypeInferencer implements Visitor1<Type, State> {
     }
 
     public static void bind(@NotNull State s, @NotNull Name name, @NotNull Type rvalue, Binding.Kind kind) {
-        if (s.isGlobalName(name.id)) {
-            Set<Binding> bs = s.lookup(name.id);
-            if (bs != null) {
-                for (Binding b : bs) {
-                    b.addType(rvalue);
-                    Analyzer.self.putRef(name, b);
-                }
-            }
-        } else {
+        if (!s.isGlobalName(name.id)) {
             s.insert(name.id, name, rvalue, kind);
+        }
+
+        Set<Binding> bs = s.lookup(name.id);
+        if (bs != null) {
+            for (Binding b : bs) {
+                if (s.isGlobalName(name.id)) {
+                    b.addType(rvalue);
+                }
+                Analyzer.self.putRef(name, b);
+            }
         }
     }
 

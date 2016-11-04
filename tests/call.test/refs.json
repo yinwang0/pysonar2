@@ -1,6 +1,90 @@
 [
   {
     "ref": {
+      "name": "foo",
+      "file": "test1.py",
+      "start": 4,
+      "end": 7,
+      "line": 1,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "foo",
+        "file": "test1.py",
+        "start": 4,
+        "end": 7,
+        "line": 1,
+        "col": 5,
+        "type": "str -> str / int -> int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "bar",
+      "file": "test1.py",
+      "start": 31,
+      "end": 34,
+      "line": 5,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "bar",
+        "file": "test1.py",
+        "start": 31,
+        "end": 34,
+        "line": 5,
+        "col": 5,
+        "type": "str -> str / int -> int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "baz1",
+      "file": "test1.py",
+      "start": 63,
+      "end": 67,
+      "line": 9,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "baz1",
+        "file": "test1.py",
+        "start": 63,
+        "end": 67,
+        "line": 9,
+        "col": 5,
+        "type": "() -> int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "baz2",
+      "file": "test1.py",
+      "start": 95,
+      "end": 99,
+      "line": 13,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "baz2",
+        "file": "test1.py",
+        "start": 95,
+        "end": 99,
+        "line": 13,
+        "col": 5,
+        "type": "() -> str"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "baz1",
       "file": "test1.py",
       "start": 126,
@@ -38,6 +122,36 @@
         "line": 5,
         "col": 5,
         "type": "str -> str / int -> int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "y",
+      "file": "test1.py",
+      "start": 35,
+      "end": 36,
+      "line": 5,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 35,
+        "end": 36,
+        "line": 5,
+        "col": 9,
+        "type": "int"
+      },
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 35,
+        "end": 36,
+        "line": 5,
+        "col": 9,
+        "type": "str"
       }
     ]
   },
@@ -87,6 +201,36 @@
         "start": 35,
         "end": 36,
         "line": 5,
+        "col": 9,
+        "type": "str"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 8,
+      "end": 9,
+      "line": 1,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 8,
+        "end": 9,
+        "line": 1,
+        "col": 9,
+        "type": "int"
+      },
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 8,
+        "end": 9,
+        "line": 1,
         "col": 9,
         "type": "str"
       }

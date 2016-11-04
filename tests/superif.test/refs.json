@@ -1,6 +1,111 @@
 [
   {
     "ref": {
+      "name": "test",
+      "file": "test1.py",
+      "start": 4,
+      "end": 8,
+      "line": 1,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "test",
+        "file": "test1.py",
+        "start": 4,
+        "end": 8,
+        "line": 1,
+        "col": 5,
+        "type": "? -> None"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 9,
+      "end": 13,
+      "line": 1,
+      "col": 10
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 9,
+        "end": 13,
+        "line": 1,
+        "col": 10,
+        "type": "?"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 21,
+      "end": 22,
+      "line": 3,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 21,
+        "end": 22,
+        "line": 3,
+        "col": 5,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 23,
+      "end": 24,
+      "line": 3,
+      "col": 7
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 23,
+        "end": 24,
+        "line": 3,
+        "col": 7,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 25,
+      "end": 26,
+      "line": 3,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 25,
+        "end": 26,
+        "line": 3,
+        "col": 9,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "self",
       "file": "test1.py",
       "start": 54,
@@ -17,6 +122,27 @@
         "line": 1,
         "col": 10,
         "type": "?"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "i",
+      "file": "test1.py",
+      "start": 43,
+      "end": 44,
+      "line": 4,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "i",
+        "file": "test1.py",
+        "start": 43,
+        "end": 44,
+        "line": 4,
+        "col": 9,
+        "type": "int"
       }
     ]
   },
@@ -1975,6 +2101,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 158,
+      "end": 159,
+      "line": 9,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 158,
+        "end": 159,
+        "line": 9,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 158,
+        "end": 159,
+        "line": 9,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 184,
+      "end": 185,
+      "line": 10,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 184,
+        "end": 185,
+        "line": 10,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 184,
+        "end": 185,
+        "line": 10,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 232,
+      "end": 233,
+      "line": 12,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 232,
+        "end": 233,
+        "line": 12,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 232,
+        "end": 233,
+        "line": 12,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 255,
@@ -2529,6 +2745,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 279,
+      "end": 280,
+      "line": 14,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 279,
+        "end": 280,
+        "line": 14,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 279,
+        "end": 280,
+        "line": 14,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 301,
+      "end": 302,
+      "line": 15,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 301,
+        "end": 302,
+        "line": 15,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 301,
+        "end": 302,
+        "line": 15,
         "col": 17,
         "type": "int"
       }
@@ -3369,6 +3645,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 340,
+      "end": 341,
+      "line": 17,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 340,
+        "end": 341,
+        "line": 17,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 340,
+        "end": 341,
+        "line": 17,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 372,
+      "end": 373,
+      "line": 19,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 372,
+        "end": 373,
+        "line": 19,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 372,
+        "end": 373,
+        "line": 19,
         "col": 13,
         "type": "int"
       }
@@ -5392,6 +5728,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 468,
+      "end": 469,
+      "line": 24,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 468,
+        "end": 469,
+        "line": 24,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 468,
+        "end": 469,
+        "line": 24,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 494,
+      "end": 495,
+      "line": 25,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 494,
+        "end": 495,
+        "line": 25,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 494,
+        "end": 495,
+        "line": 25,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 542,
+      "end": 543,
+      "line": 27,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 542,
+        "end": 543,
+        "line": 27,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 542,
+        "end": 543,
+        "line": 27,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 565,
@@ -5964,6 +6390,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 589,
+      "end": 590,
+      "line": 29,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 589,
+        "end": 590,
+        "line": 29,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 589,
+        "end": 590,
+        "line": 29,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 611,
+      "end": 612,
+      "line": 30,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 611,
+        "end": 612,
+        "line": 30,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 611,
+        "end": 612,
+        "line": 30,
         "col": 17,
         "type": "int"
       }
@@ -6831,6 +7317,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 650,
+      "end": 651,
+      "line": 32,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 650,
+        "end": 651,
+        "line": 32,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 650,
+        "end": 651,
+        "line": 32,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 682,
+      "end": 683,
+      "line": 34,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 682,
+        "end": 683,
+        "line": 34,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 682,
+        "end": 683,
+        "line": 34,
         "col": 13,
         "type": "int"
       }
@@ -8917,6 +9463,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 778,
+      "end": 779,
+      "line": 39,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 778,
+        "end": 779,
+        "line": 39,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 778,
+        "end": 779,
+        "line": 39,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 804,
+      "end": 805,
+      "line": 40,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 804,
+        "end": 805,
+        "line": 40,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 804,
+        "end": 805,
+        "line": 40,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 852,
+      "end": 853,
+      "line": 42,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 852,
+        "end": 853,
+        "line": 42,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 852,
+        "end": 853,
+        "line": 42,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 875,
@@ -9507,6 +10143,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 899,
+      "end": 900,
+      "line": 44,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 899,
+        "end": 900,
+        "line": 44,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 899,
+        "end": 900,
+        "line": 44,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 921,
+      "end": 922,
+      "line": 45,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 921,
+        "end": 922,
+        "line": 45,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 921,
+        "end": 922,
+        "line": 45,
         "col": 17,
         "type": "int"
       }
@@ -10401,6 +11097,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 960,
+      "end": 961,
+      "line": 47,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 960,
+        "end": 961,
+        "line": 47,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 960,
+        "end": 961,
+        "line": 47,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 992,
+      "end": 993,
+      "line": 49,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 992,
+        "end": 993,
+        "line": 49,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 992,
+        "end": 993,
+        "line": 49,
         "col": 13,
         "type": "int"
       }
@@ -12550,6 +13306,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 1088,
+      "end": 1089,
+      "line": 54,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 1088,
+        "end": 1089,
+        "line": 54,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 1088,
+        "end": 1089,
+        "line": 54,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 1114,
+      "end": 1115,
+      "line": 55,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 1114,
+        "end": 1115,
+        "line": 55,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 1114,
+        "end": 1115,
+        "line": 55,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 1162,
+      "end": 1163,
+      "line": 57,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 1162,
+        "end": 1163,
+        "line": 57,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 1162,
+        "end": 1163,
+        "line": 57,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 1185,
@@ -13158,6 +14004,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 1209,
+      "end": 1210,
+      "line": 59,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 1209,
+        "end": 1210,
+        "line": 59,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 1209,
+        "end": 1210,
+        "line": 59,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 1231,
+      "end": 1232,
+      "line": 60,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1231,
+        "end": 1232,
+        "line": 60,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1231,
+        "end": 1232,
+        "line": 60,
         "col": 17,
         "type": "int"
       }
@@ -14079,6 +14985,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 1270,
+      "end": 1271,
+      "line": 62,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1270,
+        "end": 1271,
+        "line": 62,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1270,
+        "end": 1271,
+        "line": 62,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 1302,
+      "end": 1303,
+      "line": 64,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1302,
+        "end": 1303,
+        "line": 64,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1302,
+        "end": 1303,
+        "line": 64,
         "col": 13,
         "type": "int"
       }
@@ -16291,6 +17257,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 1398,
+      "end": 1399,
+      "line": 69,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 1398,
+        "end": 1399,
+        "line": 69,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 1398,
+        "end": 1399,
+        "line": 69,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 1424,
+      "end": 1425,
+      "line": 70,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 1424,
+        "end": 1425,
+        "line": 70,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 1424,
+        "end": 1425,
+        "line": 70,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 1472,
+      "end": 1473,
+      "line": 72,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 1472,
+        "end": 1473,
+        "line": 72,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 1472,
+        "end": 1473,
+        "line": 72,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 1495,
@@ -16917,6 +17973,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 1519,
+      "end": 1520,
+      "line": 74,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 1519,
+        "end": 1520,
+        "line": 74,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 1519,
+        "end": 1520,
+        "line": 74,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 1541,
+      "end": 1542,
+      "line": 75,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1541,
+        "end": 1542,
+        "line": 75,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1541,
+        "end": 1542,
+        "line": 75,
         "col": 17,
         "type": "int"
       }
@@ -17865,6 +18981,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 1580,
+      "end": 1581,
+      "line": 77,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1580,
+        "end": 1581,
+        "line": 77,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1580,
+        "end": 1581,
+        "line": 77,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 1612,
+      "end": 1613,
+      "line": 79,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1612,
+        "end": 1613,
+        "line": 79,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1612,
+        "end": 1613,
+        "line": 79,
         "col": 13,
         "type": "int"
       }
@@ -20140,6 +21316,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 1708,
+      "end": 1709,
+      "line": 84,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 1708,
+        "end": 1709,
+        "line": 84,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 1708,
+        "end": 1709,
+        "line": 84,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 1734,
+      "end": 1735,
+      "line": 85,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 1734,
+        "end": 1735,
+        "line": 85,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 1734,
+        "end": 1735,
+        "line": 85,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 1782,
+      "end": 1783,
+      "line": 87,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 1782,
+        "end": 1783,
+        "line": 87,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 1782,
+        "end": 1783,
+        "line": 87,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 1805,
@@ -20784,6 +22050,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 1829,
+      "end": 1830,
+      "line": 89,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 1829,
+        "end": 1830,
+        "line": 89,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 1829,
+        "end": 1830,
+        "line": 89,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 1851,
+      "end": 1852,
+      "line": 90,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1851,
+        "end": 1852,
+        "line": 90,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1851,
+        "end": 1852,
+        "line": 90,
         "col": 17,
         "type": "int"
       }
@@ -21759,6 +23085,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 1890,
+      "end": 1891,
+      "line": 92,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1890,
+        "end": 1891,
+        "line": 92,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1890,
+        "end": 1891,
+        "line": 92,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 1922,
+      "end": 1923,
+      "line": 94,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1922,
+        "end": 1923,
+        "line": 94,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 1922,
+        "end": 1923,
+        "line": 94,
         "col": 13,
         "type": "int"
       }
@@ -24097,6 +25483,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 2018,
+      "end": 2019,
+      "line": 99,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 2018,
+        "end": 2019,
+        "line": 99,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 2018,
+        "end": 2019,
+        "line": 99,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 2044,
+      "end": 2045,
+      "line": 100,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 2044,
+        "end": 2045,
+        "line": 100,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 2044,
+        "end": 2045,
+        "line": 100,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 2092,
+      "end": 2093,
+      "line": 102,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 2092,
+        "end": 2093,
+        "line": 102,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 2092,
+        "end": 2093,
+        "line": 102,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 2115,
@@ -24759,6 +26235,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 2139,
+      "end": 2140,
+      "line": 104,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 2139,
+        "end": 2140,
+        "line": 104,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 2139,
+        "end": 2140,
+        "line": 104,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 2161,
+      "end": 2162,
+      "line": 105,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2161,
+        "end": 2162,
+        "line": 105,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2161,
+        "end": 2162,
+        "line": 105,
         "col": 17,
         "type": "int"
       }
@@ -25761,6 +27297,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 2200,
+      "end": 2201,
+      "line": 107,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2200,
+        "end": 2201,
+        "line": 107,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2200,
+        "end": 2201,
+        "line": 107,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 2232,
+      "end": 2233,
+      "line": 109,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2232,
+        "end": 2233,
+        "line": 109,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2232,
+        "end": 2233,
+        "line": 109,
         "col": 13,
         "type": "int"
       }
@@ -28162,6 +29758,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 2328,
+      "end": 2329,
+      "line": 114,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 2328,
+        "end": 2329,
+        "line": 114,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 2328,
+        "end": 2329,
+        "line": 114,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 2354,
+      "end": 2355,
+      "line": 115,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 2354,
+        "end": 2355,
+        "line": 115,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 2354,
+        "end": 2355,
+        "line": 115,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 2402,
+      "end": 2403,
+      "line": 117,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 2402,
+        "end": 2403,
+        "line": 117,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 2402,
+        "end": 2403,
+        "line": 117,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 2425,
@@ -28842,6 +30528,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 2449,
+      "end": 2450,
+      "line": 119,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 2449,
+        "end": 2450,
+        "line": 119,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 2449,
+        "end": 2450,
+        "line": 119,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 2471,
+      "end": 2472,
+      "line": 120,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2471,
+        "end": 2472,
+        "line": 120,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2471,
+        "end": 2472,
+        "line": 120,
         "col": 17,
         "type": "int"
       }
@@ -29871,6 +31617,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 2510,
+      "end": 2511,
+      "line": 122,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2510,
+        "end": 2511,
+        "line": 122,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2510,
+        "end": 2511,
+        "line": 122,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 2542,
+      "end": 2543,
+      "line": 124,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2542,
+        "end": 2543,
+        "line": 124,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2542,
+        "end": 2543,
+        "line": 124,
         "col": 13,
         "type": "int"
       }
@@ -32335,6 +34141,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 2638,
+      "end": 2639,
+      "line": 129,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 2638,
+        "end": 2639,
+        "line": 129,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 2638,
+        "end": 2639,
+        "line": 129,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 2664,
+      "end": 2665,
+      "line": 130,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 2664,
+        "end": 2665,
+        "line": 130,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 2664,
+        "end": 2665,
+        "line": 130,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 2712,
+      "end": 2713,
+      "line": 132,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 2712,
+        "end": 2713,
+        "line": 132,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 2712,
+        "end": 2713,
+        "line": 132,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 2735,
@@ -33033,6 +34929,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 2759,
+      "end": 2760,
+      "line": 134,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 2759,
+        "end": 2760,
+        "line": 134,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 2759,
+        "end": 2760,
+        "line": 134,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 2781,
+      "end": 2782,
+      "line": 135,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2781,
+        "end": 2782,
+        "line": 135,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2781,
+        "end": 2782,
+        "line": 135,
         "col": 17,
         "type": "int"
       }
@@ -34089,6 +36045,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 2820,
+      "end": 2821,
+      "line": 137,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2820,
+        "end": 2821,
+        "line": 137,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2820,
+        "end": 2821,
+        "line": 137,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 2852,
+      "end": 2853,
+      "line": 139,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2852,
+        "end": 2853,
+        "line": 139,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 2852,
+        "end": 2853,
+        "line": 139,
         "col": 13,
         "type": "int"
       }
@@ -36616,6 +38632,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 2948,
+      "end": 2949,
+      "line": 144,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 2948,
+        "end": 2949,
+        "line": 144,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 2948,
+        "end": 2949,
+        "line": 144,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 2974,
+      "end": 2975,
+      "line": 145,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 2974,
+        "end": 2975,
+        "line": 145,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 2974,
+        "end": 2975,
+        "line": 145,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 3022,
+      "end": 3023,
+      "line": 147,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 3022,
+        "end": 3023,
+        "line": 147,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 3022,
+        "end": 3023,
+        "line": 147,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 3045,
@@ -37332,6 +39438,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 3069,
+      "end": 3070,
+      "line": 149,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 3069,
+        "end": 3070,
+        "line": 149,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 3069,
+        "end": 3070,
+        "line": 149,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 3091,
+      "end": 3092,
+      "line": 150,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3091,
+        "end": 3092,
+        "line": 150,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3091,
+        "end": 3092,
+        "line": 150,
         "col": 17,
         "type": "int"
       }
@@ -38415,6 +40581,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 3130,
+      "end": 3131,
+      "line": 152,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3130,
+        "end": 3131,
+        "line": 152,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3130,
+        "end": 3131,
+        "line": 152,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 3162,
+      "end": 3163,
+      "line": 154,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3162,
+        "end": 3163,
+        "line": 154,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3162,
+        "end": 3163,
+        "line": 154,
         "col": 13,
         "type": "int"
       }
@@ -41005,6 +43231,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 3258,
+      "end": 3259,
+      "line": 159,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 3258,
+        "end": 3259,
+        "line": 159,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 3258,
+        "end": 3259,
+        "line": 159,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 3284,
+      "end": 3285,
+      "line": 160,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 3284,
+        "end": 3285,
+        "line": 160,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 3284,
+        "end": 3285,
+        "line": 160,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 3332,
+      "end": 3333,
+      "line": 162,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 3332,
+        "end": 3333,
+        "line": 162,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 3332,
+        "end": 3333,
+        "line": 162,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 3355,
@@ -41739,6 +44055,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 3379,
+      "end": 3380,
+      "line": 164,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 3379,
+        "end": 3380,
+        "line": 164,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 3379,
+        "end": 3380,
+        "line": 164,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 3401,
+      "end": 3402,
+      "line": 165,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3401,
+        "end": 3402,
+        "line": 165,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3401,
+        "end": 3402,
+        "line": 165,
         "col": 17,
         "type": "int"
       }
@@ -42849,6 +45225,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 3440,
+      "end": 3441,
+      "line": 167,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3440,
+        "end": 3441,
+        "line": 167,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3440,
+        "end": 3441,
+        "line": 167,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 3472,
+      "end": 3473,
+      "line": 169,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3472,
+        "end": 3473,
+        "line": 169,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3472,
+        "end": 3473,
+        "line": 169,
         "col": 13,
         "type": "int"
       }
@@ -45502,6 +47938,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 3568,
+      "end": 3569,
+      "line": 174,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 3568,
+        "end": 3569,
+        "line": 174,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 3568,
+        "end": 3569,
+        "line": 174,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 3594,
+      "end": 3595,
+      "line": 175,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 3594,
+        "end": 3595,
+        "line": 175,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 3594,
+        "end": 3595,
+        "line": 175,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 3642,
+      "end": 3643,
+      "line": 177,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 3642,
+        "end": 3643,
+        "line": 177,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 3642,
+        "end": 3643,
+        "line": 177,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 3665,
@@ -46254,6 +48780,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 3689,
+      "end": 3690,
+      "line": 179,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 3689,
+        "end": 3690,
+        "line": 179,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 3689,
+        "end": 3690,
+        "line": 179,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 3711,
+      "end": 3712,
+      "line": 180,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3711,
+        "end": 3712,
+        "line": 180,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3711,
+        "end": 3712,
+        "line": 180,
         "col": 17,
         "type": "int"
       }
@@ -47391,6 +49977,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 3750,
+      "end": 3751,
+      "line": 182,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3750,
+        "end": 3751,
+        "line": 182,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3750,
+        "end": 3751,
+        "line": 182,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 3782,
+      "end": 3783,
+      "line": 184,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3782,
+        "end": 3783,
+        "line": 184,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 3782,
+        "end": 3783,
+        "line": 184,
         "col": 13,
         "type": "int"
       }
@@ -50107,6 +52753,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 3878,
+      "end": 3879,
+      "line": 189,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 3878,
+        "end": 3879,
+        "line": 189,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 3878,
+        "end": 3879,
+        "line": 189,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 3904,
+      "end": 3905,
+      "line": 190,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 3904,
+        "end": 3905,
+        "line": 190,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 3904,
+        "end": 3905,
+        "line": 190,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 3952,
+      "end": 3953,
+      "line": 192,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 3952,
+        "end": 3953,
+        "line": 192,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 3952,
+        "end": 3953,
+        "line": 192,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 3975,
@@ -50877,6 +53613,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 3999,
+      "end": 4000,
+      "line": 194,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 3999,
+        "end": 4000,
+        "line": 194,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 3999,
+        "end": 4000,
+        "line": 194,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 4021,
+      "end": 4022,
+      "line": 195,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4021,
+        "end": 4022,
+        "line": 195,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4021,
+        "end": 4022,
+        "line": 195,
         "col": 17,
         "type": "int"
       }
@@ -52041,6 +54837,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 4060,
+      "end": 4061,
+      "line": 197,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4060,
+        "end": 4061,
+        "line": 197,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4060,
+        "end": 4061,
+        "line": 197,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 4092,
+      "end": 4093,
+      "line": 199,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4092,
+        "end": 4093,
+        "line": 199,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4092,
+        "end": 4093,
+        "line": 199,
         "col": 13,
         "type": "int"
       }
@@ -54820,6 +57676,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 4188,
+      "end": 4189,
+      "line": 204,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 4188,
+        "end": 4189,
+        "line": 204,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 4188,
+        "end": 4189,
+        "line": 204,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 4214,
+      "end": 4215,
+      "line": 205,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 4214,
+        "end": 4215,
+        "line": 205,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 4214,
+        "end": 4215,
+        "line": 205,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 4262,
+      "end": 4263,
+      "line": 207,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 4262,
+        "end": 4263,
+        "line": 207,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 4262,
+        "end": 4263,
+        "line": 207,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 4285,
@@ -55608,6 +58554,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 4309,
+      "end": 4310,
+      "line": 209,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 4309,
+        "end": 4310,
+        "line": 209,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 4309,
+        "end": 4310,
+        "line": 209,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 4331,
+      "end": 4332,
+      "line": 210,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4331,
+        "end": 4332,
+        "line": 210,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4331,
+        "end": 4332,
+        "line": 210,
         "col": 17,
         "type": "int"
       }
@@ -56799,6 +59805,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 4370,
+      "end": 4371,
+      "line": 212,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4370,
+        "end": 4371,
+        "line": 212,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4370,
+        "end": 4371,
+        "line": 212,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 4402,
+      "end": 4403,
+      "line": 214,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4402,
+        "end": 4403,
+        "line": 214,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4402,
+        "end": 4403,
+        "line": 214,
         "col": 13,
         "type": "int"
       }
@@ -59641,6 +62707,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 4498,
+      "end": 4499,
+      "line": 219,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 4498,
+        "end": 4499,
+        "line": 219,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 4498,
+        "end": 4499,
+        "line": 219,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 4524,
+      "end": 4525,
+      "line": 220,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 4524,
+        "end": 4525,
+        "line": 220,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 4524,
+        "end": 4525,
+        "line": 220,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 4572,
+      "end": 4573,
+      "line": 222,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 4572,
+        "end": 4573,
+        "line": 222,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 4572,
+        "end": 4573,
+        "line": 222,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 4595,
@@ -60447,6 +63603,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 4619,
+      "end": 4620,
+      "line": 224,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 4619,
+        "end": 4620,
+        "line": 224,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 4619,
+        "end": 4620,
+        "line": 224,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 4641,
+      "end": 4642,
+      "line": 225,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4641,
+        "end": 4642,
+        "line": 225,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4641,
+        "end": 4642,
+        "line": 225,
         "col": 17,
         "type": "int"
       }
@@ -61665,6 +64881,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 4680,
+      "end": 4681,
+      "line": 227,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4680,
+        "end": 4681,
+        "line": 227,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4680,
+        "end": 4681,
+        "line": 227,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 4712,
+      "end": 4713,
+      "line": 229,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4712,
+        "end": 4713,
+        "line": 229,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4712,
+        "end": 4713,
+        "line": 229,
         "col": 13,
         "type": "int"
       }
@@ -64570,6 +67846,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 4808,
+      "end": 4809,
+      "line": 234,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 4808,
+        "end": 4809,
+        "line": 234,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 4808,
+        "end": 4809,
+        "line": 234,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 4834,
+      "end": 4835,
+      "line": 235,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 4834,
+        "end": 4835,
+        "line": 235,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 4834,
+        "end": 4835,
+        "line": 235,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 4882,
+      "end": 4883,
+      "line": 237,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 4882,
+        "end": 4883,
+        "line": 237,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 4882,
+        "end": 4883,
+        "line": 237,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 4905,
@@ -65394,6 +68760,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 4929,
+      "end": 4930,
+      "line": 239,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 4929,
+        "end": 4930,
+        "line": 239,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 4929,
+        "end": 4930,
+        "line": 239,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 4951,
+      "end": 4952,
+      "line": 240,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4951,
+        "end": 4952,
+        "line": 240,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4951,
+        "end": 4952,
+        "line": 240,
         "col": 17,
         "type": "int"
       }
@@ -66639,6 +70065,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 4990,
+      "end": 4991,
+      "line": 242,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4990,
+        "end": 4991,
+        "line": 242,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 4990,
+        "end": 4991,
+        "line": 242,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 5022,
+      "end": 5023,
+      "line": 244,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5022,
+        "end": 5023,
+        "line": 244,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5022,
+        "end": 5023,
+        "line": 244,
         "col": 13,
         "type": "int"
       }
@@ -69607,6 +73093,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 5118,
+      "end": 5119,
+      "line": 249,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 5118,
+        "end": 5119,
+        "line": 249,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 5118,
+        "end": 5119,
+        "line": 249,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 5144,
+      "end": 5145,
+      "line": 250,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 5144,
+        "end": 5145,
+        "line": 250,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 5144,
+        "end": 5145,
+        "line": 250,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 5192,
+      "end": 5193,
+      "line": 252,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 5192,
+        "end": 5193,
+        "line": 252,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 5192,
+        "end": 5193,
+        "line": 252,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 5215,
@@ -70449,6 +74025,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 5239,
+      "end": 5240,
+      "line": 254,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 5239,
+        "end": 5240,
+        "line": 254,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 5239,
+        "end": 5240,
+        "line": 254,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 5261,
+      "end": 5262,
+      "line": 255,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5261,
+        "end": 5262,
+        "line": 255,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5261,
+        "end": 5262,
+        "line": 255,
         "col": 17,
         "type": "int"
       }
@@ -71721,6 +75357,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 5300,
+      "end": 5301,
+      "line": 257,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5300,
+        "end": 5301,
+        "line": 257,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5300,
+        "end": 5301,
+        "line": 257,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 5332,
+      "end": 5333,
+      "line": 259,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5332,
+        "end": 5333,
+        "line": 259,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5332,
+        "end": 5333,
+        "line": 259,
         "col": 13,
         "type": "int"
       }
@@ -74752,6 +78448,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 5428,
+      "end": 5429,
+      "line": 264,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 5428,
+        "end": 5429,
+        "line": 264,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 5428,
+        "end": 5429,
+        "line": 264,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 5454,
+      "end": 5455,
+      "line": 265,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 5454,
+        "end": 5455,
+        "line": 265,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 5454,
+        "end": 5455,
+        "line": 265,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 5502,
+      "end": 5503,
+      "line": 267,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 5502,
+        "end": 5503,
+        "line": 267,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 5502,
+        "end": 5503,
+        "line": 267,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 5525,
@@ -75612,6 +79398,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 5549,
+      "end": 5550,
+      "line": 269,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 5549,
+        "end": 5550,
+        "line": 269,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 5549,
+        "end": 5550,
+        "line": 269,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 5571,
+      "end": 5572,
+      "line": 270,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5571,
+        "end": 5572,
+        "line": 270,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5571,
+        "end": 5572,
+        "line": 270,
         "col": 17,
         "type": "int"
       }
@@ -76911,6 +80757,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 5610,
+      "end": 5611,
+      "line": 272,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5610,
+        "end": 5611,
+        "line": 272,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5610,
+        "end": 5611,
+        "line": 272,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 5642,
+      "end": 5643,
+      "line": 274,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5642,
+        "end": 5643,
+        "line": 274,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5642,
+        "end": 5643,
+        "line": 274,
         "col": 13,
         "type": "int"
       }
@@ -80005,6 +83911,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 5738,
+      "end": 5739,
+      "line": 279,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 5738,
+        "end": 5739,
+        "line": 279,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 5738,
+        "end": 5739,
+        "line": 279,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 5764,
+      "end": 5765,
+      "line": 280,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 5764,
+        "end": 5765,
+        "line": 280,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 5764,
+        "end": 5765,
+        "line": 280,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 5812,
+      "end": 5813,
+      "line": 282,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 5812,
+        "end": 5813,
+        "line": 282,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 5812,
+        "end": 5813,
+        "line": 282,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 5835,
@@ -80883,6 +84879,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 5859,
+      "end": 5860,
+      "line": 284,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 5859,
+        "end": 5860,
+        "line": 284,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 5859,
+        "end": 5860,
+        "line": 284,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 5881,
+      "end": 5882,
+      "line": 285,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5881,
+        "end": 5882,
+        "line": 285,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5881,
+        "end": 5882,
+        "line": 285,
         "col": 17,
         "type": "int"
       }
@@ -82209,6 +86265,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 5920,
+      "end": 5921,
+      "line": 287,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5920,
+        "end": 5921,
+        "line": 287,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5920,
+        "end": 5921,
+        "line": 287,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 5952,
+      "end": 5953,
+      "line": 289,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5952,
+        "end": 5953,
+        "line": 289,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 5952,
+        "end": 5953,
+        "line": 289,
         "col": 13,
         "type": "int"
       }
@@ -85366,6 +89482,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 6048,
+      "end": 6049,
+      "line": 294,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 6048,
+        "end": 6049,
+        "line": 294,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 6048,
+        "end": 6049,
+        "line": 294,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 6074,
+      "end": 6075,
+      "line": 295,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 6074,
+        "end": 6075,
+        "line": 295,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 6074,
+        "end": 6075,
+        "line": 295,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 6122,
+      "end": 6123,
+      "line": 297,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 6122,
+        "end": 6123,
+        "line": 297,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 6122,
+        "end": 6123,
+        "line": 297,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 6145,
@@ -86262,6 +90468,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 6169,
+      "end": 6170,
+      "line": 299,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 6169,
+        "end": 6170,
+        "line": 299,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 6169,
+        "end": 6170,
+        "line": 299,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 6191,
+      "end": 6192,
+      "line": 300,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6191,
+        "end": 6192,
+        "line": 300,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6191,
+        "end": 6192,
+        "line": 300,
         "col": 17,
         "type": "int"
       }
@@ -87615,6 +91881,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 6230,
+      "end": 6231,
+      "line": 302,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6230,
+        "end": 6231,
+        "line": 302,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6230,
+        "end": 6231,
+        "line": 302,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 6262,
+      "end": 6263,
+      "line": 304,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6262,
+        "end": 6263,
+        "line": 304,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6262,
+        "end": 6263,
+        "line": 304,
         "col": 13,
         "type": "int"
       }
@@ -90835,6 +95161,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 6358,
+      "end": 6359,
+      "line": 309,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 6358,
+        "end": 6359,
+        "line": 309,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 6358,
+        "end": 6359,
+        "line": 309,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 6384,
+      "end": 6385,
+      "line": 310,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 6384,
+        "end": 6385,
+        "line": 310,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 6384,
+        "end": 6385,
+        "line": 310,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 6432,
+      "end": 6433,
+      "line": 312,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 6432,
+        "end": 6433,
+        "line": 312,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 6432,
+        "end": 6433,
+        "line": 312,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 6455,
@@ -91749,6 +96165,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 6479,
+      "end": 6480,
+      "line": 314,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 6479,
+        "end": 6480,
+        "line": 314,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 6479,
+        "end": 6480,
+        "line": 314,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 6501,
+      "end": 6502,
+      "line": 315,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6501,
+        "end": 6502,
+        "line": 315,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6501,
+        "end": 6502,
+        "line": 315,
         "col": 17,
         "type": "int"
       }
@@ -93129,6 +97605,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 6540,
+      "end": 6541,
+      "line": 317,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6540,
+        "end": 6541,
+        "line": 317,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6540,
+        "end": 6541,
+        "line": 317,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 6572,
+      "end": 6573,
+      "line": 319,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6572,
+        "end": 6573,
+        "line": 319,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6572,
+        "end": 6573,
+        "line": 319,
         "col": 13,
         "type": "int"
       }
@@ -96412,6 +100948,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 6668,
+      "end": 6669,
+      "line": 324,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 6668,
+        "end": 6669,
+        "line": 324,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 6668,
+        "end": 6669,
+        "line": 324,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 6694,
+      "end": 6695,
+      "line": 325,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 6694,
+        "end": 6695,
+        "line": 325,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 6694,
+        "end": 6695,
+        "line": 325,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 6742,
+      "end": 6743,
+      "line": 327,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 6742,
+        "end": 6743,
+        "line": 327,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 6742,
+        "end": 6743,
+        "line": 327,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 6765,
@@ -97344,6 +101970,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 6789,
+      "end": 6790,
+      "line": 329,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 6789,
+        "end": 6790,
+        "line": 329,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 6789,
+        "end": 6790,
+        "line": 329,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 6811,
+      "end": 6812,
+      "line": 330,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6811,
+        "end": 6812,
+        "line": 330,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6811,
+        "end": 6812,
+        "line": 330,
         "col": 17,
         "type": "int"
       }
@@ -98751,6 +103437,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 6850,
+      "end": 6851,
+      "line": 332,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6850,
+        "end": 6851,
+        "line": 332,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6850,
+        "end": 6851,
+        "line": 332,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 6882,
+      "end": 6883,
+      "line": 334,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6882,
+        "end": 6883,
+        "line": 334,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 6882,
+        "end": 6883,
+        "line": 334,
         "col": 13,
         "type": "int"
       }
@@ -102097,6 +106843,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 6978,
+      "end": 6979,
+      "line": 339,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 6978,
+        "end": 6979,
+        "line": 339,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 6978,
+        "end": 6979,
+        "line": 339,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 7004,
+      "end": 7005,
+      "line": 340,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 7004,
+        "end": 7005,
+        "line": 340,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 7004,
+        "end": 7005,
+        "line": 340,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 7052,
+      "end": 7053,
+      "line": 342,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 7052,
+        "end": 7053,
+        "line": 342,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 7052,
+        "end": 7053,
+        "line": 342,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 7075,
@@ -103047,6 +107883,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 7099,
+      "end": 7100,
+      "line": 344,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 7099,
+        "end": 7100,
+        "line": 344,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 7099,
+        "end": 7100,
+        "line": 344,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 7121,
+      "end": 7122,
+      "line": 345,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7121,
+        "end": 7122,
+        "line": 345,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7121,
+        "end": 7122,
+        "line": 345,
         "col": 17,
         "type": "int"
       }
@@ -104481,6 +109377,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 7160,
+      "end": 7161,
+      "line": 347,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7160,
+        "end": 7161,
+        "line": 347,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7160,
+        "end": 7161,
+        "line": 347,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 7192,
+      "end": 7193,
+      "line": 349,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7192,
+        "end": 7193,
+        "line": 349,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7192,
+        "end": 7193,
+        "line": 349,
         "col": 13,
         "type": "int"
       }
@@ -107890,6 +112846,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 7288,
+      "end": 7289,
+      "line": 354,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 7288,
+        "end": 7289,
+        "line": 354,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 7288,
+        "end": 7289,
+        "line": 354,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 7314,
+      "end": 7315,
+      "line": 355,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 7314,
+        "end": 7315,
+        "line": 355,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 7314,
+        "end": 7315,
+        "line": 355,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 7362,
+      "end": 7363,
+      "line": 357,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 7362,
+        "end": 7363,
+        "line": 357,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 7362,
+        "end": 7363,
+        "line": 357,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 7385,
@@ -108858,6 +113904,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 7409,
+      "end": 7410,
+      "line": 359,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 7409,
+        "end": 7410,
+        "line": 359,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 7409,
+        "end": 7410,
+        "line": 359,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 7431,
+      "end": 7432,
+      "line": 360,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7431,
+        "end": 7432,
+        "line": 360,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7431,
+        "end": 7432,
+        "line": 360,
         "col": 17,
         "type": "int"
       }
@@ -110319,6 +115425,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 7470,
+      "end": 7471,
+      "line": 362,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7470,
+        "end": 7471,
+        "line": 362,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7470,
+        "end": 7471,
+        "line": 362,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 7502,
+      "end": 7503,
+      "line": 364,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7502,
+        "end": 7503,
+        "line": 364,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7502,
+        "end": 7503,
+        "line": 364,
         "col": 13,
         "type": "int"
       }
@@ -113791,6 +118957,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 7598,
+      "end": 7599,
+      "line": 369,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 7598,
+        "end": 7599,
+        "line": 369,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 7598,
+        "end": 7599,
+        "line": 369,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 7624,
+      "end": 7625,
+      "line": 370,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 7624,
+        "end": 7625,
+        "line": 370,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 7624,
+        "end": 7625,
+        "line": 370,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 7672,
+      "end": 7673,
+      "line": 372,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 7672,
+        "end": 7673,
+        "line": 372,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 7672,
+        "end": 7673,
+        "line": 372,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 7695,
@@ -114777,6 +120033,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 7719,
+      "end": 7720,
+      "line": 374,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 7719,
+        "end": 7720,
+        "line": 374,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 7719,
+        "end": 7720,
+        "line": 374,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 7741,
+      "end": 7742,
+      "line": 375,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7741,
+        "end": 7742,
+        "line": 375,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7741,
+        "end": 7742,
+        "line": 375,
         "col": 17,
         "type": "int"
       }
@@ -116265,6 +121581,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 7780,
+      "end": 7781,
+      "line": 377,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7780,
+        "end": 7781,
+        "line": 377,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7780,
+        "end": 7781,
+        "line": 377,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 7812,
+      "end": 7813,
+      "line": 379,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7812,
+        "end": 7813,
+        "line": 379,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 7812,
+        "end": 7813,
+        "line": 379,
         "col": 13,
         "type": "int"
       }
@@ -119800,6 +125176,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 7908,
+      "end": 7909,
+      "line": 384,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 7908,
+        "end": 7909,
+        "line": 384,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 7908,
+        "end": 7909,
+        "line": 384,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 7934,
+      "end": 7935,
+      "line": 385,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 7934,
+        "end": 7935,
+        "line": 385,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 7934,
+        "end": 7935,
+        "line": 385,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 7982,
+      "end": 7983,
+      "line": 387,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 7982,
+        "end": 7983,
+        "line": 387,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 7982,
+        "end": 7983,
+        "line": 387,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 8005,
@@ -120804,6 +126270,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 8029,
+      "end": 8030,
+      "line": 389,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 8029,
+        "end": 8030,
+        "line": 389,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 8029,
+        "end": 8030,
+        "line": 389,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 8051,
+      "end": 8052,
+      "line": 390,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8051,
+        "end": 8052,
+        "line": 390,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8051,
+        "end": 8052,
+        "line": 390,
         "col": 17,
         "type": "int"
       }
@@ -122319,6 +127845,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 8090,
+      "end": 8091,
+      "line": 392,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8090,
+        "end": 8091,
+        "line": 392,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8090,
+        "end": 8091,
+        "line": 392,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 8122,
+      "end": 8123,
+      "line": 394,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8122,
+        "end": 8123,
+        "line": 394,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8122,
+        "end": 8123,
+        "line": 394,
         "col": 13,
         "type": "int"
       }
@@ -125917,6 +131503,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 8218,
+      "end": 8219,
+      "line": 399,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 8218,
+        "end": 8219,
+        "line": 399,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 8218,
+        "end": 8219,
+        "line": 399,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 8244,
+      "end": 8245,
+      "line": 400,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 8244,
+        "end": 8245,
+        "line": 400,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 8244,
+        "end": 8245,
+        "line": 400,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 8292,
+      "end": 8293,
+      "line": 402,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 8292,
+        "end": 8293,
+        "line": 402,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 8292,
+        "end": 8293,
+        "line": 402,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 8315,
@@ -126939,6 +132615,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 8339,
+      "end": 8340,
+      "line": 404,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 8339,
+        "end": 8340,
+        "line": 404,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 8339,
+        "end": 8340,
+        "line": 404,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 8361,
+      "end": 8362,
+      "line": 405,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8361,
+        "end": 8362,
+        "line": 405,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8361,
+        "end": 8362,
+        "line": 405,
         "col": 17,
         "type": "int"
       }
@@ -128481,6 +134217,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 8400,
+      "end": 8401,
+      "line": 407,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8400,
+        "end": 8401,
+        "line": 407,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8400,
+        "end": 8401,
+        "line": 407,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 8432,
+      "end": 8433,
+      "line": 409,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8432,
+        "end": 8433,
+        "line": 409,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8432,
+        "end": 8433,
+        "line": 409,
         "col": 13,
         "type": "int"
       }
@@ -132142,6 +137938,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 8528,
+      "end": 8529,
+      "line": 414,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 8528,
+        "end": 8529,
+        "line": 414,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 8528,
+        "end": 8529,
+        "line": 414,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 8554,
+      "end": 8555,
+      "line": 415,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 8554,
+        "end": 8555,
+        "line": 415,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 8554,
+        "end": 8555,
+        "line": 415,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 8602,
+      "end": 8603,
+      "line": 417,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 8602,
+        "end": 8603,
+        "line": 417,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 8602,
+        "end": 8603,
+        "line": 417,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 8625,
@@ -133182,6 +139068,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 8649,
+      "end": 8650,
+      "line": 419,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 8649,
+        "end": 8650,
+        "line": 419,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 8649,
+        "end": 8650,
+        "line": 419,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 8671,
+      "end": 8672,
+      "line": 420,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8671,
+        "end": 8672,
+        "line": 420,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8671,
+        "end": 8672,
+        "line": 420,
         "col": 17,
         "type": "int"
       }
@@ -134751,6 +140697,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 8710,
+      "end": 8711,
+      "line": 422,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8710,
+        "end": 8711,
+        "line": 422,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8710,
+        "end": 8711,
+        "line": 422,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 8742,
+      "end": 8743,
+      "line": 424,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8742,
+        "end": 8743,
+        "line": 424,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8742,
+        "end": 8743,
+        "line": 424,
         "col": 13,
         "type": "int"
       }
@@ -138475,6 +144481,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 8838,
+      "end": 8839,
+      "line": 429,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 8838,
+        "end": 8839,
+        "line": 429,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 8838,
+        "end": 8839,
+        "line": 429,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 8864,
+      "end": 8865,
+      "line": 430,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 8864,
+        "end": 8865,
+        "line": 430,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 8864,
+        "end": 8865,
+        "line": 430,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 8912,
+      "end": 8913,
+      "line": 432,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 8912,
+        "end": 8913,
+        "line": 432,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 8912,
+        "end": 8913,
+        "line": 432,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 8935,
@@ -139533,6 +145629,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 8959,
+      "end": 8960,
+      "line": 434,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 8959,
+        "end": 8960,
+        "line": 434,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 8959,
+        "end": 8960,
+        "line": 434,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 8981,
+      "end": 8982,
+      "line": 435,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8981,
+        "end": 8982,
+        "line": 435,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 8981,
+        "end": 8982,
+        "line": 435,
         "col": 17,
         "type": "int"
       }
@@ -141129,6 +147285,66 @@
         "start": 9362,
         "end": 9363,
         "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 9020,
+      "end": 9021,
+      "line": 437,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 9020,
+        "end": 9021,
+        "line": 437,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 9020,
+        "end": 9021,
+        "line": 437,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 9052,
+      "end": 9053,
+      "line": 439,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 9052,
+        "end": 9053,
+        "line": 439,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 9052,
+        "end": 9053,
+        "line": 439,
         "col": 13,
         "type": "int"
       }
@@ -144916,6 +151132,96 @@
   },
   {
     "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 9148,
+      "end": 9149,
+      "line": 444,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 9148,
+        "end": 9149,
+        "line": 444,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 9148,
+        "end": 9149,
+        "line": 444,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 9174,
+      "end": 9175,
+      "line": 445,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 9174,
+        "end": 9175,
+        "line": 445,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 9174,
+        "end": 9175,
+        "line": 445,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "c",
+      "file": "test1.py",
+      "start": 9222,
+      "end": 9223,
+      "line": 447,
+      "col": 21
+    },
+    "dests": [
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 9222,
+        "end": 9223,
+        "line": 447,
+        "col": 21,
+        "type": "int"
+      },
+      {
+        "name": "c",
+        "file": "test1.py",
+        "start": 9222,
+        "end": 9223,
+        "line": 447,
+        "col": 21,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "b",
       "file": "test1.py",
       "start": 9245,
@@ -145992,6 +152298,66 @@
         "start": 9269,
         "end": 9270,
         "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 9269,
+      "end": 9270,
+      "line": 449,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 9269,
+        "end": 9270,
+        "line": 449,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 9269,
+        "end": 9270,
+        "line": 449,
+        "col": 17,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 9291,
+      "end": 9292,
+      "line": 450,
+      "col": 17
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 9291,
+        "end": 9292,
+        "line": 450,
+        "col": 17,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 9291,
+        "end": 9292,
+        "line": 450,
         "col": 17,
         "type": "int"
       }
@@ -147606,6 +153972,66 @@
         "start": 9330,
         "end": 9331,
         "line": 452,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 9362,
+        "end": 9363,
+        "line": 454,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 9330,
+      "end": 9331,
+      "line": 452,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 9330,
+        "end": 9331,
+        "line": 452,
+        "col": 13,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 9330,
+        "end": 9331,
+        "line": 452,
+        "col": 13,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 9362,
+      "end": 9363,
+      "line": 454,
+      "col": 13
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 9362,
+        "end": 9363,
+        "line": 454,
         "col": 13,
         "type": "int"
       },

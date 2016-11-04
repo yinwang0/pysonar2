@@ -1,6 +1,69 @@
 [
   {
     "ref": {
+      "name": "Pizza",
+      "file": "kitchen/oven.py",
+      "start": 6,
+      "end": 11,
+      "line": 1,
+      "col": 7
+    },
+    "dests": [
+      {
+        "name": "Pizza",
+        "file": "kitchen/oven.py",
+        "start": 6,
+        "end": 11,
+        "line": 1,
+        "col": 7,
+        "type": "<Pizza>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "__init__",
+      "file": "kitchen/oven.py",
+      "start": 19,
+      "end": 27,
+      "line": 2,
+      "col": 7
+    },
+    "dests": [
+      {
+        "name": "__init__",
+        "file": "kitchen/oven.py",
+        "start": 19,
+        "end": 27,
+        "line": 2,
+        "col": 7,
+        "type": "? -> ?"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "get_toppings",
+      "file": "kitchen/oven.py",
+      "start": 81,
+      "end": 93,
+      "line": 5,
+      "col": 7
+    },
+    "dests": [
+      {
+        "name": "get_toppings",
+        "file": "kitchen/oven.py",
+        "start": 81,
+        "end": 93,
+        "line": 5,
+        "col": 7,
+        "type": "Pizza -> [str]"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "kitchen",
       "file": "bedroom.py",
       "start": 29,
@@ -64,6 +127,48 @@
   },
   {
     "ref": {
+      "name": "self",
+      "file": "kitchen/oven.py",
+      "start": 28,
+      "end": 32,
+      "line": 2,
+      "col": 16
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "kitchen/oven.py",
+        "start": 28,
+        "end": 32,
+        "line": 2,
+        "col": 16,
+        "type": "Pizza"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "toppings",
+      "file": "kitchen/oven.py",
+      "start": 34,
+      "end": 42,
+      "line": 2,
+      "col": 22
+    },
+    "dests": [
+      {
+        "name": "toppings",
+        "file": "kitchen/oven.py",
+        "start": 34,
+        "end": 42,
+        "line": 2,
+        "col": 22,
+        "type": "[str]"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "toppings",
       "file": "kitchen/oven.py",
       "start": 65,
@@ -108,6 +213,27 @@
     "ref": {
       "name": "pizza",
       "file": "bedroom.py",
+      "start": 21,
+      "end": 26,
+      "line": 3,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "pizza",
+        "file": "bedroom.py",
+        "start": 21,
+        "end": 26,
+        "line": 3,
+        "col": 1,
+        "type": "Pizza"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "pizza",
+      "file": "bedroom.py",
       "start": 88,
       "end": 93,
       "line": 4,
@@ -143,6 +269,27 @@
         "line": 5,
         "col": 7,
         "type": "Pizza -> [str]"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "kitchen/oven.py",
+      "start": 94,
+      "end": 98,
+      "line": 5,
+      "col": 20
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "kitchen/oven.py",
+        "start": 94,
+        "end": 98,
+        "line": 5,
+        "col": 20,
+        "type": "Pizza"
       }
     ]
   },

@@ -3,6 +3,27 @@
     "ref": {
       "name": "x",
       "file": "bom.py",
+      "start": 17,
+      "end": 18,
+      "line": 2,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "bom.py",
+        "start": 17,
+        "end": 18,
+        "line": 2,
+        "col": 1,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "bom.py",
       "start": 43,
       "end": 44,
       "line": 3,

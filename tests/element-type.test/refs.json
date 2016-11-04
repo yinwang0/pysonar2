@@ -3,6 +3,27 @@
     "ref": {
       "name": "a",
       "file": "test1.py",
+      "start": 21,
+      "end": 22,
+      "line": 3,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 21,
+        "end": 22,
+        "line": 3,
+        "col": 1,
+        "type": "[int]"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
       "start": 28,
       "end": 29,
       "line": 4,
@@ -45,6 +66,27 @@
     "ref": {
       "name": "b",
       "file": "test1.py",
+      "start": 46,
+      "end": 47,
+      "line": 7,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 46,
+        "end": 47,
+        "line": 7,
+        "col": 1,
+        "type": "dict"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
       "start": 53,
       "end": 54,
       "line": 8,
@@ -80,6 +122,27 @@
         "line": 7,
         "col": 1,
         "type": "dict"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 68,
+      "end": 69,
+      "line": 9,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 68,
+        "end": 69,
+        "line": 9,
+        "col": 1,
+        "type": "str"
       }
     ]
   },

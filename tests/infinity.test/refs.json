@@ -3,6 +3,27 @@
     "ref": {
       "name": "x",
       "file": "test1.py",
+      "start": 43,
+      "end": 44,
+      "line": 4,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 43,
+        "end": 44,
+        "line": 4,
+        "col": 1,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
       "start": 63,
       "end": 64,
       "line": 6,
@@ -85,6 +106,27 @@
   },
   {
     "ref": {
+      "name": "w",
+      "file": "test1.py",
+      "start": 101,
+      "end": 102,
+      "line": 8,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "w",
+        "file": "test1.py",
+        "start": 101,
+        "end": 102,
+        "line": 8,
+        "col": 9,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "x",
       "file": "test1.py",
       "start": 138,
@@ -106,6 +148,27 @@
   },
   {
     "ref": {
+      "name": "w",
+      "file": "test1.py",
+      "start": 134,
+      "end": 135,
+      "line": 10,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "w",
+        "file": "test1.py",
+        "start": 134,
+        "end": 135,
+        "line": 10,
+        "col": 9,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "x",
       "file": "test1.py",
       "start": 164,
@@ -121,6 +184,27 @@
         "end": 44,
         "line": 4,
         "col": 1,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "w",
+      "file": "test1.py",
+      "start": 160,
+      "end": 161,
+      "line": 12,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "w",
+        "file": "test1.py",
+        "start": 160,
+        "end": 161,
+        "line": 12,
+        "col": 5,
         "type": "int"
       }
     ]

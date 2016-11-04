@@ -3,6 +3,48 @@
     "ref": {
       "name": "A",
       "file": "test1.py",
+      "start": 52,
+      "end": 53,
+      "line": 4,
+      "col": 7
+    },
+    "dests": [
+      {
+        "name": "A",
+        "file": "test1.py",
+        "start": 52,
+        "end": 53,
+        "line": 4,
+        "col": 7,
+        "type": "<A>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 59,
+      "end": 60,
+      "line": 5,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 59,
+        "end": 60,
+        "line": 5,
+        "col": 5,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "A",
+      "file": "test1.py",
       "start": 71,
       "end": 72,
       "line": 7,
@@ -17,6 +59,27 @@
         "line": 4,
         "col": 7,
         "type": "<A>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a1",
+      "file": "test1.py",
+      "start": 66,
+      "end": 68,
+      "line": 7,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "a1",
+        "file": "test1.py",
+        "start": 66,
+        "end": 68,
+        "line": 7,
+        "col": 1,
+        "type": "A"
       }
     ]
   },

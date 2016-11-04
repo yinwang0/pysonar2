@@ -2,6 +2,27 @@
   {
     "ref": {
       "name": "f",
+      "file": "foo/bar.py",
+      "start": 4,
+      "end": 5,
+      "line": 1,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "f",
+        "file": "foo/bar.py",
+        "start": 4,
+        "end": 5,
+        "line": 1,
+        "col": 5,
+        "type": "int -> int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "f",
       "file": "baz/rel.py",
       "start": 0,
       "end": 1,
@@ -38,6 +59,48 @@
         "line": 1,
         "col": 5,
         "type": "int -> int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "foo/bar.py",
+      "start": 6,
+      "end": 7,
+      "line": 1,
+      "col": 7
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "foo/bar.py",
+        "start": 6,
+        "end": 7,
+        "line": 1,
+        "col": 7,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "y",
+      "file": "baz/rel.py",
+      "start": 25,
+      "end": 26,
+      "line": 3,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "baz/rel.py",
+        "start": 25,
+        "end": 26,
+        "line": 3,
+        "col": 1,
+        "type": "int"
       }
     ]
   },
