@@ -37,7 +37,7 @@
         "end": 14,
         "line": 3,
         "col": 1,
-        "type": "str"
+        "type": "{int | str}"
       },
       {
         "name": "a",
@@ -67,7 +67,7 @@
         "end": 50,
         "line": 6,
         "col": 5,
-        "type": "str"
+        "type": "{int | str}"
       },
       {
         "name": "b",
@@ -112,6 +112,87 @@
   },
   {
     "ref": {
+      "name": "k",
+      "file": "test1.py",
+      "start": 71,
+      "end": 72,
+      "line": 8,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "k",
+        "file": "test1.py",
+        "start": 25,
+        "end": 26,
+        "line": 4,
+        "col": 1,
+        "type": "int"
+      },
+      {
+        "name": "k",
+        "file": "test1.py",
+        "start": 71,
+        "end": 72,
+        "line": 8,
+        "col": 5,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 85,
+      "end": 86,
+      "line": 9,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 13,
+        "end": 14,
+        "line": 3,
+        "col": 1,
+        "type": "{int | str}"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 85,
+        "end": 86,
+        "line": 9,
+        "col": 5,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 49,
+      "end": 50,
+      "line": 6,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 49,
+        "end": 50,
+        "line": 6,
+        "col": 5,
+        "type": "{int | str}"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "a",
       "file": "test1.py",
       "start": 98,
@@ -127,7 +208,7 @@
         "end": 14,
         "line": 3,
         "col": 1,
-        "type": "str"
+        "type": "{int | str}"
       },
       {
         "name": "a",
@@ -166,7 +247,7 @@
         "end": 50,
         "line": 6,
         "col": 5,
-        "type": "str"
+        "type": "{int | str}"
       },
       {
         "name": "b",

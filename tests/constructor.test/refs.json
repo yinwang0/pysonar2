@@ -160,7 +160,7 @@
         "end": 215,
         "line": 15,
         "col": 1,
-        "type": "TestInit1"
+        "type": "{TestInit1 | int}"
       }
     ]
   },
@@ -266,6 +266,27 @@
         "line": 12,
         "col": 14,
         "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "y",
+      "file": "test1.py",
+      "start": 123,
+      "end": 124,
+      "line": 9,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 214,
+        "end": 215,
+        "line": 15,
+        "col": 1,
+        "type": "{TestInit1 | int}"
       }
     ]
   },
@@ -431,6 +452,27 @@
         "line": 26,
         "col": 14,
         "type": "?"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "y",
+      "file": "test1.py",
+      "start": 442,
+      "end": 443,
+      "line": 29,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 214,
+        "end": 215,
+        "line": 15,
+        "col": 1,
+        "type": "{TestInit1 | int}"
       }
     ]
   }

@@ -1,0 +1,44 @@
+[
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 27,
+      "end": 28,
+      "line": 3,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 13,
+        "end": 14,
+        "line": 2,
+        "col": 5,
+        "type": "{bool | int}"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 44,
+      "end": 45,
+      "line": 4,
+      "col": 12
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 27,
+        "end": 28,
+        "line": 3,
+        "col": 5,
+        "type": "int"
+      }
+    ]
+  }
+]

@@ -87,6 +87,27 @@
     "ref": {
       "name": "y",
       "file": "test1.py",
+      "start": 112,
+      "end": 113,
+      "line": 11,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 26,
+        "end": 27,
+        "line": 5,
+        "col": 10,
+        "type": "str"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "y",
+      "file": "test1.py",
       "start": 131,
       "end": 132,
       "line": 12,

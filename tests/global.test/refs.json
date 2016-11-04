@@ -16,7 +16,7 @@
         "end": 7,
         "line": 2,
         "col": 1,
-        "type": "bool"
+        "type": "{bool | int | str}"
       }
     ]
   },
@@ -36,6 +36,27 @@
         "start": 0,
         "end": 1,
         "line": 1,
+        "col": 1,
+        "type": "{bool | int | str}"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "y",
+      "file": "test1.py",
+      "start": 56,
+      "end": 57,
+      "line": 7,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 6,
+        "end": 7,
+        "line": 2,
         "col": 1,
         "type": "{bool | int | str}"
       }
@@ -120,6 +141,27 @@
         "start": 0,
         "end": 1,
         "line": 1,
+        "col": 1,
+        "type": "{bool | int | str}"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "y",
+      "file": "test1.py",
+      "start": 127,
+      "end": 128,
+      "line": 15,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 6,
+        "end": 7,
+        "line": 2,
         "col": 1,
         "type": "{bool | int | str}"
       }
