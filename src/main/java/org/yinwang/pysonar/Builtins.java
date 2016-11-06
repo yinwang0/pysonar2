@@ -345,11 +345,6 @@ public class Builtins {
         }
 
         @NotNull
-        protected Url liburlWithFullAnchor(String hash) {
-            return liburl(name + "." + hash);
-        }
-
-        @NotNull
         @Override
         public String toString() {
             return module == null
@@ -1740,9 +1735,7 @@ public class Builtins {
 
 
         private void initProcBindings() {
-            String a = "process-parameters";
-
-            addAttr("environ", liburl(a), newDict(Types.StrInstance, Types.StrInstance));
+            addAttr("environ", newDict(Types.StrInstance, Types.StrInstance));
 
             for (String s : list("chdir", "fchdir", "putenv", "setegid", "seteuid",
                     "setgid", "setgroups", "setpgrp", "setpgid",
