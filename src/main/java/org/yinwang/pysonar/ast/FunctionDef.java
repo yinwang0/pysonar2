@@ -11,6 +11,7 @@ public class FunctionDef extends Node {
     public List<Node> defaults;
     public Name vararg;  // *args
     public Name kwarg;   // **kwarg
+    private final List<Node> decorators;
     public List<Node> afterRest = null;   // after rest arg of Ruby
     public Node body;
     public boolean called = false;
@@ -18,7 +19,7 @@ public class FunctionDef extends Node {
     public boolean isAsync = false;
 
     public FunctionDef(Name name, List<Node> args, Node body, List<Node> defaults,
-        Name vararg, Name kwarg, String file, boolean isAsync, int start, int end) {
+        Name vararg, Name kwarg, List<Node> decorators, String file, boolean isAsync, int start, int end) {
         super(NodeType.FUNCTIONDEF, file, start, end);
         if (name != null) {
             this.name = name;
@@ -34,6 +35,7 @@ public class FunctionDef extends Node {
         this.defaults = defaults;
         this.vararg = vararg;
         this.kwarg = kwarg;
+        this.decorators = decorators;
         this.isAsync = isAsync;
         addChildren(name);
         addChildren(args);
@@ -72,6 +74,25 @@ public class FunctionDef extends Node {
         argExpr.append(")");
         return argExpr.toString();
     }
+
+    public boolean isStaticMethod() {
+        for (Node d : decorators) {
+            if (d instanceof Name && ((Name) d).id.equals("staticmethod")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isClassMethod() {
+        for (Node d : decorators) {
+            if (d instanceof Name && ((Name) d).id.equals("classmethod")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     private static int lambdaCounter = 0;
 
