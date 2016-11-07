@@ -987,11 +987,23 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
         List<Type> pTypes = new ArrayList<>();
 
-        if (func.selfType != null) {
-            pTypes.add(func.selfType);
-        } else {
-            if (func.cls != null) {
-                pTypes.add(func.cls.getCanon());
+        if (!func.func.isStaticMethod()) {
+            if (func.func.isClassMethod()) {
+                // @classmethod
+                if (func.cls != null) {
+                    pTypes.add(func.cls);
+                } else if (func.selfType != null && func.selfType instanceof InstanceType) {
+                    pTypes.add(((InstanceType) func.selfType).classType);
+                }
+            } else {
+                // usual method
+                if (func.selfType != null) {
+                    pTypes.add(func.selfType);
+                } else {
+                    if (func.cls != null) {
+                        pTypes.add(func.cls.getCanon());
+                    }
+                }
             }
         }
 

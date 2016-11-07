@@ -1,7 +1,5 @@
 package org.yinwang.pysonar;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,6 +11,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 
 public class Parser {
@@ -345,7 +346,13 @@ public class Parser {
             }
 
             boolean isAsync = type.equals("AsyncFunctionDef");
-            return new FunctionDef(name, args, body, defaults, vararg, kwarg, file, isAsync, start, end);
+
+            List<Node> decors = new ArrayList<>();
+            if (map.containsKey("decorator_list")) {
+                decors = convertList(map.get("decorator_list"));
+            }
+
+            return new FunctionDef(name, args, body, defaults, vararg, kwarg, decors, file, isAsync, start, end);
         }
 
         if (type.equals("GeneratorExp")) {
