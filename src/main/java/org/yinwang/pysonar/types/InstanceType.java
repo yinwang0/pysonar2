@@ -29,6 +29,9 @@ public class InstanceType extends Type {
             inferencer.apply((FunType) initFunc, args, null, null, null, call);
             ((FunType) initFunc).setSelfType(null);
         }
+        if (classType instanceof ClassType) {
+            ((ClassType) classType).setInstance(this);
+        }
     }
 
 

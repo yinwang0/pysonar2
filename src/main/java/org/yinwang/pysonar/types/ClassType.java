@@ -13,7 +13,7 @@ public class ClassType extends Type {
 
     public String name;
     public Type superclass;
-
+    private InstanceType instance;
 
     public ClassType(@NotNull String name, @Nullable State parent) {
         this.name = name;
@@ -45,12 +45,22 @@ public class ClassType extends Type {
         table.addSuper(superclass.table);
     }
 
-    public InstanceType getCanon() {
-        return new InstanceType(this);
+    public InstanceType getInstance() {
+        if (instance == null) {
+            instance = new InstanceType(this);
+        }
+        return instance;
     }
 
-    public InstanceType getCanon(Node call, List<Type> args, TypeInferencer inferencer) {
-        return new InstanceType(this, call, args == null ? new ArrayList<>() : args, inferencer);
+    public InstanceType getInstance(Node call, List<Type> args, TypeInferencer inferencer) {
+        if (instance == null) {
+            instance = new InstanceType(this, call, args == null ? new ArrayList<>() : args, inferencer);
+        }
+        return instance;
+    }
+
+    public void setInstance(InstanceType instance) {
+        this.instance = instance;
     }
 
     @Override
