@@ -19,7 +19,15 @@ import org.yinwang.pysonar.types.Type;
 import org.yinwang.pysonar.types.Types;
 import org.yinwang.pysonar.types.UnionType;
 
-import static org.yinwang.pysonar.Binding.Kind.*;
+import static org.yinwang.pysonar.Binding.Kind.ATTRIBUTE;
+import static org.yinwang.pysonar.Binding.Kind.CLASS;
+import static org.yinwang.pysonar.Binding.Kind.CONSTRUCTOR;
+import static org.yinwang.pysonar.Binding.Kind.FUNCTION;
+import static org.yinwang.pysonar.Binding.Kind.METHOD;
+import static org.yinwang.pysonar.Binding.Kind.MODULE;
+import static org.yinwang.pysonar.Binding.Kind.PARAMETER;
+import static org.yinwang.pysonar.Binding.Kind.SCOPE;
+import static org.yinwang.pysonar.Binding.Kind.VARIABLE;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -950,11 +958,12 @@ public class TypeInferencer implements Visitor1<Type, State> {
     }
 
     @NotNull
-    public Type resolveCall(Call node, @NotNull Type fun,
-                            List<Type> pos,
-                            Map<String, Type> hash,
-                            Type kw,
-                            Type star) {
+    public Type resolveCall(@NotNull Call node,
+                            @NotNull Type fun,
+                            @NotNull List<Type> pos,
+                            @NotNull Map<String, Type> hash,
+                            @Nullable Type kw,
+                            @Nullable Type star) {
         if (fun instanceof FunType) {
             FunType ft = (FunType) fun;
             return apply(ft, pos, hash, kw, star, node);
@@ -969,9 +978,9 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @NotNull
     public Type apply(@NotNull FunType func,
                       @Nullable List<Type> pos,
-                      Map<String, Type> hash,
-                      Type kw,
-                      Type star,
+                      @Nullable Map<String, Type> hash,
+                      @Nullable Type kw,
+                      @Nullable Type star,
                       @Nullable Node call) {
         Analyzer.self.removeUncalled(func);
 
@@ -1013,15 +1022,15 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
         bindMethodAttrs(func);
 
-        State funcTable = new State(func.env, State.StateType.FUNCTION);
+        State callState = new State(func.env, State.StateType.FUNCTION);
 
         if (func.table.parent != null) {
-            funcTable.setPath(func.table.parent.extendPath(func.func.name.id));
+            callState.setPath(func.table.parent.extendPath(func.func.name.id));
         } else {
-            funcTable.setPath(func.func.name.id);
+            callState.setPath(func.func.name.id);
         }
 
-        Type fromType = bindParams(call, func.func, funcTable, func.func.args,
+        Type fromType = bindParams(func.func, callState, func.func.args,
                                    func.func.vararg, func.func.kwarg,
                                    pTypes, func.defaultTypes, hash, kw, star);
 
@@ -1035,7 +1044,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
             return Types.UNKNOWN;
         } else {
             func.addMapping(fromType, Types.UNKNOWN);
-            Type toType = visit(func.func.body, funcTable);
+            Type toType = visit(func.func.body, callState);
             if (missingReturn(toType)) {
                 addWarningToNode(func.func.name, "Function not always return a value");
 
@@ -1052,9 +1061,8 @@ public class TypeInferencer implements Visitor1<Type, State> {
     }
 
     @NotNull
-    private Type bindParams(@Nullable Node call,
-                            @NotNull FunctionDef func,
-                            @NotNull State funcTable,
+    private Type bindParams(@NotNull FunctionDef func,
+                            @NotNull State callState,
                             @Nullable List<Node> args,
                             @Nullable Name rest,
                             @Nullable Name restKw,
@@ -1091,29 +1099,20 @@ public class TypeInferencer implements Visitor1<Type, State> {
                         aType = ((TupleType) star).get(j++);
                     } else {
                         aType = Types.UNKNOWN;
-                        if (call != null) {
-                            addWarningToNode(args.get(i), "unable to bind argument:" + args.get(i));
-                        }
+                        addWarningToNode(args.get(i), "unable to bind argument:" + args.get(i));
                     }
                 }
             }
-            bind(funcTable, arg, aType, PARAMETER);
+            bind(callState, arg, aType, PARAMETER);
             fromType.add(aType);
         }
 
         if (restKw != null) {
             if (hash != null && !hash.isEmpty()) {
                 Type hashType = UnionType.newUnion(hash.values());
-                bind(
-                    funcTable,
-                    restKw,
-                    new DictType(Types.StrInstance, hashType),
-                    PARAMETER);
+                bind(callState, restKw, new DictType(Types.StrInstance, hashType), PARAMETER);
             } else {
-                bind(funcTable,
-                     restKw,
-                     Types.UNKNOWN,
-                     PARAMETER);
+                bind(callState, restKw, Types.UNKNOWN, PARAMETER);
             }
         }
 
@@ -1122,23 +1121,18 @@ public class TypeInferencer implements Visitor1<Type, State> {
                 if (func.afterRest != null) {
                     int nAfter = func.afterRest.size();
                     for (int i = 0; i < nAfter; i++) {
-                        bind(funcTable, func.afterRest.get(i),
-                             pTypes.get(pTypes.size() - nAfter + i),
-                             PARAMETER);
+                        bind(callState, func.afterRest.get(i), pTypes.get(pTypes.size() - nAfter + i), PARAMETER);
                     }
                     if (pTypes.size() - nAfter > 0) {
                         Type restType = new TupleType(pTypes.subList(pSize, pTypes.size() - nAfter));
-                        bind(funcTable, rest, restType, PARAMETER);
+                        bind(callState, rest, restType, PARAMETER);
                     }
                 } else {
                     Type restType = new TupleType(pTypes.subList(pSize, pTypes.size()));
-                    bind(funcTable, rest, restType, PARAMETER);
+                    bind(callState, rest, restType, PARAMETER);
                 }
             } else {
-                bind(funcTable,
-                     rest,
-                     Types.UNKNOWN,
-                     PARAMETER);
+                bind(callState, rest, Types.UNKNOWN, PARAMETER);
             }
         }
 
