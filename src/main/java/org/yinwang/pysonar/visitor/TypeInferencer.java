@@ -1030,10 +1030,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
             callState.setPath(func.func.name.id);
         }
 
-        Type fromType = bindParams(func.func, callState, func.func.args,
-                                   func.func.vararg, func.func.kwarg,
-                                   pTypes, func.defaultTypes, hash, kw, star);
-
+        Type fromType = bindParams(callState, func.func, pTypes, func.defaultTypes, hash, kw, star);
         Type cachedTo = func.getMapping(fromType);
 
         if (cachedTo != null) {
@@ -1061,16 +1058,18 @@ public class TypeInferencer implements Visitor1<Type, State> {
     }
 
     @NotNull
-    private Type bindParams(@NotNull FunctionDef func,
-                            @NotNull State callState,
-                            @Nullable List<Node> args,
-                            @Nullable Name rest,
-                            @Nullable Name restKw,
+    private Type bindParams(@NotNull State state,
+                            @NotNull FunctionDef func,
                             @Nullable List<Type> pTypes,
                             @Nullable List<Type> dTypes,
                             @Nullable Map<String, Type> hash,
                             @Nullable Type kw,
                             @Nullable Type star) {
+
+        List<Node> args = func.args;
+        Name rest = func.vararg;
+        Name restKw = func.kwarg;
+
         TupleType fromType = new TupleType();
         int pSize = args == null ? 0 : args.size();
         int aSize = pTypes == null ? 0 : pTypes.size();
@@ -1103,16 +1102,16 @@ public class TypeInferencer implements Visitor1<Type, State> {
                     }
                 }
             }
-            bind(callState, arg, aType, PARAMETER);
+            bind(state, arg, aType, PARAMETER);
             fromType.add(aType);
         }
 
         if (restKw != null) {
             if (hash != null && !hash.isEmpty()) {
                 Type hashType = UnionType.newUnion(hash.values());
-                bind(callState, restKw, new DictType(Types.StrInstance, hashType), PARAMETER);
+                bind(state, restKw, new DictType(Types.StrInstance, hashType), PARAMETER);
             } else {
-                bind(callState, restKw, Types.UNKNOWN, PARAMETER);
+                bind(state, restKw, Types.UNKNOWN, PARAMETER);
             }
         }
 
@@ -1121,18 +1120,18 @@ public class TypeInferencer implements Visitor1<Type, State> {
                 if (func.afterRest != null) {
                     int nAfter = func.afterRest.size();
                     for (int i = 0; i < nAfter; i++) {
-                        bind(callState, func.afterRest.get(i), pTypes.get(pTypes.size() - nAfter + i), PARAMETER);
+                        bind(state, func.afterRest.get(i), pTypes.get(pTypes.size() - nAfter + i), PARAMETER);
                     }
                     if (pTypes.size() - nAfter > 0) {
                         Type restType = new TupleType(pTypes.subList(pSize, pTypes.size() - nAfter));
-                        bind(callState, rest, restType, PARAMETER);
+                        bind(state, rest, restType, PARAMETER);
                     }
                 } else {
                     Type restType = new TupleType(pTypes.subList(pSize, pTypes.size()));
-                    bind(callState, rest, restType, PARAMETER);
+                    bind(state, rest, restType, PARAMETER);
                 }
             } else {
-                bind(callState, rest, Types.UNKNOWN, PARAMETER);
+                bind(state, rest, Types.UNKNOWN, PARAMETER);
             }
         }
 
