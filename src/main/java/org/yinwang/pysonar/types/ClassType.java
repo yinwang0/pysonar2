@@ -55,13 +55,8 @@ public class ClassType extends Type {
 
     @Override
     public boolean typeEquals(Object other) {
-        if (other instanceof ClassType) {
-            return getCanon() == ((ClassType) other).getCanon();
-        } else {
-            return false;
-        }
+        return this == other;
     }
-
 
     @Override
     protected String printType(CyclicTypeRecorder ctr) {
