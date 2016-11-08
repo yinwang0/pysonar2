@@ -484,7 +484,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
                             Node typeExp = testCall.args.get(1);
                             Type type = visit(typeExp, s);
                             if (type instanceof ClassType) {
-                                type = ((ClassType) type).getCanon();
+                                type = ((ClassType) type).getCanon(test, null, this);
                             }
                             s1.insert(((Name) id).id, id, type, VARIABLE);
                         }
@@ -1001,7 +1001,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
                     pTypes.add(func.selfType);
                 } else {
                     if (func.cls != null) {
-                        pTypes.add(func.cls.getCanon());
+                        pTypes.add(func.cls.getCanon(call, null, this));
                     }
                 }
             }

@@ -2,7 +2,7 @@ package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
 import org.yinwang.pysonar.State;
-import org.yinwang.pysonar.ast.Call;
+import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.visitor.TypeInferencer;
 
 import java.util.List;
@@ -20,8 +20,7 @@ public class InstanceType extends Type {
         classType = c;
     }
 
-
-    public InstanceType(@NotNull Type c, Call call, List<Type> args, TypeInferencer inferencer) {
+    public InstanceType(@NotNull Type c, Node call, List<Type> args, TypeInferencer inferencer) {
         this(c);
         Type initFunc = table.lookupAttrType("__init__");
 

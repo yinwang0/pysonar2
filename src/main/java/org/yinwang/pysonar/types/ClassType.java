@@ -3,11 +3,15 @@ package org.yinwang.pysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.State;
+import org.yinwang.pysonar.ast.Node;
+import org.yinwang.pysonar.visitor.TypeInferencer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClassType extends Type {
 
     public String name;
-    public InstanceType canon;
     public Type superclass;
 
 
@@ -41,14 +45,13 @@ public class ClassType extends Type {
         table.addSuper(superclass.table);
     }
 
-
     public InstanceType getCanon() {
-        if (canon == null) {
-            canon = new InstanceType(this);
-        }
-        return canon;
+        return new InstanceType(this);
     }
 
+    public InstanceType getCanon(Node call, List<Type> args, TypeInferencer inferencer) {
+        return new InstanceType(this, call, args == null ? new ArrayList<>() : args, inferencer);
+    }
 
     @Override
     public boolean typeEquals(Object other) {
@@ -62,8 +65,6 @@ public class ClassType extends Type {
 
     @Override
     protected String printType(CyclicTypeRecorder ctr) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<").append(name).append(">");
-        return sb.toString();
+        return "<" + name + ">";
     }
 }
