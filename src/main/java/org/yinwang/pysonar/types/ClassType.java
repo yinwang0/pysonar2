@@ -3,13 +3,17 @@ package org.yinwang.pysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.State;
+import org.yinwang.pysonar.ast.Node;
+import org.yinwang.pysonar.visitor.TypeInferencer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClassType extends Type {
 
     public String name;
-    public InstanceType canon;
     public Type superclass;
-
+    private InstanceType instance;
 
     public ClassType(@NotNull String name, @Nullable State parent) {
         this.name = name;
@@ -41,29 +45,32 @@ public class ClassType extends Type {
         table.addSuper(superclass.table);
     }
 
-
-    public InstanceType getCanon() {
-        if (canon == null) {
-            canon = new InstanceType(this);
+    public InstanceType getInstance() {
+        if (instance == null) {
+            instance = new InstanceType(this);
         }
-        return canon;
+        return instance;
     }
 
+    public InstanceType getInstance(List<Type> args, TypeInferencer inferencer, Node call) {
+        if (instance == null) {
+            List<Type> initArgs = args == null ? new ArrayList<>() : args;
+            instance = new InstanceType(this, initArgs, inferencer, call);
+        }
+        return instance;
+    }
+
+    public void setInstance(InstanceType instance) {
+        this.instance = instance;
+    }
 
     @Override
     public boolean typeEquals(Object other) {
-        if (other instanceof ClassType) {
-            return getCanon() == ((ClassType) other).getCanon();
-        } else {
-            return false;
-        }
+        return this == other;
     }
-
 
     @Override
     protected String printType(CyclicTypeRecorder ctr) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<").append(name).append(">");
-        return sb.toString();
+        return "<" + name + ">";
     }
 }

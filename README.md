@@ -1,28 +1,16 @@
-### PySonar2 - a type inferencer and indexer for Python
+### PySonar2 - a type inferencer for Python
 
-PySonar2 is a type inferencer and indexer for Python, which performs
-sophisticated interprocedural analysis to infer types. It is one of the
-underlying technologies that power the code search engine <a
-href="http://www.sourcegraph.com">Sourcegraph</a>, where it has been used to
-index hundreds of thousands of open source Python repositories, producing a
-globally connected network of Python code. An older version of PySonar is used
-internally at Google, producing high-quality semantic code index for millions of
-lines of Python code.
-
-To understand its properties, please refer to my blog post:
-
-- http://yinwang0.wordpress.com/2010/09/12/pysonar
+PySonar2 is a type inferencer and indexer for Python, which performs interprocedural analysis to
+infer types.
 
 <a href="http://www.yinwang.org/resources/demos/pysonar2/email/header.py.html">
 <img src="http://www.yinwang.org/images/pysonar2.gif" width="70%">
 </a>
 
 
-
 #### How to build
 
     mvn package
-
 
 
 #### How to use
@@ -45,7 +33,7 @@ the _html_ directory after this process.
 #### System requirements
 
 * Python 2.7.x
-* Python 3.x if you have Python3 files
+* Python 3.x (if your code uses Python3)
 * Java 8
 * maven
 
@@ -64,21 +52,10 @@ example
 
     export PYTHONPATH=/usr/lib/python2.7
 
-If this is not set up correctly, you may find suboptimal results.
-
-
-
-##### Memory usage
-
-PySonar2 doesn't need much memory to do analysis compared to other static
-analysis tool of its class. 1.5Gb is probably enough for analyzing a medium
-sized project such as Python's standard library or Django. But for generating
-the HTML files, you may need quite some memory (~2.5Gb for Python 2.7 standard
-lib). This is due to the highlighting code is putting all code and their HTML
-tags into the memory.
+If this is not set up correctly, references to library code will not be found.
 
 
 
 #### License
 
-Apache License. See LICENSE file.
+Apache 2.0 License. See LICENSE file.

@@ -175,7 +175,7 @@ public class FunType extends Type {
         TupleType simplified = new TupleType();
         if (from.eltTypes.size() > 0) {
             if (cls != null) {
-                simplified.add(cls.getCanon());
+                simplified.add(cls.getInstance());
             } else {
                 simplified.add(from.get(0));
             }
