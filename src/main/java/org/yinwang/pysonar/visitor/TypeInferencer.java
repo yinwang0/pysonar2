@@ -197,28 +197,28 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @Override
     public Type visit(Call node, State s) {
         Type fun = visit(node.func, s);
-        List<Type> pos = visit(node.args, s);
-        Map<String, Type> hash = new HashMap<>();
+        List<Type> positional = visit(node.args, s);
+        Map<String, Type> kwTypes = new HashMap<>();
 
         if (node.keywords != null) {
-            for (Keyword kw : node.keywords) {
-                hash.put(kw.arg, visit(kw.value, s));
+            for (Keyword k : node.keywords) {
+                kwTypes.put(k.arg, visit(k.value, s));
             }
         }
 
-        Type kw = node.kwargs == null ? null : visit(node.kwargs, s);
-        Type star = node.starargs == null ? null : visit(node.starargs, s);
+        Type kwArg = node.kwargs == null ? null : visit(node.kwargs, s);
+        Type starArg = node.starargs == null ? null : visit(node.starargs, s);
 
         if (fun instanceof UnionType) {
             Set<Type> types = ((UnionType) fun).types;
-            Type retType = Types.UNKNOWN;
-            for (Type ft : types) {
-                Type t = resolveCall(ft, pos, hash, kw, star, node);
-                retType = UnionType.union(retType, t);
+            Type resultType = Types.UNKNOWN;
+            for (Type funType : types) {
+                Type returnType = resolveCall(funType, positional, kwTypes, kwArg, starArg, node);
+                resultType = UnionType.union(resultType, returnType);
             }
-            return retType;
+            return resultType;
         } else {
-            return resolveCall(fun, pos, hash, kw, star, node);
+            return resolveCall(fun, positional, kwTypes, kwArg, starArg, node);
         }
     }
 
@@ -959,15 +959,15 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
     @NotNull
     public Type resolveCall(@NotNull Type fun,
-                            @NotNull List<Type> pos,
-                            @NotNull Map<String, Type> hash,
-                            @Nullable Type kw,
-                            @Nullable Type star,
+                            @NotNull List<Type> positional,
+                            @NotNull Map<String, Type> kwTypes,
+                            @Nullable Type kwArg,
+                            @Nullable Type starArg,
                             @NotNull Call node) {
         if (fun instanceof FunType) {
-            return apply((FunType) fun, pos, hash, kw, star, node);
+            return apply((FunType) fun, positional, kwTypes, kwArg, starArg, node);
         } else if (fun instanceof ClassType) {
-            return new InstanceType(fun, node, pos, this);
+            return new InstanceType(fun, node, positional, this);
         } else {
             addWarningToNode(node, "calling non-function and non-class: " + fun);
             return Types.UNKNOWN;
@@ -976,10 +976,10 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
     @NotNull
     public Type apply(@NotNull FunType func,
-                      @Nullable List<Type> pos,
-                      @Nullable Map<String, Type> hash,
-                      @Nullable Type kw,
-                      @Nullable Type star,
+                      @Nullable List<Type> positional,
+                      @Nullable Map<String, Type> kwTypes,
+                      @Nullable Type kwArg,
+                      @Nullable Type starArg,
                       @Nullable Node call) {
         Analyzer.self.removeUncalled(func);
 
@@ -993,30 +993,31 @@ public class TypeInferencer implements Visitor1<Type, State> {
             return func.getReturnType();
         }
 
-        List<Type> pTypes = new ArrayList<>();
+        List<Type> argTypes = new ArrayList<>();
 
+        // Add class or object as first argument if it is not static method
         if (!func.func.isStaticMethod()) {
             if (func.func.isClassMethod()) {
-                // @classmethod
                 if (func.cls != null) {
-                    pTypes.add(func.cls);
+                    argTypes.add(func.cls);
                 } else if (func.selfType != null && func.selfType instanceof InstanceType) {
-                    pTypes.add(((InstanceType) func.selfType).classType);
+                    argTypes.add(((InstanceType) func.selfType).classType);
                 }
             } else {
                 // usual method
                 if (func.selfType != null) {
-                    pTypes.add(func.selfType);
+                    argTypes.add(func.selfType);
                 } else {
                     if (func.cls != null) {
-                        pTypes.add(func.cls.getInstance(call, null, this));
+                        argTypes.add(func.cls.getInstance(call, null, this));
                     }
                 }
             }
         }
 
-        if (pos != null) {
-            pTypes.addAll(pos);
+        // Put in positional arguments
+        if (positional != null) {
+            argTypes.addAll(positional);
         }
 
         bindMethodAttrs(func);
@@ -1029,7 +1030,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
             callState.setPath(func.func.name.id);
         }
 
-        Type fromType = bindParams(callState, func.func, pTypes, func.defaultTypes, hash, kw, star);
+        Type fromType = bindParams(callState, func.func, argTypes, func.defaultTypes, kwTypes, kwArg, starArg);
         Type cachedTo = func.getMapping(fromType);
 
         if (cachedTo != null) {
