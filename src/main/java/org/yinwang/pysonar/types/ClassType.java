@@ -54,7 +54,7 @@ public class ClassType extends Type {
 
     public InstanceType getInstance(Node call, List<Type> args, TypeInferencer inferencer) {
         if (instance == null) {
-            instance = new InstanceType(this, call, args == null ? new ArrayList<>() : args, inferencer);
+            instance = new InstanceType(this, args == null ? new ArrayList<>() : args, inferencer, call);
         }
         return instance;
     }

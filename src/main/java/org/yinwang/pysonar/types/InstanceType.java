@@ -20,16 +20,23 @@ public class InstanceType extends Type {
         classType = c;
     }
 
-    public InstanceType(@NotNull Type c, Node call, List<Type> args, TypeInferencer inferencer) {
+    public InstanceType(@NotNull Type c, List<Type> args, TypeInferencer inferencer, Node call)
+    {
         this(c);
-        Type initFunc = table.lookupAttrType("__init__");
 
-        if (initFunc != null && initFunc instanceof FunType && ((FunType) initFunc).func != null) {
+        // call constructor
+        Type initFunc = table.lookupAttrType("__init__");
+        if (initFunc != null &&
+            initFunc instanceof FunType &&
+            ((FunType) initFunc).func != null)
+        {
             ((FunType) initFunc).setSelfType(this);
             inferencer.apply((FunType) initFunc, args, null, null, null, call);
             ((FunType) initFunc).setSelfType(null);
         }
-        if (classType instanceof ClassType) {
+
+        if (classType instanceof ClassType)
+        {
             ((ClassType) classType).setInstance(this);
         }
     }
