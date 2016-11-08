@@ -213,12 +213,12 @@ public class TypeInferencer implements Visitor1<Type, State> {
             Set<Type> types = ((UnionType) fun).types;
             Type retType = Types.UNKNOWN;
             for (Type ft : types) {
-                Type t = resolveCall(node, ft, pos, hash, kw, star);
+                Type t = resolveCall(ft, pos, hash, kw, star, node);
                 retType = UnionType.union(retType, t);
             }
             return retType;
         } else {
-            return resolveCall(node, fun, pos, hash, kw, star);
+            return resolveCall(fun, pos, hash, kw, star, node);
         }
     }
 
@@ -958,15 +958,14 @@ public class TypeInferencer implements Visitor1<Type, State> {
     }
 
     @NotNull
-    public Type resolveCall(@NotNull Call node,
-                            @NotNull Type fun,
+    public Type resolveCall(@NotNull Type fun,
                             @NotNull List<Type> pos,
                             @NotNull Map<String, Type> hash,
                             @Nullable Type kw,
-                            @Nullable Type star) {
+                            @Nullable Type star,
+                            @NotNull Call node) {
         if (fun instanceof FunType) {
-            FunType ft = (FunType) fun;
-            return apply(ft, pos, hash, kw, star, node);
+            return apply((FunType) fun, pos, hash, kw, star, node);
         } else if (fun instanceof ClassType) {
             return new InstanceType(fun, node, pos, this);
         } else {
