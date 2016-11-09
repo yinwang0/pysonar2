@@ -558,7 +558,7 @@ public class Analyzer {
 
             for (FunType cl : uncalledDup) {
                 progress.tick();
-                inferencer.apply(cl, null, null, null, null, null);
+                inferencer.apply(cl, null, null, null, null, null, null);
             }
         }
     }

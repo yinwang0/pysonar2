@@ -140,8 +140,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
     private Type applyOp(Op op, Type ltype, Type rtype, String method, Node node, Node left) {
         Type opType = ltype.table.lookupAttrType(method);
         if (opType instanceof FunType) {
-            ((FunType) opType).setSelfType(ltype);
-            return apply((FunType) opType, Collections.singletonList(rtype), null, null, null, node);
+            return apply((FunType) opType, ltype, Collections.singletonList(rtype), null, null, null, node);
         } else {
             addWarningToNode(left, "Operator method " + method + " is not a function");
             return null;
@@ -197,9 +196,19 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @Override
     public Type visit(Call node, State s) {
         Type fun = visit(node.func, s);
-        List<Type> positional = visit(node.args, s);
-        Map<String, Type> kwTypes = new HashMap<>();
+        Type selfType = null;
 
+        if (node.func instanceof Attribute)
+        {
+            Node target = ((Attribute) node.func).target;
+            selfType = visit(target, s);
+        }
+
+        // Infer positional argument types
+        List<Type> positional = visit(node.args, s);
+
+        // Infer keyword argument types
+        Map<String, Type> kwTypes = new HashMap<>();
         if (node.keywords != null) {
             for (Keyword k : node.keywords) {
                 kwTypes.put(k.arg, visit(k.value, s));
@@ -213,12 +222,12 @@ public class TypeInferencer implements Visitor1<Type, State> {
             Set<Type> types = ((UnionType) fun).types;
             Type resultType = Types.UNKNOWN;
             for (Type funType : types) {
-                Type returnType = resolveCall(funType, positional, kwTypes, kwArg, starArg, node);
+                Type returnType = resolveCall(funType, selfType, positional, kwTypes, kwArg, starArg, node);
                 resultType = UnionType.union(resultType, returnType);
             }
             return resultType;
         } else {
-            return resolveCall(fun, positional, kwTypes, kwArg, starArg, node);
+            return resolveCall(fun, selfType, positional, kwTypes, kwArg, starArg, node);
         }
     }
 
@@ -921,13 +930,9 @@ public class TypeInferencer implements Visitor1<Type, State> {
         }
     }
 
-    private void addRef(Attribute node, @NotNull Type targetType, @NotNull Set<Binding> bs) {
+    private void addRef(Attribute node, @NotNull Set<Binding> bs) {
         for (Binding b : bs) {
             Analyzer.self.putRef(node.attr, b);
-            if (node.parent != null && node.parent instanceof Call &&
-                b.type instanceof FunType && targetType instanceof InstanceType) {  // method call
-                ((FunType) b.type).setSelfType(targetType);
-            }
         }
     }
 
@@ -938,7 +943,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
         }
         Set<Binding> bs = targetType.table.lookupAttr(node.attr.id);
         if (bs != null) {
-            addRef(node, targetType, bs);
+            addRef(node, bs);
         }
 
         targetType.table.insert(node.attr.id, node.attr, v, ATTRIBUTE);
@@ -952,20 +957,21 @@ public class TypeInferencer implements Visitor1<Type, State> {
             t.table.setPath(targetType.table.extendPath(node.attr.id));
             return t;
         } else {
-            addRef(node, targetType, bs);
+            addRef(node, bs);
             return State.makeUnion(bs);
         }
     }
 
     @NotNull
     public Type resolveCall(@NotNull Type fun,
+                            @Nullable Type selfType,
                             @NotNull List<Type> positional,
                             @NotNull Map<String, Type> kwTypes,
                             @Nullable Type kwArg,
                             @Nullable Type starArg,
                             @NotNull Call node) {
         if (fun instanceof FunType) {
-            return apply((FunType) fun, positional, kwTypes, kwArg, starArg, node);
+            return apply((FunType) fun, selfType, positional, kwTypes, kwArg, starArg, node);
         } else if (fun instanceof ClassType) {
             return new InstanceType(fun, positional, this, node);
         } else {
@@ -976,6 +982,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
     @NotNull
     public Type apply(@NotNull FunType func,
+                      @Nullable Type selfType,
                       @Nullable List<Type> positional,
                       @Nullable Map<String, Type> kwTypes,
                       @Nullable Type kwArg,
@@ -1000,13 +1007,13 @@ public class TypeInferencer implements Visitor1<Type, State> {
             if (func.func.isClassMethod()) {
                 if (func.cls != null) {
                     argTypes.add(func.cls);
-                } else if (func.selfType != null && func.selfType instanceof InstanceType) {
-                    argTypes.add(((InstanceType) func.selfType).classType);
+                } else if (selfType != null && selfType instanceof InstanceType) {
+                    argTypes.add(((InstanceType) selfType).classType);
                 }
             } else {
                 // usual method
-                if (func.selfType != null) {
-                    argTypes.add(func.selfType);
+                if (selfType != null) {
+                    argTypes.add(selfType);
                 } else {
                     if (func.cls != null) {
                         argTypes.add(func.cls.getInstance(null, this, call));
@@ -1034,10 +1041,8 @@ public class TypeInferencer implements Visitor1<Type, State> {
         Type cachedTo = func.getMapping(fromType);
 
         if (cachedTo != null) {
-            func.setSelfType(null);
             return cachedTo;
         } else if (func.oversized()) {
-            func.setSelfType(null);
             return Types.UNKNOWN;
         } else {
             func.addMapping(fromType, Types.UNKNOWN);
@@ -1052,7 +1057,6 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
             toType = UnionType.remove(toType, Types.CONT);
             func.addMapping(fromType, toType);
-            func.setSelfType(null);
             return toType;
         }
     }
@@ -1219,7 +1223,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
                     addError(node, "The type can't be sliced: " + vt);
                     return Types.UNKNOWN;
                 } else if (sliceFunc instanceof FunType) {
-                    return apply((FunType) sliceFunc, null, null, null, null, node);
+                    return apply((FunType) sliceFunc, null, null, null, null, null, node);
                 } else {
                     addError(node, "The type's __getslice__ method is not a function: " + sliceFunc);
                     return Types.UNKNOWN;

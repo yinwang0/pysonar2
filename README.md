@@ -7,6 +7,11 @@ infer types.
 <img src="http://www.yinwang.org/images/pysonar2.gif" width="70%">
 </a>
 
+#### Checkout code
+
+    git clone https://github.com/yinwang0/pysonar2.git
+    git checkout tags/v2.0
+
 
 #### How to build
 

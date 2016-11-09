@@ -30,9 +30,7 @@ public class InstanceType extends Type {
             initFunc instanceof FunType &&
             ((FunType) initFunc).func != null)
         {
-            ((FunType) initFunc).setSelfType(this);
-            inferencer.apply((FunType) initFunc, args, null, null, null, call);
-            ((FunType) initFunc).setSelfType(null);
+            inferencer.apply((FunType) initFunc, this, args, null, null, null, call);
         }
 
         if (classType instanceof ClassType)

@@ -20,8 +20,6 @@ public class FunType extends Type {
     @Nullable
     public ClassType cls = null;
     public State env;
-    @Nullable
-    public Type selfType;                 // self's type for calls
     public List<Type> defaultTypes;       // types for default parameters (evaluated at def time)
 
 
@@ -43,18 +41,8 @@ public class FunType extends Type {
 
 
     public void addMapping(Type from, Type to) {
-//        if (from instanceof TupleType) {
-//            from = simplifySelf((TupleType) from);
-//        }
-
         if (arrows.size() < MAX_ARROWS) {
             arrows.put(from, to);
-//            Map<Type, Type> oldArrows = arrows;
-//            arrows = compressArrows(arrows);
-//
-//            if (toString().length() > 900) {
-//                arrows = oldArrows;
-//            }
         }
     }
 
@@ -79,11 +67,6 @@ public class FunType extends Type {
 
     public void setCls(ClassType cls) {
         this.cls = cls;
-    }
-
-
-    public void setSelfType(Type selfType) {
-        this.selfType = selfType;
     }
 
 
