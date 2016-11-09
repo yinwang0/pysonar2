@@ -1,3 +1,5 @@
+https://travis-ci.org/yinwang0/pysonar2.svg?branch=master
+
 # PySonar2 - a type inferencer for Python
 
 PySonar2 is a type inferencer for Python. It performs whole-project interprocedural analysis to
