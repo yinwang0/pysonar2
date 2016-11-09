@@ -1,4 +1,4 @@
-### PySonar2 - a type inferencer for Python
+# PySonar2 - a type inferencer for Python
 
 PySonar2 is a type inferencer and indexer for Python, which performs interprocedural analysis to
 infer types.
@@ -7,18 +7,18 @@ infer types.
 <img src="http://www.yinwang.org/images/pysonar2.gif" width="70%">
 </a>
 
-#### Checkout code
+### Checkout code
 
     git clone https://github.com/yinwang0/pysonar2.git
     git checkout tags/v2.1.1
 
 
-#### How to build
+### How to build
 
     mvn package
 
 
-#### How to use
+### How to use
 
 PySonar2 is mainly designed as a library for Python IDEs, other developer
 tools and code search engines, so its interface may not be as appealing as an
@@ -35,7 +35,7 @@ the _html_ directory after this process.
 
 
 
-#### System requirements
+### System requirements
 
 * Python 2.7.x
 * Python 3.x (if your code uses Python3)
@@ -44,7 +44,7 @@ the _html_ directory after this process.
 
 
 
-##### Environment variables
+### Environment variables
 
 PySonar2 uses CPython's ast package to parse Python code, so please make sure
 you have `python` or `python3` installed and pointed to by the `PATH`
@@ -61,6 +61,21 @@ If this is not set up correctly, references to library code will not be found.
 
 
 
-#### License
+### Development
+
+If you hope to improve certain things in PySonar2, please contact me first. For development, you can run the unit tests.
+PySonar2 has a test framework. You can run the tests using this command line after a successful build.
+
+    java -classpath target/pysonar-2.1.1.jar org.yinwang.pysonar.Test tests
+
+If you modified the code, to generate new expected test results, please run this command line (adding `-exp` to the command):
+
+    java -classpath target/pysonar-2.1.1.jar org.yinwang.pysonar.Test tests -exp
+
+To write new tests, you just need to write relevant Python files, put them into a directory named `test/your-test.test`.
+Please look at the `tests` directory for examples.
+
+
+### License
 
 Apache 2.0 License. See LICENSE file.
