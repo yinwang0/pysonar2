@@ -72,8 +72,8 @@ If you modified the code, to generate new expected test results, please run this
 
     java -classpath target/pysonar-<version>.jar org.yinwang.pysonar.Test tests -exp
 
-To write new tests, you just need to write relevant Python files, put them into a directory named `test/your-test.test`.
-Please look at the `tests` directory for examples.
+To write new tests, you just need to write relevant Python files, put them into a directory named `test/testname.test`
+(directory name must end with ".test"). Please look at the `tests` directory for examples.
 
 
 ### License
