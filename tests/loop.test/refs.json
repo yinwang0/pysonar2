@@ -1,0 +1,146 @@
+[
+  {
+    "ref": {
+      "name": "k",
+      "file": "test1.py",
+      "start": 41,
+      "end": 42
+    },
+    "dests": [
+      {
+        "name": "k",
+        "file": "test1.py",
+        "start": 28,
+        "end": 29,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 58,
+      "end": 59
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 15,
+        "end": 16,
+        "type": "str"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 93,
+        "end": 94,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 71,
+      "end": 72
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 54,
+        "end": 55,
+        "type": "str"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 54,
+        "end": 55,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "k",
+      "file": "test1.py",
+      "start": 82,
+      "end": 83
+    },
+    "dests": [
+      {
+        "name": "k",
+        "file": "test1.py",
+        "start": 28,
+        "end": 29,
+        "type": "int"
+      },
+      {
+        "name": "k",
+        "file": "test1.py",
+        "start": 78,
+        "end": 79,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 108,
+      "end": 109
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 15,
+        "end": 16,
+        "type": "str"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 93,
+        "end": 94,
+        "type": "int"
+      },
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 93,
+        "end": 94,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 111,
+      "end": 112
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 54,
+        "end": 55,
+        "type": "str"
+      },
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 54,
+        "end": 55,
+        "type": "int"
+      }
+    ]
+  }
+]

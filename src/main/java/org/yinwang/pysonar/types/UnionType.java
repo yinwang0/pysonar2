@@ -5,10 +5,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import java.util.stream.Collectors;
 
 public class UnionType extends Type {
 
@@ -184,16 +185,10 @@ public class UnionType extends Type {
             sb.append("#").append(num);
         } else {
             int newNum = ctr.push(this);
-            boolean first = true;
+            List<String> typeStrings = types.stream().map(x->x.printType(ctr)).collect(Collectors.toList());
+            Collections.sort(typeStrings);
             sb.append("{");
-
-            for (Type t : types) {
-                if (!first) {
-                    sb.append(" | ");
-                }
-                sb.append(t.printType(ctr));
-                first = false;
-            }
+            sb.append(String.join(" | ", typeStrings));
 
             if (ctr.isUsed(this)) {
                 sb.append("=#").append(newNum).append(":");

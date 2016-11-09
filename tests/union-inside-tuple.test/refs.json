@@ -1,0 +1,36 @@
+[
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 124,
+      "end": 125
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 31,
+        "end": 32,
+        "type": "int -\u003e ({int | str}, bool)"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "q",
+      "file": "test1.py",
+      "start": 44,
+      "end": 45
+    },
+    "dests": [
+      {
+        "name": "q",
+        "file": "test1.py",
+        "start": 33,
+        "end": 34,
+        "type": "int"
+      }
+    ]
+  }
+]
