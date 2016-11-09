@@ -1,13 +1,14 @@
 # PySonar2 - a type inferencer for Python
 
-PySonar2 is a type inferencer and indexer for Python, which performs interprocedural analysis to
+PySonar2 is a type inferencer for Python. It performs whole-project interprocedural analysis to
 infer types.
 
 <a href="http://www.yinwang.org/resources/demos/pysonar2/email/header.py.html">
 <img src="http://www.yinwang.org/images/pysonar2.gif" width="70%">
 </a>
 
-### Checkout code
+
+### Get the code
 
     git clone https://github.com/yinwang0/pysonar2.git
     git checkout tags/v2.1.1
@@ -20,11 +21,6 @@ infer types.
 
 ### How to use
 
-PySonar2 is mainly designed as a library for Python IDEs, other developer
-tools and code search engines, so its interface may not be as appealing as an
-end-user tool, but for your understanding of the library's capabilities, a
-reasonably nice demo program has been built.
-
 You can build a simple "code-browser" of the Python 2.7 standard library with
 the following command line:
 
@@ -33,6 +29,10 @@ the following command line:
 This will take a few minutes. You should find some interactive HTML files inside
 the _html_ directory after this process.
 
+Note that this is just a demo program. PySonar2 is not an end-user tool.
+It is mainly designed as a library for Python IDEs, other developer
+tools and code search engines, so its interface may not be as appealing as an
+end-user tool.
 
 
 ### System requirements
