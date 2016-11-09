@@ -11,7 +11,8 @@
         "name": "x",
         "file": "basic.py",
         "start": 0,
-        "end": 1
+        "end": 1,
+        "type": "int"
       }
     ]
   }

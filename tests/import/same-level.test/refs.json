@@ -11,7 +11,8 @@
         "name": "mod2",
         "file": "mod1.py",
         "start": 7,
-        "end": 11
+        "end": 11,
+        "type": "mod2"
       }
     ]
   },
@@ -27,7 +28,8 @@
         "name": "B",
         "file": "mod2.py",
         "start": 6,
-        "end": 7
+        "end": 7,
+        "type": "\u003cB\u003e"
       }
     ]
   },
@@ -43,7 +45,8 @@
         "name": "o",
         "file": "mod1.py",
         "start": 13,
-        "end": 14
+        "end": 14,
+        "type": "B"
       }
     ]
   },
@@ -59,7 +62,8 @@
         "name": "a",
         "file": "mod2.py",
         "start": 11,
-        "end": 12
+        "end": 12,
+        "type": "str"
       }
     ]
   }

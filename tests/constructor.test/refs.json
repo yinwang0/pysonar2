@@ -1,0 +1,223 @@
+[
+  {
+    "ref": {
+      "name": "TestInit1",
+      "file": "test1.py",
+      "start": 230,
+      "end": 239
+    },
+    "dests": [
+      {
+        "name": "TestInit1",
+        "file": "test1.py",
+        "start": 37,
+        "end": 46,
+        "type": "\u003cTestInit1\u003e"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 202,
+      "end": 203
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 173,
+        "end": 174,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 186,
+      "end": 190
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 167,
+        "end": 171,
+        "type": "TestInit1"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 82,
+      "end": 86
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 62,
+        "end": 66,
+        "type": "TestInit1"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "my_field",
+      "file": "test1.py",
+      "start": 87,
+      "end": 95
+    },
+    "dests": [
+      {
+        "name": "my_field",
+        "file": "test1.py",
+        "start": 191,
+        "end": 199,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 133,
+      "end": 137
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 113,
+        "end": 117,
+        "type": "TestInit1"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "my_field",
+      "file": "test1.py",
+      "start": 138,
+      "end": 146
+    },
+    "dests": [
+      {
+        "name": "my_field",
+        "file": "test1.py",
+        "start": 191,
+        "end": 199,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 390,
+      "end": 391
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 361,
+        "end": 362,
+        "type": "?"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 374,
+      "end": 378
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 355,
+        "end": 359,
+        "type": "TestInit2"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 321,
+      "end": 325
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 301,
+        "end": 305,
+        "type": "TestInit2"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "my_field",
+      "file": "test1.py",
+      "start": 326,
+      "end": 334
+    },
+    "dests": [
+      {
+        "name": "my_field",
+        "file": "test1.py",
+        "start": 379,
+        "end": 387,
+        "type": "?"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 429,
+      "end": 433
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 409,
+        "end": 413,
+        "type": "TestInit2"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "my_field",
+      "file": "test1.py",
+      "start": 434,
+      "end": 442
+    },
+    "dests": [
+      {
+        "name": "my_field",
+        "file": "test1.py",
+        "start": 379,
+        "end": 387,
+        "type": "?"
+      }
+    ]
+  }
+]

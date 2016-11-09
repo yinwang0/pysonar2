@@ -4,9 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.yinwang.pysonar.ast.Dummy;
 import org.yinwang.pysonar.ast.Node;
+import org.yinwang.pysonar.demos.Style;
+import org.yinwang.pysonar.types.Type;
+import org.yinwang.pysonar.types.UnionType;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Test {
 
@@ -70,6 +74,7 @@ public class Test {
                         dest.put("file", destFile);
                         dest.put("start", b.start);
                         dest.put("end", b.end);
+                        dest.put("type", b.type.toString());
                         dests.add(dest);
                     }
                 }
@@ -108,8 +113,9 @@ public class Test {
                 String file = $.projAbsPath((String) d.get("file"));
                 int start = (int) Math.floor((double) d.get("start"));
                 int end = (int) Math.floor((double) d.get("end"));
+                String type = (String) d.get("type");
 
-                if (!checkBindingExist(actualDests, file, start, end)) {
+                if (!checkBindingExist(actualDests, file, start, end, type)) {
                     failedDests.add(d);
                 }
             }
@@ -134,7 +140,7 @@ public class Test {
     }
 
 
-    boolean checkBindingExist(List<Binding> bs, String file, int start, int end) {
+    boolean checkBindingExist(List<Binding> bs, String file, int start, int end, String type) {
         if (bs == null) {
             return false;
         }
@@ -142,7 +148,7 @@ public class Test {
         for (Binding b : bs) {
             if (((b.getFile() == null && file == null) ||
                     (b.getFile() != null && file != null && b.getFile().equals(file))) &&
-                    b.start == start && b.end == end)
+                    b.start == start && b.end == end && b.type.toString().equals(type))
             {
                 return true;
             }

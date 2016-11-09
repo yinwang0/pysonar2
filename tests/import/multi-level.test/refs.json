@@ -11,7 +11,8 @@
         "name": "kitchen",
         "file": "bedroom.py",
         "start": 7,
-        "end": 14
+        "end": 14,
+        "type": "kitchen"
       }
     ]
   },
@@ -27,7 +28,8 @@
         "name": "oven",
         "file": "bedroom.py",
         "start": -1,
-        "end": -1
+        "end": -1,
+        "type": "oven"
       }
     ]
   },
@@ -43,7 +45,8 @@
         "name": "Pizza",
         "file": "kitchen/oven.py",
         "start": 6,
-        "end": 11
+        "end": 11,
+        "type": "\u003cPizza\u003e"
       }
     ]
   },
@@ -59,7 +62,8 @@
         "name": "toppings",
         "file": "kitchen/oven.py",
         "start": 34,
-        "end": 42
+        "end": 42,
+        "type": "[str]"
       }
     ]
   },
@@ -75,7 +79,8 @@
         "name": "self",
         "file": "kitchen/oven.py",
         "start": 28,
-        "end": 32
+        "end": 32,
+        "type": "Pizza"
       }
     ]
   },
@@ -91,7 +96,8 @@
         "name": "pizza",
         "file": "bedroom.py",
         "start": 21,
-        "end": 26
+        "end": 26,
+        "type": "Pizza"
       }
     ]
   },
@@ -107,7 +113,8 @@
         "name": "get_toppings",
         "file": "kitchen/oven.py",
         "start": 81,
-        "end": 93
+        "end": 93,
+        "type": "Pizza -\u003e [str]"
       }
     ]
   },
@@ -123,7 +130,8 @@
         "name": "self",
         "file": "kitchen/oven.py",
         "start": 94,
-        "end": 98
+        "end": 98,
+        "type": "Pizza"
       }
     ]
   },
@@ -139,7 +147,8 @@
         "name": "toppings",
         "file": "kitchen/oven.py",
         "start": 54,
-        "end": 62
+        "end": 62,
+        "type": "[str]"
       }
     ]
   }

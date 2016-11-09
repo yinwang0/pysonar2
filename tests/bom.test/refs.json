@@ -11,7 +11,8 @@
         "name": "x",
         "file": "bom.py",
         "start": 17,
-        "end": 18
+        "end": 18,
+        "type": "int"
       }
     ]
   }

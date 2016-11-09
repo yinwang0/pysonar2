@@ -11,7 +11,8 @@
         "name": "baz1",
         "file": "test1.py",
         "start": 63,
-        "end": 67
+        "end": 67,
+        "type": "() -\u003e int"
       }
     ]
   },
@@ -27,7 +28,8 @@
         "name": "bar",
         "file": "test1.py",
         "start": 31,
-        "end": 34
+        "end": 34,
+        "type": "str -\u003e str ∧ int -\u003e int"
       }
     ]
   },
@@ -43,7 +45,8 @@
         "name": "foo",
         "file": "test1.py",
         "start": 4,
-        "end": 7
+        "end": 7,
+        "type": "str -\u003e str ∧ int -\u003e int"
       }
     ]
   },
@@ -59,13 +62,15 @@
         "name": "y",
         "file": "test1.py",
         "start": 35,
-        "end": 36
+        "end": 36,
+        "type": "int"
       },
       {
         "name": "y",
         "file": "test1.py",
         "start": 35,
-        "end": 36
+        "end": 36,
+        "type": "str"
       }
     ]
   },
@@ -81,13 +86,15 @@
         "name": "x",
         "file": "test1.py",
         "start": 8,
-        "end": 9
+        "end": 9,
+        "type": "int"
       },
       {
         "name": "x",
         "file": "test1.py",
         "start": 8,
-        "end": 9
+        "end": 9,
+        "type": "str"
       }
     ]
   },
@@ -103,7 +110,8 @@
         "name": "baz2",
         "file": "test1.py",
         "start": 95,
-        "end": 99
+        "end": 99,
+        "type": "() -\u003e str"
       }
     ]
   },
@@ -119,7 +127,8 @@
         "name": "bar",
         "file": "test1.py",
         "start": 31,
-        "end": 34
+        "end": 34,
+        "type": "str -\u003e str ∧ int -\u003e int"
       }
     ]
   }

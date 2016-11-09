@@ -1,0 +1,135 @@
+[
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 63,
+      "end": 64
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 43,
+        "end": 44,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 69,
+      "end": 70
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 43,
+        "end": 44,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 84,
+      "end": 85
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 43,
+        "end": 44,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 105,
+      "end": 106
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 43,
+        "end": 44,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 138,
+      "end": 139
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 43,
+        "end": 44,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 164,
+      "end": 165
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 43,
+        "end": 44,
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "w",
+      "file": "test1.py",
+      "start": 192,
+      "end": 193
+    },
+    "dests": [
+      {
+        "name": "w",
+        "file": "test1.py",
+        "start": 134,
+        "end": 135,
+        "type": "int"
+      },
+      {
+        "name": "w",
+        "file": "test1.py",
+        "start": 160,
+        "end": 161,
+        "type": "int"
+      },
+      {
+        "name": "w",
+        "file": "test1.py",
+        "start": 101,
+        "end": 102,
+        "type": "int"
+      }
+    ]
+  }
+]

@@ -11,7 +11,8 @@
         "name": "A",
         "file": "redefine-plus.py",
         "start": 15,
-        "end": 16
+        "end": 16,
+        "type": "\u003cA\u003e"
       }
     ]
   },
@@ -27,7 +28,8 @@
         "name": "value",
         "file": "redefine-plus.py",
         "start": 41,
-        "end": 46
+        "end": 46,
+        "type": "str"
       }
     ]
   },
@@ -43,7 +45,8 @@
         "name": "self",
         "file": "redefine-plus.py",
         "start": 35,
-        "end": 39
+        "end": 39,
+        "type": "A"
       }
     ]
   },
@@ -59,7 +62,8 @@
         "name": "fib",
         "file": "redefine-plus.py",
         "start": 329,
-        "end": 332
+        "end": 332,
+        "type": "int -\u003e int ∧ A -\u003e int"
       }
     ]
   },
@@ -75,7 +79,8 @@
         "name": "x",
         "file": "redefine-plus.py",
         "start": 419,
-        "end": 420
+        "end": 420,
+        "type": "A"
       }
     ]
   },
@@ -91,13 +96,15 @@
         "name": "n",
         "file": "redefine-plus.py",
         "start": 333,
-        "end": 334
+        "end": 334,
+        "type": "A"
       },
       {
         "name": "n",
         "file": "redefine-plus.py",
         "start": 333,
-        "end": 334
+        "end": 334,
+        "type": "int"
       }
     ]
   },
@@ -113,7 +120,8 @@
         "name": "other",
         "file": "redefine-plus.py",
         "start": 193,
-        "end": 198
+        "end": 198,
+        "type": "int"
       }
     ]
   },
@@ -129,7 +137,8 @@
         "name": "self",
         "file": "redefine-plus.py",
         "start": 187,
-        "end": 191
+        "end": 191,
+        "type": "A"
       }
     ]
   },
@@ -145,7 +154,8 @@
         "name": "value",
         "file": "redefine-plus.py",
         "start": 62,
-        "end": 67
+        "end": 67,
+        "type": "str"
       }
     ]
   },
@@ -161,7 +171,8 @@
         "name": "other",
         "file": "redefine-plus.py",
         "start": 223,
-        "end": 228
+        "end": 228,
+        "type": "int"
       }
     ]
   },
@@ -177,7 +188,8 @@
         "name": "fib",
         "file": "redefine-plus.py",
         "start": 329,
-        "end": 332
+        "end": 332,
+        "type": "int -\u003e int ∧ A -\u003e int"
       }
     ]
   },
@@ -193,13 +205,15 @@
         "name": "n",
         "file": "redefine-plus.py",
         "start": 333,
-        "end": 334
+        "end": 334,
+        "type": "A"
       },
       {
         "name": "n",
         "file": "redefine-plus.py",
         "start": 333,
-        "end": 334
+        "end": 334,
+        "type": "int"
       }
     ]
   },
@@ -215,7 +229,8 @@
         "name": "other",
         "file": "redefine-plus.py",
         "start": 99,
-        "end": 104
+        "end": 104,
+        "type": "int"
       }
     ]
   },
@@ -231,7 +246,8 @@
         "name": "other",
         "file": "redefine-plus.py",
         "start": 129,
-        "end": 134
+        "end": 134,
+        "type": "int"
       }
     ]
   },
@@ -247,7 +263,8 @@
         "name": "fib",
         "file": "redefine-plus.py",
         "start": 329,
-        "end": 332
+        "end": 332,
+        "type": "int -\u003e int ∧ A -\u003e int"
       }
     ]
   },
@@ -263,13 +280,15 @@
         "name": "n",
         "file": "redefine-plus.py",
         "start": 333,
-        "end": 334
+        "end": 334,
+        "type": "int"
       },
       {
         "name": "n",
         "file": "redefine-plus.py",
         "start": 333,
-        "end": 334
+        "end": 334,
+        "type": "A"
       }
     ]
   }
