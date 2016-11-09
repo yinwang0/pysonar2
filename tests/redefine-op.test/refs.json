@@ -1,0 +1,276 @@
+[
+  {
+    "ref": {
+      "name": "A",
+      "file": "redefine-plus.py",
+      "start": 423,
+      "end": 424
+    },
+    "dests": [
+      {
+        "name": "A",
+        "file": "redefine-plus.py",
+        "start": 15,
+        "end": 16
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "value",
+      "file": "redefine-plus.py",
+      "start": 70,
+      "end": 75
+    },
+    "dests": [
+      {
+        "name": "value",
+        "file": "redefine-plus.py",
+        "start": 41,
+        "end": 46
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "redefine-plus.py",
+      "start": 57,
+      "end": 61
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "redefine-plus.py",
+        "start": 35,
+        "end": 39
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "fib",
+      "file": "redefine-plus.py",
+      "start": 438,
+      "end": 441
+    },
+    "dests": [
+      {
+        "name": "fib",
+        "file": "redefine-plus.py",
+        "start": 329,
+        "end": 332
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "redefine-plus.py",
+      "start": 442,
+      "end": 443
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "redefine-plus.py",
+        "start": 419,
+        "end": 420
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "n",
+      "file": "redefine-plus.py",
+      "start": 344,
+      "end": 345
+    },
+    "dests": [
+      {
+        "name": "n",
+        "file": "redefine-plus.py",
+        "start": 333,
+        "end": 334
+      },
+      {
+        "name": "n",
+        "file": "redefine-plus.py",
+        "start": 333,
+        "end": 334
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "other",
+      "file": "redefine-plus.py",
+      "start": 223,
+      "end": 228
+    },
+    "dests": [
+      {
+        "name": "other",
+        "file": "redefine-plus.py",
+        "start": 193,
+        "end": 198
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "redefine-plus.py",
+      "start": 263,
+      "end": 267
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "redefine-plus.py",
+        "start": 187,
+        "end": 191
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "value",
+      "file": "redefine-plus.py",
+      "start": 268,
+      "end": 273
+    },
+    "dests": [
+      {
+        "name": "value",
+        "file": "redefine-plus.py",
+        "start": 62,
+        "end": 67
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "other",
+      "file": "redefine-plus.py",
+      "start": 278,
+      "end": 283
+    },
+    "dests": [
+      {
+        "name": "other",
+        "file": "redefine-plus.py",
+        "start": 223,
+        "end": 228
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "fib",
+      "file": "redefine-plus.py",
+      "start": 393,
+      "end": 396
+    },
+    "dests": [
+      {
+        "name": "fib",
+        "file": "redefine-plus.py",
+        "start": 329,
+        "end": 332
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "n",
+      "file": "redefine-plus.py",
+      "start": 397,
+      "end": 398
+    },
+    "dests": [
+      {
+        "name": "n",
+        "file": "redefine-plus.py",
+        "start": 333,
+        "end": 334
+      },
+      {
+        "name": "n",
+        "file": "redefine-plus.py",
+        "start": 333,
+        "end": 334
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "other",
+      "file": "redefine-plus.py",
+      "start": 129,
+      "end": 134
+    },
+    "dests": [
+      {
+        "name": "other",
+        "file": "redefine-plus.py",
+        "start": 99,
+        "end": 104
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "other",
+      "file": "redefine-plus.py",
+      "start": 165,
+      "end": 170
+    },
+    "dests": [
+      {
+        "name": "other",
+        "file": "redefine-plus.py",
+        "start": 129,
+        "end": 134
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "fib",
+      "file": "redefine-plus.py",
+      "start": 406,
+      "end": 409
+    },
+    "dests": [
+      {
+        "name": "fib",
+        "file": "redefine-plus.py",
+        "start": 329,
+        "end": 332
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "n",
+      "file": "redefine-plus.py",
+      "start": 410,
+      "end": 411
+    },
+    "dests": [
+      {
+        "name": "n",
+        "file": "redefine-plus.py",
+        "start": 333,
+        "end": 334
+      },
+      {
+        "name": "n",
+        "file": "redefine-plus.py",
+        "start": 333,
+        "end": 334
+      }
+    ]
+  }
+]

@@ -225,6 +225,86 @@
   },
   {
     "ref": {
+      "name": "spoon",
+      "file": "import-star-from-init.py",
+      "start": 77,
+      "end": 82
+    },
+    "dests": [
+      {
+        "name": "spoon",
+        "file": "kitchen/__init__.py",
+        "start": 58,
+        "end": 63
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "kitchen/__init__.py",
+      "start": 79,
+      "end": 80
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "kitchen/__init__.py",
+        "start": 64,
+        "end": 65
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "fork",
+      "file": "import-star-from-init.py",
+      "start": 92,
+      "end": 96
+    },
+    "dests": [
+      {
+        "name": "fork",
+        "file": "kitchen/__init__.py",
+        "start": 87,
+        "end": 91
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "kitchen/__init__.py",
+      "start": 108,
+      "end": 109
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "kitchen/__init__.py",
+        "start": 92,
+        "end": 93
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "kitchen/__init__.py",
+      "start": 110,
+      "end": 111
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "kitchen/__init__.py",
+        "start": 92,
+        "end": 93
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "Pizza",
       "file": "import-star-from-oven.py",
       "start": 68,
@@ -396,54 +476,6 @@
         "file": "import-star-from-oven.py",
         "start": 149,
         "end": 154
-      }
-    ]
-  },
-  {
-    "ref": {
-      "name": "x",
-      "file": "kitchen/__init__.py",
-      "start": 79,
-      "end": 80
-    },
-    "dests": [
-      {
-        "name": "x",
-        "file": "kitchen/__init__.py",
-        "start": 64,
-        "end": 65
-      }
-    ]
-  },
-  {
-    "ref": {
-      "name": "x",
-      "file": "kitchen/__init__.py",
-      "start": 108,
-      "end": 109
-    },
-    "dests": [
-      {
-        "name": "x",
-        "file": "kitchen/__init__.py",
-        "start": 92,
-        "end": 93
-      }
-    ]
-  },
-  {
-    "ref": {
-      "name": "x",
-      "file": "kitchen/__init__.py",
-      "start": 110,
-      "end": 111
-    },
-    "dests": [
-      {
-        "name": "x",
-        "file": "kitchen/__init__.py",
-        "start": 92,
-        "end": 93
       }
     ]
   },

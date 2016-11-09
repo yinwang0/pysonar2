@@ -51,7 +51,7 @@ public class Test {
 
             // only record those in the inputDir
             if (file != null && file.startsWith(Analyzer.self.projectDir)) {
-                file = $.projRelPath(file);
+                file = $.projRelPath(file).replaceAll("\\\\", "/");
                 Map<String, Object> writeout = new LinkedHashMap<>();
 
                 Map<String, Object> ref = new LinkedHashMap<>();
@@ -64,7 +64,7 @@ public class Test {
                 for (Binding b : e.getValue()) {
                     String destFile = b.getFile();
                     if (destFile != null && destFile.startsWith(Analyzer.self.projectDir)) {
-                        destFile = $.projRelPath(destFile);
+                        destFile = $.projRelPath(destFile).replaceAll("\\\\", "/");;
                         Map<String, Object> dest = new LinkedHashMap<>();
                         dest.put("name", b.name);
                         dest.put("file", destFile);

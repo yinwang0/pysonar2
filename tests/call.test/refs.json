@@ -60,6 +60,12 @@
         "file": "test1.py",
         "start": 35,
         "end": 36
+      },
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 35,
+        "end": 36
       }
     ]
   },
@@ -71,6 +77,12 @@
       "end": 24
     },
     "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 8,
+        "end": 9
+      },
       {
         "name": "x",
         "file": "test1.py",
