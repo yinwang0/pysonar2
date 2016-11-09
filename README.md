@@ -10,7 +10,7 @@ infer types.
 #### Checkout code
 
     git clone https://github.com/yinwang0/pysonar2.git
-    git checkout tags/v2.0
+    git checkout tags/v2.1.1
 
 
 #### How to build
