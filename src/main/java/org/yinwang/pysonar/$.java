@@ -6,7 +6,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sun.net.www.protocol.file.FileURLConnection;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.net.JarURLConnection;
@@ -15,7 +21,16 @@ import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.UUID;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -592,5 +607,30 @@ public class $ {
             bs.add(b);
         }
         return new ArrayList<>(bdHash.values());
+    }
+
+    public static boolean deleteDir(File dir)
+    {
+        if (dir.isDirectory())
+        {
+            String[] children = dir.list();
+            if (children == null)
+            {
+                return true;
+            }
+            else
+            {
+                for (String child : children)
+                {
+                    if (!deleteDir(new File(dir, child)))
+                    {
+                        return false;
+                    }
+                }
+                return dir.delete();
+            }
+        } else {
+            return dir.delete();
+        }
     }
 }

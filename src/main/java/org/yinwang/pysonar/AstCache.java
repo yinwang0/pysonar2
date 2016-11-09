@@ -20,8 +20,6 @@ public class AstCache {
 
     private static final Logger LOG = Logger.getLogger(AstCache.class.getCanonicalName());
 
-    private static AstCache INSTANCE;
-
     @NotNull
     private Map<String, Node> cache = new HashMap<>();
     @NotNull
