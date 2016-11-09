@@ -1,18 +1,18 @@
 [
   {
     "ref": {
-      "name": "x",
+      "name": "y",
       "file": "test1.py",
-      "start": 33,
-      "end": 34
+      "start": 169,
+      "end": 170
     },
     "dests": [
       {
-        "name": "x",
+        "name": "y",
         "file": "test1.py",
-        "start": 0,
-        "end": 1,
-        "type": "{int | str}"
+        "start": 6,
+        "end": 7,
+        "type": "bool"
       }
     ]
   },
@@ -20,8 +20,8 @@
     "ref": {
       "name": "x",
       "file": "test1.py",
-      "start": 52,
-      "end": 53
+      "start": 42,
+      "end": 43
     },
     "dests": [
       {
@@ -29,7 +29,7 @@
         "file": "test1.py",
         "start": 0,
         "end": 1,
-        "type": "{int | str}"
+        "type": "{bool | int | str}"
       }
     ]
   },
@@ -37,8 +37,8 @@
     "ref": {
       "name": "x",
       "file": "test1.py",
-      "start": 69,
-      "end": 70
+      "start": 73,
+      "end": 74
     },
     "dests": [
       {
@@ -46,7 +46,24 @@
         "file": "test1.py",
         "start": 0,
         "end": 1,
-        "type": "{int | str}"
+        "type": "{bool | int | str}"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "y",
+      "file": "test1.py",
+      "start": 85,
+      "end": 86
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 56,
+        "end": 57,
+        "type": "int"
       }
     ]
   },
@@ -54,8 +71,8 @@
     "ref": {
       "name": "x",
       "file": "test1.py",
-      "start": 88,
-      "end": 89
+      "start": 102,
+      "end": 103
     },
     "dests": [
       {
@@ -63,7 +80,41 @@
         "file": "test1.py",
         "start": 0,
         "end": 1,
-        "type": "{int | str}"
+        "type": "{bool | int | str}"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 121,
+      "end": 122
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 0,
+        "end": 1,
+        "type": "{bool | int | str}"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "y",
+      "file": "test1.py",
+      "start": 147,
+      "end": 148
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 127,
+        "end": 128,
+        "type": "str"
       }
     ]
   }
