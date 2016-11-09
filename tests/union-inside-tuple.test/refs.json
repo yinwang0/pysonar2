@@ -12,7 +12,7 @@
         "file": "test1.py",
         "start": 31,
         "end": 32,
-        "type": "int -\u003e ({int | str}, bool)"
+        "type": "int -> ({int | str}, bool)"
       }
     ]
   },

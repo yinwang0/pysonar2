@@ -11,7 +11,7 @@ import java.util.*;
 public class TestInference
 {
 
-    static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    static Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     Analyzer analyzer;
     String inputDir;
     boolean exp;

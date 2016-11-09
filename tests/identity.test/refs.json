@@ -12,7 +12,7 @@
         "file": "test1.py",
         "start": 12,
         "end": 15,
-        "type": "bool -\u003e bool ∧ int -\u003e int -\u003e (int, bool)"
+        "type": "bool -> bool ∧ int -> int -> (int, bool)"
       }
     ]
   },
@@ -29,7 +29,7 @@
         "file": "test1.py",
         "start": 50,
         "end": 52,
-        "type": "bool -\u003e bool ∧ int -\u003e int"
+        "type": "bool -> bool ∧ int -> int"
       }
     ]
   },
@@ -46,7 +46,7 @@
         "file": "test1.py",
         "start": 16,
         "end": 17,
-        "type": "bool -\u003e bool ∧ int -\u003e int"
+        "type": "bool -> bool ∧ int -> int"
       }
     ]
   },
@@ -87,7 +87,7 @@
         "file": "test1.py",
         "start": 16,
         "end": 17,
-        "type": "bool -\u003e bool ∧ int -\u003e int"
+        "type": "bool -> bool ∧ int -> int"
       }
     ]
   },

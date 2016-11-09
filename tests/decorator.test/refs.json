@@ -3,16 +3,16 @@
     "ref": {
       "name": "A",
       "file": "test1.py",
-      "start": 251,
-      "end": 252
+      "start": 236,
+      "end": 237
     },
     "dests": [
       {
         "name": "A",
         "file": "test1.py",
-        "start": 60,
-        "end": 61,
-        "type": "\u003cA\u003e"
+        "start": 58,
+        "end": 59,
+        "type": "<A>"
       }
     ]
   },
@@ -20,15 +20,15 @@
     "ref": {
       "name": "a",
       "file": "test1.py",
-      "start": 256,
-      "end": 257
+      "start": 240,
+      "end": 241
     },
     "dests": [
       {
         "name": "a",
         "file": "test1.py",
-        "start": 247,
-        "end": 248,
+        "start": 232,
+        "end": 233,
         "type": "A"
       }
     ]
@@ -37,16 +37,16 @@
     "ref": {
       "name": "normalm",
       "file": "test1.py",
-      "start": 258,
-      "end": 265
+      "start": 242,
+      "end": 249
     },
     "dests": [
       {
         "name": "normalm",
         "file": "test1.py",
-        "start": 74,
-        "end": 81,
-        "type": "(A, int) -\u003e int"
+        "start": 70,
+        "end": 77,
+        "type": "(A, int) -> int"
       }
     ]
   },
@@ -54,15 +54,15 @@
     "ref": {
       "name": "x",
       "file": "test1.py",
-      "start": 108,
-      "end": 109
+      "start": 103,
+      "end": 104
     },
     "dests": [
       {
         "name": "x",
         "file": "test1.py",
-        "start": 88,
-        "end": 89,
+        "start": 84,
+        "end": 85,
         "type": "int"
       }
     ]
@@ -71,15 +71,15 @@
     "ref": {
       "name": "a",
       "file": "test1.py",
-      "start": 271,
-      "end": 272
+      "start": 254,
+      "end": 255
     },
     "dests": [
       {
         "name": "a",
         "file": "test1.py",
-        "start": 247,
-        "end": 248,
+        "start": 232,
+        "end": 233,
         "type": "A"
       }
     ]
@@ -88,16 +88,16 @@
     "ref": {
       "name": "staticm",
       "file": "test1.py",
-      "start": 273,
-      "end": 280
+      "start": 256,
+      "end": 263
     },
     "dests": [
       {
         "name": "staticm",
         "file": "test1.py",
-        "start": 140,
-        "end": 147,
-        "type": "(int, str) -\u003e (int, str)"
+        "start": 132,
+        "end": 139,
+        "type": "(int, str) -> (int, str)"
       }
     ]
   },
@@ -105,15 +105,15 @@
     "ref": {
       "name": "x",
       "file": "test1.py",
-      "start": 171,
-      "end": 172
+      "start": 162,
+      "end": 163
     },
     "dests": [
       {
         "name": "x",
         "file": "test1.py",
-        "start": 148,
-        "end": 149,
+        "start": 140,
+        "end": 141,
         "type": "int"
       }
     ]
@@ -122,15 +122,15 @@
     "ref": {
       "name": "y",
       "file": "test1.py",
-      "start": 174,
-      "end": 175
+      "start": 165,
+      "end": 166
     },
     "dests": [
       {
         "name": "y",
         "file": "test1.py",
-        "start": 151,
-        "end": 152,
+        "start": 143,
+        "end": 144,
         "type": "str"
       }
     ]
@@ -139,15 +139,15 @@
     "ref": {
       "name": "a",
       "file": "test1.py",
-      "start": 292,
-      "end": 293
+      "start": 274,
+      "end": 275
     },
     "dests": [
       {
         "name": "a",
         "file": "test1.py",
-        "start": 247,
-        "end": 248,
+        "start": 232,
+        "end": 233,
         "type": "A"
       }
     ]
@@ -156,16 +156,16 @@
     "ref": {
       "name": "classm",
       "file": "test1.py",
-      "start": 294,
-      "end": 300
+      "start": 276,
+      "end": 282
     },
     "dests": [
       {
         "name": "classm",
         "file": "test1.py",
-        "start": 205,
-        "end": 211,
-        "type": "(\u003cA\u003e, str) -\u003e (\u003cA\u003e, str)"
+        "start": 193,
+        "end": 199,
+        "type": "(<A>, str) -> (<A>, str)"
       }
     ]
   },
@@ -173,16 +173,16 @@
     "ref": {
       "name": "cls",
       "file": "test1.py",
-      "start": 237,
-      "end": 240
+      "start": 224,
+      "end": 227
     },
     "dests": [
       {
         "name": "cls",
         "file": "test1.py",
-        "start": 212,
-        "end": 215,
-        "type": "\u003cA\u003e"
+        "start": 200,
+        "end": 203,
+        "type": "<A>"
       }
     ]
   },
@@ -190,15 +190,15 @@
     "ref": {
       "name": "y",
       "file": "test1.py",
-      "start": 242,
-      "end": 243
+      "start": 229,
+      "end": 230
     },
     "dests": [
       {
         "name": "y",
         "file": "test1.py",
-        "start": 217,
-        "end": 218,
+        "start": 205,
+        "end": 206,
         "type": "str"
       }
     ]

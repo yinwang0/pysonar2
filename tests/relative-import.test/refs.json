@@ -12,7 +12,7 @@
         "file": "foo/bar.py",
         "start": 4,
         "end": 5,
-        "type": "int -\u003e int"
+        "type": "int -> int"
       }
     ]
   },
@@ -29,7 +29,7 @@
         "file": "foo/bar.py",
         "start": 4,
         "end": 5,
-        "type": "int -\u003e int"
+        "type": "int -> int"
       }
     ]
   },
