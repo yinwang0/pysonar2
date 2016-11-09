@@ -19,8 +19,13 @@
         <jackson-2-version>2.2.3</jackson-2-version>
     </properties>
 
-    <!-- jackson -->
     <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>

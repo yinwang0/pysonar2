@@ -4,15 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.yinwang.pysonar.ast.Dummy;
 import org.yinwang.pysonar.ast.Node;
-import org.yinwang.pysonar.demos.Style;
-import org.yinwang.pysonar.types.Type;
-import org.yinwang.pysonar.types.UnionType;
 
 import java.io.File;
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class Test {
+public class TestInference
+{
 
     static Gson gson = new GsonBuilder().setPrettyPrinting().create();
     Analyzer analyzer;
@@ -22,7 +19,7 @@ public class Test {
     String failedRefsFile;
 
 
-    public Test(String inputDir, boolean exp) {
+    public TestInference(String inputDir, boolean exp) {
         // make a quiet analyzer
         Map<String, Object> options = new HashMap<>();
         options.put("quiet", true);
@@ -185,7 +182,7 @@ public class Test {
     // ------------------------- static part -----------------------
 
 
-    public static void testAll(String path, boolean exp) {
+    public static String testAll(String path, boolean exp) {
         List<String> failed = new ArrayList<>();
         if (exp) {
             $.testmsg("generating tests");
@@ -197,13 +194,16 @@ public class Test {
 
         if (exp) {
             $.testmsg("all tests generated");
+            return null;
         } else if (failed.isEmpty()) {
             $.testmsg("all tests passed!");
+            return null;
         } else {
-            $.testmsg("failed some tests: ");
+            String result = "failed some tests: ";
             for (String f : failed) {
-                $.testmsg("  * " + f);
+                result += "  * " + f;
             }
+            return result;
         }
     }
 
@@ -213,7 +213,7 @@ public class Test {
 
         if (file_or_dir.isDirectory()) {
             if (path.endsWith(".test")) {
-                Test test = new Test(path, exp);
+                TestInference test = new TestInference(path, exp);
                 if (exp) {
                     test.generateTest();
                 } else {

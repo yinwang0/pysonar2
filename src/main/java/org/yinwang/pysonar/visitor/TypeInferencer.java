@@ -1004,13 +1004,13 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
         // Add class or object as first argument if it is not static method
         if (!func.func.isStaticMethod()) {
-            if (func.func.isClassMethod()) {
-                if (func.cls != null) {
-                    argTypes.add(func.cls);
-                } else if (selfType != null && selfType instanceof InstanceType) {
-                    argTypes.add(((InstanceType) selfType).classType);
-                }
-            } else {
+//            if (func.func.isClassMethod()) {
+//                if (func.cls != null) {
+//                    argTypes.add(func.cls);
+//                } else if (selfType != null && selfType instanceof InstanceType) {
+//                    argTypes.add(((InstanceType) selfType).classType);
+//                }
+//            } else {
                 // usual method
                 if (selfType != null) {
                     argTypes.add(selfType);
@@ -1019,7 +1019,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
                         argTypes.add(func.cls.getInstance(null, this, call));
                     }
                 }
-            }
+//            }
         }
 
         // Put in positional arguments
