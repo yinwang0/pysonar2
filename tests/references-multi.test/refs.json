@@ -27,16 +27,16 @@
       {
         "name": "w",
         "file": "multi.py",
-        "start": 37,
-        "end": 38,
-        "type": "str"
+        "start": 21,
+        "end": 22,
+        "type": "int"
       },
       {
         "name": "w",
         "file": "multi.py",
-        "start": 21,
-        "end": 22,
-        "type": "int"
+        "start": 37,
+        "end": 38,
+        "type": "str"
       }
     ]
   }

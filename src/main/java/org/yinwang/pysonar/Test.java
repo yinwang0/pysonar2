@@ -65,10 +65,12 @@ public class Test {
                 ref.put("end", e.getKey().end);
 
                 List<Map<String, Object>> dests = new ArrayList<>();
-                for (Binding b : e.getValue()) {
+                List<Binding> sorted = e.getValue();
+                Collections.sort(sorted, (a, b) -> a.start == b.start ? a.end - b.end : a.start - b.start);
+                for (Binding b : sorted) {
                     String destFile = b.getFile();
                     if (destFile != null && destFile.startsWith(Analyzer.self.projectDir)) {
-                        destFile = $.projRelPath(destFile).replaceAll("\\\\", "/");;
+                        destFile = $.projRelPath(destFile).replaceAll("\\\\", "/");
                         Map<String, Object> dest = new LinkedHashMap<>();
                         dest.put("name", b.name);
                         dest.put("file", destFile);

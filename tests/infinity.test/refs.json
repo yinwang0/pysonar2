@@ -112,6 +112,13 @@
       {
         "name": "w",
         "file": "test1.py",
+        "start": 101,
+        "end": 102,
+        "type": "int"
+      },
+      {
+        "name": "w",
+        "file": "test1.py",
         "start": 134,
         "end": 135,
         "type": "int"
@@ -121,13 +128,6 @@
         "file": "test1.py",
         "start": 160,
         "end": 161,
-        "type": "int"
-      },
-      {
-        "name": "w",
-        "file": "test1.py",
-        "start": 101,
-        "end": 102,
         "type": "int"
       }
     ]
