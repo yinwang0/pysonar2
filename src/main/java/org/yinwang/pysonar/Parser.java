@@ -555,6 +555,14 @@ public class Parser {
 
         if (type.equals("Str")) {
             String s = (String) map.get("s");
+            if (s.startsWith("\"\"\""))
+            {
+                s = s.substring(3, s.length() - 3);
+            }
+            else
+            {
+                s = s.substring(1, s.length() - 1);
+            }
             return new Str(s, file, start, end);
         }
 
