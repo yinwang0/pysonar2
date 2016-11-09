@@ -3,15 +3,15 @@
     "ref": {
       "name": "k",
       "file": "test1.py",
-      "start": 41,
-      "end": 42
+      "start": 37,
+      "end": 38
     },
     "dests": [
       {
         "name": "k",
         "file": "test1.py",
-        "start": 28,
-        "end": 29,
+        "start": 25,
+        "end": 26,
         "type": "int"
       }
     ]
@@ -20,22 +20,22 @@
     "ref": {
       "name": "a",
       "file": "test1.py",
-      "start": 58,
-      "end": 59
+      "start": 53,
+      "end": 54
     },
     "dests": [
       {
         "name": "a",
         "file": "test1.py",
-        "start": 15,
-        "end": 16,
+        "start": 13,
+        "end": 14,
         "type": "str"
       },
       {
         "name": "a",
         "file": "test1.py",
-        "start": 93,
-        "end": 94,
+        "start": 85,
+        "end": 86,
         "type": "int"
       }
     ]
@@ -44,22 +44,22 @@
     "ref": {
       "name": "b",
       "file": "test1.py",
-      "start": 71,
-      "end": 72
+      "start": 65,
+      "end": 66
     },
     "dests": [
       {
         "name": "b",
         "file": "test1.py",
-        "start": 54,
-        "end": 55,
+        "start": 49,
+        "end": 50,
         "type": "str"
       },
       {
         "name": "b",
         "file": "test1.py",
-        "start": 54,
-        "end": 55,
+        "start": 49,
+        "end": 50,
         "type": "int"
       }
     ]
@@ -68,22 +68,22 @@
     "ref": {
       "name": "k",
       "file": "test1.py",
-      "start": 82,
-      "end": 83
+      "start": 75,
+      "end": 76
     },
     "dests": [
       {
         "name": "k",
         "file": "test1.py",
-        "start": 28,
-        "end": 29,
+        "start": 25,
+        "end": 26,
         "type": "int"
       },
       {
         "name": "k",
         "file": "test1.py",
-        "start": 78,
-        "end": 79,
+        "start": 71,
+        "end": 72,
         "type": "int"
       }
     ]
@@ -92,29 +92,29 @@
     "ref": {
       "name": "a",
       "file": "test1.py",
-      "start": 108,
-      "end": 109
+      "start": 98,
+      "end": 99
     },
     "dests": [
       {
         "name": "a",
         "file": "test1.py",
-        "start": 15,
-        "end": 16,
+        "start": 13,
+        "end": 14,
         "type": "str"
       },
       {
         "name": "a",
         "file": "test1.py",
-        "start": 93,
-        "end": 94,
+        "start": 85,
+        "end": 86,
         "type": "int"
       },
       {
         "name": "a",
         "file": "test1.py",
-        "start": 93,
-        "end": 94,
+        "start": 85,
+        "end": 86,
         "type": "int"
       }
     ]
@@ -123,22 +123,22 @@
     "ref": {
       "name": "b",
       "file": "test1.py",
-      "start": 111,
-      "end": 112
+      "start": 101,
+      "end": 102
     },
     "dests": [
       {
         "name": "b",
         "file": "test1.py",
-        "start": 54,
-        "end": 55,
+        "start": 49,
+        "end": 50,
         "type": "str"
       },
       {
         "name": "b",
         "file": "test1.py",
-        "start": 54,
-        "end": 55,
+        "start": 49,
+        "end": 50,
         "type": "int"
       }
     ]
