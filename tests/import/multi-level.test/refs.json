@@ -46,7 +46,7 @@
         "file": "kitchen/oven.py",
         "start": 6,
         "end": 11,
-        "type": "\u003cPizza\u003e"
+        "type": "<Pizza>"
       }
     ]
   },
@@ -114,7 +114,7 @@
         "file": "kitchen/oven.py",
         "start": 81,
         "end": 93,
-        "type": "Pizza -\u003e [str]"
+        "type": "Pizza -> [str]"
       }
     ]
   },

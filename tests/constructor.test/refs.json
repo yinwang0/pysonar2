@@ -12,7 +12,7 @@
         "file": "test1.py",
         "start": 37,
         "end": 46,
-        "type": "\u003cTestInit1\u003e"
+        "type": "<TestInit1>"
       }
     ]
   },

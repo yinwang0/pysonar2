@@ -12,7 +12,7 @@
         "file": "test1.py",
         "start": 60,
         "end": 61,
-        "type": "\u003cA\u003e"
+        "type": "<A>"
       }
     ]
   },
@@ -46,7 +46,7 @@
         "file": "test1.py",
         "start": 74,
         "end": 81,
-        "type": "(A, int) -\u003e int"
+        "type": "(A, int) -> int"
       }
     ]
   },
@@ -97,7 +97,7 @@
         "file": "test1.py",
         "start": 140,
         "end": 147,
-        "type": "(int, str) -\u003e (int, str)"
+        "type": "(int, str) -> (int, str)"
       }
     ]
   },
@@ -165,7 +165,7 @@
         "file": "test1.py",
         "start": 205,
         "end": 211,
-        "type": "(\u003cA\u003e, str) -\u003e (\u003cA\u003e, str)"
+        "type": "(<A>, str) -> (<A>, str)"
       }
     ]
   },
@@ -182,7 +182,7 @@
         "file": "test1.py",
         "start": 212,
         "end": 215,
-        "type": "\u003cA\u003e"
+        "type": "<A>"
       }
     ]
   },

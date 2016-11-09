@@ -29,7 +29,7 @@
         "file": "test1.py",
         "start": 48,
         "end": 51,
-        "type": "() -\u003e \u003cint\u003e"
+        "type": "() -> <int>"
       }
     ]
   },

@@ -29,7 +29,7 @@
         "file": "kitchen/oven.py",
         "start": 6,
         "end": 11,
-        "type": "\u003cPizza\u003e"
+        "type": "<Pizza>"
       }
     ]
   },
@@ -97,7 +97,7 @@
         "file": "kitchen/oven.py",
         "start": 35,
         "end": 40,
-        "type": "\u003cBread\u003e"
+        "type": "<Bread>"
       }
     ]
   },
@@ -148,7 +148,7 @@
         "file": "kitchen/oven.py",
         "start": 6,
         "end": 11,
-        "type": "\u003cPizza\u003e"
+        "type": "<Pizza>"
       }
     ]
   },
@@ -165,7 +165,7 @@
         "file": "kitchen/oven.py",
         "start": 6,
         "end": 11,
-        "type": "\u003cPizza\u003e"
+        "type": "<Pizza>"
       }
     ]
   },
@@ -250,7 +250,7 @@
         "file": "kitchen/__init__.py",
         "start": 58,
         "end": 63,
-        "type": "int -\u003e int"
+        "type": "int -> int"
       }
     ]
   },
@@ -284,7 +284,7 @@
         "file": "kitchen/__init__.py",
         "start": 87,
         "end": 91,
-        "type": "int -\u003e [int]"
+        "type": "int -> [int]"
       }
     ]
   },
@@ -335,7 +335,7 @@
         "file": "kitchen/oven.py",
         "start": 6,
         "end": 11,
-        "type": "\u003cPizza\u003e"
+        "type": "<Pizza>"
       }
     ]
   },
@@ -386,7 +386,7 @@
         "file": "kitchen/oven.py",
         "start": 35,
         "end": 40,
-        "type": "\u003cBread\u003e"
+        "type": "<Bread>"
       }
     ]
   },
@@ -437,7 +437,7 @@
         "file": "kitchen/oven.py",
         "start": 35,
         "end": 40,
-        "type": "\u003cBread\u003e"
+        "type": "<Bread>"
       }
     ]
   },

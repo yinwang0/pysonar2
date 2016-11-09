@@ -12,7 +12,7 @@
         "file": "redefine-plus.py",
         "start": 15,
         "end": 16,
-        "type": "\u003cA\u003e"
+        "type": "<A>"
       }
     ]
   },
@@ -63,7 +63,7 @@
         "file": "redefine-plus.py",
         "start": 329,
         "end": 332,
-        "type": "int -\u003e int ∧ A -\u003e int"
+        "type": "int -> int ∧ A -> int"
       }
     ]
   },
@@ -189,7 +189,7 @@
         "file": "redefine-plus.py",
         "start": 329,
         "end": 332,
-        "type": "int -\u003e int ∧ A -\u003e int"
+        "type": "int -> int ∧ A -> int"
       }
     ]
   },
@@ -264,7 +264,7 @@
         "file": "redefine-plus.py",
         "start": 329,
         "end": 332,
-        "type": "int -\u003e int ∧ A -\u003e int"
+        "type": "int -> int ∧ A -> int"
       }
     ]
   },
