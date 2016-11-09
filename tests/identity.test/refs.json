@@ -1,0 +1,111 @@
+[
+  {
+    "ref": {
+      "name": "foo",
+      "file": "test1.py",
+      "start": 75,
+      "end": 78
+    },
+    "dests": [
+      {
+        "name": "foo",
+        "file": "test1.py",
+        "start": 12,
+        "end": 15,
+        "type": "bool -\u003e bool ∧ int -\u003e int -\u003e (int, bool)"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "id",
+      "file": "test1.py",
+      "start": 79,
+      "end": 81
+    },
+    "dests": [
+      {
+        "name": "id",
+        "file": "test1.py",
+        "start": 50,
+        "end": 52,
+        "type": "bool -\u003e bool ∧ int -\u003e int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "f",
+      "file": "test1.py",
+      "start": 31,
+      "end": 32
+    },
+    "dests": [
+      {
+        "name": "f",
+        "file": "test1.py",
+        "start": 16,
+        "end": 17,
+        "type": "bool -\u003e bool ∧ int -\u003e int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 68,
+      "end": 69
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 53,
+        "end": 54,
+        "type": "int"
+      },
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 53,
+        "end": 54,
+        "type": "bool"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "f",
+      "file": "test1.py",
+      "start": 37,
+      "end": 38
+    },
+    "dests": [
+      {
+        "name": "f",
+        "file": "test1.py",
+        "start": 16,
+        "end": 17,
+        "type": "bool -\u003e bool ∧ int -\u003e int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 89,
+      "end": 90
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 71,
+        "end": 72,
+        "type": "(int, bool)"
+      }
+    ]
+  }
+]
