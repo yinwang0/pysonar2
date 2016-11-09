@@ -14,5 +14,6 @@ def g():
     print x
     y = 'foo'
     print y
+    global x
 
 print y
