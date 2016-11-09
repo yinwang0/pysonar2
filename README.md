@@ -1,4 +1,4 @@
-https://travis-ci.org/yinwang0/pysonar2.svg?branch=master
+<img src="https://travis-ci.org/yinwang0/pysonar2.svg?branch=master">
 
 # PySonar2 - a type inferencer for Python
 
