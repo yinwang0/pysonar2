@@ -4,7 +4,9 @@
       "name": "A",
       "file": "redefine-plus.py",
       "start": 423,
-      "end": 424
+      "end": 424,
+      "line": 26,
+      "col": 5
     },
     "dests": [
       {
@@ -12,6 +14,8 @@
         "file": "redefine-plus.py",
         "start": 15,
         "end": 16,
+        "line": 4,
+        "col": 7,
         "type": "<A>"
       }
     ]
@@ -21,7 +25,9 @@
       "name": "value",
       "file": "redefine-plus.py",
       "start": 70,
-      "end": 75
+      "end": 75,
+      "line": 6,
+      "col": 22
     },
     "dests": [
       {
@@ -29,6 +35,8 @@
         "file": "redefine-plus.py",
         "start": 41,
         "end": 46,
+        "line": 5,
+        "col": 24,
         "type": "str"
       }
     ]
@@ -38,7 +46,9 @@
       "name": "self",
       "file": "redefine-plus.py",
       "start": 57,
-      "end": 61
+      "end": 61,
+      "line": 6,
+      "col": 9
     },
     "dests": [
       {
@@ -46,6 +56,8 @@
         "file": "redefine-plus.py",
         "start": 35,
         "end": 39,
+        "line": 5,
+        "col": 18,
         "type": "A"
       }
     ]
@@ -55,7 +67,9 @@
       "name": "fib",
       "file": "redefine-plus.py",
       "start": 438,
-      "end": 441
+      "end": 441,
+      "line": 27,
+      "col": 7
     },
     "dests": [
       {
@@ -63,6 +77,8 @@
         "file": "redefine-plus.py",
         "start": 329,
         "end": 332,
+        "line": 19,
+        "col": 5,
         "type": "int -> int / A -> int"
       }
     ]
@@ -72,7 +88,9 @@
       "name": "x",
       "file": "redefine-plus.py",
       "start": 442,
-      "end": 443
+      "end": 443,
+      "line": 27,
+      "col": 11
     },
     "dests": [
       {
@@ -80,6 +98,8 @@
         "file": "redefine-plus.py",
         "start": 419,
         "end": 420,
+        "line": 26,
+        "col": 1,
         "type": "A"
       }
     ]
@@ -89,7 +109,9 @@
       "name": "n",
       "file": "redefine-plus.py",
       "start": 344,
-      "end": 345
+      "end": 345,
+      "line": 20,
+      "col": 8
     },
     "dests": [
       {
@@ -97,6 +119,8 @@
         "file": "redefine-plus.py",
         "start": 333,
         "end": 334,
+        "line": 19,
+        "col": 9,
         "type": "A"
       },
       {
@@ -104,6 +128,8 @@
         "file": "redefine-plus.py",
         "start": 333,
         "end": 334,
+        "line": 19,
+        "col": 9,
         "type": "int"
       }
     ]
@@ -113,7 +139,9 @@
       "name": "other",
       "file": "redefine-plus.py",
       "start": 223,
-      "end": 228
+      "end": 228,
+      "line": 13,
+      "col": 23
     },
     "dests": [
       {
@@ -121,6 +149,8 @@
         "file": "redefine-plus.py",
         "start": 193,
         "end": 198,
+        "line": 12,
+        "col": 22,
         "type": "int"
       }
     ]
@@ -130,7 +160,9 @@
       "name": "self",
       "file": "redefine-plus.py",
       "start": 263,
-      "end": 267
+      "end": 267,
+      "line": 14,
+      "col": 28
     },
     "dests": [
       {
@@ -138,6 +170,8 @@
         "file": "redefine-plus.py",
         "start": 187,
         "end": 191,
+        "line": 12,
+        "col": 16,
         "type": "A"
       }
     ]
@@ -147,7 +181,9 @@
       "name": "value",
       "file": "redefine-plus.py",
       "start": 268,
-      "end": 273
+      "end": 273,
+      "line": 14,
+      "col": 33
     },
     "dests": [
       {
@@ -155,6 +191,8 @@
         "file": "redefine-plus.py",
         "start": 62,
         "end": 67,
+        "line": 6,
+        "col": 14,
         "type": "str"
       }
     ]
@@ -164,7 +202,9 @@
       "name": "other",
       "file": "redefine-plus.py",
       "start": 278,
-      "end": 283
+      "end": 283,
+      "line": 14,
+      "col": 43
     },
     "dests": [
       {
@@ -172,6 +212,8 @@
         "file": "redefine-plus.py",
         "start": 223,
         "end": 228,
+        "line": 13,
+        "col": 23,
         "type": "int"
       }
     ]
@@ -181,7 +223,9 @@
       "name": "fib",
       "file": "redefine-plus.py",
       "start": 393,
-      "end": 396
+      "end": 396,
+      "line": 23,
+      "col": 16
     },
     "dests": [
       {
@@ -189,6 +233,8 @@
         "file": "redefine-plus.py",
         "start": 329,
         "end": 332,
+        "line": 19,
+        "col": 5,
         "type": "int -> int / A -> int"
       }
     ]
@@ -198,7 +244,9 @@
       "name": "n",
       "file": "redefine-plus.py",
       "start": 397,
-      "end": 398
+      "end": 398,
+      "line": 23,
+      "col": 20
     },
     "dests": [
       {
@@ -206,6 +254,8 @@
         "file": "redefine-plus.py",
         "start": 333,
         "end": 334,
+        "line": 19,
+        "col": 9,
         "type": "A"
       },
       {
@@ -213,6 +263,8 @@
         "file": "redefine-plus.py",
         "start": 333,
         "end": 334,
+        "line": 19,
+        "col": 9,
         "type": "int"
       }
     ]
@@ -222,7 +274,9 @@
       "name": "other",
       "file": "redefine-plus.py",
       "start": 129,
-      "end": 134
+      "end": 134,
+      "line": 9,
+      "col": 23
     },
     "dests": [
       {
@@ -230,6 +284,8 @@
         "file": "redefine-plus.py",
         "start": 99,
         "end": 104,
+        "line": 8,
+        "col": 23,
         "type": "int"
       }
     ]
@@ -239,7 +295,9 @@
       "name": "other",
       "file": "redefine-plus.py",
       "start": 165,
-      "end": 170
+      "end": 170,
+      "line": 10,
+      "col": 24
     },
     "dests": [
       {
@@ -247,6 +305,8 @@
         "file": "redefine-plus.py",
         "start": 129,
         "end": 134,
+        "line": 9,
+        "col": 23,
         "type": "int"
       }
     ]
@@ -256,7 +316,9 @@
       "name": "fib",
       "file": "redefine-plus.py",
       "start": 406,
-      "end": 409
+      "end": 409,
+      "line": 23,
+      "col": 29
     },
     "dests": [
       {
@@ -264,6 +326,8 @@
         "file": "redefine-plus.py",
         "start": 329,
         "end": 332,
+        "line": 19,
+        "col": 5,
         "type": "int -> int / A -> int"
       }
     ]
@@ -273,7 +337,9 @@
       "name": "n",
       "file": "redefine-plus.py",
       "start": 410,
-      "end": 411
+      "end": 411,
+      "line": 23,
+      "col": 33
     },
     "dests": [
       {
@@ -281,6 +347,8 @@
         "file": "redefine-plus.py",
         "start": 333,
         "end": 334,
+        "line": 19,
+        "col": 9,
         "type": "int"
       },
       {
@@ -288,6 +356,8 @@
         "file": "redefine-plus.py",
         "start": 333,
         "end": 334,
+        "line": 19,
+        "col": 9,
         "type": "A"
       }
     ]

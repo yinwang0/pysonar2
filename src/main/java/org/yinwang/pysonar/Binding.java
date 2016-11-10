@@ -44,6 +44,8 @@ public class Binding implements Comparable<Object> {
     // fields from Def
     public int start = -1;
     public int end = -1;
+    public int line = -1;
+    public int col = -1;
     public int bodyStart = -1;
     public int bodyEnd = -1;
 
@@ -80,6 +82,8 @@ public class Binding implements Comparable<Object> {
     private void initLocationInfo(Node node) {
         start = node.start;
         end = node.end;
+        line = node.line;
+        col = node.col;
 
         Node parent = node.parent;
         if ((parent instanceof FunctionDef && ((FunctionDef) parent).name == node) ||

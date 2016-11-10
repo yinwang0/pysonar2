@@ -4,7 +4,9 @@
       "name": "A",
       "file": "test1.py",
       "start": 236,
-      "end": 237
+      "end": 237,
+      "line": 16,
+      "col": 5
     },
     "dests": [
       {
@@ -12,6 +14,8 @@
         "file": "test1.py",
         "start": 58,
         "end": 59,
+        "line": 3,
+        "col": 7,
         "type": "<A>"
       }
     ]
@@ -21,7 +25,9 @@
       "name": "a",
       "file": "test1.py",
       "start": 240,
-      "end": 241
+      "end": 241,
+      "line": 17,
+      "col": 1
     },
     "dests": [
       {
@@ -29,6 +35,8 @@
         "file": "test1.py",
         "start": 232,
         "end": 233,
+        "line": 16,
+        "col": 1,
         "type": "A"
       }
     ]
@@ -38,7 +46,9 @@
       "name": "normalm",
       "file": "test1.py",
       "start": 242,
-      "end": 249
+      "end": 249,
+      "line": 17,
+      "col": 3
     },
     "dests": [
       {
@@ -46,6 +56,8 @@
         "file": "test1.py",
         "start": 70,
         "end": 77,
+        "line": 5,
+        "col": 9,
         "type": "(A, int) -> int"
       }
     ]
@@ -55,7 +67,9 @@
       "name": "x",
       "file": "test1.py",
       "start": 103,
-      "end": 104
+      "end": 104,
+      "line": 6,
+      "col": 16
     },
     "dests": [
       {
@@ -63,6 +77,8 @@
         "file": "test1.py",
         "start": 84,
         "end": 85,
+        "line": 5,
+        "col": 23,
         "type": "int"
       }
     ]
@@ -72,7 +88,9 @@
       "name": "a",
       "file": "test1.py",
       "start": 254,
-      "end": 255
+      "end": 255,
+      "line": 18,
+      "col": 1
     },
     "dests": [
       {
@@ -80,6 +98,8 @@
         "file": "test1.py",
         "start": 232,
         "end": 233,
+        "line": 16,
+        "col": 1,
         "type": "A"
       }
     ]
@@ -89,7 +109,9 @@
       "name": "staticm",
       "file": "test1.py",
       "start": 256,
-      "end": 263
+      "end": 263,
+      "line": 18,
+      "col": 3
     },
     "dests": [
       {
@@ -97,6 +119,8 @@
         "file": "test1.py",
         "start": 132,
         "end": 139,
+        "line": 9,
+        "col": 9,
         "type": "(int, str) -> (int, str)"
       }
     ]
@@ -106,7 +130,9 @@
       "name": "x",
       "file": "test1.py",
       "start": 162,
-      "end": 163
+      "end": 163,
+      "line": 10,
+      "col": 16
     },
     "dests": [
       {
@@ -114,6 +140,8 @@
         "file": "test1.py",
         "start": 140,
         "end": 141,
+        "line": 9,
+        "col": 17,
         "type": "int"
       }
     ]
@@ -123,7 +151,9 @@
       "name": "y",
       "file": "test1.py",
       "start": 165,
-      "end": 166
+      "end": 166,
+      "line": 10,
+      "col": 19
     },
     "dests": [
       {
@@ -131,6 +161,8 @@
         "file": "test1.py",
         "start": 143,
         "end": 144,
+        "line": 9,
+        "col": 20,
         "type": "str"
       }
     ]
@@ -140,7 +172,9 @@
       "name": "a",
       "file": "test1.py",
       "start": 274,
-      "end": 275
+      "end": 275,
+      "line": 19,
+      "col": 1
     },
     "dests": [
       {
@@ -148,6 +182,8 @@
         "file": "test1.py",
         "start": 232,
         "end": 233,
+        "line": 16,
+        "col": 1,
         "type": "A"
       }
     ]
@@ -157,7 +193,9 @@
       "name": "classm",
       "file": "test1.py",
       "start": 276,
-      "end": 282
+      "end": 282,
+      "line": 19,
+      "col": 3
     },
     "dests": [
       {
@@ -165,6 +203,8 @@
         "file": "test1.py",
         "start": 193,
         "end": 199,
+        "line": 13,
+        "col": 9,
         "type": "(<A>, str) -> (<A>, str)"
       }
     ]
@@ -174,7 +214,9 @@
       "name": "cls",
       "file": "test1.py",
       "start": 224,
-      "end": 227
+      "end": 227,
+      "line": 14,
+      "col": 16
     },
     "dests": [
       {
@@ -182,6 +224,8 @@
         "file": "test1.py",
         "start": 200,
         "end": 203,
+        "line": 13,
+        "col": 16,
         "type": "<A>"
       }
     ]
@@ -191,7 +235,9 @@
       "name": "y",
       "file": "test1.py",
       "start": 229,
-      "end": 230
+      "end": 230,
+      "line": 14,
+      "col": 21
     },
     "dests": [
       {
@@ -199,6 +245,8 @@
         "file": "test1.py",
         "start": 205,
         "end": 206,
+        "line": 13,
+        "col": 21,
         "type": "str"
       }
     ]

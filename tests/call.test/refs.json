@@ -4,7 +4,9 @@
       "name": "baz1",
       "file": "test1.py",
       "start": 126,
-      "end": 130
+      "end": 130,
+      "line": 17,
+      "col": 1
     },
     "dests": [
       {
@@ -12,6 +14,8 @@
         "file": "test1.py",
         "start": 63,
         "end": 67,
+        "line": 9,
+        "col": 5,
         "type": "() -> int"
       }
     ]
@@ -21,7 +25,9 @@
       "name": "bar",
       "file": "test1.py",
       "start": 82,
-      "end": 85
+      "end": 85,
+      "line": 10,
+      "col": 12
     },
     "dests": [
       {
@@ -29,6 +35,8 @@
         "file": "test1.py",
         "start": 31,
         "end": 34,
+        "line": 5,
+        "col": 5,
         "type": "str -> str / int -> int"
       }
     ]
@@ -38,7 +46,9 @@
       "name": "foo",
       "file": "test1.py",
       "start": 50,
-      "end": 53
+      "end": 53,
+      "line": 6,
+      "col": 12
     },
     "dests": [
       {
@@ -46,6 +56,8 @@
         "file": "test1.py",
         "start": 4,
         "end": 7,
+        "line": 1,
+        "col": 5,
         "type": "str -> str / int -> int"
       }
     ]
@@ -55,7 +67,9 @@
       "name": "y",
       "file": "test1.py",
       "start": 54,
-      "end": 55
+      "end": 55,
+      "line": 6,
+      "col": 16
     },
     "dests": [
       {
@@ -63,6 +77,8 @@
         "file": "test1.py",
         "start": 35,
         "end": 36,
+        "line": 5,
+        "col": 9,
         "type": "int"
       },
       {
@@ -70,6 +86,8 @@
         "file": "test1.py",
         "start": 35,
         "end": 36,
+        "line": 5,
+        "col": 9,
         "type": "str"
       }
     ]
@@ -79,7 +97,9 @@
       "name": "x",
       "file": "test1.py",
       "start": 23,
-      "end": 24
+      "end": 24,
+      "line": 2,
+      "col": 12
     },
     "dests": [
       {
@@ -87,6 +107,8 @@
         "file": "test1.py",
         "start": 8,
         "end": 9,
+        "line": 1,
+        "col": 9,
         "type": "int"
       },
       {
@@ -94,6 +116,8 @@
         "file": "test1.py",
         "start": 8,
         "end": 9,
+        "line": 1,
+        "col": 9,
         "type": "str"
       }
     ]
@@ -103,7 +127,9 @@
       "name": "baz2",
       "file": "test1.py",
       "start": 133,
-      "end": 137
+      "end": 137,
+      "line": 18,
+      "col": 1
     },
     "dests": [
       {
@@ -111,6 +137,8 @@
         "file": "test1.py",
         "start": 95,
         "end": 99,
+        "line": 13,
+        "col": 5,
         "type": "() -> str"
       }
     ]
@@ -120,7 +148,9 @@
       "name": "bar",
       "file": "test1.py",
       "start": 114,
-      "end": 117
+      "end": 117,
+      "line": 14,
+      "col": 12
     },
     "dests": [
       {
@@ -128,6 +158,8 @@
         "file": "test1.py",
         "start": 31,
         "end": 34,
+        "line": 5,
+        "col": 5,
         "type": "str -> str / int -> int"
       }
     ]

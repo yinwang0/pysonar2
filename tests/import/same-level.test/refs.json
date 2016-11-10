@@ -4,7 +4,9 @@
       "name": "mod2",
       "file": "mod1.py",
       "start": 17,
-      "end": 21
+      "end": 21,
+      "line": 3,
+      "col": 5
     },
     "dests": [
       {
@@ -12,6 +14,8 @@
         "file": "mod1.py",
         "start": 7,
         "end": 11,
+        "line": 0,
+        "col": 0,
         "type": "mod2"
       }
     ]
@@ -21,7 +25,9 @@
       "name": "B",
       "file": "mod1.py",
       "start": 22,
-      "end": 23
+      "end": 23,
+      "line": 3,
+      "col": 10
     },
     "dests": [
       {
@@ -29,6 +35,8 @@
         "file": "mod2.py",
         "start": 6,
         "end": 7,
+        "line": 1,
+        "col": 7,
         "type": "<B>"
       }
     ]
@@ -38,7 +46,9 @@
       "name": "o",
       "file": "mod1.py",
       "start": 32,
-      "end": 33
+      "end": 33,
+      "line": 4,
+      "col": 7
     },
     "dests": [
       {
@@ -46,6 +56,8 @@
         "file": "mod1.py",
         "start": 13,
         "end": 14,
+        "line": 3,
+        "col": 1,
         "type": "B"
       }
     ]
@@ -55,7 +67,9 @@
       "name": "a",
       "file": "mod1.py",
       "start": 34,
-      "end": 35
+      "end": 35,
+      "line": 4,
+      "col": 9
     },
     "dests": [
       {
@@ -63,6 +77,8 @@
         "file": "mod2.py",
         "start": 11,
         "end": 12,
+        "line": 2,
+        "col": 3,
         "type": "str"
       }
     ]

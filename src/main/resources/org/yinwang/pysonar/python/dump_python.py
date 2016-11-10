@@ -147,7 +147,8 @@ def improve_node(node, s):
     elif isinstance(node, AST):
         find_start(node, s)
         find_end(node, s)
-        node.lineno, node.col_offset = map_line_col(node.start)
+        if hasattr(node, 'start'):
+            node.lineno, node.col_offset = map_line_col(node.start)
         add_missing_names(node, s)
 
         for f in node_fields(node):
@@ -509,7 +510,6 @@ def str_to_name(s, start):
         name = Name(id1, None)
         name.start = name_start
         name.end = name_end
-        name.lineno, name.col_offset = map_line_col(name_start)
         return name
 
 
@@ -531,7 +531,6 @@ def convert_ops(ops, s, start):
             op_node = Name(syms[j], None)
             op_node.start = i
             op_node.end = i + oplen
-            op_node.lineno, op_node.col_offset = map_line_col(i)
             ret.append(op_node)
             j += 1
             i = op_node.end

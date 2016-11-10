@@ -4,7 +4,9 @@
       "name": "x",
       "file": "test1.py",
       "start": 63,
-      "end": 64
+      "end": 64,
+      "line": 6,
+      "col": 10
     },
     "dests": [
       {
@@ -12,6 +14,8 @@
         "file": "test1.py",
         "start": 43,
         "end": 44,
+        "line": 4,
+        "col": 1,
         "type": "int"
       }
     ]
@@ -21,7 +25,9 @@
       "name": "x",
       "file": "test1.py",
       "start": 69,
-      "end": 70
+      "end": 70,
+      "line": 6,
+      "col": 16
     },
     "dests": [
       {
@@ -29,6 +35,8 @@
         "file": "test1.py",
         "start": 43,
         "end": 44,
+        "line": 4,
+        "col": 1,
         "type": "int"
       }
     ]
@@ -38,7 +46,9 @@
       "name": "x",
       "file": "test1.py",
       "start": 84,
-      "end": 85
+      "end": 85,
+      "line": 7,
+      "col": 8
     },
     "dests": [
       {
@@ -46,6 +56,8 @@
         "file": "test1.py",
         "start": 43,
         "end": 44,
+        "line": 4,
+        "col": 1,
         "type": "int"
       }
     ]
@@ -55,7 +67,9 @@
       "name": "x",
       "file": "test1.py",
       "start": 105,
-      "end": 106
+      "end": 106,
+      "line": 8,
+      "col": 13
     },
     "dests": [
       {
@@ -63,6 +77,8 @@
         "file": "test1.py",
         "start": 43,
         "end": 44,
+        "line": 4,
+        "col": 1,
         "type": "int"
       }
     ]
@@ -72,7 +88,9 @@
       "name": "x",
       "file": "test1.py",
       "start": 138,
-      "end": 139
+      "end": 139,
+      "line": 10,
+      "col": 13
     },
     "dests": [
       {
@@ -80,6 +98,8 @@
         "file": "test1.py",
         "start": 43,
         "end": 44,
+        "line": 4,
+        "col": 1,
         "type": "int"
       }
     ]
@@ -89,7 +109,9 @@
       "name": "x",
       "file": "test1.py",
       "start": 164,
-      "end": 165
+      "end": 165,
+      "line": 12,
+      "col": 9
     },
     "dests": [
       {
@@ -97,6 +119,8 @@
         "file": "test1.py",
         "start": 43,
         "end": 44,
+        "line": 4,
+        "col": 1,
         "type": "int"
       }
     ]
@@ -106,7 +130,9 @@
       "name": "w",
       "file": "test1.py",
       "start": 192,
-      "end": 193
+      "end": 193,
+      "line": 14,
+      "col": 7
     },
     "dests": [
       {
@@ -114,6 +140,8 @@
         "file": "test1.py",
         "start": 101,
         "end": 102,
+        "line": 8,
+        "col": 9,
         "type": "int"
       },
       {
@@ -121,6 +149,8 @@
         "file": "test1.py",
         "start": 134,
         "end": 135,
+        "line": 10,
+        "col": 9,
         "type": "int"
       },
       {
@@ -128,6 +158,8 @@
         "file": "test1.py",
         "start": 160,
         "end": 161,
+        "line": 12,
+        "col": 5,
         "type": "int"
       }
     ]

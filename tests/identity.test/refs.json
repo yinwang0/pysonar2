@@ -4,7 +4,9 @@
       "name": "foo",
       "file": "test1.py",
       "start": 75,
-      "end": 78
+      "end": 78,
+      "line": 9,
+      "col": 5
     },
     "dests": [
       {
@@ -12,6 +14,8 @@
         "file": "test1.py",
         "start": 12,
         "end": 15,
+        "line": 3,
+        "col": 5,
         "type": "bool -> bool / int -> int -> (int, bool)"
       }
     ]
@@ -21,7 +25,9 @@
       "name": "id",
       "file": "test1.py",
       "start": 79,
-      "end": 81
+      "end": 81,
+      "line": 9,
+      "col": 9
     },
     "dests": [
       {
@@ -29,6 +35,8 @@
         "file": "test1.py",
         "start": 50,
         "end": 52,
+        "line": 6,
+        "col": 5,
         "type": "bool -> bool / int -> int"
       }
     ]
@@ -38,7 +46,9 @@
       "name": "f",
       "file": "test1.py",
       "start": 31,
-      "end": 32
+      "end": 32,
+      "line": 4,
+      "col": 12
     },
     "dests": [
       {
@@ -46,6 +56,8 @@
         "file": "test1.py",
         "start": 16,
         "end": 17,
+        "line": 3,
+        "col": 9,
         "type": "bool -> bool / int -> int"
       }
     ]
@@ -55,7 +67,9 @@
       "name": "x",
       "file": "test1.py",
       "start": 68,
-      "end": 69
+      "end": 69,
+      "line": 7,
+      "col": 12
     },
     "dests": [
       {
@@ -63,6 +77,8 @@
         "file": "test1.py",
         "start": 53,
         "end": 54,
+        "line": 6,
+        "col": 8,
         "type": "int"
       },
       {
@@ -70,6 +86,8 @@
         "file": "test1.py",
         "start": 53,
         "end": 54,
+        "line": 6,
+        "col": 8,
         "type": "bool"
       }
     ]
@@ -79,7 +97,9 @@
       "name": "f",
       "file": "test1.py",
       "start": 37,
-      "end": 38
+      "end": 38,
+      "line": 4,
+      "col": 18
     },
     "dests": [
       {
@@ -87,6 +107,8 @@
         "file": "test1.py",
         "start": 16,
         "end": 17,
+        "line": 3,
+        "col": 9,
         "type": "bool -> bool / int -> int"
       }
     ]
@@ -96,7 +118,9 @@
       "name": "a",
       "file": "test1.py",
       "start": 89,
-      "end": 90
+      "end": 90,
+      "line": 10,
+      "col": 7
     },
     "dests": [
       {
@@ -104,6 +128,8 @@
         "file": "test1.py",
         "start": 71,
         "end": 72,
+        "line": 9,
+        "col": 1,
         "type": "(int, bool)"
       }
     ]

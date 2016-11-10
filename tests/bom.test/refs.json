@@ -4,7 +4,9 @@
       "name": "x",
       "file": "bom.py",
       "start": 43,
-      "end": 44
+      "end": 44,
+      "line": 3,
+      "col": 20
     },
     "dests": [
       {
@@ -12,6 +14,8 @@
         "file": "bom.py",
         "start": 17,
         "end": 18,
+        "line": 2,
+        "col": 1,
         "type": "int"
       }
     ]

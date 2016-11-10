@@ -122,7 +122,7 @@ public class Parser {
         int start = startDouble == null ? 0 : startDouble.intValue();
         int end = endDouble == null ? 1 : endDouble.intValue();
         int line = lineDouble == null ? 1 : lineDouble.intValue();
-        int col = colDouble == null ? 1 : colDouble.intValue();
+        int col = colDouble == null ? 1 : colDouble.intValue() + 1;
 
 
         if (type.equals("Module")) {

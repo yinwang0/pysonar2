@@ -70,6 +70,8 @@ public class TestInference
                 ref.put("file", filename);
                 ref.put("start", e.getKey().start);
                 ref.put("end", e.getKey().end);
+                ref.put("line", e.getKey().line);
+                ref.put("col", e.getKey().col);
 
                 List<Map<String, Object>> dests = new ArrayList<>();
                 Collections.sort(bindings, (a, b) -> a.start == b.start ? a.end - b.end : a.start - b.start);
@@ -84,6 +86,8 @@ public class TestInference
                         dest.put("file", destFile);
                         dest.put("start", b.start);
                         dest.put("end", b.end);
+                        dest.put("line", b.line);
+                        dest.put("col", b.col);
                         dest.put("type", b.type.toString());
                         dests.add(dest);
                     }
@@ -125,21 +129,23 @@ public class TestInference
             {
                 String name1 = (String) refMap.get("name");
                 String file1 = (String) refMap.get("file");
-                int start1 = (int) Math.floor((double) refMap.get("start"));
-                int end1 = (int) Math.floor((double) refMap.get("end"));
+                int line1 = (int) Math.floor((double) refMap.get("line"));
+                int col1 = (int) Math.floor((double) refMap.get("col"));
                 String[] type1 = new String[1];
 
                 String fileShort2 = (String) d.get("file");
                 String file2 = $.projAbsPath(fileShort2);
                 int start2 = (int) Math.floor((double) d.get("start"));
                 int end2 = (int) Math.floor((double) d.get("end"));
+                int line2 = (int) Math.floor((double) d.get("line"));
+                int col2 = (int) Math.floor((double) d.get("col"));
                 String type2 = (String) d.get("type");
 
                 if (!checkExist(actual, file2, start2, end2))
                 {
-                    String variable = name1 + ":" + start1 + ":" + end1;
-                    String loc = name1 + ":" + start2 + ":" + end2;
-                    if (!file1.equals(file2))
+                    String variable = name1 + ":" + line1 + ":" + col1;
+                    String loc = name1 + ":" + line2 + ":" + col2;
+                    if (!file1.equals(fileShort2))
                     {
                         loc = fileShort2 + ":" + loc;
                     }
@@ -148,9 +154,9 @@ public class TestInference
                 }
                 else if (!checkType(actual, file2, start2, end2, type2, type1))
                 {
-                    String variable = name1 + ":" + start1 + ":" + end1;
-                    String loc = name1 + ":" + start2 + ":" + end2;
-                    if (!file1.equals(file2))
+                    String variable = name1 + ":" + line1 + ":" + col1;
+                    String loc = name1 + ":" + line2 + ":" + col2;
+                    if (!file1.equals(fileShort2))
                     {
                         loc = fileShort2 + ":" + loc;
                     }

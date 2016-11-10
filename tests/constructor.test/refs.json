@@ -4,7 +4,9 @@
       "name": "TestInit1",
       "file": "test1.py",
       "start": 217,
-      "end": 226
+      "end": 226,
+      "line": 14,
+      "col": 5
     },
     "dests": [
       {
@@ -12,6 +14,8 @@
         "file": "test1.py",
         "start": 35,
         "end": 44,
+        "line": 3,
+        "col": 7,
         "type": "<TestInit1>"
       }
     ]
@@ -21,7 +25,9 @@
       "name": "x",
       "file": "test1.py",
       "start": 192,
-      "end": 193
+      "end": 193,
+      "line": 11,
+      "col": 25
     },
     "dests": [
       {
@@ -29,6 +35,8 @@
         "file": "test1.py",
         "start": 164,
         "end": 165,
+        "line": 10,
+        "col": 24,
         "type": "int"
       }
     ]
@@ -38,7 +46,9 @@
       "name": "self",
       "file": "test1.py",
       "start": 176,
-      "end": 180
+      "end": 180,
+      "line": 11,
+      "col": 9
     },
     "dests": [
       {
@@ -46,6 +56,8 @@
         "file": "test1.py",
         "start": 158,
         "end": 162,
+        "line": 10,
+        "col": 18,
         "type": "TestInit1"
       }
     ]
@@ -55,7 +67,9 @@
       "name": "self",
       "file": "test1.py",
       "start": 78,
-      "end": 82
+      "end": 82,
+      "line": 5,
+      "col": 13
     },
     "dests": [
       {
@@ -63,6 +77,8 @@
         "file": "test1.py",
         "start": 59,
         "end": 63,
+        "line": 4,
+        "col": 14,
         "type": "TestInit1"
       }
     ]
@@ -72,7 +88,9 @@
       "name": "my_field",
       "file": "test1.py",
       "start": 83,
-      "end": 91
+      "end": 91,
+      "line": 5,
+      "col": 18
     },
     "dests": [
       {
@@ -80,6 +98,8 @@
         "file": "test1.py",
         "start": 181,
         "end": 189,
+        "line": 11,
+        "col": 14,
         "type": "int"
       }
     ]
@@ -89,7 +109,9 @@
       "name": "self",
       "file": "test1.py",
       "start": 126,
-      "end": 130
+      "end": 130,
+      "line": 8,
+      "col": 13
     },
     "dests": [
       {
@@ -97,6 +119,8 @@
         "file": "test1.py",
         "start": 107,
         "end": 111,
+        "line": 7,
+        "col": 15,
         "type": "TestInit1"
       }
     ]
@@ -106,7 +130,9 @@
       "name": "my_field",
       "file": "test1.py",
       "start": 131,
-      "end": 139
+      "end": 139,
+      "line": 8,
+      "col": 18
     },
     "dests": [
       {
@@ -114,6 +140,8 @@
         "file": "test1.py",
         "start": 181,
         "end": 189,
+        "line": 11,
+        "col": 14,
         "type": "int"
       }
     ]
@@ -123,7 +151,9 @@
       "name": "x",
       "file": "test1.py",
       "start": 368,
-      "end": 369
+      "end": 369,
+      "line": 23,
+      "col": 25
     },
     "dests": [
       {
@@ -131,6 +161,8 @@
         "file": "test1.py",
         "start": 340,
         "end": 341,
+        "line": 22,
+        "col": 24,
         "type": "?"
       }
     ]
@@ -140,7 +172,9 @@
       "name": "self",
       "file": "test1.py",
       "start": 352,
-      "end": 356
+      "end": 356,
+      "line": 23,
+      "col": 9
     },
     "dests": [
       {
@@ -148,6 +182,8 @@
         "file": "test1.py",
         "start": 334,
         "end": 338,
+        "line": 22,
+        "col": 18,
         "type": "TestInit2"
       }
     ]
@@ -157,7 +193,9 @@
       "name": "self",
       "file": "test1.py",
       "start": 302,
-      "end": 306
+      "end": 306,
+      "line": 20,
+      "col": 13
     },
     "dests": [
       {
@@ -165,6 +203,8 @@
         "file": "test1.py",
         "start": 283,
         "end": 287,
+        "line": 19,
+        "col": 14,
         "type": "TestInit2"
       }
     ]
@@ -174,7 +214,9 @@
       "name": "my_field",
       "file": "test1.py",
       "start": 307,
-      "end": 315
+      "end": 315,
+      "line": 20,
+      "col": 18
     },
     "dests": [
       {
@@ -182,6 +224,8 @@
         "file": "test1.py",
         "start": 357,
         "end": 365,
+        "line": 23,
+        "col": 14,
         "type": "?"
       }
     ]
@@ -191,7 +235,9 @@
       "name": "self",
       "file": "test1.py",
       "start": 404,
-      "end": 408
+      "end": 408,
+      "line": 26,
+      "col": 13
     },
     "dests": [
       {
@@ -199,6 +245,8 @@
         "file": "test1.py",
         "start": 385,
         "end": 389,
+        "line": 25,
+        "col": 15,
         "type": "TestInit2"
       }
     ]
@@ -208,7 +256,9 @@
       "name": "my_field",
       "file": "test1.py",
       "start": 409,
-      "end": 417
+      "end": 417,
+      "line": 26,
+      "col": 18
     },
     "dests": [
       {
@@ -216,6 +266,8 @@
         "file": "test1.py",
         "start": 357,
         "end": 365,
+        "line": 23,
+        "col": 14,
         "type": "?"
       }
     ]
