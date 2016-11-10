@@ -29,14 +29,14 @@ public class TestInference
         if (new File(testFile).isDirectory())
         {
             expecteRefsFile = $.makePathString(testFile, "refs.json");
-            missingRefsFile = $.makePathString(testFile, "missing_refs.json");
-            wrongTypeFile = $.makePathString(testFile, "wrong_types.json");
+            missingRefsFile = $.makePathString(testFile, "missing_refs");
+            wrongTypeFile = $.makePathString(testFile, "wrong_types");
         }
         else
         {
             expecteRefsFile = $.makePathString(testFile + ".refs.json");
-            missingRefsFile = $.makePathString(testFile + ".missing_refs.json");
-            wrongTypeFile = $.makePathString(testFile + ".wrong_types.json");
+            missingRefsFile = $.makePathString(testFile + ".missing_refs");
+            wrongTypeFile = $.makePathString(testFile + ".wrong_types");
         }
     }
 
@@ -103,8 +103,8 @@ public class TestInference
 
     public boolean checkRefs(Analyzer analyzer)
     {
-        List<Map<String, Object>> refReports = new ArrayList<>();
-        List<Map<String, Object>> typeReports = new ArrayList<>();
+        List<String> missing = new ArrayList<>();
+        List<String> wrongType = new ArrayList<>();
         String json = $.readFile(expecteRefsFile);
         if (json == null)
         {
@@ -120,74 +120,86 @@ public class TestInference
 
             List<Map<String, Object>> dests = (List) r.get("dests");
             List<Binding> actual = analyzer.getReferences().get(dummy);
-            List<Map<String, Object>> missing = new ArrayList<>();
-            List<Map<String, Object>> wrongType = new ArrayList<>();
 
             for (Map<String, Object> d : dests)
             {
-                // names are ignored, they are only for human readers
-                String file = $.projAbsPath((String) d.get("file"));
-                int start = (int) Math.floor((double) d.get("start"));
-                int end = (int) Math.floor((double) d.get("end"));
-                String type = (String) d.get("type");
+                String name1 = (String) refMap.get("name");
+                String file1 = (String) refMap.get("file");
+                int start1 = (int) Math.floor((double) refMap.get("start"));
+                int end1 = (int) Math.floor((double) refMap.get("end"));
+                String[] type1 = new String[1];
 
-                if (!checkExist(actual, file, start, end))
+                String fileShort2 = (String) d.get("file");
+                String file2 = $.projAbsPath(fileShort2);
+                int start2 = (int) Math.floor((double) d.get("start"));
+                int end2 = (int) Math.floor((double) d.get("end"));
+                String type2 = (String) d.get("type");
+
+                if (!checkExist(actual, file2, start2, end2))
                 {
-                    missing.add(d);
+                    String variable = name1 + ":" + start1 + ":" + end1;
+                    String loc = name1 + ":" + start2 + ":" + end2;
+                    if (!file1.equals(file2))
+                    {
+                        loc = fileShort2 + ":" + loc;
+                    }
+                    String msg = "Missing reference from " + variable + " to " + loc;
+                    missing.add(msg);
                 }
-                else if (!checkType(actual, file, start, end, type))
+                else if (!checkType(actual, file2, start2, end2, type2, type1))
                 {
-                    wrongType.add(d);
+                    String variable = name1 + ":" + start1 + ":" + end1;
+                    String loc = name1 + ":" + start2 + ":" + end2;
+                    if (!file1.equals(file2))
+                    {
+                        loc = fileShort2 + ":" + loc;
+                    }
+                    String msg = "Inferred wrong type for " + variable + ". ";
+                    msg += "Localtion: " + loc + ", ";
+                    msg += "Expected: " + type1[0] + ", ";
+                    msg += "Actual: " + type2 + ".";
+                    wrongType.add(msg);
                 }
-
-            }
-
-            // record the ref & failed dests if any
-            if (!missing.isEmpty())
-            {
-                Map<String, Object> failed = new LinkedHashMap<>();
-                failed.put("ref", refMap);
-                failed.put("dests", missing);
-                refReports.add(failed);
-            }
-
-            if (!wrongType.isEmpty())
-            {
-                Map<String, Object> failed = new LinkedHashMap<>();
-                failed.put("ref", refMap);
-                failed.put("dests", wrongType);
-                typeReports.add(failed);
             }
         }
 
         boolean success = true;
 
-        if (!refReports.isEmpty())
+        // record the ref & failed dests if any
+        if (missing.isEmpty() && wrongType.isEmpty())
         {
-            $.writeFile(missingRefsFile, gson.toJson(refReports));
+            $.testmsg("   " + testFile);
+        }
+        else
+        {
+            $.testmsg(" - " + testFile);
+        }
+
+        if (!missing.isEmpty())
+        {
+            String report = String.join("\n     * ", missing);
+            report = "     * " + report;
+            $.testmsg(report);
+            $.writeFile(missingRefsFile, report);
             success = false;
-        }else {
+        }
+        else
+        {
             $.deleteFile(missingRefsFile);
         }
 
-        if (!typeReports.isEmpty())
+        if (!wrongType.isEmpty())
         {
-            $.writeFile(wrongTypeFile, gson.toJson(typeReports));
+            String report = String.join("\n     * ", wrongType);
+            report = "     * " + report;
+            $.testmsg(report);
+            $.writeFile(wrongTypeFile, report);
             success = false;
         } else {
             $.deleteFile(wrongTypeFile);
         }
 
-        if (success)
-        {
-            $.testmsg("   " + testFile);
-            return true;
-        }
-        else
-        {
-            $.testmsg(" - " + testFile);
-            return false;
-        }
+        return success;
     }
 
     private boolean checkExist(List<Binding> bindings, String file, int start, int end)
@@ -210,7 +222,7 @@ public class TestInference
         return false;
     }
 
-    private boolean checkType(List<Binding> bindings, String file, int start, int end, String type)
+    private boolean checkType(List<Binding> bindings, String file, int start, int end, String type, String[] actualType)
     {
         if (bindings == null)
         {
@@ -224,6 +236,8 @@ public class TestInference
                 b.start == start && b.end == end && b.type.toString().equals(type))
             {
                 return true;
+            } else {
+                actualType[0] = b.type.toString();
             }
         }
 

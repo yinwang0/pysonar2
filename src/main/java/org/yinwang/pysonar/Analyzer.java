@@ -320,7 +320,7 @@ public class Analyzer {
 
 
     private String createCacheDir() {
-        String dir = $.makePathString($.getSystemTempDir(), "pysonar2", "ast_cache");
+        String dir = $.getTempFile("ast_cache");
         File f = new File(dir);
         $.msg("AST cache is at: " + dir);
 
