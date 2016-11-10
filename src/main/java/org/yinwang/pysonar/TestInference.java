@@ -136,11 +136,13 @@ public class TestInference
         }
 
         if (failedRefs.isEmpty()) {
+            $.deleteFile(failedRefsFile);
+            $.testmsg("   " + inputDir);
             return true;
         } else {
             String failedJson = gson.toJson(failedRefs);
-            $.testmsg("Failed to find refs: " + failedJson);
             $.writeFile(failedRefsFile, failedJson);
+            $.testmsg(" - " + inputDir);
             return false;
         }
     }
@@ -181,7 +183,6 @@ public class TestInference
 
     public boolean runTest() {
         runAnalysis(inputDir);
-        $.testmsg("  * " + inputDir);
         return checkRefs();
     }
 

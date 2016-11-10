@@ -3,6 +3,7 @@ package org.yinwang.pysonar;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -12,11 +13,17 @@ public class TestRefs
     public void testRefs()
     {
         List<String> failed = TestInference.testAll("tests", false);
-        String msg = "";
-        for (String fail : failed)
+        if (failed != null)
         {
-            msg += "[failed] " + fail;
+            String msg = "Some tests failed. " +
+                         "\nLook at 'failed_refs.json' in corresponding directories for details.";
+            msg += "\n----------------------------= FAILED TESTS --------------------------=";
+            for (String fail : failed)
+            {
+                msg += "\n - " + fail;
+            }
+            msg += "\n----------------------------------------------------------------------";
+            fail(msg);
         }
-        assertTrue("Some tests failed :\n" + msg, failed == null);
     }
 }

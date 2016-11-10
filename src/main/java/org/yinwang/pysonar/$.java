@@ -609,6 +609,11 @@ public class $ {
         return new ArrayList<>(bdHash.values());
     }
 
+    public static boolean deleteFile(String file)
+    {
+        return new File(file).delete();
+    }
+
     public static boolean deleteDir(File dir)
     {
         if (dir.isDirectory())
