@@ -18,12 +18,12 @@ import com.google.gson.GsonBuilder;
 public class TestInference
 {
 
-    static Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-    Analyzer analyzer;
-    String inputDir;
-    boolean exp;
-    String expecteRefsFile;
-    String failedRefsFile;
+    private static Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
+    private Analyzer analyzer;
+    private String inputDir;
+    private boolean exp;
+    private String expecteRefsFile;
+    private String failedRefsFile;
 
     public TestInference(String inputDir, boolean exp)
     {
