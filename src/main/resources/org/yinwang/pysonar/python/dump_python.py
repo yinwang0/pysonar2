@@ -145,7 +145,6 @@ def improve_node(node, s):
             improve_node(n, s)
 
     elif isinstance(node, AST):
-
         find_start(node, s)
         find_end(node, s)
         add_missing_names(node, s)

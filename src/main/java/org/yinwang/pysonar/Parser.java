@@ -572,11 +572,11 @@ public class Parser {
 
         if (type.equals("Str")) {
             String s = (String) map.get("s");
-            if (s.startsWith("\"\"\""))
+            if (s.length() >= 6 && s.startsWith("\"\"\"") && s.endsWith("\"\"\""))
             {
                 s = s.substring(3, s.length() - 3);
             }
-            else
+            else if (s.length() >= 2 && s.startsWith("\"") && s.endsWith("\""))
             {
                 s = s.substring(1, s.length() - 1);
             }
