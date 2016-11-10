@@ -571,6 +571,7 @@ ops_map = {
     Add: '+',
     Sub: '-',
     Mult: '*',
+    MatMult: '@',
     Div: '/',
     FloorDiv: '//',
     Mod: '%',
