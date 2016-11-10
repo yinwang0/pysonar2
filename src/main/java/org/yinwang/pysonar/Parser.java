@@ -79,6 +79,9 @@ public class Parser {
 
 
     public void close() {
+        python2Process.destroy();
+        python3Process.destroy();
+
         if (!Analyzer.self.hasOption("debug")) {
             new File(exchangeFile).delete();
             new File(endMark).delete();

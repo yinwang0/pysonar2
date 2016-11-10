@@ -23,7 +23,7 @@ public class AstCache {
     @NotNull
     private Map<String, Node> cache = new HashMap<>();
     @NotNull
-    private static Parser parser = new Parser();
+    private Parser parser = new Parser();
 
     public AstCache() {
     }
@@ -55,7 +55,7 @@ public class AstCache {
 
     public void close() {
         parser.close();
-//        clearDiskCache();
+        clearDiskCache();
     }
 
 

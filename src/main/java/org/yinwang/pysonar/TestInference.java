@@ -46,7 +46,9 @@ public class TestInference
         options.put("quiet", true);
         Analyzer analyzer = new Analyzer(options);
         analyzer.analyze(dir);
+
         analyzer.finish();
+        analyzer.close();
         return analyzer;
     }
 
@@ -247,7 +249,8 @@ public class TestInference
     public boolean runTest()
     {
         Analyzer analyzer = runAnalysis(testFile);
-        return checkRefs(analyzer);
+        boolean result = checkRefs(analyzer);
+        return result;
     }
 
     // ------------------------- static part -----------------------

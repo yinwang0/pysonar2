@@ -613,29 +613,4 @@ public class $ {
     {
         return new File(file).delete();
     }
-
-    public static boolean deleteDir(File dir)
-    {
-        if (dir.isDirectory())
-        {
-            String[] children = dir.list();
-            if (children == null)
-            {
-                return true;
-            }
-            else
-            {
-                for (String child : children)
-                {
-                    if (!deleteDir(new File(dir, child)))
-                    {
-                        return false;
-                    }
-                }
-                return dir.delete();
-            }
-        } else {
-            return dir.delete();
-        }
-    }
 }
