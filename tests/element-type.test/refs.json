@@ -1,0 +1,87 @@
+[
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 31,
+      "end": 32
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 23,
+        "end": 24,
+        "type": "[int]"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 47,
+      "end": 48
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 23,
+        "end": 24,
+        "type": "[int]"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 60,
+      "end": 61
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 52,
+        "end": 53,
+        "type": "dict"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "b",
+      "file": "test1.py",
+      "start": 80,
+      "end": 81
+    },
+    "dests": [
+      {
+        "name": "b",
+        "file": "test1.py",
+        "start": 52,
+        "end": 53,
+        "type": "dict"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 92,
+      "end": 93
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 76,
+        "end": 77,
+        "type": "str"
+      }
+    ]
+  }
+]

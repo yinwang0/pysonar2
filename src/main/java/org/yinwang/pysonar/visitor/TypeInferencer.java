@@ -1234,24 +1234,46 @@ public class TypeInferencer implements Visitor1<Type, State> {
         }
     }
 
-    public void bind(@NotNull State s, Node target, @NotNull Type rvalue, Binding.Kind kind) {
-        if (target instanceof Name) {
+    public void bind(@NotNull State s, Node target, @NotNull Type rvalue, Binding.Kind kind)
+    {
+        if (target instanceof Name)
+        {
             bind(s, (Name) target, rvalue, kind);
-        } else if (target instanceof Tuple) {
+        }
+        else if (target instanceof Tuple)
+        {
             bind(s, ((Tuple) target).elts, rvalue, kind);
-        } else if (target instanceof PyList) {
+        }
+        else if (target instanceof PyList)
+        {
             bind(s, ((PyList) target).elts, rvalue, kind);
-        } else if (target instanceof Attribute) {
+        }
+        else if (target instanceof Attribute)
+        {
             setAttr(((Attribute) target), s, rvalue);
-        } else if (target instanceof Subscript) {
+        }
+        else if (target instanceof Subscript)
+        {
             Subscript sub = (Subscript) target;
+            Type sliceType = sub.slice == null ? null : visit(sub.slice, s);
             Type valueType = visit(sub.value, s);
-            visit(sub.slice, s);
-            if (valueType instanceof ListType) {
+            if (valueType instanceof ListType)
+            {
                 ListType t = (ListType) valueType;
                 t.setElementType(UnionType.union(t.eltType, rvalue));
             }
-        } else if (target != null) {
+            else if (valueType instanceof DictType)
+            {
+                DictType t = (DictType) valueType;
+                if (sliceType != null)
+                {
+                    t.setKeyType(UnionType.union(t.keyType, sliceType));
+                }
+                t.setValueType(UnionType.union(t.valueType, rvalue));
+            }
+        }
+        else if (target != null)
+        {
             addWarningToNode(target, "invalid location for assignment");
         }
     }

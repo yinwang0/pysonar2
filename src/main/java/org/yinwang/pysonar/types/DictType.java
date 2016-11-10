@@ -49,6 +49,16 @@ public class DictType extends Type {
         return "DictType".hashCode();
     }
 
+    public void setKeyType(Type keyType)
+    {
+        this.keyType = keyType;
+    }
+
+    public void setValueType(Type valueType)
+    {
+        this.valueType = valueType;
+    }
+
     @Override
     protected String printType(@NotNull CyclicTypeRecorder ctr) {
 //        StringBuilder sb = new StringBuilder();
