@@ -202,7 +202,12 @@ public class Binding implements Comparable<Object> {
      * Bindings can be sorted by their location for outlining purposes.
      */
     public int compareTo(@NotNull Object o) {
-        return start - ((Binding) o).start;
+        if (start == ((Binding) o).start) {
+            return end - ((Binding) o).end;
+        } else
+        {
+            return start - ((Binding) o).start;
+        }
     }
 
 
@@ -234,5 +239,4 @@ public class Binding implements Comparable<Object> {
     public int hashCode() {
         return node.hashCode();
     }
-
 }

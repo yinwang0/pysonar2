@@ -17,10 +17,11 @@ import com.google.gson.GsonBuilder;
 
 public class TestInference
 {
-    private static Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
+    private static final Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     private String testFile;
     private String expecteRefsFile;
-    private String failedRefsFile;
+    private String missingRefsFile;
+    private String wrongTypeFile;
 
     public TestInference(String testFile)
     {
@@ -28,12 +29,14 @@ public class TestInference
         if (new File(testFile).isDirectory())
         {
             expecteRefsFile = $.makePathString(testFile, "refs.json");
-            failedRefsFile = $.makePathString(testFile, "failed_refs.json");
+            missingRefsFile = $.makePathString(testFile, "missing_refs.json");
+            wrongTypeFile = $.makePathString(testFile, "wrong_types.json");
         }
         else
         {
             expecteRefsFile = $.makePathString(testFile + ".refs.json");
-            failedRefsFile = $.makePathString(testFile + ".failed_refs.json");
+            missingRefsFile = $.makePathString(testFile + ".missing_refs.json");
+            wrongTypeFile = $.makePathString(testFile + ".wrong_types.json");
         }
     }
 
@@ -52,25 +55,24 @@ public class TestInference
         List<Map<String, Object>> refs = new ArrayList<>();
         for (Map.Entry<Node, List<Binding>> e : analyzer.getReferences().entrySet())
         {
-
-            String file = e.getKey().file;
+            String filename = e.getKey().file;
+            List<Binding> bindings = e.getValue();
 
             // only record those in the testFile
-            if (file != null && file.startsWith(Analyzer.self.projectDir))
+            if (filename != null && filename.startsWith(Analyzer.self.projectDir))
             {
-                file = $.projRelPath(file).replaceAll("\\\\", "/");
+                filename = $.projRelPath(filename).replaceAll("\\\\", "/");
                 Map<String, Object> writeout = new LinkedHashMap<>();
 
                 Map<String, Object> ref = new LinkedHashMap<>();
                 ref.put("name", e.getKey().name);
-                ref.put("file", file);
+                ref.put("file", filename);
                 ref.put("start", e.getKey().start);
                 ref.put("end", e.getKey().end);
 
                 List<Map<String, Object>> dests = new ArrayList<>();
-                List<Binding> sorted = e.getValue();
-                Collections.sort(sorted, (a, b) -> a.start == b.start ? a.end - b.end : a.start - b.start);
-                for (Binding b : sorted)
+                Collections.sort(bindings, (a, b) -> a.start == b.start ? a.end - b.end : a.start - b.start);
+                for (Binding b : bindings)
                 {
                     String destFile = b.getFile();
                     if (destFile != null && destFile.startsWith(Analyzer.self.projectDir))
@@ -100,7 +102,8 @@ public class TestInference
 
     public boolean checkRefs(Analyzer analyzer)
     {
-        List<Map<String, Object>> failedRefs = new ArrayList<>();
+        List<Map<String, Object>> refReports = new ArrayList<>();
+        List<Map<String, Object>> typeReports = new ArrayList<>();
         String json = $.readFile(expecteRefsFile);
         if (json == null)
         {
@@ -115,8 +118,9 @@ public class TestInference
             Dummy dummy = makeDummy(refMap);
 
             List<Map<String, Object>> dests = (List) r.get("dests");
-            List<Binding> actualDests = analyzer.getReferences().get(dummy);
-            List<Map<String, Object>> failedDests = new ArrayList<>();
+            List<Binding> actual = analyzer.getReferences().get(dummy);
+            List<Map<String, Object>> missing = new ArrayList<>();
+            List<Map<String, Object>> wrongType = new ArrayList<>();
 
             for (Map<String, Object> d : dests)
             {
@@ -126,45 +130,93 @@ public class TestInference
                 int end = (int) Math.floor((double) d.get("end"));
                 String type = (String) d.get("type");
 
-                if (!checkBindingExist(actualDests, file, start, end, type))
+                if (!checkExist(actual, file, start, end))
                 {
-                    failedDests.add(d);
+                    missing.add(d);
                 }
+                else if (!checkType(actual, file, start, end, type))
+                {
+                    wrongType.add(d);
+                }
+
             }
 
             // record the ref & failed dests if any
-            if (!failedDests.isEmpty())
+            if (!missing.isEmpty())
             {
-                Map<String, Object> failedRef = new LinkedHashMap<>();
-                failedRef.put("ref", refMap);
-                failedRef.put("dests", failedDests);
-                failedRefs.add(failedRef);
+                Map<String, Object> failed = new LinkedHashMap<>();
+                failed.put("ref", refMap);
+                failed.put("dests", missing);
+                refReports.add(failed);
+            }
+
+            if (!wrongType.isEmpty())
+            {
+                Map<String, Object> failed = new LinkedHashMap<>();
+                failed.put("ref", refMap);
+                failed.put("dests", wrongType);
+                typeReports.add(failed);
             }
         }
 
-        if (failedRefs.isEmpty())
+        boolean success = true;
+
+        if (!refReports.isEmpty())
         {
-            $.deleteFile(failedRefsFile);
+            $.writeFile(missingRefsFile, gson.toJson(refReports));
+            success = false;
+        }else {
+            $.deleteFile(missingRefsFile);
+        }
+
+        if (!typeReports.isEmpty())
+        {
+            $.writeFile(wrongTypeFile, gson.toJson(typeReports));
+            success = false;
+        } else {
+            $.deleteFile(wrongTypeFile);
+        }
+
+        if (success)
+        {
             $.testmsg("   " + testFile);
             return true;
         }
         else
         {
-            String failedJson = gson.toJson(failedRefs);
-            $.writeFile(failedRefsFile, failedJson);
             $.testmsg(" - " + testFile);
             return false;
         }
     }
 
-    boolean checkBindingExist(List<Binding> bs, String file, int start, int end, String type)
+    private boolean checkExist(List<Binding> bindings, String file, int start, int end)
     {
-        if (bs == null)
+        if (bindings == null)
         {
             return false;
         }
 
-        for (Binding b : bs)
+        for (Binding b : bindings)
+        {
+            if (((b.getFile() == null && file == null) ||
+                 (b.getFile() != null && file != null && b.getFile().equals(file))) &&
+                b.start == start && b.end == end)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean checkType(List<Binding> bindings, String file, int start, int end, String type)
+    {
+        if (bindings == null)
+        {
+            return false;
+        }
+
+        for (Binding b : bindings)
         {
             if (((b.getFile() == null && file == null) ||
                  (b.getFile() != null && file != null && b.getFile().equals(file))) &&
