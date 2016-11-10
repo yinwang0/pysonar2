@@ -249,7 +249,7 @@ public class TestInference
         String file = $.projAbsPath((String) m.get("file"));
         int start = (int) Math.floor((double) m.get("start"));
         int end = (int) Math.floor((double) m.get("end"));
-        return new Dummy(file, start, end);
+        return new Dummy(file, start, end, -1, -1);
     }
 
     public void generateTest()

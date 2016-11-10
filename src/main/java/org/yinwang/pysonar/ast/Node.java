@@ -18,6 +18,8 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
     public String file;
     public int start;
     public int end;
+    public int line;
+    public int col;
 
     public String name;
     public Node parent = null;
@@ -25,11 +27,13 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
     public Node() {
     }
 
-    public Node(NodeType nodeType, String file, int start, int end) {
+    public Node(NodeType nodeType, String file, int start, int end, int line, int col) {
         this.nodeType = nodeType;
         this.file = file;
         this.start = start;
         this.end = end;
+        this.line = line;
+        this.col = col;
     }
 
     public String getFullPath() {

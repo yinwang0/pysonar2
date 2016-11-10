@@ -9,8 +9,8 @@ public class Expr extends Node {
 
     public Node value;
 
-    public Expr(Node n, String file, int start, int end) {
-        super(NodeType.EXPR, file, start, end);
+    public Expr(Node n, String file, int start, int end, int line, int col) {
+        super(NodeType.EXPR, file, start, end, line, col);
         this.value = n;
         addChildren(n);
     }

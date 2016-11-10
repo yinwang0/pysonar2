@@ -7,8 +7,8 @@ public class Module extends Node {
 
     public Block body;
 
-    public Module(Block body, String file, int start, int end) {
-        super(NodeType.MODULE, file, start, end);
+    public Module(Block body, String file, int start, int end, int line, int col) {
+        super(NodeType.MODULE, file, start, end, line, col);
         this.name = $.moduleName(file);
         this.body = body;
         addChildren(this.body);

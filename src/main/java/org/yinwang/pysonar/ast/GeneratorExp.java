@@ -9,8 +9,8 @@ public class GeneratorExp extends Node {
     public Node elt;
     public List<Comprehension> generators;
 
-    public GeneratorExp(Node elt, List<Comprehension> generators, String file, int start, int end) {
-        super(NodeType.GENERATOREXP, file, start, end);
+    public GeneratorExp(Node elt, List<Comprehension> generators, String file, int start, int end, int line, int col) {
+        super(NodeType.GENERATOREXP, file, start, end, line, col);
         this.elt = elt;
         this.generators = generators;
         addChildren(elt);

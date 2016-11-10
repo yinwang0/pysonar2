@@ -11,8 +11,8 @@ public class BinOp extends Node {
     @NotNull
     public Op op;
 
-    public BinOp(@NotNull Op op, @NotNull Node left, @NotNull Node right, String file, int start, int end) {
-        super(NodeType.BINOP, file, start, end);
+    public BinOp(@NotNull Op op, @NotNull Node left, @NotNull Node right, String file, int start, int end, int line, int col) {
+        super(NodeType.BINOP, file, start, end, line, col);
         this.left = left;
         this.right = right;
         this.op = op;

@@ -147,6 +147,7 @@ def improve_node(node, s):
     elif isinstance(node, AST):
         find_start(node, s)
         find_end(node, s)
+        node.lineno, node.col_offset = map_line_col(node.start)
         add_missing_names(node, s)
 
         for f in node_fields(node):

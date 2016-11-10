@@ -19,14 +19,14 @@ public class FunctionDef extends Node {
     public boolean isAsync = false;
 
     public FunctionDef(Name name, List<Node> args, Node body, List<Node> defaults,
-        Name vararg, Name kwarg, List<Node> decorators, String file, boolean isAsync, int start, int end) {
-        super(NodeType.FUNCTIONDEF, file, start, end);
+        Name vararg, Name kwarg, List<Node> decorators, String file, boolean isAsync, int start, int end, int line, int col) {
+        super(NodeType.FUNCTIONDEF, file, start, end, line, col);
         if (name != null) {
             this.name = name;
         } else {
             isLamba = true;
             String fn = genLambdaName();
-            this.name = new Name(fn, file, start, start + "lambda".length());
+            this.name = new Name(fn, file, start, start + "lambda".length(), line, col + "lambda".length());
             addChildren(this.name);
         }
 

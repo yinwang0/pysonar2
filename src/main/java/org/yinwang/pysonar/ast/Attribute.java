@@ -9,8 +9,8 @@ public class Attribute extends Node {
     @NotNull
     public Name attr;
 
-    public Attribute(@NotNull Node target, @NotNull Name attr, String file, int start, int end) {
-        super(NodeType.ATTRIBUTE, file, start, end);
+    public Attribute(@NotNull Node target, @NotNull Name attr, String file, int start, int end, int line, int col) {
+        super(NodeType.ATTRIBUTE, file, start, end, line, col);
         this.target = target;
         this.attr = attr;
         addChildren(target, attr);

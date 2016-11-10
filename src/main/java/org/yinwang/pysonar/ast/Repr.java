@@ -6,8 +6,8 @@ public class Repr extends Node {
 
     public Node value;
 
-    public Repr(Node n, String file, int start, int end) {
-        super(NodeType.REPR, file, start, end);
+    public Repr(Node n, String file, int start, int end, int line, int col) {
+        super(NodeType.REPR, file, start, end, line, col);
         this.value = n;
         addChildren(n);
     }

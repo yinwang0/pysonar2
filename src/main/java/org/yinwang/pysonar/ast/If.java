@@ -9,8 +9,8 @@ public class If extends Node {
     public Node body;
     public Node orelse;
 
-    public If(@NotNull Node test, Node body, Node orelse, String file, int start, int end) {
-        super(NodeType.IF, file, start, end);
+    public If(@NotNull Node test, Node body, Node orelse, String file, int start, int end, int line, int col) {
+        super(NodeType.IF, file, start, end, line, col);
         this.test = test;
         this.body = body;
         this.orelse = orelse;

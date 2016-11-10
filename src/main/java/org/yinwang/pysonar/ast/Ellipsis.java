@@ -4,8 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class Ellipsis extends Node {
 
-    public Ellipsis(String file, int start, int end) {
-        super(NodeType.ELLIPSIS, file, start, end);
+    public Ellipsis(String file, int start, int end, int line, int col) {
+        super(NodeType.ELLIPSIS, file, start, end, line, col);
     }
 
     @NotNull

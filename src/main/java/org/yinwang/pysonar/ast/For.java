@@ -11,8 +11,8 @@ public class For extends Node {
     public boolean isAsync = false;
 
     public For(Node target, Node iter, Block body, Block orelse, boolean isAsync,
-        String file, int start, int end) {
-        super(NodeType.FOR, file, start, end);
+        String file, int start, int end, int line, int col) {
+        super(NodeType.FOR, file, start, end, line, col);
         this.target = target;
         this.iter = iter;
         this.body = body;

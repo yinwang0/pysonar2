@@ -13,8 +13,8 @@ public class Withitem extends Node {
     @NotNull
     public Node context_expr;
 
-    public Withitem(@NotNull Node context_expr, @Nullable Node optional_vars, String file, int start, int end) {
-        super(NodeType.WITHITEM, file, start, end);
+    public Withitem(@NotNull Node context_expr, @Nullable Node optional_vars, String file, int start, int end, int line, int col) {
+        super(NodeType.WITHITEM, file, start, end, line, col);
         this.context_expr = context_expr;
         this.optional_vars = optional_vars;
         addChildren(context_expr, optional_vars);

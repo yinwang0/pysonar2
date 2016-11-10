@@ -8,8 +8,8 @@ public class Global extends Node {
 
     public List<Name> names;
 
-    public Global(List<Name> names, String file, int start, int end) {
-        super(NodeType.GLOBAL, file, start, end);
+    public Global(List<Name> names, String file, int start, int end, int line, int col) {
+        super(NodeType.GLOBAL, file, start, end, line, col);
         this.names = names;
         addChildren(names);
     }

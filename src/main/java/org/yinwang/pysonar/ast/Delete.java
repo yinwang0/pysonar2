@@ -8,8 +8,8 @@ public class Delete extends Node {
 
     public List<Node> targets;
 
-    public Delete(List<Node> elts, String file, int start, int end) {
-        super(NodeType.DELETE, file, start, end);
+    public Delete(List<Node> elts, String file, int start, int end, int line, int col) {
+        super(NodeType.DELETE, file, start, end, line, col);
         this.targets = elts;
         addChildren(elts);
     }

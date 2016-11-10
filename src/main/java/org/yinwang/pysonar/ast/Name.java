@@ -10,18 +10,18 @@ public class Name extends Node {
 
     public Name(String id) {
         // generated name
-        this(id, null, -1, -1);
+        this(id, null, -1, -1, -1, -1);
     }
 
-    public Name(@NotNull String id, String file, int start, int end) {
-        super(NodeType.NAME, file, start, end);
+    public Name(@NotNull String id, String file, int start, int end, int line, int col) {
+        super(NodeType.NAME, file, start, end, line, col);
         this.id = id;
         this.name = id;
         this.type = NameType.LOCAL;
     }
 
-    public Name(@NotNull String id, NameType type, String file, int start, int end) {
-        super(NodeType.NAME, file, start, end);
+    public Name(@NotNull String id, NameType type, String file, int start, int end, int line, int col) {
+        super(NodeType.NAME, file, start, end, line, col);
         this.id = id;
         this.type = type;
     }

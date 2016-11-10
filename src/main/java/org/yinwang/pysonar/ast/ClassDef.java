@@ -15,8 +15,8 @@ public class ClassDef extends Node {
     public List<Node> bases;
     public Node body;
 
-    public ClassDef(@NotNull Name name, List<Node> bases, Node body, String file, int start, int end) {
-        super(NodeType.CLASSDEF, file, start, end);
+    public ClassDef(@NotNull Name name, List<Node> bases, Node body, String file, int start, int end, int line, int col) {
+        super(NodeType.CLASSDEF, file, start, end, line, col);
         this.name = name;
         this.bases = bases;
         this.body = body;

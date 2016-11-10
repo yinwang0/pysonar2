@@ -9,8 +9,8 @@ public class ListComp extends Node {
     public Node elt;
     public List<Comprehension> generators;
 
-    public ListComp(Node elt, List<Comprehension> generators, String file, int start, int end) {
-        super(NodeType.LISTCOMP, file, start, end);
+    public ListComp(Node elt, List<Comprehension> generators, String file, int start, int end, int line, int col) {
+        super(NodeType.LISTCOMP, file, start, end, line, col);
         this.elt = elt;
         this.generators = generators;
         addChildren(elt);

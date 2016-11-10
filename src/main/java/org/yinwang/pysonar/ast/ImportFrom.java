@@ -19,8 +19,8 @@ public class ImportFrom extends Node {
     public List<Alias> names;
     public int level;
 
-    public ImportFrom(List<Name> module, List<Alias> names, int level, String file, int start, int end) {
-        super(NodeType.IMPORTFROM, file, start, end);
+    public ImportFrom(List<Name> module, List<Alias> names, int level, String file, int start, int end, int line, int col) {
+        super(NodeType.IMPORTFROM, file, start, end, line, col);
         this.module = module;
         this.level = level;
         this.names = names;
@@ -56,6 +56,7 @@ public class ImportFrom extends Node {
 
         if (!names.isEmpty()) {
             int start = this.start;
+            int col = this.col;
 
             for (String name : names) {
                 Set<Binding> b = mt.table.lookupLocal(name);
@@ -63,11 +64,12 @@ public class ImportFrom extends Node {
                     s.update(name, b);
                 } else {
                     List<Name> m2 = new ArrayList<>(module);
-                    Name fakeName = new Name(name, this.file, start, start + name.length());
+                    Name fakeName = new Name(name, this.file, start, start + name.length(), this.line, col);
                     m2.add(fakeName);
                     Type type = Analyzer.self.loadModule(m2, s);
                     if (type != null) {
                         start += name.length();
+                        col += name.length();
                         s.insert(name, fakeName, type, Binding.Kind.VARIABLE);
                     }
                 }
