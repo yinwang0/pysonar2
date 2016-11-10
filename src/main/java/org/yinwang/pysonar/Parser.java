@@ -36,10 +36,10 @@ public class Parser {
 
     public Parser() {
 
-        exchangeFile = $.locateTmp("json");
-        endMark = $.locateTmp("end");
-        jsonizer = $.locateTmp("dump_python");
-        parserLog = $.locateTmp("parser_log");
+        exchangeFile = $.getTempFile("json");
+        endMark = $.getTempFile("end");
+        jsonizer = $.getTempFile("dump_python");
+        parserLog = $.getTempFile("parser_log");
 
         startPythonProcesses();
 

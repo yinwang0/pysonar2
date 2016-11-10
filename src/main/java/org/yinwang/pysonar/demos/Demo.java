@@ -48,7 +48,6 @@ public class Demo {
         analyzer.finish();
 
         generateHtml();
-        analyzer.close();
     }
 
 

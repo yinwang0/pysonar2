@@ -48,7 +48,6 @@ public class TestInference
         analyzer.analyze(dir);
 
         analyzer.finish();
-        analyzer.close();
         return analyzer;
     }
 

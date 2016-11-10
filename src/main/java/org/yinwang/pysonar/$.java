@@ -58,6 +58,17 @@ public class $ {
         }
     }
 
+    public static String getTempFile(String file)
+    {
+        String tmpDir = getTempDir();
+        return makePathString(tmpDir, file);
+    }
+
+    public static String getTempDir()
+    {
+        String systemTemp = getSystemTempDir();
+        return makePathString(systemTemp, "pysonar2-" + Analyzer.self.sid);
+    }
 
     public static String getSystemTempDir() {
         String tmp = System.getProperty("java.io.tmpdir");
@@ -417,8 +428,13 @@ public class $ {
         }
     }
 
+    public static boolean deleteDirectory(String directory)
+    {
+        return deleteDirectory(new File(directory));
+    }
 
-    public static boolean deleteDirectory(File directory) {
+    public static boolean deleteDirectory(File directory)
+    {
         if (directory.exists()) {
             File[] files = directory.listFiles();
             if (files != null) {
@@ -535,13 +551,6 @@ public class $ {
         File file2 = new File(file1, file);
         return file2;
     }
-
-
-    public static String locateTmp(String file) {
-        String tmpDir = getSystemTempDir();
-        return makePathString(tmpDir, "pysonar2", file + "." + Analyzer.self.sid);
-    }
-
 
     public static String banner(String msg) {
         return "---------------- " + msg + " ----------------";

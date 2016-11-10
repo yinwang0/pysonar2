@@ -131,7 +131,7 @@ public class Analyzer {
 
     private void copyModels() {
         URL resource = Thread.currentThread().getContextClassLoader().getResource(Globals.MODEL_LOCATION);
-        String dest = $.locateTmp("models");
+        String dest = $.getTempFile("models");
         this.modelDir = dest;
 
         try {
@@ -326,7 +326,7 @@ public class Analyzer {
 
         if (!f.exists()) {
             if (!f.mkdirs()) {
-                $.die("Failed to create tmp directory: " + dir + " .Please check permissions");
+                $.die("Failed to create tmp directory: " + dir + ". Please check permissions");
             }
         }
         return dir;
@@ -515,6 +515,7 @@ public class Analyzer {
         }
 
         $.msg(getAnalysisSummary());
+        close();
     }
 
     private boolean unusedBindingSet(List<Binding> bindings) {
@@ -535,8 +536,7 @@ public class Analyzer {
 
     public void close() {
         astCache.close();
-        String tmpDir = $.getSystemTempDir();
-        $.deleteDirectory(new File(tmpDir));
+        $.deleteDirectory($.getTempDir());
     }
 
 
