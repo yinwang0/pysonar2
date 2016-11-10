@@ -29,7 +29,7 @@
         "file": "test1.py",
         "start": 31,
         "end": 34,
-        "type": "str -> str ∧ int -> int"
+        "type": "str -> str / int -> int"
       }
     ]
   },
@@ -46,7 +46,7 @@
         "file": "test1.py",
         "start": 4,
         "end": 7,
-        "type": "str -> str ∧ int -> int"
+        "type": "str -> str / int -> int"
       }
     ]
   },
@@ -128,7 +128,7 @@
         "file": "test1.py",
         "start": 31,
         "end": 34,
-        "type": "str -> str ∧ int -> int"
+        "type": "str -> str / int -> int"
       }
     ]
   }

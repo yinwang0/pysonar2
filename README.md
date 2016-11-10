@@ -72,8 +72,9 @@ tests using this command line after a successful build.
 
     mvn test
 
-If you modified the code or tests, you need to generate new expected results. Run this command line:
+If you modify the code or tests, you need to generate new expected results. Run these command lines:
 
+    mvn package -DskipTests
     java -classpath target/pysonar-<version>.jar org.yinwang.pysonar.TestInference -generate tests
 
 To write new tests, you just need to write relevant Python files, put them into a directory named `test/testname.test`
