@@ -3,15 +3,15 @@
     "ref": {
       "name": "a",
       "file": "test1.py",
-      "start": 31,
-      "end": 32
+      "start": 28,
+      "end": 29
     },
     "dests": [
       {
         "name": "a",
         "file": "test1.py",
-        "start": 23,
-        "end": 24,
+        "start": 21,
+        "end": 22,
         "type": "[int]"
       }
     ]
@@ -20,15 +20,15 @@
     "ref": {
       "name": "a",
       "file": "test1.py",
-      "start": 47,
-      "end": 48
+      "start": 43,
+      "end": 44
     },
     "dests": [
       {
         "name": "a",
         "file": "test1.py",
-        "start": 23,
-        "end": 24,
+        "start": 21,
+        "end": 22,
         "type": "[int]"
       }
     ]
@@ -37,15 +37,15 @@
     "ref": {
       "name": "b",
       "file": "test1.py",
-      "start": 60,
-      "end": 61
+      "start": 53,
+      "end": 54
     },
     "dests": [
       {
         "name": "b",
         "file": "test1.py",
-        "start": 52,
-        "end": 53,
+        "start": 46,
+        "end": 47,
         "type": "dict"
       }
     ]
@@ -54,15 +54,15 @@
     "ref": {
       "name": "b",
       "file": "test1.py",
-      "start": 80,
-      "end": 81
+      "start": 72,
+      "end": 73
     },
     "dests": [
       {
         "name": "b",
         "file": "test1.py",
-        "start": 52,
-        "end": 53,
+        "start": 46,
+        "end": 47,
         "type": "dict"
       }
     ]
@@ -71,15 +71,15 @@
     "ref": {
       "name": "x",
       "file": "test1.py",
-      "start": 92,
-      "end": 93
+      "start": 83,
+      "end": 84
     },
     "dests": [
       {
         "name": "x",
         "file": "test1.py",
-        "start": 76,
-        "end": 77,
+        "start": 68,
+        "end": 69,
         "type": "str"
       }
     ]
