@@ -260,11 +260,11 @@ public class TestInference
         List<String> failed = new ArrayList<>();
         if (generate)
         {
-            $.testmsg("Generating tests");
+            $.testmsg("Generating tests:");
         }
         else
         {
-            $.testmsg("Verifying tests");
+            $.testmsg("Verifying tests:");
         }
 
         testRecursive(path, generate, failed);
