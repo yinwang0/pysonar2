@@ -326,7 +326,7 @@ public class Analyzer {
 
         if (!f.exists()) {
             if (!f.mkdirs()) {
-                $.die("Failed to create tmp directory: " + dir + ".Please check permissions");
+                $.die("Failed to create tmp directory: " + dir + " .Please check permissions");
             }
         }
         return dir;
@@ -535,6 +535,8 @@ public class Analyzer {
 
     public void close() {
         astCache.close();
+        String tmpDir = $.getSystemTempDir();
+        $.deleteDirectory(new File(tmpDir));
     }
 
 
