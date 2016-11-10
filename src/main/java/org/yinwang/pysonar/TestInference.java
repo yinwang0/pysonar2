@@ -20,29 +20,27 @@ public class TestInference
 
     private static Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     private Analyzer analyzer;
-    private String inputDir;
-    private boolean exp;
+    private String testFile;
     private String expecteRefsFile;
     private String failedRefsFile;
 
-    public TestInference(String inputDir, boolean exp)
+    public TestInference(String testFile)
     {
         // make a quiet analyzer
         Map<String, Object> options = new HashMap<>();
         options.put("quiet", true);
         this.analyzer = new Analyzer(options);
 
-        this.inputDir = inputDir;
-        this.exp = exp;
-        if (new File(inputDir).isDirectory())
+        this.testFile = testFile;
+        if (new File(testFile).isDirectory())
         {
-            expecteRefsFile = $.makePathString(inputDir, "refs.json");
-            failedRefsFile = $.makePathString(inputDir, "failed_refs.json");
+            expecteRefsFile = $.makePathString(testFile, "refs.json");
+            failedRefsFile = $.makePathString(testFile, "failed_refs.json");
         }
         else
         {
-            expecteRefsFile = $.makePathString(inputDir + ".refs.json");
-            failedRefsFile = $.makePathString(inputDir, ".failed_refs.json");
+            expecteRefsFile = $.makePathString(testFile + ".refs.json");
+            failedRefsFile = $.makePathString(testFile + ".failed_refs.json");
         }
     }
 
@@ -54,14 +52,13 @@ public class TestInference
 
     public void generateRefs()
     {
-
         List<Map<String, Object>> refs = new ArrayList<>();
         for (Map.Entry<Node, List<Binding>> e : analyzer.getReferences().entrySet())
         {
 
             String file = e.getKey().file;
 
-            // only record those in the inputDir
+            // only record those in the testFile
             if (file != null && file.startsWith(Analyzer.self.projectDir))
             {
                 file = $.projRelPath(file).replaceAll("\\\\", "/");
@@ -151,14 +148,14 @@ public class TestInference
         if (failedRefs.isEmpty())
         {
             $.deleteFile(failedRefsFile);
-            $.testmsg("   " + inputDir);
+            $.testmsg("   " + testFile);
             return true;
         }
         else
         {
             String failedJson = gson.toJson(failedRefs);
             $.writeFile(failedRefsFile, failedJson);
-            $.testmsg(" - " + inputDir);
+            $.testmsg(" - " + testFile);
             return false;
         }
     }
@@ -193,14 +190,14 @@ public class TestInference
 
     public void generateTest()
     {
-        runAnalysis(inputDir);
+        runAnalysis(testFile);
         generateRefs();
-        $.testmsg("  * " + inputDir);
+        $.testmsg("  * " + testFile);
     }
 
     public boolean runTest()
     {
-        runAnalysis(inputDir);
+        runAnalysis(testFile);
         return checkRefs();
     }
 
@@ -245,7 +242,7 @@ public class TestInference
         {
             if (path.endsWith(".test"))
             {
-                TestInference test = new TestInference(path, generate);
+                TestInference test = new TestInference(path);
                 if (generate)
                 {
                     test.generateTest();
