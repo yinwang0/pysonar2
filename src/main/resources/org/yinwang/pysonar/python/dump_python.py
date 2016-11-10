@@ -571,7 +571,6 @@ ops_map = {
     Add: '+',
     Sub: '-',
     Mult: '*',
-    MatMult: '@',
     Div: '/',
     FloorDiv: '//',
     Mod: '%',
@@ -581,6 +580,9 @@ ops_map = {
     USub: '-',
     UAdd: '+',
 }
+
+if (python3):
+    ops_map[MatMult] = '@'
 
 
 # get list of fields from a node
