@@ -25,8 +25,8 @@ public class TestInference
     String expecteRefsFile;
     String failedRefsFile;
 
-
-    public TestInference(String inputDir, boolean exp) {
+    public TestInference(String inputDir, boolean exp)
+    {
         // make a quiet analyzer
         Map<String, Object> options = new HashMap<>();
         options.put("quiet", true);
@@ -34,31 +34,36 @@ public class TestInference
 
         this.inputDir = inputDir;
         this.exp = exp;
-        if (new File(inputDir).isDirectory()) {
+        if (new File(inputDir).isDirectory())
+        {
             expecteRefsFile = $.makePathString(inputDir, "refs.json");
             failedRefsFile = $.makePathString(inputDir, "failed_refs.json");
-        } else {
+        }
+        else
+        {
             expecteRefsFile = $.makePathString(inputDir + ".refs.json");
             failedRefsFile = $.makePathString(inputDir, ".failed_refs.json");
         }
     }
 
-
-    public void runAnalysis(String dir) {
+    public void runAnalysis(String dir)
+    {
         analyzer.analyze(dir);
         analyzer.finish();
     }
 
-
-    public void generateRefs() {
+    public void generateRefs()
+    {
 
         List<Map<String, Object>> refs = new ArrayList<>();
-        for (Map.Entry<Node, List<Binding>> e : analyzer.getReferences().entrySet()) {
+        for (Map.Entry<Node, List<Binding>> e : analyzer.getReferences().entrySet())
+        {
 
             String file = e.getKey().file;
 
             // only record those in the inputDir
-            if (file != null && file.startsWith(Analyzer.self.projectDir)) {
+            if (file != null && file.startsWith(Analyzer.self.projectDir))
+            {
                 file = $.projRelPath(file).replaceAll("\\\\", "/");
                 Map<String, Object> writeout = new LinkedHashMap<>();
 
@@ -71,9 +76,11 @@ public class TestInference
                 List<Map<String, Object>> dests = new ArrayList<>();
                 List<Binding> sorted = e.getValue();
                 Collections.sort(sorted, (a, b) -> a.start == b.start ? a.end - b.end : a.start - b.start);
-                for (Binding b : sorted) {
+                for (Binding b : sorted)
+                {
                     String destFile = b.getFile();
-                    if (destFile != null && destFile.startsWith(Analyzer.self.projectDir)) {
+                    if (destFile != null && destFile.startsWith(Analyzer.self.projectDir))
+                    {
                         destFile = $.projRelPath(destFile).replaceAll("\\\\", "/");
                         Map<String, Object> dest = new LinkedHashMap<>();
                         dest.put("name", b.name);
@@ -84,7 +91,8 @@ public class TestInference
                         dests.add(dest);
                     }
                 }
-                if (!dests.isEmpty()) {
+                if (!dests.isEmpty())
+                {
                     writeout.put("ref", ref);
                     writeout.put("dests", dests);
                     refs.add(writeout);
@@ -96,17 +104,19 @@ public class TestInference
         $.writeFile(expecteRefsFile, json);
     }
 
-
-    public boolean checkRefs() {
+    public boolean checkRefs()
+    {
         List<Map<String, Object>> failedRefs = new ArrayList<>();
         String json = $.readFile(expecteRefsFile);
-        if (json == null) {
+        if (json == null)
+        {
             $.msg("Expected refs not found in: " + expecteRefsFile +
-                    "Please run Test with -generate to generate");
+                  "Please run Test with -generate to generate");
             return false;
         }
         List<Map<String, Object>> expectedRefs = gson.fromJson(json, List.class);
-        for (Map<String, Object> r : expectedRefs) {
+        for (Map<String, Object> r : expectedRefs)
+        {
             Map<String, Object> refMap = (Map) r.get("ref");
             Dummy dummy = makeDummy(refMap);
 
@@ -114,20 +124,23 @@ public class TestInference
             List<Binding> actualDests = analyzer.getReferences().get(dummy);
             List<Map<String, Object>> failedDests = new ArrayList<>();
 
-            for (Map<String, Object> d : dests) {
+            for (Map<String, Object> d : dests)
+            {
                 // names are ignored, they are only for human readers
                 String file = $.projAbsPath((String) d.get("file"));
                 int start = (int) Math.floor((double) d.get("start"));
                 int end = (int) Math.floor((double) d.get("end"));
                 String type = (String) d.get("type");
 
-                if (!checkBindingExist(actualDests, file, start, end, type)) {
+                if (!checkBindingExist(actualDests, file, start, end, type))
+                {
                     failedDests.add(d);
                 }
             }
 
             // record the ref & failed dests if any
-            if (!failedDests.isEmpty()) {
+            if (!failedDests.isEmpty())
+            {
                 Map<String, Object> failedRef = new LinkedHashMap<>();
                 failedRef.put("ref", refMap);
                 failedRef.put("dests", failedDests);
@@ -135,11 +148,14 @@ public class TestInference
             }
         }
 
-        if (failedRefs.isEmpty()) {
+        if (failedRefs.isEmpty())
+        {
             $.deleteFile(failedRefsFile);
             $.testmsg("   " + inputDir);
             return true;
-        } else {
+        }
+        else
+        {
             String failedJson = gson.toJson(failedRefs);
             $.writeFile(failedRefsFile, failedJson);
             $.testmsg(" - " + inputDir);
@@ -147,16 +163,18 @@ public class TestInference
         }
     }
 
-
-    boolean checkBindingExist(List<Binding> bs, String file, int start, int end, String type) {
-        if (bs == null) {
+    boolean checkBindingExist(List<Binding> bs, String file, int start, int end, String type)
+    {
+        if (bs == null)
+        {
             return false;
         }
 
-        for (Binding b : bs) {
+        for (Binding b : bs)
+        {
             if (((b.getFile() == null && file == null) ||
-                    (b.getFile() != null && file != null && b.getFile().equals(file))) &&
-                    b.start == start && b.end == end && b.type.toString().equals(type))
+                 (b.getFile() != null && file != null && b.getFile().equals(file))) &&
+                b.start == start && b.end == end && b.type.toString().equals(type))
             {
                 return true;
             }
@@ -165,27 +183,26 @@ public class TestInference
         return false;
     }
 
-
-    public static Dummy makeDummy(Map<String, Object> m) {
+    public static Dummy makeDummy(Map<String, Object> m)
+    {
         String file = $.projAbsPath((String) m.get("file"));
         int start = (int) Math.floor((double) m.get("start"));
         int end = (int) Math.floor((double) m.get("end"));
         return new Dummy(file, start, end);
     }
 
-
-    public void generateTest() {
+    public void generateTest()
+    {
         runAnalysis(inputDir);
         generateRefs();
         $.testmsg("  * " + inputDir);
     }
 
-
-    public boolean runTest() {
+    public boolean runTest()
+    {
         runAnalysis(inputDir);
         return checkRefs();
     }
-
 
     // ------------------------- static part -----------------------
 
@@ -193,21 +210,29 @@ public class TestInference
     public static List<String> testAll(String path, boolean generate)
     {
         List<String> failed = new ArrayList<>();
-        if (generate) {
+        if (generate)
+        {
             $.testmsg("Generating tests");
-        } else {
+        }
+        else
+        {
             $.testmsg("Verifying tests");
         }
 
         testRecursive(path, generate, failed);
 
-        if (generate) {
+        if (generate)
+        {
             $.testmsg("All tests generated.");
             return null;
-        } else if (failed.isEmpty()) {
+        }
+        else if (failed.isEmpty())
+        {
             $.testmsg("All tests passed.");
             return null;
-        } else {
+        }
+        else
+        {
             return failed;
         }
     }
@@ -240,8 +265,8 @@ public class TestInference
         }
     }
 
-
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception
+    {
         Options options = new Options(args);
         List<String> argsList = options.getArgs();
         String inputDir = $.unifyPath(argsList.get(0));
