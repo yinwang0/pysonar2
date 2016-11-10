@@ -33,54 +33,68 @@ public class Parser {
     private String file;
     private String content;
 
-
-    public Parser() {
-
+    public Parser()
+    {
         exchangeFile = $.getTempFile("json");
         endMark = $.getTempFile("end");
         jsonizer = $.getTempFile("dump_python");
         parserLog = $.getTempFile("parser_log");
 
         startPythonProcesses();
-
-        if (python2Process != null) {
-            $.msg("started: " + PYTHON2_EXE);
-        }
-
-        if (python3Process != null) {
-            $.msg("started: " + PYTHON3_EXE);
-        }
     }
 
 
     // start or restart python processes
-    private void startPythonProcesses() {
-        if (python2Process != null) {
+    private void startPythonProcesses()
+    {
+        if (python2Process != null)
+        {
             python2Process.destroy();
         }
-        if (python3Process != null) {
+        if (python3Process != null)
+        {
             python3Process.destroy();
         }
 
         // copy dump_python.py to temp dir
-        try {
+        try
+        {
             URL url = Thread.currentThread().getContextClassLoader().getResource(dumpPythonResource);
             FileUtils.copyURLToFile(url, new File(jsonizer));
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             $.die("Failed to copy resource file:" + dumpPythonResource);
         }
 
         python2Process = startInterpreter(PYTHON2_EXE);
+        if (python2Process != null)
+        {
+            $.msg("started: " + PYTHON2_EXE);
+        }
+
         python3Process = startInterpreter(PYTHON3_EXE);
-        if (python2Process == null && python3Process == null) {
+        if (python3Process != null)
+        {
+            $.msg("started: " + PYTHON3_EXE);
+        }
+
+        if (python2Process == null && python3Process == null)
+        {
             $.die("You don't seem to have either of Python or Python3 on PATH");
         }
     }
 
 
     public void close() {
-        python2Process.destroy();
-        python3Process.destroy();
+        if (python2Process != null)
+        {
+            python2Process.destroy();
+        }
+
+        if (python3Process != null)
+        {
+            python3Process.destroy();
+        }
 
         if (!Analyzer.self.hasOption("debug")) {
             new File(exchangeFile).delete();
