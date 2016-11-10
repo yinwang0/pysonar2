@@ -17,20 +17,13 @@ import com.google.gson.GsonBuilder;
 
 public class TestInference
 {
-
     private static Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-    private Analyzer analyzer;
     private String testFile;
     private String expecteRefsFile;
     private String failedRefsFile;
 
     public TestInference(String testFile)
     {
-        // make a quiet analyzer
-        Map<String, Object> options = new HashMap<>();
-        options.put("quiet", true);
-        this.analyzer = new Analyzer(options);
-
         this.testFile = testFile;
         if (new File(testFile).isDirectory())
         {
@@ -44,13 +37,17 @@ public class TestInference
         }
     }
 
-    public void runAnalysis(String dir)
+    public Analyzer runAnalysis(String dir)
     {
+        Map<String, Object> options = new HashMap<>();
+        options.put("quiet", true);
+        Analyzer analyzer = new Analyzer(options);
         analyzer.analyze(dir);
         analyzer.finish();
+        return analyzer;
     }
 
-    public void generateRefs()
+    public void generateRefs(Analyzer analyzer)
     {
         List<Map<String, Object>> refs = new ArrayList<>();
         for (Map.Entry<Node, List<Binding>> e : analyzer.getReferences().entrySet())
@@ -101,7 +98,7 @@ public class TestInference
         $.writeFile(expecteRefsFile, json);
     }
 
-    public boolean checkRefs()
+    public boolean checkRefs(Analyzer analyzer)
     {
         List<Map<String, Object>> failedRefs = new ArrayList<>();
         String json = $.readFile(expecteRefsFile);
@@ -190,15 +187,15 @@ public class TestInference
 
     public void generateTest()
     {
-        runAnalysis(testFile);
-        generateRefs();
+        Analyzer analyzer = runAnalysis(testFile);
+        generateRefs(analyzer);
         $.testmsg("  * " + testFile);
     }
 
     public boolean runTest()
     {
-        runAnalysis(testFile);
-        return checkRefs();
+        Analyzer analyzer = runAnalysis(testFile);
+        return checkRefs(analyzer);
     }
 
     // ------------------------- static part -----------------------
