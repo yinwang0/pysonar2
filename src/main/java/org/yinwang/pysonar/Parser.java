@@ -20,7 +20,7 @@ public class Parser {
 
     private static final String PYTHON2_EXE = "python";
     private static final String PYTHON3_EXE = "python3";
-    private static final int TIMEOUT = 10000;
+    private static final int TIMEOUT = 30000;
 
     Process python2Process;
     Process python3Process;
@@ -921,6 +921,7 @@ public class Parser {
         return gson.toJson(obj);
     }
 
+    private int logCount = 0;
 
     @Nullable
     public Process startInterpreter(String pythonExe) {
@@ -928,7 +929,7 @@ public class Parser {
         try {
             ProcessBuilder builder = new ProcessBuilder(pythonExe, "-i", jsonizer);
             builder.redirectErrorStream(true);
-            builder.redirectOutput(new File(parserLog));
+            builder.redirectOutput(new File(parserLog + "-" + (logCount++)));
             builder.environment().remove("PYTHONPATH");
             p = builder.start();
         } catch (Exception e) {

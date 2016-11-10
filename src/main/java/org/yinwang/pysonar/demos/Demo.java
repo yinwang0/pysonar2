@@ -1,10 +1,10 @@
 package org.yinwang.pysonar.demos;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.$;
 import org.yinwang.pysonar.Analyzer;
 import org.yinwang.pysonar.Options;
 import org.yinwang.pysonar.Progress;
-import org.yinwang.pysonar.$;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,20 +32,29 @@ public class Demo {
         }
     }
 
-
-    private void start(@NotNull String fileOrDir, Map<String, Object> options) throws Exception {
+    private void start(@NotNull String fileOrDir, Map<String, Object> options) throws Exception
+    {
         File f = new File(fileOrDir);
         File rootDir = f.isFile() ? f.getParentFile() : f;
-        try {
+        try
+        {
             rootPath = $.unifyPath(rootDir);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             $.die("File not found: " + f);
         }
 
         analyzer = new Analyzer(options);
         $.msg("Loading and analyzing files");
-        analyzer.analyze(f.getPath());
-        analyzer.finish();
+        try
+        {
+            analyzer.analyze(f.getPath());
+        }
+        finally
+        {
+            analyzer.finish();
+        }
 
         generateHtml();
     }
