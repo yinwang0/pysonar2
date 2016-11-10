@@ -581,7 +581,7 @@ ops_map = {
     UAdd: '+',
 }
 
-if (python3):
+if python3:
     ops_map[MatMult] = '@'
 
 
