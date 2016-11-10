@@ -5,12 +5,23 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Name;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Url;
-import org.yinwang.pysonar.types.*;
+import org.yinwang.pysonar.types.ClassType;
+import org.yinwang.pysonar.types.FunType;
+import org.yinwang.pysonar.types.ModuleType;
+import org.yinwang.pysonar.types.Type;
+import org.yinwang.pysonar.types.UnionType;
 import org.yinwang.pysonar.visitor.TypeInferencer;
 
 import java.io.File;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class Analyzer {
@@ -534,11 +545,15 @@ public class Analyzer {
                 && binding.refs.isEmpty());
     }
 
-    public void close() {
+    public void close()
+    {
         astCache.close();
-        $.deleteDirectory($.getTempDir());
+        $.sleep(10);
+        if (!$.deleteDirectory($.getTempDir()))
+        {
+            $.msg("Failed to delete temp dir: " + $.getTempDir());
+        }
     }
-
 
     public void addUncalled(@NotNull FunType cl) {
         if (!cl.func.called) {

@@ -622,4 +622,15 @@ public class $ {
     {
         return new File(file).delete();
     }
+
+    public static void sleep(long millis)
+    {
+        try
+        {
+            Thread.sleep(millis);
+        } catch (InterruptedException e)
+        {
+        }
+    }
+
 }
