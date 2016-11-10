@@ -65,14 +65,16 @@ If this is not set up correctly, references to library code will not be found.
 
 ### Development
 
-If you hope to improve certain things in PySonar2, please contact me first. For development, you can run the unit tests.
-PySonar2 has a test framework. You can run the tests using this command line after a successful build.
+If you hope to contribute to PySonar2, please contact me first before making big changes.
 
-    java -classpath target/pysonar-<version>.jar org.yinwang.pysonar.Test tests
+For development, you can run the unit tests. PySonar2 has a test framework. You can run the
+tests using this command line after a successful build.
 
-If you modified the code, to generate new expected test results, please run this command line (adding `-exp` to the command):
+    mvn test
 
-    java -classpath target/pysonar-<version>.jar org.yinwang.pysonar.Test tests -exp
+If you modified the code or tests, you need to generate new expected results. Run this command line:
+
+    java -classpath target/pysonar-<version>.jar org.yinwang.pysonar.TestInference -generate tests
 
 To write new tests, you just need to write relevant Python files, put them into a directory named `test/testname.test`
 (directory name must end with ".test"). Please look at the `tests` directory for examples.

@@ -1,12 +1,19 @@
 package org.yinwang.pysonar;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Dummy;
 import org.yinwang.pysonar.ast.Node;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class TestInference
 {
@@ -95,15 +102,15 @@ public class TestInference
         String json = $.readFile(expecteRefsFile);
         if (json == null) {
             $.msg("Expected refs not found in: " + expecteRefsFile +
-                    "Please run Test with -exp to generate");
+                    "Please run Test with -generate to generate");
             return false;
         }
         List<Map<String, Object>> expectedRefs = gson.fromJson(json, List.class);
         for (Map<String, Object> r : expectedRefs) {
-            Map<String, Object> refMap = (Map<String, Object>) r.get("ref");
+            Map<String, Object> refMap = (Map) r.get("ref");
             Dummy dummy = makeDummy(refMap);
 
-            List<Map<String, Object>> dests = (List<Map<String, Object>>) r.get("dests");
+            List<Map<String, Object>> dests = (List) r.get("dests");
             List<Binding> actualDests = analyzer.getReferences().get(dummy);
             List<Map<String, Object>> failedDests = new ArrayList<>();
 
@@ -181,49 +188,52 @@ public class TestInference
 
     // ------------------------- static part -----------------------
 
-
-    public static String testAll(String path, boolean exp) {
+    @Nullable
+    public static List<String> testAll(String path, boolean generate)
+    {
         List<String> failed = new ArrayList<>();
-        if (exp) {
-            $.testmsg("generating tests");
+        if (generate) {
+            $.testmsg("Generating tests");
         } else {
-            $.testmsg("verifying tests");
+            $.testmsg("Verifying tests");
         }
 
-        testRecursive(path, exp, failed);
+        testRecursive(path, generate, failed);
 
-        if (exp) {
-            $.testmsg("all tests generated");
+        if (generate) {
+            $.testmsg("All tests generated.");
             return null;
         } else if (failed.isEmpty()) {
-            $.testmsg("all tests passed!");
+            $.testmsg("All tests passed.");
             return null;
         } else {
-            String result = "failed some tests: ";
-            for (String f : failed) {
-                result += "  * " + f;
-            }
-            return result;
+            return failed;
         }
     }
 
-
-    public static void testRecursive(String path, boolean exp, List<String> failed) {
+    public static void testRecursive(String path, boolean generate, List<String> failed)
+    {
         File file_or_dir = new File(path);
 
-        if (file_or_dir.isDirectory()) {
-            if (path.endsWith(".test")) {
-                TestInference test = new TestInference(path, exp);
-                if (exp) {
+        if (file_or_dir.isDirectory())
+        {
+            if (path.endsWith(".test"))
+            {
+                TestInference test = new TestInference(path, generate);
+                if (generate)
+                {
                     test.generateTest();
-                } else {
-                    if (!test.runTest()) {
-                        failed.add(path);
-                    }
                 }
-            } else {
-                for (File file : file_or_dir.listFiles()) {
-                    testRecursive(file.getPath(), exp, failed);
+                else if (!test.runTest())
+                {
+                    failed.add(path);
+                }
+            }
+            else
+            {
+                for (File file : file_or_dir.listFiles())
+                {
+                    testRecursive(file.getPath(), generate, failed);
                 }
             }
         }
@@ -236,7 +246,7 @@ public class TestInference
         String inputDir = $.unifyPath(argsList.get(0));
 
         // generate expected file?
-        boolean exp = options.hasOption("exp");
-        testAll(inputDir, exp);
+        boolean generate = options.hasOption("generate");
+        testAll(inputDir, generate);
     }
 }
