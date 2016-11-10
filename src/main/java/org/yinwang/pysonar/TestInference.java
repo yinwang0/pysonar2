@@ -17,66 +17,62 @@ import com.google.gson.GsonBuilder;
 
 public class TestInference
 {
+    private static final Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
+    private String testFile;
+    private String expecteRefsFile;
+    private String missingRefsFile;
+    private String wrongTypeFile;
 
-    static Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-    Analyzer analyzer;
-    String inputDir;
-    boolean exp;
-    String expecteRefsFile;
-    String failedRefsFile;
-
-    public TestInference(String inputDir, boolean exp)
+    public TestInference(String testFile)
     {
-        // make a quiet analyzer
-        Map<String, Object> options = new HashMap<>();
-        options.put("quiet", true);
-        this.analyzer = new Analyzer(options);
-
-        this.inputDir = inputDir;
-        this.exp = exp;
-        if (new File(inputDir).isDirectory())
+        this.testFile = testFile;
+        if (new File(testFile).isDirectory())
         {
-            expecteRefsFile = $.makePathString(inputDir, "refs.json");
-            failedRefsFile = $.makePathString(inputDir, "failed_refs.json");
+            expecteRefsFile = $.makePathString(testFile, "refs.json");
+            missingRefsFile = $.makePathString(testFile, "missing_refs.json");
+            wrongTypeFile = $.makePathString(testFile, "wrong_types.json");
         }
         else
         {
-            expecteRefsFile = $.makePathString(inputDir + ".refs.json");
-            failedRefsFile = $.makePathString(inputDir, ".failed_refs.json");
+            expecteRefsFile = $.makePathString(testFile + ".refs.json");
+            missingRefsFile = $.makePathString(testFile + ".missing_refs.json");
+            wrongTypeFile = $.makePathString(testFile + ".wrong_types.json");
         }
     }
 
-    public void runAnalysis(String dir)
+    public Analyzer runAnalysis(String dir)
     {
+        Map<String, Object> options = new HashMap<>();
+        options.put("quiet", true);
+        Analyzer analyzer = new Analyzer(options);
         analyzer.analyze(dir);
         analyzer.finish();
+        return analyzer;
     }
 
-    public void generateRefs()
+    public void generateRefs(Analyzer analyzer)
     {
-
         List<Map<String, Object>> refs = new ArrayList<>();
         for (Map.Entry<Node, List<Binding>> e : analyzer.getReferences().entrySet())
         {
+            String filename = e.getKey().file;
+            List<Binding> bindings = e.getValue();
 
-            String file = e.getKey().file;
-
-            // only record those in the inputDir
-            if (file != null && file.startsWith(Analyzer.self.projectDir))
+            // only record those in the testFile
+            if (filename != null && filename.startsWith(Analyzer.self.projectDir))
             {
-                file = $.projRelPath(file).replaceAll("\\\\", "/");
+                filename = $.projRelPath(filename).replaceAll("\\\\", "/");
                 Map<String, Object> writeout = new LinkedHashMap<>();
 
                 Map<String, Object> ref = new LinkedHashMap<>();
                 ref.put("name", e.getKey().name);
-                ref.put("file", file);
+                ref.put("file", filename);
                 ref.put("start", e.getKey().start);
                 ref.put("end", e.getKey().end);
 
                 List<Map<String, Object>> dests = new ArrayList<>();
-                List<Binding> sorted = e.getValue();
-                Collections.sort(sorted, (a, b) -> a.start == b.start ? a.end - b.end : a.start - b.start);
-                for (Binding b : sorted)
+                Collections.sort(bindings, (a, b) -> a.start == b.start ? a.end - b.end : a.start - b.start);
+                for (Binding b : bindings)
                 {
                     String destFile = b.getFile();
                     if (destFile != null && destFile.startsWith(Analyzer.self.projectDir))
@@ -104,9 +100,10 @@ public class TestInference
         $.writeFile(expecteRefsFile, json);
     }
 
-    public boolean checkRefs()
+    public boolean checkRefs(Analyzer analyzer)
     {
-        List<Map<String, Object>> failedRefs = new ArrayList<>();
+        List<Map<String, Object>> refReports = new ArrayList<>();
+        List<Map<String, Object>> typeReports = new ArrayList<>();
         String json = $.readFile(expecteRefsFile);
         if (json == null)
         {
@@ -121,8 +118,9 @@ public class TestInference
             Dummy dummy = makeDummy(refMap);
 
             List<Map<String, Object>> dests = (List) r.get("dests");
-            List<Binding> actualDests = analyzer.getReferences().get(dummy);
-            List<Map<String, Object>> failedDests = new ArrayList<>();
+            List<Binding> actual = analyzer.getReferences().get(dummy);
+            List<Map<String, Object>> missing = new ArrayList<>();
+            List<Map<String, Object>> wrongType = new ArrayList<>();
 
             for (Map<String, Object> d : dests)
             {
@@ -132,45 +130,93 @@ public class TestInference
                 int end = (int) Math.floor((double) d.get("end"));
                 String type = (String) d.get("type");
 
-                if (!checkBindingExist(actualDests, file, start, end, type))
+                if (!checkExist(actual, file, start, end))
                 {
-                    failedDests.add(d);
+                    missing.add(d);
                 }
+                else if (!checkType(actual, file, start, end, type))
+                {
+                    wrongType.add(d);
+                }
+
             }
 
             // record the ref & failed dests if any
-            if (!failedDests.isEmpty())
+            if (!missing.isEmpty())
             {
-                Map<String, Object> failedRef = new LinkedHashMap<>();
-                failedRef.put("ref", refMap);
-                failedRef.put("dests", failedDests);
-                failedRefs.add(failedRef);
+                Map<String, Object> failed = new LinkedHashMap<>();
+                failed.put("ref", refMap);
+                failed.put("dests", missing);
+                refReports.add(failed);
+            }
+
+            if (!wrongType.isEmpty())
+            {
+                Map<String, Object> failed = new LinkedHashMap<>();
+                failed.put("ref", refMap);
+                failed.put("dests", wrongType);
+                typeReports.add(failed);
             }
         }
 
-        if (failedRefs.isEmpty())
+        boolean success = true;
+
+        if (!refReports.isEmpty())
         {
-            $.deleteFile(failedRefsFile);
-            $.testmsg("   " + inputDir);
+            $.writeFile(missingRefsFile, gson.toJson(refReports));
+            success = false;
+        }else {
+            $.deleteFile(missingRefsFile);
+        }
+
+        if (!typeReports.isEmpty())
+        {
+            $.writeFile(wrongTypeFile, gson.toJson(typeReports));
+            success = false;
+        } else {
+            $.deleteFile(wrongTypeFile);
+        }
+
+        if (success)
+        {
+            $.testmsg("   " + testFile);
             return true;
         }
         else
         {
-            String failedJson = gson.toJson(failedRefs);
-            $.writeFile(failedRefsFile, failedJson);
-            $.testmsg(" - " + inputDir);
+            $.testmsg(" - " + testFile);
             return false;
         }
     }
 
-    boolean checkBindingExist(List<Binding> bs, String file, int start, int end, String type)
+    private boolean checkExist(List<Binding> bindings, String file, int start, int end)
     {
-        if (bs == null)
+        if (bindings == null)
         {
             return false;
         }
 
-        for (Binding b : bs)
+        for (Binding b : bindings)
+        {
+            if (((b.getFile() == null && file == null) ||
+                 (b.getFile() != null && file != null && b.getFile().equals(file))) &&
+                b.start == start && b.end == end)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean checkType(List<Binding> bindings, String file, int start, int end, String type)
+    {
+        if (bindings == null)
+        {
+            return false;
+        }
+
+        for (Binding b : bindings)
         {
             if (((b.getFile() == null && file == null) ||
                  (b.getFile() != null && file != null && b.getFile().equals(file))) &&
@@ -193,15 +239,15 @@ public class TestInference
 
     public void generateTest()
     {
-        runAnalysis(inputDir);
-        generateRefs();
-        $.testmsg("  * " + inputDir);
+        Analyzer analyzer = runAnalysis(testFile);
+        generateRefs(analyzer);
+        $.testmsg("  * " + testFile);
     }
 
     public boolean runTest()
     {
-        runAnalysis(inputDir);
-        return checkRefs();
+        Analyzer analyzer = runAnalysis(testFile);
+        return checkRefs(analyzer);
     }
 
     // ------------------------- static part -----------------------
@@ -245,7 +291,7 @@ public class TestInference
         {
             if (path.endsWith(".test"))
             {
-                TestInference test = new TestInference(path, generate);
+                TestInference test = new TestInference(path);
                 if (generate)
                 {
                     test.generateTest();

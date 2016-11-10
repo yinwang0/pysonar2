@@ -2,7 +2,6 @@ package org.yinwang.pysonar;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
@@ -16,8 +15,8 @@ public class TestRefs
         if (failed != null)
         {
             String msg = "Some tests failed. " +
-                         "\nLook at 'failed_refs.json' in corresponding directories for details.";
-            msg += "\n----------------------------= FAILED TESTS --------------------------=";
+                         "\nLook at 'missing_refs.json' or 'wrong_types.json' in corresponding directories for details.";
+            msg += "\n----------------------------- FAILED TESTS ---------------------------";
             for (String fail : failed)
             {
                 msg += "\n - " + fail;
