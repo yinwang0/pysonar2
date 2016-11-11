@@ -68,7 +68,7 @@ If this is not set up correctly, references to library code will not be found.
 If you hope to contribute to PySonar2, please contact me first before making big changes.
 
 For development, you can run the unit tests. PySonar2 has a test framework. You can run the
-tests using this command line after a successful build.
+tests using this command:
 
     mvn test
 
@@ -77,8 +77,9 @@ If you modify the code or tests, you need to generate new expected results. Run 
     mvn package -DskipTests
     java -classpath target/pysonar-<version>.jar org.yinwang.pysonar.TestInference -generate tests
 
-To write new tests, you just need to write relevant Python files, put them into a directory named `test/testname.test`
-(directory name must end with ".test"). Please look at the `tests` directory for examples.
+To write new tests, you just need to write relevant Python files, put them into a directory named 
+`tests/testname.test`(test directory name must end with ".test"). Please look at the `tests` 
+directory for examples.
 
 
 ### License
