@@ -987,7 +987,48 @@ public class TypeInferencer implements Visitor1<Type, State> {
                       @Nullable Map<String, Type> kwTypes,
                       @Nullable Type kwArg,
                       @Nullable Type starArg,
-                      @Nullable Node call) {
+                      @Nullable Node call)
+    {
+        if (call instanceof Call &&
+            ((Call) call).func instanceof Attribute &&
+            ((Attribute) ((Call) call).func).attr.id.equals("append"))
+        {
+            if (selfType instanceof ListType)
+            {
+                ListType listType = (ListType) selfType;
+                if (positional != null && positional.size() == 1)
+                {
+                    listType.add(positional.get(0));
+                }
+                else
+                {
+                    Analyzer.self.putProblem(call, "Calling append with wrong argument types");
+                }
+            }
+        }
+
+        if (call instanceof Call &&
+            ((Call) call).func instanceof Attribute &&
+            ((Attribute) ((Call) call).func).attr.id.equals("update"))
+        {
+            if (selfType instanceof DictType)
+            {
+                DictType dict = (DictType) selfType;
+                if (positional != null && positional.size() == 1)
+                {
+                    Type argType = positional.get(0);
+                    if (argType instanceof DictType) {
+                        dict.keyType = UnionType.union(dict.keyType, ((DictType) argType).keyType);
+                        dict.valueType = UnionType.union(dict.valueType, ((DictType) argType).valueType);
+                    }
+                }
+                else
+                {
+                    Analyzer.self.putProblem(call, "Calling update with wrong argument types");
+                }
+            }
+        }
+
         Analyzer.self.removeUncalled(func);
 
         if (func.func != null && !func.func.called) {
