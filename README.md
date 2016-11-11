@@ -40,7 +40,7 @@ end-user tool.
 ### System requirements
 
 * Python 2.7.x
-* Python 3.x (if your code uses Python3)
+* Python 3.x
 * Java 8
 * maven
 
