@@ -27,3 +27,10 @@ class TestInit2:
 
     def test2(self):
         y = self.my_field
+
+
+# without invocation and other methods
+class TestInit3:
+    def __init__(self):
+        self.my_field = 3
+        print self.my_field

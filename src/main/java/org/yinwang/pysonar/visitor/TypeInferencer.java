@@ -1016,7 +1016,12 @@ public class TypeInferencer implements Visitor1<Type, State> {
                     argTypes.add(selfType);
                 } else {
                     if (func.cls != null) {
-                        argTypes.add(func.cls.getInstance(null, this, call));
+                        if (!func.func.name.id.equals("__init__"))
+                        {
+                            argTypes.add(func.cls.getInstance(null, this, call));
+                        } else {
+                            argTypes.add(func.cls.getInstance());
+                        }
                     }
                 }
             }

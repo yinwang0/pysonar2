@@ -433,5 +433,68 @@
         "type": "?"
       }
     ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 550,
+      "end": 554,
+      "line": 35,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 535,
+        "end": 539,
+        "line": 34,
+        "col": 18,
+        "type": "TestInit3"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "self",
+      "file": "test1.py",
+      "start": 582,
+      "end": 586,
+      "line": 36,
+      "col": 15
+    },
+    "dests": [
+      {
+        "name": "self",
+        "file": "test1.py",
+        "start": 535,
+        "end": 539,
+        "line": 34,
+        "col": 18,
+        "type": "TestInit3"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "my_field",
+      "file": "test1.py",
+      "start": 587,
+      "end": 595,
+      "line": 36,
+      "col": 20
+    },
+    "dests": [
+      {
+        "name": "my_field",
+        "file": "test1.py",
+        "start": 555,
+        "end": 563,
+        "line": 35,
+        "col": 14,
+        "type": "int"
+      }
+    ]
   }
 ]
