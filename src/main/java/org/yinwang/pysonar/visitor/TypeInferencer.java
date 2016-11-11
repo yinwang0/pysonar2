@@ -1056,7 +1056,13 @@ public class TypeInferencer implements Visitor1<Type, State> {
             }
 
             toType = UnionType.remove(toType, Types.CONT);
-            func.addMapping(fromType, toType);
+            if (!func.func.name.id.equals("__init__"))
+            {
+                func.addMapping(fromType, toType);
+            } else {
+                func.removeMapping(fromType);
+            }
+
             return toType;
         }
     }

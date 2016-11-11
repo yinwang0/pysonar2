@@ -1,5 +1,6 @@
 # Test constructor __init__
 
+
 class TestInit1:
     def test(self):
         x = self.my_field
@@ -12,6 +13,8 @@ class TestInit1:
 
 # with invocation
 y = TestInit1(5)
+z = TestInit1(6)
+y.my_field = z.my_field
 
 
 # without invocation

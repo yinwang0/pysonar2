@@ -7,7 +7,11 @@ import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.ast.FunctionDef;
 import org.yinwang.pysonar.hash.MyHashMap;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class FunType extends Type {
@@ -46,6 +50,10 @@ public class FunType extends Type {
         }
     }
 
+    public void removeMapping(Type from)
+    {
+        arrows.remove(from);
+    }
 
     @Nullable
     public Type getMapping(@NotNull Type from) {

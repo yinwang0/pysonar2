@@ -38,7 +38,7 @@ public class Name extends Node {
     @NotNull
     @Override
     public String toString() {
-        return "(" + id + ":" + start + ")";
+        return "(" + id + ":" + line + ":" + col + ")";
     }
 
     @NotNull
