@@ -936,17 +936,27 @@ public class TypeInferencer implements Visitor1<Type, State> {
         }
     }
 
-    private void setAttrType(Attribute node, @NotNull Type targetType, @NotNull Type v) {
-        if (targetType.isUnknownType()) {
+    private void setAttrType(Attribute node, @NotNull Type targetType, @NotNull Type v)
+    {
+        if (targetType.isUnknownType())
+        {
             addWarningToNode(node, "Can't set attribute for UnknownType");
             return;
         }
-        Set<Binding> bs = targetType.table.lookupAttr(node.attr.id);
-        if (bs != null) {
-            addRef(node, bs);
-        }
 
-        targetType.table.insert(node.attr.id, node.attr, v, ATTRIBUTE);
+        Set<Binding> bs = targetType.table.lookupAttr(node.attr.id);
+        if (bs != null)
+        {
+            for (Binding b : bs)
+            {
+                b.addType(v);
+                Analyzer.self.putRef(node.attr, b);
+            }
+        }
+        else
+        {
+            targetType.table.insert(node.attr.id, node.attr, v, ATTRIBUTE);
+        }
     }
 
     public Type getAttrType(Attribute node, @NotNull Type targetType) {

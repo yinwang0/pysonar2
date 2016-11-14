@@ -117,10 +117,10 @@
       {
         "name": "value",
         "file": "test1.py",
-        "start": 75,
-        "end": 80,
-        "line": 8,
-        "col": 14,
+        "start": 20,
+        "end": 25,
+        "line": 5,
+        "col": 5,
         "type": "int"
       }
     ]
@@ -252,10 +252,10 @@
       {
         "name": "value",
         "file": "test1.py",
-        "start": 75,
-        "end": 80,
-        "line": 8,
-        "col": 14,
+        "start": 20,
+        "end": 25,
+        "line": 5,
+        "col": 5,
         "type": "int"
       }
     ]
@@ -387,10 +387,10 @@
       {
         "name": "value",
         "file": "test1.py",
-        "start": 75,
-        "end": 80,
-        "line": 8,
-        "col": 14,
+        "start": 20,
+        "end": 25,
+        "line": 5,
+        "col": 5,
         "type": "int"
       }
     ]

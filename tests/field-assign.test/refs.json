@@ -1,0 +1,170 @@
+[
+  {
+    "ref": {
+      "name": "A",
+      "file": "test1.py",
+      "start": 50,
+      "end": 51,
+      "line": 6,
+      "col": 5
+    },
+    "dests": [
+      {
+        "name": "A",
+        "file": "test1.py",
+        "start": 32,
+        "end": 33,
+        "line": 3,
+        "col": 7,
+        "type": "<A>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 54,
+      "end": 55,
+      "line": 7,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 46,
+        "end": 47,
+        "line": 6,
+        "col": 1,
+        "type": "A"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 56,
+      "end": 57,
+      "line": 7,
+      "col": 3
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 39,
+        "end": 40,
+        "line": 4,
+        "col": 5,
+        "type": "{int | str}"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 66,
+      "end": 67,
+      "line": 8,
+      "col": 1
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 46,
+        "end": 47,
+        "line": 6,
+        "col": 1,
+        "type": "A"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 116,
+      "end": 117,
+      "line": 10,
+      "col": 7
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 46,
+        "end": 47,
+        "line": 6,
+        "col": 1,
+        "type": "A"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "x",
+      "file": "test1.py",
+      "start": 118,
+      "end": 119,
+      "line": 10,
+      "col": 9
+    },
+    "dests": [
+      {
+        "name": "x",
+        "file": "test1.py",
+        "start": 39,
+        "end": 40,
+        "line": 4,
+        "col": 5,
+        "type": "{int | str}"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "a",
+      "file": "test1.py",
+      "start": 121,
+      "end": 122,
+      "line": 10,
+      "col": 12
+    },
+    "dests": [
+      {
+        "name": "a",
+        "file": "test1.py",
+        "start": 46,
+        "end": 47,
+        "line": 6,
+        "col": 1,
+        "type": "A"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "y",
+      "file": "test1.py",
+      "start": 123,
+      "end": 124,
+      "line": 10,
+      "col": 14
+    },
+    "dests": [
+      {
+        "name": "y",
+        "file": "test1.py",
+        "start": 68,
+        "end": 69,
+        "line": 8,
+        "col": 3,
+        "type": "int"
+      }
+    ]
+  }
+]
