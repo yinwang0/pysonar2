@@ -2,7 +2,6 @@
 
 
 class A:
-    value = 1
 
     def __init__(self, value):
         self.value = value
@@ -28,8 +27,4 @@ def fib(n):
 
 
 x = A(42)
-y = x.value
 print fib(x)
-
-u = x < 2
-print u
