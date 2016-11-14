@@ -930,12 +930,6 @@ public class TypeInferencer implements Visitor1<Type, State> {
         }
     }
 
-    private void addRef(Attribute node, @NotNull Set<Binding> bs) {
-        for (Binding b : bs) {
-            Analyzer.self.putRef(node.attr, b);
-        }
-    }
-
     private void setAttrType(Attribute node, @NotNull Type targetType, @NotNull Type v)
     {
         if (targetType.isUnknownType())
@@ -959,15 +953,22 @@ public class TypeInferencer implements Visitor1<Type, State> {
         }
     }
 
-    public Type getAttrType(Attribute node, @NotNull Type targetType) {
+    public Type getAttrType(Attribute node, @NotNull Type targetType)
+    {
         Set<Binding> bs = targetType.table.lookupAttr(node.attr.id);
-        if (bs == null) {
+        if (bs == null)
+        {
             addWarningToNode(node.attr, "attribute not found in type: " + targetType);
             Type t = Types.UNKNOWN;
             t.table.setPath(targetType.table.extendPath(node.attr.id));
             return t;
-        } else {
-            addRef(node, bs);
+        }
+        else
+        {
+            for (Binding b : bs)
+            {
+                Analyzer.self.putRef(node.attr, b);
+            }
             return State.makeUnion(bs);
         }
     }
