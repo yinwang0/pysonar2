@@ -3,6 +3,48 @@
     "ref": {
       "name": "kitchen",
       "file": "bedroom.py",
+      "start": 7,
+      "end": 14,
+      "line": 0,
+      "col": 0
+    },
+    "dests": [
+      {
+        "name": "kitchen",
+        "file": "kitchen/__init__.py",
+        "start": 0,
+        "end": 0,
+        "line": 0,
+        "col": 0,
+        "type": "kitchen"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "oven",
+      "file": "bedroom.py",
+      "start": -1,
+      "end": -1,
+      "line": 0,
+      "col": 0
+    },
+    "dests": [
+      {
+        "name": "oven",
+        "file": "kitchen/oven.py",
+        "start": 0,
+        "end": 0,
+        "line": 0,
+        "col": 0,
+        "type": "oven"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "kitchen",
+      "file": "bedroom.py",
       "start": 29,
       "end": 36,
       "line": 3,
@@ -11,9 +53,9 @@
     "dests": [
       {
         "name": "kitchen",
-        "file": "bedroom.py",
-        "start": 7,
-        "end": 14,
+        "file": "kitchen/__init__.py",
+        "start": 0,
+        "end": 0,
         "line": 0,
         "col": 0,
         "type": "kitchen"
@@ -32,9 +74,9 @@
     "dests": [
       {
         "name": "oven",
-        "file": "bedroom.py",
-        "start": -1,
-        "end": -1,
+        "file": "kitchen/oven.py",
+        "start": 0,
+        "end": 0,
         "line": 0,
         "col": 0,
         "type": "oven"

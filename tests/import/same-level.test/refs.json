@@ -3,6 +3,27 @@
     "ref": {
       "name": "mod2",
       "file": "mod1.py",
+      "start": 7,
+      "end": 11,
+      "line": 0,
+      "col": 0
+    },
+    "dests": [
+      {
+        "name": "mod2",
+        "file": "mod2.py",
+        "start": 0,
+        "end": 0,
+        "line": 0,
+        "col": 0,
+        "type": "mod2"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "mod2",
+      "file": "mod1.py",
       "start": 17,
       "end": 21,
       "line": 3,
@@ -11,9 +32,9 @@
     "dests": [
       {
         "name": "mod2",
-        "file": "mod1.py",
-        "start": 7,
-        "end": 11,
+        "file": "mod2.py",
+        "start": 0,
+        "end": 0,
         "line": 0,
         "col": 0,
         "type": "mod2"

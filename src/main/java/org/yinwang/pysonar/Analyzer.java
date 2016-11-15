@@ -439,14 +439,16 @@ public class Analyzer {
                     return null;
                 }
 
+                Binding binding = Binding.createFileBinding(name.get(i).id, initFile.getPath(), mod);
+
                 if (prev != null) {
-                    prev.table.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+                    prev.table.update(name.get(i).id, binding);
                 } else {
-                    state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+                    state.update(name.get(i).id, binding);
                 }
 
+                Analyzer.self.putRef(name.get(i), binding);
                 prev = mod;
-
             } else if (i == name.size() - 1) {
                 File startFile = new File(path + Globals.FILE_SUFFIX);
                 if (startFile.exists()) {
@@ -454,11 +456,16 @@ public class Analyzer {
                     if (mod == null) {
                         return null;
                     }
+
+                    Binding binding = Binding.createFileBinding(name.get(i).id, startFile.getPath(), mod);
+
                     if (prev != null) {
-                        prev.table.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+                        prev.table.update(name.get(i).id, binding);
                     } else {
-                        state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+                        state.update(name.get(i).id, binding);
                     }
+
+                    Analyzer.self.putRef(name.get(i), binding);
                     prev = mod;
                 } else {
                     return null;

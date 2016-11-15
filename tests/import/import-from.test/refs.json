@@ -1,6 +1,66 @@
 [
   {
     "ref": {
+      "name": "kitchen",
+      "file": "import-oven.py",
+      "start": 42,
+      "end": 49,
+      "line": 0,
+      "col": 0
+    },
+    "dests": [
+      {
+        "name": "kitchen",
+        "file": "kitchen/__init__.py",
+        "start": 0,
+        "end": 0,
+        "line": 0,
+        "col": 0,
+        "type": "kitchen"
+      },
+      {
+        "name": "kitchen",
+        "file": "kitchen/__init__.py",
+        "start": 0,
+        "end": 0,
+        "line": 0,
+        "col": 0,
+        "type": "kitchen"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "oven",
+      "file": "import-oven.py",
+      "start": 57,
+      "end": 61,
+      "line": 0,
+      "col": 0
+    },
+    "dests": [
+      {
+        "name": "oven",
+        "file": "kitchen/oven.py",
+        "start": 0,
+        "end": 0,
+        "line": 0,
+        "col": 0,
+        "type": "oven"
+      },
+      {
+        "name": "oven",
+        "file": "kitchen/oven.py",
+        "start": 0,
+        "end": 0,
+        "line": 0,
+        "col": 0,
+        "type": "oven"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "oven",
       "file": "import-oven.py",
       "start": 71,
@@ -11,9 +71,9 @@
     "dests": [
       {
         "name": "oven",
-        "file": "import-oven.py",
-        "start": 57,
-        "end": 61,
+        "file": "kitchen/oven.py",
+        "start": 0,
+        "end": 0,
         "line": 0,
         "col": 0,
         "type": "oven"
@@ -95,9 +155,9 @@
     "dests": [
       {
         "name": "oven",
-        "file": "import-oven.py",
-        "start": 57,
-        "end": 61,
+        "file": "kitchen/oven.py",
+        "start": 0,
+        "end": 0,
         "line": 0,
         "col": 0,
         "type": "oven"
@@ -164,6 +224,48 @@
         "line": 5,
         "col": 3,
         "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "kitchen",
+      "file": "import-pizza-from-oven.py",
+      "start": 55,
+      "end": 62,
+      "line": 0,
+      "col": 0
+    },
+    "dests": [
+      {
+        "name": "kitchen",
+        "file": "kitchen/__init__.py",
+        "start": 0,
+        "end": 0,
+        "line": 0,
+        "col": 0,
+        "type": "kitchen"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "oven",
+      "file": "import-pizza-from-oven.py",
+      "start": 63,
+      "end": 67,
+      "line": 0,
+      "col": 0
+    },
+    "dests": [
+      {
+        "name": "oven",
+        "file": "kitchen/oven.py",
+        "start": 0,
+        "end": 0,
+        "line": 0,
+        "col": 0,
+        "type": "oven"
       }
     ]
   },
@@ -295,6 +397,132 @@
   },
   {
     "ref": {
+      "name": "drawer",
+      "file": "import-same-level.py",
+      "start": 5,
+      "end": 11,
+      "line": 0,
+      "col": 0
+    },
+    "dests": [
+      {
+        "name": "drawer",
+        "file": "drawer.py",
+        "start": 0,
+        "end": 0,
+        "line": 0,
+        "col": 0,
+        "type": "drawer"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "Knife",
+      "file": "import-same-level.py",
+      "start": 19,
+      "end": 24,
+      "line": 0,
+      "col": 0
+    },
+    "dests": [
+      {
+        "name": "Knife",
+        "file": "drawer.py",
+        "start": 6,
+        "end": 11,
+        "line": 1,
+        "col": 7,
+        "type": "<Knife>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "Knife",
+      "file": "import-same-level.py",
+      "start": 31,
+      "end": 36,
+      "line": 3,
+      "col": 6
+    },
+    "dests": [
+      {
+        "name": "Knife",
+        "file": "drawer.py",
+        "start": 6,
+        "end": 11,
+        "line": 1,
+        "col": 7,
+        "type": "<Knife>"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "k1",
+      "file": "import-same-level.py",
+      "start": 45,
+      "end": 47,
+      "line": 4,
+      "col": 7
+    },
+    "dests": [
+      {
+        "name": "k1",
+        "file": "import-same-level.py",
+        "start": 26,
+        "end": 28,
+        "line": 3,
+        "col": 1,
+        "type": "Knife"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "length",
+      "file": "import-same-level.py",
+      "start": 48,
+      "end": 54,
+      "line": 4,
+      "col": 10
+    },
+    "dests": [
+      {
+        "name": "length",
+        "file": "drawer.py",
+        "start": 17,
+        "end": 23,
+        "line": 2,
+        "col": 5,
+        "type": "str"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "kitchen",
+      "file": "import-star-from-init.py",
+      "start": 53,
+      "end": 60,
+      "line": 0,
+      "col": 0
+    },
+    "dests": [
+      {
+        "name": "kitchen",
+        "file": "kitchen/__init__.py",
+        "start": 0,
+        "end": 0,
+        "line": 0,
+        "col": 0,
+        "type": "kitchen"
+      }
+    ]
+  },
+  {
+    "ref": {
       "name": "spoon",
       "file": "import-star-from-init.py",
       "start": 77,
@@ -395,6 +623,48 @@
         "line": 9,
         "col": 10,
         "type": "int"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "kitchen",
+      "file": "import-star-from-oven.py",
+      "start": 37,
+      "end": 44,
+      "line": 0,
+      "col": 0
+    },
+    "dests": [
+      {
+        "name": "kitchen",
+        "file": "kitchen/__init__.py",
+        "start": 0,
+        "end": 0,
+        "line": 0,
+        "col": 0,
+        "type": "kitchen"
+      }
+    ]
+  },
+  {
+    "ref": {
+      "name": "oven",
+      "file": "import-star-from-oven.py",
+      "start": 45,
+      "end": 49,
+      "line": 0,
+      "col": 0
+    },
+    "dests": [
+      {
+        "name": "oven",
+        "file": "kitchen/oven.py",
+        "start": 0,
+        "end": 0,
+        "line": 0,
+        "col": 0,
+        "type": "oven"
       }
     ]
   },

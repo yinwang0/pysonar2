@@ -103,6 +103,12 @@ public class Binding implements Comparable<Object> {
         }
     }
 
+    public static Binding createFileBinding(String name, String filename, Type type)
+    {
+        Node refNode = new Dummy(filename, 0, 0, 0, 0);
+        return new Binding(name, refNode, type, Binding.Kind.MODULE);
+    }
+
 
     public Str getDocstring() {
         Node parent = node.parent;

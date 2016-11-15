@@ -579,9 +579,13 @@ public class TypeInferencer implements Visitor1<Type, State> {
                     Type mod2 = Analyzer.self.loadModule(ext, s);
                     if (mod2 != null) {
                         if (a.asname != null) {
-                            s.insert(a.asname.id, a.asname, mod2, VARIABLE);
+                            Binding binding = Binding.createFileBinding(a.asname.id, mod2.file, mod2);
+                            s.update(a.asname.id, binding);
+                            Analyzer.self.putRef(a.asname, binding);
                         } else {
-                            s.insert(first.id, first, mod2, VARIABLE);
+                            Binding binding = Binding.createFileBinding(first.id, mod2.file, mod2);
+                            s.update(first.id, binding);
+                            Analyzer.self.putRef(first, binding);
                         }
                     }
                 }
