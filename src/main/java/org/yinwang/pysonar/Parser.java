@@ -696,17 +696,20 @@ public class Parser {
     // cpython ast doesn't have location information for names in the Alias node, thus we need to locate it here.
     private void locateNames(List<Alias> names, int start) {
         for (Alias a : names) {
-            Name first = a.name.get(0);
-            start = content.indexOf(first.id, start);
-            first.start = start;
-            first.end = start + first.id.length();
-            start = first.end;
-            if (a.asname != null) {
-                start = content.indexOf(a.asname.id, start);
-                a.asname.start = start;
-                a.asname.end = start + a.asname.id.length();
-                a.asname.file = file;  // file is missing for asname node
-                start = a.asname.end;
+            for (Name name: a.name)
+            {
+                start = content.indexOf(name.id, start);
+                name.start = start;
+                name.end = start + name.id.length();
+                start = name.end;
+                if (a.asname != null)
+                {
+                    start = content.indexOf(a.asname.id, start);
+                    a.asname.start = start;
+                    a.asname.end = start + a.asname.id.length();
+                    a.asname.file = file;  // file is missing for asname node
+                    start = a.asname.end;
+                }
             }
         }
     }

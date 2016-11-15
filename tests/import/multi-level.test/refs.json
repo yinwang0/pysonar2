@@ -24,8 +24,8 @@
     "ref": {
       "name": "oven",
       "file": "bedroom.py",
-      "start": -1,
-      "end": -1,
+      "start": 15,
+      "end": 19,
       "line": 0,
       "col": 0
     },
