@@ -459,6 +459,15 @@ public class TypeInferencer implements Visitor1<Type, State> {
         visit(node.test, s);
         inferInstance(node.test, s, s1);
 
+        // Prerun for removing order dependency in recursion
+        if (node.body != null) {
+            visit(node.body, s1);
+        }
+
+        if (node.orelse != null) {
+            visit(node.orelse, s2);
+        }
+
         if (node.body != null) {
             type1 = visit(node.body, s1);
         } else {
