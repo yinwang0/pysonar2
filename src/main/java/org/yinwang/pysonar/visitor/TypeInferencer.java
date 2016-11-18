@@ -8,6 +8,7 @@ import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Builtins;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.ast.*;
+import org.yinwang.pysonar.types.CallStackEntry;
 import org.yinwang.pysonar.types.ClassType;
 import org.yinwang.pysonar.types.DictType;
 import org.yinwang.pysonar.types.FunType;
@@ -735,7 +736,16 @@ public class TypeInferencer implements Visitor1<Type, State> {
         if (node.value == null) {
             return Types.NoneInstance;
         } else {
-            return visit(node.value, s);
+            Type result = visit(node.value, s);
+
+            CallStackEntry entry = Analyzer.self.callStack.top();
+            if (entry != null && entry.fun instanceof FunType)
+            {
+                FunType fun = (FunType) entry.fun;
+                fun.addMapping(entry.from, result);
+            }
+
+            return result;
         }
     }
 
@@ -1107,7 +1117,9 @@ public class TypeInferencer implements Visitor1<Type, State> {
             return Types.UNKNOWN;
         } else {
             func.addMapping(fromType, Types.UNKNOWN);
+            Analyzer.self.callStack.push(new CallStackEntry(func, fromType));
             Type toType = visit(func.func.body, callState);
+            Analyzer.self.callStack.pop();
             if (missingReturn(toType)) {
                 addWarningToNode(func.func.name, "Function not always return a value");
 

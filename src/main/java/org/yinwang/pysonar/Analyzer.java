@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Name;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Url;
+import org.yinwang.pysonar.types.CallStackEntry;
 import org.yinwang.pysonar.types.ClassType;
 import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.ModuleType;
@@ -54,6 +55,7 @@ public class Analyzer {
 
     public String projectDir;
     public String modelDir;
+    public Stack<CallStackEntry> callStack = new Stack<>();
 
     public Map<String, Object> options;
 
