@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Name;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Url;
-import org.yinwang.pysonar.types.CallStackEntry;
 import org.yinwang.pysonar.types.ClassType;
 import org.yinwang.pysonar.types.FunType;
 import org.yinwang.pysonar.types.ModuleType;

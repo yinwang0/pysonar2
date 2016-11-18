@@ -8,7 +8,7 @@ import org.yinwang.pysonar.Binding;
 import org.yinwang.pysonar.Builtins;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.ast.*;
-import org.yinwang.pysonar.types.CallStackEntry;
+import org.yinwang.pysonar.CallStackEntry;
 import org.yinwang.pysonar.types.ClassType;
 import org.yinwang.pysonar.types.DictType;
 import org.yinwang.pysonar.types.FunType;
@@ -748,10 +748,9 @@ public class TypeInferencer implements Visitor1<Type, State> {
             Type result = visit(node.value, s);
 
             CallStackEntry entry = Analyzer.self.callStack.top();
-            if (entry != null && entry.fun instanceof FunType)
+            if (entry != null)
             {
-                FunType fun = (FunType) entry.fun;
-                fun.addMapping(entry.from, result);
+                entry.fun.addMapping(entry.from, result);
             }
 
             return result;
