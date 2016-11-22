@@ -241,7 +241,7 @@ public class $ {
                         entryInputStream = jarFile.getInputStream(entry);
                         FileUtils.copyInputStreamToFile(entryInputStream, new File(destination, fileName));
                     } catch (Exception e) {
-                        die("Failed to copy resource: " + fileName);
+                        die("Failed to copy resource: " + fileName, e);
                     } finally {
                         if (entryInputStream != null) {
                             try {

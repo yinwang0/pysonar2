@@ -121,6 +121,16 @@ public class TypeInferencer implements Visitor1<Type, State> {
             return ltype;
         } else if (ltype.typeEquals(rtype)) {
             return ltype;
+        } else if (node.op == Op.Or) {
+            if (rtype == Types.NoneInstance) {
+                return ltype;
+            } else if (ltype == Types.NoneInstance) {
+                return rtype;
+            }
+        } else if (node.op == Op.And) {
+            if (rtype == Types.NoneInstance || ltype == Types.NoneInstance) {
+                return Types.NoneInstance;
+            }
         }
 
         addWarningToNode(node, "Cannot apply binary operator " + node.op.getRep() + " to type " + ltype + " and " + rtype);
