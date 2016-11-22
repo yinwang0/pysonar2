@@ -54,6 +54,7 @@ public class Analyzer {
 
     public String projectDir;
     public String modelDir;
+    public Stack<CallStackEntry> callStack = new Stack<>();
 
     public Map<String, Object> options;
 
