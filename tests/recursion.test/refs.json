@@ -122,15 +122,6 @@
         "line": 15,
         "col": 9,
         "type": "A"
-      },
-      {
-        "name": "a",
-        "file": "test1.py",
-        "start": 186,
-        "end": 187,
-        "line": 15,
-        "col": 9,
-        "type": "A"
       }
     ]
   },
