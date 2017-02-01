@@ -214,20 +214,12 @@ public class TypeInferencer implements Visitor1<Type, State> {
             Node target = ((Attribute) node.func).target;
             Name attr = ((Attribute) node.func).attr;
             selfType = visit(target, s);
-            if (selfType instanceof InstanceType ||
-                selfType instanceof ClassType)
-            {
-                Set<Binding> b = selfType.table.lookupAttr(attr.id);
-                if (b != null)
-                {
-                    Analyzer.self.putRef(attr, b);
-                    fun = State.makeUnion(b);
-                } else {
-                    Analyzer.self.putProblem(attr, "Attribute is not found: " + attr.id);
-                    fun = Types.UNKNOWN;
-                }
+            Set<Binding> b = selfType.table.lookupAttr(attr.id);
+            if (b != null) {
+                Analyzer.self.putRef(attr, b);
+                fun = State.makeUnion(b);
             } else {
-                Analyzer.self.putProblem(target, "Attribute target is not instance type or class type");
+                Analyzer.self.putProblem(attr, "Attribute is not found in type: " + attr.id);
                 fun = Types.UNKNOWN;
             }
         } else {
