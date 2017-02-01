@@ -206,13 +206,24 @@ public class TypeInferencer implements Visitor1<Type, State> {
     @NotNull
     @Override
     public Type visit(Call node, State s) {
-        Type fun = visit(node.func, s);
+        Type fun;
         Type selfType = null;
 
         if (node.func instanceof Attribute)
         {
             Node target = ((Attribute) node.func).target;
+            Name attr = ((Attribute) node.func).attr;
             selfType = visit(target, s);
+            Set<Binding> b = selfType.table.lookupAttr(attr.id);
+            if (b != null) {
+                Analyzer.self.putRef(attr, b);
+                fun = State.makeUnion(b);
+            } else {
+                Analyzer.self.putProblem(attr, "Attribute is not found in type: " + attr.id);
+                fun = Types.UNKNOWN;
+            }
+        } else {
+            fun = visit(node.func, s);
         }
 
         // Infer positional argument types
