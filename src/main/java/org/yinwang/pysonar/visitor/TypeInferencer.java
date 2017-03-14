@@ -1098,7 +1098,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
                 }
             } else {
                 // usual method
-                if (selfType != null) {
+                if (selfType != null && !(selfType instanceof ModuleType)) {
                     argTypes.add(selfType);
                 } else {
                     if (func.cls != null) {
