@@ -213,8 +213,11 @@ public class TypeInferencer implements Visitor1<Type, State> {
         {
             Node target = ((Attribute) node.func).target;
             Name attr = ((Attribute) node.func).attr;
-            selfType = visit(target, s);
-            Set<Binding> b = selfType.table.lookupAttr(attr.id);
+            Type targetType = visit(target, s);
+            if (!(targetType instanceof ModuleType)) {
+                selfType = targetType;
+            }
+            Set<Binding> b = targetType.table.lookupAttr(attr.id);
             if (b != null) {
                 Analyzer.self.putRef(attr, b);
                 fun = State.makeUnion(b);

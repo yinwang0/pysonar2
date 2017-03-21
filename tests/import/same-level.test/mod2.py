@@ -1,2 +1,6 @@
 class B:
-  a = 'hi'
+    a = 'hi'
+
+
+def foo(x):
+    return x + 1
