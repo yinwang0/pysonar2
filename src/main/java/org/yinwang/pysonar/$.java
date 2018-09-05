@@ -135,7 +135,7 @@ public class $ {
 
     @NotNull
     public static String arrayToString(@NotNull Collection<String> strings) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (String s : strings) {
             sb.append(s).append("\n");
         }
