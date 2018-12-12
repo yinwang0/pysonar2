@@ -468,7 +468,7 @@ public class Parser {
             if (value == null) {
                 strVal = "None";
             } else if (value instanceof Boolean) {
-                strVal = ((Boolean) value) ? "true" : "false";
+                strVal = ((Boolean) value) ? "True" : "False";
             } else if (value instanceof String) {
                 strVal = (String) value;
             } else {
