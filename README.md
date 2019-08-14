@@ -13,7 +13,7 @@ infer types.
 ### Get the code
 
     git clone https://github.com/yinwang0/pysonar2.git
-    git checkout tags/v2.1.1
+    git checkout tags/v2.1.2
 
 
 ### How to build
@@ -41,7 +41,7 @@ end-user tool.
 
 * Python 2.7.x
 * Python 3.x
-* Java 8
+* Java 8+
 * maven
 
 
