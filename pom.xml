@@ -16,7 +16,7 @@
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
         <maven-shade-plugin.version>2.1</maven-shade-plugin.version>
         <gson-version>2.2.4</gson-version>
-        <jackson-2-version>2.2.3</jackson-2-version>
+        <jackson-version>[2.9.9.2,)</jackson-version>
     </properties>
 
     <dependencies>
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>${jackson-2-version}</version>
+            <version>${jackson-version}</version>
         </dependency>
 
         <!-- Just the annotations; use this dependency if you want to attach annotations
@@ -55,14 +55,14 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>${jackson-2-version}</version>
+            <version>${jackson-version}</version>
         </dependency>
 
         <!-- databinding; ObjectMapper, JsonNode and related classes are here -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson-2-version}</version>
+            <version>${jackson-version}</version>
         </dependency>
 
         <dependency>
