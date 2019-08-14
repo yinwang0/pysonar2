@@ -2,7 +2,7 @@ package org.yinwang.pysonar;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.yinwang.pysonar.ast.Module;
+import org.yinwang.pysonar.ast.PyModule;
 import org.yinwang.pysonar.ast.Node;
 
 import java.io.*;
@@ -134,7 +134,7 @@ public class AstCache {
 
     // package-private for testing
     @Nullable
-    Module getSerializedModule(String sourcePath) {
+    PyModule getSerializedModule(String sourcePath) {
         if (!new File(sourcePath).canRead()) {
             return null;
         }
@@ -148,14 +148,14 @@ public class AstCache {
 
     // package-private for testing
     @Nullable
-    Module deserialize(@NotNull String sourcePath) {
+    PyModule deserialize(@NotNull String sourcePath) {
         String cachePath = getCachePath(sourcePath);
         FileInputStream fis = null;
         ObjectInputStream ois = null;
         try {
             fis = new FileInputStream(cachePath);
             ois = new ObjectInputStream(fis);
-            return (Module) ois.readObject();
+            return (PyModule) ois.readObject();
         } catch (Exception e) {
             return null;
         } finally {

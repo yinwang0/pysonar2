@@ -43,7 +43,7 @@ public class TypeInferencer implements Visitor1<Type, State>
 
     @NotNull
     @Override
-    public Type visit(Module node, State s)
+    public Type visit(PyModule node, State s)
     {
         ModuleType mt = new ModuleType(node.name, node.file, Analyzer.self.globaltable);
         s.insert($.moduleQname(node.file), node, mt, MODULE);
