@@ -13,7 +13,7 @@ public class PySet extends Sequence {
     @NotNull
     @Override
     public String toString() {
-        return "<List:" + start + ":" + elts + ">";
+        return "<Set:" + start + ":" + elts + ">";
     }
 
 }
