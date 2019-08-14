@@ -23,7 +23,7 @@ class AstEncoder(JSONEncoder):
                             dic[key] = lines[dic['start']:dic['end']]
                         else:
                             dic[key] = dic[key].decode(enc)
-            dic['type'] = obj.__class__.__name__
+            dic['pysonar_node_type'] = obj.__class__.__name__
             return dic
         else:
             return str(obj)

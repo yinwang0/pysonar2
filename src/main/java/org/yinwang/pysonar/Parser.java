@@ -113,7 +113,7 @@ public class Parser {
 
         Map<String, Object> map = (Map<String, Object>) o;
 
-        String type = (String) map.get("type");
+        String type = (String) map.get("pysonar_node_type");
         Double startDouble = (Double) map.get("start");
         Double endDouble = (Double) map.get("end");
         Double lineDouble = (Double) map.get("lineno");
@@ -668,7 +668,7 @@ public class Parser {
             return new Yield(value, file, start, end, line, col);
         }
 
-        $.msg("\n[Please Report]: unexpected ast node: " + map.get("type"));
+        $.msg("\n[Please Report]: unexpected ast node: " + type);
         return new Unsupported(file, start, end, line, col);
     }
 
@@ -771,7 +771,7 @@ public class Parser {
 
 
     public Op convertOp(Object map) {
-        String type = (String) ((Map<String, Object>) map).get("type");
+        String type = (String) ((Map<String, Object>) map).get("pysonar_node_type");
 
         if (type.equals("Add") || type.equals("UAdd")) {
             return Op.Add;
