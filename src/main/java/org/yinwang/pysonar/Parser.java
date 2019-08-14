@@ -948,7 +948,7 @@ public class Parser {
         file = filename;
         content = $.readFile(filename);
 
-        Node node2 = parseFileInner(filename, python2Process);
+        Node node2 = python2Process == null ? null : parseFileInner(filename, python2Process);
         if (node2 != null) {
             return node2;
         } else if (python3Process != null) {
