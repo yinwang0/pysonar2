@@ -125,7 +125,7 @@ public class Parser {
         int col = colDouble == null ? 1 : colDouble.intValue() + 1;
 
 
-        if (type.equals("PyModule")) {
+        if (type.equals("Module")) {
             Block b = convertBlock(map.get("body"));
             return new PyModule(b, file, start, end, line, col);
         }
