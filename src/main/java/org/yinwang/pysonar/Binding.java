@@ -91,8 +91,8 @@ public class Binding implements Comparable<Object> {
         {
             bodyStart = parent.start;
             bodyEnd = parent.end;
-        } else if (node instanceof Module) {
-            name = ((Module) node).name;
+        } else if (node instanceof PyModule) {
+            name = ((PyModule) node).name;
             start = 0;
             end = 0;
             bodyStart = node.start;

@@ -78,7 +78,7 @@ public interface Visitor2<T, P, Q> {
             case LISTCOMP:
                 return visit((ListComp)node, param1, param2);
             case MODULE:
-                return visit((Module)node, param1, param2);
+                return visit((PyModule)node, param1, param2);
             case NAME:
                 return visit((Name)node, param1, param2);
             case PASS:
@@ -191,7 +191,7 @@ public interface Visitor2<T, P, Q> {
     T visit(Index node, P param1, Q param2);
     T visit(Keyword node, P param1, Q param2);
     T visit(ListComp node, P param1, Q param2);
-    T visit(Module node, P param1, Q param2);
+    T visit(PyModule node, P param1, Q param2);
     T visit(Name node, P param1, Q param2);
     T visit(Pass node, P param1, Q param2);
     T visit(Print node, P param1, Q param2);

@@ -78,7 +78,7 @@ public interface Visitor0<T> {
             case LISTCOMP:
                 return visit((ListComp)node);
             case MODULE:
-                return visit((Module)node);
+                return visit((PyModule)node);
             case NAME:
                 return visit((Name)node);
             case NODE:
@@ -193,7 +193,7 @@ public interface Visitor0<T> {
     T visit(Index node);
     T visit(Keyword node);
     T visit(ListComp node);
-    T visit(Module node);
+    T visit(PyModule node);
     T visit(Name node);
     T visit(Pass node);
     T visit(Print node);

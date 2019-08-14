@@ -125,9 +125,9 @@ public class Parser {
         int col = colDouble == null ? 1 : colDouble.intValue() + 1;
 
 
-        if (type.equals("Module")) {
+        if (type.equals("PyModule")) {
             Block b = convertBlock(map.get("body"));
-            return new Module(b, file, start, end, line, col);
+            return new PyModule(b, file, start, end, line, col);
         }
 
         if (type.equals("alias")) {         // lower case alias

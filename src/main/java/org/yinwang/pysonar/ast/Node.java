@@ -87,8 +87,8 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
             body = ((FunctionDef) this).body;
         } else if (this instanceof ClassDef) {
             body = ((ClassDef) this).body;
-        } else if (this instanceof Module) {
-            body = ((Module) this).body;
+        } else if (this instanceof PyModule) {
+            body = ((PyModule) this).body;
         }
 
         if (body instanceof Block && ((Block) body).seq.size() >= 1) {
