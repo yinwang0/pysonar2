@@ -75,10 +75,8 @@ class Linker {
         }
 
         if (Analyzer.self.hasOption("report")) {
-            for (List<Diagnostic> ld : analyzer.semanticErrors.values()) {
-                for (Diagnostic d : ld) {
-                    processDiagnostic(d);
-                }
+            for (Diagnostic d : analyzer.semanticErrors.values()) {
+                processDiagnostic(d);
             }
         }
     }

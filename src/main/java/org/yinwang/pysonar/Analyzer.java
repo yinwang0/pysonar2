@@ -1,27 +1,18 @@
 package org.yinwang.pysonar;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.ast.Name;
 import org.yinwang.pysonar.ast.Node;
 import org.yinwang.pysonar.ast.Url;
-import org.yinwang.pysonar.types.ClassType;
-import org.yinwang.pysonar.types.FunType;
-import org.yinwang.pysonar.types.ModuleType;
-import org.yinwang.pysonar.types.Type;
-import org.yinwang.pysonar.types.UnionType;
+import org.yinwang.pysonar.types.*;
 import org.yinwang.pysonar.visitor.TypeInferencer;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 public class Analyzer {
@@ -37,7 +28,7 @@ public class Analyzer {
     private Map<Node, List<Binding>> references = new LinkedHashMap<>();
     public Set<Name> resolved = new HashSet<>();
     public Set<Name> unresolved = new HashSet<>();
-    public Map<String, List<Diagnostic>> semanticErrors = new HashMap<>();
+    public ListMultimap<String, Diagnostic> semanticErrors = ArrayListMultimap.create();
     public String cwd = null;
     public int nCalled = 0;
     public boolean multilineFunType = false;
@@ -268,17 +259,7 @@ public class Analyzer {
 
     void addFileErr(String file, int begin, int end, String msg) {
         Diagnostic d = new Diagnostic(file, Diagnostic.Category.ERROR, begin, end, msg);
-        getFileErrs(file, semanticErrors).add(d);
-    }
-
-
-    List<Diagnostic> getFileErrs(String file, @NotNull Map<String, List<Diagnostic>> map) {
-        List<Diagnostic> msgs = map.get(file);
-        if (msgs == null) {
-            msgs = new ArrayList<>();
-            map.put(file, msgs);
-        }
-        return msgs;
+        semanticErrors.put(file, d);
     }
 
 

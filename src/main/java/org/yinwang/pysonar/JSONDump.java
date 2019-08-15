@@ -12,7 +12,6 @@ import org.yinwang.pysonar.types.UnionType;
 
 import java.io.*;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,10 +41,9 @@ public class JSONDump {
 
         if (idx.semanticErrors.size() > 0) {
             log.info("Analyzer errors:");
-            for (Entry<String, List<Diagnostic>> entry : idx.semanticErrors.entrySet()) {
-                String k = entry.getKey();
-                log.info("  Key: " + k);
-                List<Diagnostic> diagnostics = entry.getValue();
+            for (String file : idx.semanticErrors.keys()) {
+                log.info("  File: " + file);
+                Collection<Diagnostic> diagnostics = idx.semanticErrors.get(file);
                 for (Diagnostic d : diagnostics) {
                     log.info("    " + d);
                 }
@@ -86,8 +84,7 @@ public class JSONDump {
 
             if (Binding.Kind.FUNCTION == binding.kind ||
                     Binding.Kind.METHOD == binding.kind ||
-                    Binding.Kind.CONSTRUCTOR == binding.kind)
-            {
+                    Binding.Kind.CONSTRUCTOR == binding.kind) {
                 json.writeObjectFieldStart("funcData");
 
                 // get args expression
@@ -167,8 +164,7 @@ public class JSONDump {
                               String[] inclpaths,
                               OutputStream symOut,
                               OutputStream refOut,
-                              OutputStream docOut) throws Exception
-    {
+                              OutputStream docOut) throws Exception {
         // Compute parent dirs, sort by length so potential prefixes show up first
         List<String> parentDirs = Lists.newArrayList(inclpaths);
         parentDirs.add(dirname(srcpath));
