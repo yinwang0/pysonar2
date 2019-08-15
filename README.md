@@ -74,7 +74,7 @@ Because of the highly complex and unpublished theory behind this project, things
 with even an innocent-looking change. If you hope to contribute to PySonar2, please discuss with me
 first before making big changes, otherwise I may not be able to review your changes.
 
-For basic verification, you can run the unit tests. PySonar2 has a basid test framework. You can run
+For basic verification, you can run the unit tests. PySonar2 has a basic test framework. You can run
 the tests using this command:
 
     mvn test
@@ -87,6 +87,8 @@ If you modify the code or tests, you need to generate new expected results. Run 
 To write new tests, you just need to write relevant Python files, put them into a directory named
 `tests/testname.test`(test directory name must end with ".test"). Please look at the `tests`
 directory for examples.
+
+Please don't expect the tests to catch all bugs.
 
 
 ### License
