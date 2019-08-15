@@ -1,9 +1,14 @@
 <img src="https://travis-ci.org/yinwang0/pysonar2.svg?branch=master">
 
-# PySonar2 - a type inferencer for Python
+# PySonar2 - an advanced semantic indexer for Python
 
-PySonar2 is a type inferencer for Python. It performs whole-project interprocedural analysis to
-infer types.
+PySonar2 is a semantic indexer library for Python.
+
+In order to improve the accuracy and quality of the index, PySonar2 performs whole-project 
+interprocedural analysis to infer types of variables, parameters and functions.
+
+PySonar2 is the underlying indexing engine for several code navigation services, such as Google's internal Code Search 
+service, Sourcegraph and Insight.io (now part of Elasticsearch). It has been used to index millions of lines of Python code.
 
 <a href="http://www.yinwang.org/resources/demos/pysonar2/email/header.py.html">
 <img src="http://www.yinwang.org/images/pysonar2.gif" width="70%">
@@ -28,13 +33,13 @@ the following command line:
 
     java -jar target/pysonar-<version>.jar /usr/lib/python2.7 ./html
 
-This will take a few minutes. You should find some interactive HTML files inside
+This may take a few minutes. You should find some interactive HTML files inside
 the _html_ directory after this process.
 
-Note that this is just a demo program. PySonar2 is not an end-user tool.
-It is mainly designed as a library for Python IDEs, other developer
-tools and code search engines, so its interface may not be as appealing as an
-end-user tool.
+Note that this is just a simple demo program based on the library. PySonar2 is 
+not meant to be an end-user tool. It is mainly designed as a library for Python IDEs, 
+developer tools and code search engines, so its interface may not be as appealing 
+as an end-user tool.
 
 
 ### System requirements
@@ -48,7 +53,7 @@ end-user tool.
 
 ### Environment variables
 
-PySonar2 uses CPython's ast package to parse Python code, so please make sure
+PySonar2 uses CPython's `ast` package to parse Python code, so please make sure
 you have `python` or `python3` installed and pointed to by the `PATH`
 environment variable. If you have them in different names, please make symbol
 links.
@@ -65,9 +70,11 @@ If this is not set up correctly, references to library code will not be found.
 
 ### Development
 
-If you hope to contribute to PySonar2, please contact me first before making big changes.
+Because of the high complexity of the theory behind this project, things may go wrong easily with even an innocent-looking 
+change.  If you hope to contribute to PySonar2, please discuss with me first before making big changes, otherwise I may 
+not be able to review your changes.
 
-For development, you can run the unit tests. PySonar2 has a test framework. You can run the
+For basic verification, you can run the unit tests. PySonar2 has a basid test framework. You can run the
 tests using this command:
 
     mvn test
