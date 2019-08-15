@@ -54,10 +54,10 @@ public class TestInference
     public void generateRefs(Analyzer analyzer)
     {
         List<Map<String, Object>> refs = new ArrayList<>();
-        for (Map.Entry<Node, List<Binding>> e : analyzer.getReferences().entrySet())
+        for (Node node: analyzer.references.keys())
         {
-            String filename = e.getKey().file;
-            List<Binding> bindings = e.getValue();
+            String filename = node.file;
+            List<Binding> bindings = analyzer.references.get(node);
 
             // only record those in the testFile
             if (filename != null && filename.startsWith(Analyzer.self.projectDir))
@@ -66,12 +66,12 @@ public class TestInference
                 Map<String, Object> writeout = new LinkedHashMap<>();
 
                 Map<String, Object> ref = new LinkedHashMap<>();
-                ref.put("name", e.getKey().name);
+                ref.put("name", node.name);
                 ref.put("file", filename);
-                ref.put("start", e.getKey().start);
-                ref.put("end", e.getKey().end);
-                ref.put("line", e.getKey().line);
-                ref.put("col", e.getKey().col);
+                ref.put("start", node.start);
+                ref.put("end", node.end);
+                ref.put("line", node.line);
+                ref.put("col", node.col);
 
                 List<Map<String, Object>> dests = new ArrayList<>();
                 Collections.sort(bindings, (a, b) -> a.start == b.start ? a.end - b.end : a.start - b.start);
@@ -123,7 +123,7 @@ public class TestInference
             Dummy dummy = makeDummy(refMap);
 
             List<Map<String, Object>> dests = (List) r.get("dests");
-            List<Binding> actual = analyzer.getReferences().get(dummy);
+            List<Binding> actual = analyzer.references.get(dummy);
 
             for (Map<String, Object> d : dests)
             {

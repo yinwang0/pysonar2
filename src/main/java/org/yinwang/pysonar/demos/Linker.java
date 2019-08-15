@@ -63,13 +63,13 @@ class Linker {
 
         // highlight definitions
         $.msg("\nAdding ref links");
-        progress = new Progress(analyzer.getReferences().size(), 50);
+        progress = new Progress(analyzer.references.size(), 50);
 
-        for (Entry<Node, List<Binding>> e : analyzer.getReferences().entrySet()) {
+        for (Node node: analyzer.references.keys()) {
             if (Analyzer.self.hasOption("debug")) {
-                processRefDebug(e.getKey(), e.getValue());
+                processRefDebug(node, analyzer.references.get(node));
             } else {
-                processRef(e.getKey(), e.getValue());
+                processRef(node, analyzer.references.get(node));
             }
             progress.tick();
         }
