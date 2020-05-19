@@ -108,8 +108,7 @@ public class Demo {
             return "";
         }
 
-        List<Style> styles = new ArrayList<>();
-        styles.addAll(linker.getStyles(path));
+        List<Style> styles = new ArrayList<>(linker.getStyles(path));
 
         String styledSource = new StyleApplier(path, source, styles).apply();
         String outline = new HtmlOutline(analyzer).generate(path);

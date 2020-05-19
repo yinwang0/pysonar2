@@ -130,8 +130,7 @@ public class $ {
 
     @NotNull
     public static String arrayToSortedStringSet(Collection<String> strings) {
-        Set<String> sorter = new TreeSet<>();
-        sorter.addAll(strings);
+        Set<String> sorter = new TreeSet<>(strings);
         return arrayToString(sorter);
     }
 
