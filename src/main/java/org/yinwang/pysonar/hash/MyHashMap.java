@@ -97,22 +97,26 @@ public class MyHashMap<K, V>
     }
 
 
+    @Override
     public int size() {
         return size;
     }
 
 
+    @Override
     public boolean isEmpty() {
         return size == 0;
     }
 
 
+    @Override
     public V get(@NotNull Object key) {
         Entry<K, V> entry = getEntry(key);
         return entry == null ? null : entry.getValue();
     }
 
 
+    @Override
     public boolean containsKey(@NotNull Object key) {
         return getEntry(key) != null;
     }
@@ -136,6 +140,7 @@ public class MyHashMap<K, V>
     }
 
 
+    @Override
     public V put(@NotNull K key, V value) {
         if (isEmpty()) {
             initTable(threshold);
@@ -176,6 +181,7 @@ public class MyHashMap<K, V>
     }
 
 
+    @Override
     public void putAll(Map<? extends K, ? extends V> m) {
         for (Map.Entry<? extends K, ? extends V> e : m.entrySet()) {
             put(e.getKey(), e.getValue());
@@ -183,6 +189,7 @@ public class MyHashMap<K, V>
     }
 
 
+    @Override
     public V remove(Object key) {
         Entry<K, V> e = removeEntry(key);
         return e == null ? null : e.value;
@@ -245,6 +252,7 @@ public class MyHashMap<K, V>
     }
 
 
+    @Override
     public void clear() {
         modCount++;
         Arrays.fill(table, null);
@@ -252,6 +260,7 @@ public class MyHashMap<K, V>
     }
 
 
+    @Override
     public boolean containsValue(Object value) {
         if (value == null) {
             return containsNullValue();
@@ -297,16 +306,19 @@ public class MyHashMap<K, V>
         }
 
 
+        @Override
         public final K getKey() {
             return key;
         }
 
 
+        @Override
         public final V getValue() {
             return value;
         }
 
 
+        @Override
         public final V setValue(V newValue) {
             V oldValue = value;
             value = newValue;
@@ -314,6 +326,7 @@ public class MyHashMap<K, V>
         }
 
 
+        @Override
         public final boolean equals(Object o) {
             if (!(o instanceof Map.Entry)) {
                 return false;
@@ -332,11 +345,13 @@ public class MyHashMap<K, V>
         }
 
 
+        @Override
         public final int hashCode() {
             return Objects.hashCode(getKey()) ^ Objects.hashCode(getValue());
         }
 
 
+        @Override
         public final String toString() {
             return getKey() + "=" + getValue();
         }
@@ -383,6 +398,7 @@ public class MyHashMap<K, V>
         }
 
 
+        @Override
         public final boolean hasNext() {
             return next != null;
         }
@@ -413,6 +429,7 @@ public class MyHashMap<K, V>
         }
 
 
+        @Override
         public void remove() {
             if (current == null) {
                 throw new IllegalStateException();
@@ -428,24 +445,28 @@ public class MyHashMap<K, V>
     }
 
     private final class ValueIterator extends HashIterator<V> {
+        @Override
         public V next() {
             return nextEntry().value;
         }
     }
 
     private final class KeyIterator extends HashIterator<K> {
+        @Override
         public K next() {
             return nextEntry().getKey();
         }
     }
 
     private final class EntryIterator extends HashIterator<Map.Entry<K, V>> {
+        @Override
         public Map.Entry<K, V> next() {
             return nextEntry();
         }
     }
 
 
+    @Override
     public Set<K> keySet() {
         if (keySet == null) {
             keySet = new KeySet();
@@ -455,32 +476,38 @@ public class MyHashMap<K, V>
 
 
     private final class KeySet extends AbstractSet<K> {
+        @Override
         public Iterator<K> iterator() {
             return new KeyIterator();
         }
 
 
+        @Override
         public int size() {
             return size;
         }
 
 
+        @Override
         public boolean contains(Object o) {
             return containsKey(o);
         }
 
 
+        @Override
         public boolean remove(Object o) {
             return MyHashMap.this.removeEntry(o) != null;
         }
 
 
+        @Override
         public void clear() {
             MyHashMap.this.clear();
         }
     }
 
 
+    @Override
     public Collection<V> values() {
         if (values == null) {
             values = new Values();
@@ -490,27 +517,32 @@ public class MyHashMap<K, V>
 
 
     private final class Values extends AbstractCollection<V> {
+        @Override
         public Iterator<V> iterator() {
             return new ValueIterator();
         }
 
 
+        @Override
         public int size() {
             return size;
         }
 
 
+        @Override
         public boolean contains(Object o) {
             return containsValue(o);
         }
 
 
+        @Override
         public void clear() {
             MyHashMap.this.clear();
         }
     }
 
 
+    @Override
     public Set<Map.Entry<K, V>> entrySet() {
         if (entrySet == null) {
             entrySet = new EntrySet();
@@ -520,11 +552,13 @@ public class MyHashMap<K, V>
 
 
     private final class EntrySet extends AbstractSet<Map.Entry<K, V>> {
+        @Override
         public Iterator<Map.Entry<K, V>> iterator() {
             return new EntryIterator();
         }
 
 
+        @Override
         public boolean contains(Object o) {
             if (!(o instanceof Map.Entry)) {
                 return false;
@@ -535,6 +569,7 @@ public class MyHashMap<K, V>
         }
 
 
+        @Override
         public boolean remove(Object o) {
             if (isEmpty() || !(o instanceof Map.Entry)) {
                 return false;
@@ -543,11 +578,13 @@ public class MyHashMap<K, V>
         }
 
 
+        @Override
         public int size() {
             return size;
         }
 
 
+        @Override
         public void clear() {
             MyHashMap.this.clear();
         }

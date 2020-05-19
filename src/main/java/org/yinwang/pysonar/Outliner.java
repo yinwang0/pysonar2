@@ -150,26 +150,31 @@ public class Outliner {
         }
 
 
+        @Override
         public boolean isLeaf() {
             return false;
         }
 
 
+        @Override
         public boolean isBranch() {
             return true;
         }
 
 
+        @Override
         public boolean hasChildren() {
             return children != null && !children.isEmpty();
         }
 
 
+        @Override
         public List<Entry> getChildren() {
             return children;
         }
 
 
+        @Override
         public void setChildren(List<Entry> children) {
             this.children = children;
         }
@@ -180,11 +185,13 @@ public class Outliner {
      * An entry with no children.
      */
     public static class Leaf extends Entry {
+        @Override
         public boolean isLeaf() {
             return true;
         }
 
 
+        @Override
         public boolean isBranch() {
             return false;
         }
@@ -199,17 +206,20 @@ public class Outliner {
         }
 
 
+        @Override
         public boolean hasChildren() {
             return false;
         }
 
 
+        @Override
         @NotNull
         public List<Entry> getChildren() {
             return new ArrayList<>();
         }
 
 
+        @Override
         public void setChildren(List<Entry> children) {
             throw new UnsupportedOperationException("Leaf nodes cannot have children.");
         }

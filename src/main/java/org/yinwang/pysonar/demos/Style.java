@@ -71,6 +71,7 @@ public class Style implements Comparable<Style> {
     }
 
 
+    @Override
     public int compareTo(@NotNull Style other) {
         if (this.equals(other)) {
             return 0;
