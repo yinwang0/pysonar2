@@ -270,7 +270,7 @@ public class $ {
 
         algorithm.reset();
         algorithm.update(fileContents);
-        byte messageDigest[] = algorithm.digest();
+        byte[] messageDigest = algorithm.digest();
         StringBuilder sb = new StringBuilder();
         for (byte aMessageDigest : messageDigest) {
             sb.append(String.format("%02x", 0xFF & aMessageDigest));
