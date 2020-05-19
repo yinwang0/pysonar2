@@ -130,8 +130,7 @@ public class $ {
 
     @NotNull
     public static String arrayToSortedStringSet(Collection<String> strings) {
-        Set<String> sorter = new TreeSet<>();
-        sorter.addAll(strings);
+        Set<String> sorter = new TreeSet<>(strings);
         return arrayToString(sorter);
     }
 
@@ -270,7 +269,7 @@ public class $ {
 
         algorithm.reset();
         algorithm.update(fileContents);
-        byte messageDigest[] = algorithm.digest();
+        byte[] messageDigest = algorithm.digest();
         StringBuilder sb = new StringBuilder();
         for (byte aMessageDigest : messageDigest) {
             sb.append(String.format("%02x", 0xFF & aMessageDigest));
@@ -279,7 +278,7 @@ public class $ {
     }
 
 
-    static public String escapeQname(@NotNull String s) {
+    public static String escapeQname(@NotNull String s) {
         return s.replaceAll("[.&@%-]", "_");
     }
 
@@ -300,7 +299,7 @@ public class $ {
 
 
     @NotNull
-    static public String joinWithSep(@NotNull Collection<String> ls, String sep, @Nullable String start,
+    public static String joinWithSep(@NotNull Collection<String> ls, String sep, @Nullable String start,
                                      @Nullable String end)
     {
         StringBuilder sb = new StringBuilder();
@@ -581,11 +580,11 @@ public class $ {
         StringBuilder sb = new StringBuilder();
 
         sb.append(banner("memory stats"));
-        sb.append("\n- total collections: " + totalGC);
-        sb.append("\n- total collection time: " + formatTime(gcTime));
+        sb.append("\n- total collections: ").append(totalGC);
+        sb.append("\n- total collection time: ").append(formatTime(gcTime));
 
         Runtime runtime = Runtime.getRuntime();
-        sb.append("\n- total memory: " + $.printMem(runtime.totalMemory()));
+        sb.append("\n- total memory: ").append($.printMem(runtime.totalMemory()));
 
         return sb.toString();
     }

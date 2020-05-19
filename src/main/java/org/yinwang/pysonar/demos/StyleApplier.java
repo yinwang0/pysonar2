@@ -67,16 +67,16 @@ class StyleApplier {
             if (Analyzer.self.hasOption("debug")) {
                 switch (style.type) {
                     case ANCHOR:
-                        buffer.append("<a name='" + style.url + "'");
-                        buffer.append(", id ='" + style.id + "'");
+                        buffer.append("<a name='").append(style.url).append("'");
+                        buffer.append(", id ='").append(style.id).append("'");
                         if (style.highlight != null && !style.highlight.isEmpty()) {
                             String ids = $.joinWithSep(style.highlight, "\",\"", "\"", "\"");
                             buffer.append(", onmouseover='highlight(").append(ids).append(")'");
                         }
                         break;
                     case LINK:
-                        buffer.append("<a href='" + style.url + "'");
-                        buffer.append(", id ='" + style.id + "'");
+                        buffer.append("<a href='").append(style.url).append("'");
+                        buffer.append(", id ='").append(style.id).append("'");
                         if (style.highlight != null && !style.highlight.isEmpty()) {
                             String ids = $.joinWithSep(style.highlight, "\",\"", "\"", "\"");
                             buffer.append(", onmouseover='highlight(").append(ids).append(")'");
@@ -90,12 +90,12 @@ class StyleApplier {
             } else {
                 switch (style.type) {
                     case ANCHOR:
-                        buffer.append("<a name='" + style.url + "'");
-                        buffer.append(", xid ='" + style.id + "'");
+                        buffer.append("<a name='").append(style.url).append("'");
+                        buffer.append(", xid ='").append(style.id).append("'");
                         break;
                     case LINK:
-                        buffer.append("<a href='" + style.url + "'");
-                        buffer.append(", xid ='" + style.id + "'");
+                        buffer.append("<a href='").append(style.url).append("'");
+                        buffer.append(", xid ='").append(style.id).append("'");
                         break;
                     default:
                         buffer.append("<span class='");

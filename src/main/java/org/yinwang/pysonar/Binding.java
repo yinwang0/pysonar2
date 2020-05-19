@@ -211,6 +211,7 @@ public class Binding implements Comparable<Object> {
     /**
      * Bindings can be sorted by their location for outlining purposes.
      */
+    @Override
     public int compareTo(@NotNull Object o) {
         if (start == ((Binding) o).start) {
             return end - ((Binding) o).end;
