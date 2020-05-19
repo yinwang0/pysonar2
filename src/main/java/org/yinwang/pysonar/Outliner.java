@@ -229,8 +229,8 @@ public class Outliner {
     /**
      * Create an outline for a file in the index.
      *
-     * @param scope the file scope
-     * @param path  the file for which to build the outline
+     * @param idx     the file scope
+     * @param abspath the file for which to build the outline
      * @return a list of entries constituting the file outline.
      * Returns an empty list if the analyzer hasn't analyzed that path.
      */
