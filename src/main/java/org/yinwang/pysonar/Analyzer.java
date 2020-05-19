@@ -337,14 +337,14 @@ public class Analyzer {
             return "";
         }
 
-        String ret = "";
+        StringBuilder ret = new StringBuilder();
 
         for (int i = 0; i < names.size() - 1; i++) {
-            ret += names.get(i).id + ".";
+            ret.append(names.get(i).id).append(".");
         }
 
-        ret += names.get(names.size() - 1).id;
-        return ret;
+        ret.append(names.get(names.size() - 1).id);
+        return ret.toString();
     }
 
 
