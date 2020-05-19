@@ -37,7 +37,7 @@ public class UnionType extends Type {
     /**
      * Returns true if t1 == t2 or t1 is a union type that contains t2.
      */
-    static public boolean contains(Type t1, Type t2) {
+    public static boolean contains(Type t1, Type t2) {
         if (t1 instanceof UnionType) {
             return ((UnionType) t1).contains(t2);
         } else {
@@ -46,7 +46,7 @@ public class UnionType extends Type {
     }
 
 
-    static public Type remove(Type t1, Type t2) {
+    public static Type remove(Type t1, Type t2) {
         if (t1 instanceof UnionType) {
             Set<Type> types = new HashSet<>(((UnionType) t1).types);
             types.remove(t2);
@@ -60,7 +60,7 @@ public class UnionType extends Type {
 
 
     @NotNull
-    static public Type newUnion(@NotNull Collection<Type> types) {
+    public static Type newUnion(@NotNull Collection<Type> types) {
         Type t = Types.UNKNOWN;
         for (Type nt : types) {
             t = union(t, nt);

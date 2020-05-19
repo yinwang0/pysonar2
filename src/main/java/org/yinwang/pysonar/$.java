@@ -278,7 +278,7 @@ public class $ {
     }
 
 
-    static public String escapeQname(@NotNull String s) {
+    public static String escapeQname(@NotNull String s) {
         return s.replaceAll("[.&@%-]", "_");
     }
 
@@ -299,7 +299,7 @@ public class $ {
 
 
     @NotNull
-    static public String joinWithSep(@NotNull Collection<String> ls, String sep, @Nullable String start,
+    public static String joinWithSep(@NotNull Collection<String> ls, String sep, @Nullable String start,
                                      @Nullable String end)
     {
         StringBuilder sb = new StringBuilder();
