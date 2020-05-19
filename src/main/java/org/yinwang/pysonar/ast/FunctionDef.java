@@ -61,14 +61,14 @@ public class FunctionDef extends Node {
                 argExpr.append(", ");
             }
             first = false;
-            argExpr.append("*" + vararg.toDisplay());
+            argExpr.append("*").append(vararg.toDisplay());
         }
 
         if (kwarg != null) {
             if (!first) {
                 argExpr.append(", ");
             }
-            argExpr.append("**" + kwarg.toDisplay());
+            argExpr.append("**").append(kwarg.toDisplay());
         }
 
         argExpr.append(")");

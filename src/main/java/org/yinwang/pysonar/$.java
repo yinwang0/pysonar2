@@ -580,11 +580,11 @@ public class $ {
         StringBuilder sb = new StringBuilder();
 
         sb.append(banner("memory stats"));
-        sb.append("\n- total collections: " + totalGC);
-        sb.append("\n- total collection time: " + formatTime(gcTime));
+        sb.append("\n- total collections: ").append(totalGC);
+        sb.append("\n- total collection time: ").append(formatTime(gcTime));
 
         Runtime runtime = Runtime.getRuntime();
-        sb.append("\n- total memory: " + $.printMem(runtime.totalMemory()));
+        sb.append("\n- total memory: ").append($.printMem(runtime.totalMemory()));
 
         return sb.toString();
     }

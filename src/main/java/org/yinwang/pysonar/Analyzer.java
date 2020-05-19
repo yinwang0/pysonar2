@@ -563,13 +563,13 @@ public class Analyzer {
     @NotNull
     public String getAnalysisSummary() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\n" + $.banner("analysis summary"));
+        sb.append("\n").append($.banner("analysis summary"));
 
         String duration = $.formatTime(System.currentTimeMillis() - stats.getInt("startTime"));
-        sb.append("\n- total time: " + duration);
-        sb.append("\n- modules loaded: " + loadedFiles.size());
-        sb.append("\n- semantic problems: " + semanticErrors.size());
-        sb.append("\n- failed to parse: " + failedToParse.size());
+        sb.append("\n- total time: ").append(duration);
+        sb.append("\n- modules loaded: ").append(loadedFiles.size());
+        sb.append("\n- semantic problems: ").append(semanticErrors.size());
+        sb.append("\n- failed to parse: ").append(failedToParse.size());
 
         // calculate number of defs, refs, xrefs
         int nDef = 0, nXRef = 0;
@@ -578,16 +578,16 @@ public class Analyzer {
             nXRef += b.refs.size();
         }
 
-        sb.append("\n- number of definitions: " + nDef);
-        sb.append("\n- number of cross references: " + nXRef);
-        sb.append("\n- number of references: " + references.size());
+        sb.append("\n- number of definitions: ").append(nDef);
+        sb.append("\n- number of cross references: ").append(nXRef);
+        sb.append("\n- number of references: ").append(references.size());
 
         long nResolved = resolved.size();
         long nUnresolved = unresolved.size();
-        sb.append("\n- resolved names: " + nResolved);
-        sb.append("\n- unresolved names: " + nUnresolved);
-        sb.append("\n- name resolve rate: " + $.percent(nResolved, nResolved + nUnresolved));
-        sb.append("\n" + $.getGCStats());
+        sb.append("\n- resolved names: ").append(nResolved);
+        sb.append("\n- unresolved names: ").append(nUnresolved);
+        sb.append("\n- name resolve rate: ").append($.percent(nResolved, nResolved + nUnresolved));
+        sb.append("\n").append($.getGCStats());
 
         return sb.toString();
     }

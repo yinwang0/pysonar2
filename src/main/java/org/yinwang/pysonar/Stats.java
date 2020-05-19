@@ -43,7 +43,7 @@ public class Stats {
         StringBuilder sb = new StringBuilder();
 
         for (Map.Entry<String, Object> e : contents.entrySet()) {
-            sb.append("\n- " + e.getKey() + ": " + e.getValue());
+            sb.append("\n- ").append(e.getKey()).append(": ").append(e.getValue());
         }
 
         return sb.toString();
