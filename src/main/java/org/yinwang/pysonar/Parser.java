@@ -241,7 +241,7 @@ public class Parser {
             Node func = convert(map.get("func"));
             List<Node> args = convertList(map.get("args"));
             List<Keyword> keywords = convertList(map.get("keywords"));
-            Node kwargs = convert(map.get("kwarg"));
+            Node kwargs = convert(map.get("kwargs"));
             Node starargs = convert(map.get("starargs"));
             return new Call(func, args, keywords, kwargs, starargs, file, start, end, line, col);
         }
@@ -525,7 +525,7 @@ public class Parser {
 
         if (type.equals("Print")) {
             List<Node> values = convertList(map.get("values"));
-            Node destination = convert(map.get("destination"));
+            Node destination = convert(map.get("dest"));
             return new Print(destination, values, file, start, end, line, col);
         }
 

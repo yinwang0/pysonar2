@@ -1792,7 +1792,8 @@ public class TypeInferencer implements Visitor1<Type, State>
     {
         if (s.isGlobalName(name.id))
         {
-            Set<Binding> bs = s.lookup(name.id);
+            State g = s.getGlobalTable();
+            Set<Binding> bs = g.lookupLocal(name.id);
             if (bs != null)
             {
                 for (Binding b : bs)
@@ -1800,6 +1801,10 @@ public class TypeInferencer implements Visitor1<Type, State>
                     b.addType(rvalue);
                     Analyzer.self.putRef(name, b);
                 }
+            }
+            else
+            {
+                g.insert(name.id, name, rvalue, kind);
             }
         }
         else
