@@ -1,4 +1,4 @@
-package org.yinwang.pysonar;
+package org.yinwang.pysonar; // This is the package statement
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -15,7 +15,7 @@ import java.net.URL;
 import java.util.*;
 
 
-public class Analyzer {
+public class Analyzer { // This is public class Analyzer
 
     // global static instance of the analyzer itself
     public static Analyzer self;
