@@ -112,7 +112,7 @@ def improve_ast(node, s):
 line_starts = []
 
 
-# build global table 'idxmap' for lineno <-> index oonversion
+# build global table 'idxmap' for lineno <-> index conversion
 def build_index_map(s):
     global line_starts
     idx = 0
