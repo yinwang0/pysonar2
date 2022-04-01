@@ -8,7 +8,7 @@ bases.
 To create high accuracy and quality index of Python, which is very dynamic language, PySonar2
 performs (costly) whole-project interprocedural analysis to infer types of variables, parameters and
 functions. Because of this, PySonar2 generally produces better index than Python IDEs (such as
-PyCharm etc.), while at the same time sacraficing real-time indexing abilities of IDEs.
+PyCharm etc.), while at the same time sacrificing real-time indexing abilities of IDEs.
 
 PySonar2 has been the underlying indexing engine for several large-scale code navigation services,
 such as Google's internal Code Search service, Sourcegraph.com and Insight.io (now part of
