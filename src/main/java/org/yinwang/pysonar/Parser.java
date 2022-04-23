@@ -894,7 +894,7 @@ public class Parser {
         List<Name> result = new ArrayList<>();
 
         for (int i = 0; i < qname.length(); i++) {
-            String name = "";
+            StringBuilder name = new StringBuilder();
             while (Character.isSpaceChar(qname.charAt(i))) {
                 i++;
             }
@@ -905,14 +905,14 @@ public class Parser {
                             qname.charAt(i) == '*') &&
                     qname.charAt(i) != '.')
             {
-                name += qname.charAt(i);
+                name.append(qname.charAt(i));
                 i++;
             }
 
             int nameStop = i;
             int nstart = hasLoc ? start + nameStart : -1;
             int nstop = hasLoc ? start + nameStop : -1;
-            result.add(new Name(name, file, nstart, nstop, 0, 0));
+            result.add(new Name(name.toString(), file, nstart, nstop, 0, 0));
         }
 
         return result;
