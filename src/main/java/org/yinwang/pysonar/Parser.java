@@ -472,10 +472,36 @@ public class Parser {
             } else if (value instanceof String) {
                 strVal = (String) value;
             } else {
-                $.msg("[WARNING] NameConstant contains unrecognized value: " + value + ", please report issue");
+                $.msg("[Please report issue] NameConstant contains unrecognized value: " + value);
                 strVal = "";
             }
             return new Name(strVal, file, start, end, line, col);
+        }
+
+        // Python3's new node type 'Constant'
+        // Just convert to other types and call convert again
+        if (type.equals("Constant")) {
+            Object value = map.get("value");
+
+            if (map.containsKey("num_type")) {
+                map.put("pysonar_node_type", "Num");
+                map.put("n", map.get("value"));
+                return convert(map);
+            }
+            else if (value instanceof String) {
+                map.put("pysonar_node_type", "Str");
+                map.put("s", value);
+                return convert(map);
+            }
+            else if (value instanceof Boolean) {
+                map.put("pysonar_node_type", "NameConstant");
+                return convert(map);
+            }
+            else {
+                $.msg("\n[Please report issue]: Unexpected Constant node: " + type
+                        + "\nnode: " + o + "\nfile: " + file);
+                return new Unsupported(file, start, end, line, col);
+            }
         }
 
         // another name for Name in Python3 func parameters?
@@ -668,26 +694,9 @@ public class Parser {
             return new Yield(value, file, start, end, line, col);
         }
 
-        // Python3's new node type 'Constant'
-        // Just convert to other types and call convert again
-        if (type.equals("Constant")) {
-            Object value = map.get("value");
+        $.msg("\n[Please report issue]: Unexpected ast node type: " + type
+                + "\nnode: " + o + "\nfile: " + file);
 
-            if (map.containsKey("num_type")) {
-                map.put("pysonar_node_type", "Num");
-                map.put("n", map.get("value"));
-            }
-            else if (value instanceof String) {
-                map.put("pysonar_node_type", "Str");
-                map.put("s", value);
-            }
-            else if (value instanceof Boolean) {
-                map.put("pysonar_node_type", "NameConstant");
-            }
-            return convert(map);
-        }
-
-        $.msg("\n[Please report issue]: Unexpected ast node type: " + type + "\nnode: " + o + "\nfile: " + file);
         return new Unsupported(file, start, end, line, col);
     }
 
