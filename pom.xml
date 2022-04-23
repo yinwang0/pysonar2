@@ -19,7 +19,7 @@
         <maven-shade-plugin.version>2.1</maven-shade-plugin.version>
         <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
         <gson-version>2.2.4</gson-version>
-        <jackson-version>2.10.0</jackson-version>
+        <jackson-version>2.12.6.1</jackson-version>
     </properties>
 
     <dependencies>
