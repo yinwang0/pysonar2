@@ -1,4 +1,4 @@
-# PySonar2 - an advanced semantic indexer for Python
+# PySonar2 - a semantic indexer for Python with interprocedual type inference
 
 PySonar2 is a semantic indexer library for Python, designed for batch processing of large code
 bases.
@@ -19,7 +19,7 @@ Elastic).
 
 ### How to build
 
-    mvn package
+    mvn package -DskipTests
 
 
 ### Demo
