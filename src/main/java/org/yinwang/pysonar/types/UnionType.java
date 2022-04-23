@@ -127,10 +127,6 @@ public class UnionType extends Type {
         return result;
     }
 
-    public static Type union(Type... types) {
-        return union(types);
-    }
-
     @Nullable
     public Type firstUseful() {
         for (Type type : types) {
