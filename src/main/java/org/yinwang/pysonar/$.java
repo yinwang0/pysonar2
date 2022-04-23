@@ -194,7 +194,8 @@ public class $ {
 
     public static void copyResourcesRecursively(URL originUrl, File destination) throws Exception {
         URLConnection urlConnection = originUrl.openConnection();
-        if (urlConnection instanceof JarURLConnection) {
+
+        if (urlConnection.getURL().getProtocol().equals("jar")) {
             copyJarResourcesRecursively(destination, (JarURLConnection) urlConnection);
         } else if (urlConnection.getURL().getProtocol().equals("file")) {
             FileUtils.copyDirectory(new File(originUrl.getPath()), destination);
