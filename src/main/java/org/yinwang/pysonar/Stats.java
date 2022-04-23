@@ -17,7 +17,7 @@ public class Stats {
         Long old = getInt(key);
 
         if (old == null) {
-            contents.put(key, 1);
+            contents.put(key, x);
         } else {
             contents.put(key, old + x);
         }
