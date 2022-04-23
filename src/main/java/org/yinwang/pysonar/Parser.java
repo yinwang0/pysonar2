@@ -668,7 +668,26 @@ public class Parser {
             return new Yield(value, file, start, end, line, col);
         }
 
-        $.msg("\n[Please Report]: unexpected ast node: " + type);
+        // Python3's new node type 'Constant'
+        // Just convert to other types and call convert again
+        if (type.equals("Constant")) {
+            Object value = map.get("value");
+
+            if (map.containsKey("num_type")) {
+                map.put("pysonar_node_type", "Num");
+                map.put("n", map.get("value"));
+            }
+            else if (value instanceof String) {
+                map.put("pysonar_node_type", "Str");
+                map.put("s", value);
+            }
+            else if (value instanceof Boolean) {
+                map.put("pysonar_node_type", "NameConstant");
+            }
+            return convert(map);
+        }
+
+        $.msg("\n[Please report issue]: Unexpected ast node type: " + type + "\nnode: " + o + "\nfile: " + file);
         return new Unsupported(file, start, end, line, col);
     }
 
