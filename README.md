@@ -1,20 +1,18 @@
 # PySonar2 - a semantic indexer for Python with interprocedural type inference
 
 PySonar2 is a semantic indexer library for Python, designed for batch processing of large code
-bases.
+bases. The resulting index can be used to build code browsers and code search engines.
 
-Because Python is a highly dynamic language, to create index of high accuracy and quality, PySonar2
-performs interprocedural analysis to infer types. Because of this, PySonar2 generally produces 
-better index than Python IDEs, while at the same time sacrificing real-time indexing capabilities of 
-IDEs.
+Python is a highly dynamic language. To achieve high accuracy and quality, PySonar2 performs 
+interprocedural analysis to infer types. PySonar2 generally produces better index than Python IDEs,
+while at the same time sacrificing real-time update capabilities of IDEs.
 
 Notice the term "type inference" here is descriptive rather than prescriptive, meaning the inferred
 types describe how the code is actually used, but does not prescribe how they must be used. So the way
-type inference works here is different from the Hindley-Milner type system.
+type inference works here is different from type systems (e.g. Hindley-Milner system).
 
 PySonar2 has been the underlying indexing engine for several large-scale code navigation services,
-such as Google's internal Code Search, sourcegraph.com and insight.io (now part of
-Elastic).
+such as Google's internal Code Search, sourcegraph.com and insight.io (now part of elastic).
 
 <a href="http://www.yinwang.org/resources/demos/pysonar2/email/header.py.html">
 <img src="http://www.yinwang.org/images/pysonar2.gif" width="70%">
