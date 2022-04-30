@@ -3,12 +3,7 @@ package org.yinwang.pysonar.types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UnionType extends Type {
@@ -112,7 +107,7 @@ public class UnionType extends Type {
 
     @NotNull
     public static Type union(@NotNull TupleType u, @NotNull TupleType v) {
-        List<Type> types = new ArrayList<Type>();
+        List<Type> types = new ArrayList<>();
         for (int i = 0; i < u.size(); i++) {
             types.add(union(u.get(i), v.get(i)));
         }
@@ -125,6 +120,10 @@ public class UnionType extends Type {
             result = UnionType.union(result, type);
         }
         return result;
+    }
+
+    public static Type union(Type... types) {
+        return union(Arrays.asList(types));
     }
 
     @Nullable

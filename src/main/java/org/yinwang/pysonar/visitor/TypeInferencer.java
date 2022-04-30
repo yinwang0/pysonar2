@@ -501,7 +501,7 @@ public class TypeInferencer implements Visitor1<Type, State>
             s.merge(s2);
         }
 
-        return UnionType.union(UnionType.union(t1, t2), t3);
+        return UnionType.union(t1, t2, t3);
     }
 
     @NotNull
@@ -1129,7 +1129,7 @@ public class TypeInferencer implements Visitor1<Type, State>
             s.merge(s2);
         }
 
-        return UnionType.union(UnionType.union(t1, t2), t3);
+        return UnionType.union(t1, t2, t3);
     }
 
     @NotNull
